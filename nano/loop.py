@@ -648,12 +648,35 @@ class NanoLoop:
                 continue
             if self.vres.get(c.id, {}).get("status") != "checked" or self._gain(c) is None or self._gain(c) >= 0:
                 continue
-            node = tree.promote_win(self.tree, c.id, c.extra.get("cluster", ""), c.extra.get("hypothesis", ""), c.extra.get("change", ""))
+            members = set(c.extra.get("members") or [])          # the part the winning sketch named, else the root
+            part = next((s.get("part") for s in self.sketches if s.get("id") in members and s.get("part")), "")
+            node = tree.promote_win(self.tree, c.id, c.extra.get("cluster", ""), c.extra.get("hypothesis", ""), c.extra.get("change", ""),
+                                    part=part or c.extra.get("node", ""))
             self.promoted.add(c.id)
             if node:
-                self.decisions.append({"round": round_no, "step": "promote_off_win", "candidate": c.id, "node": node["id"], "name": node["name"]})
+                self.decisions.append({"round": round_no, "step": "promote_off_win", "candidate": c.id, "node": node["id"], "name": node["name"],
+                                       "parent": node["parent"]})
+
+    def _spawn_fail_questions(self, round_no: int, failed: list) -> None:
+        """Maintenance (docs/mapper/03): a final failed check with a reason becomes a child question under the
+        node the idea worked on, at most tree.FAIL_QUESTIONS_PER_PART per node per round; same name is skipped."""
+        made: Counter = Counter()
+        for c in failed:
+            rec = self.vres.get(c.id) or {}
+            reason = str((rec.get("feedback") or {}).get("reason") or "").strip()
+            nid = (c.extra or {}).get("node")
+            if rec.get("status") != "fail" or not reason or nid in (None, "root", tree.OFF_TREE_ID) \
+                    or not any(n["id"] == nid for n in self.tree or []) or made[nid] >= tree.FAIL_QUESTIONS_PER_PART:
+                continue
+            node = tree.add_failure_question(self.tree, nid, c.id, c.extra.get("cluster") or c.extra.get("hypothesis", ""), reason)
+            if node:
+                made[nid] += 1
+                self.decisions.append({"round": round_no, "step": "fail_question", "candidate": c.id, "node": node["id"],
+                                       "parent": nid, "name": node["name"]})
 
     def _write_tree(self) -> None:
+        for d in tree.enforce_depth(self.tree):          # depth <= 4: a deeper node moves up to its depth-3 ancestor
+            self.decisions.append({"round": self.round_now, **d})
         stats = []
         for n in self.tree:
             sk = [s for s in self.sketches + self.upward if s.get("node") == n["id"]]
@@ -672,8 +695,9 @@ class NanoLoop:
             if "upward" in n.get("directions", []):    # proposals for a new verifier, shown where people can read and vote
                 row["proposals"] = [{k: u.get(k, "") for k in ("id", "proposal", "reframing", "new_measure", "why", "cost", "round", "call_id")}
                                     for u in self.upward if u.get("node", n["id"]) == n["id"] and u.get("proposal")]
+            row["depth"], row["path"] = tree.depth(self.tree, n["id"]), tree.path(self.tree, n["id"])
             stats.append(row)
-        write_json(self.run_dir / "problem_tree.json", {"nodes": stats, "inward_share": self.inward_share,
+        write_json(self.run_dir / "problem_tree.json", {"nodes": stats, "tree": tree.nested(self.tree), "inward_share": self.inward_share,
                                                          "off_tree_share": self.off_tree_share, "origins": self._origin_stats(),
                                                          "lens": self.lens, "lens_design": self.lens_design,
                                                          "stats": {"n_idea_assumptions": sum(len(s["idea_assumptions"]) for s in stats)}})
@@ -797,11 +821,14 @@ class NanoLoop:
             self._shift_off_share(round_no)
         specs = []
         per = self.per_node if round_no == 1 else 1
+        # contexts go to the leaves: a part with children shares its per-part budget with them (tree.deal_contexts),
+        # so a deeper map costs no more contexts than a flat one; a flat map gets `per` everywhere, as before
+        dealt = tree.deal_contexts(self.tree, per, round_no, self._skipped)
         for node in self.tree:
             if node["id"] == tree.OFF_TREE_NODE["id"] or self._skipped(node["id"]):
                 continue
             for direction in node["directions"]:
-                n_here = (2 if direction == "upward" else per)
+                n_here = (2 if direction == "upward" else dealt.get((node["id"], direction), 0))
                 for i in range(n_here):
                     card = self.IDEA_CARDS[(len(specs) + i) % len(self.IDEA_CARDS)]
                     if card == "transform":          # the node's own assumptions are the transform material
@@ -817,7 +844,7 @@ class NanoLoop:
                     specs.append(("research", seed, node, direction))
             # one analogy context per part (outward: structure from other fields) and one diagnosis context
             # (inward: aim at what the measurements show), in round 1
-            if round_no == 1 and node["id"] != "root":
+            if round_no == 1 and node["id"] != "root" and tree.depth(self.tree, node["id"]) <= 1:   # parts only, not their children
                 if node["id"] in self.analogies:
                     specs.append(("analogy", "", node, "outward"))
                 if self.diagnostics_text:
@@ -874,7 +901,7 @@ class NanoLoop:
             common = self._common(source, True, f"{node['id']}:{direction}:{seed}")
             off = node["id"] == tree.OFF_TREE_NODE["id"]
             prompt = (tree.off_tree_prompt(card, self.tree, common, self.diagnostics_text, direction) if off
-                      else tree.node_prompt(node, direction, common))
+                      else tree.node_prompt(node, direction, common, self.tree))
             if card == "seeded":
                 prompt += f"Starting point: {seed}\n\n"
             elif card == "docs":
@@ -2517,6 +2544,7 @@ class NanoLoop:
                         (checked if crec["status"] == "checked" else failed).append(child)
             for comp, crec in self.compose_round(rnd):
                 (checked if crec["status"] == "checked" else failed).append(comp)
+            self._spawn_fail_questions(rnd, failed)            # every verify record of this round is final here
             self._hedge(failed, rnd)
             self._queue_families(checked)
             children = {}
