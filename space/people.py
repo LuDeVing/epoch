@@ -17,6 +17,30 @@ from space.launch import PYTHON, REPO, _now, kill_tree, lab_root, pid_alive, pro
 from space.store import Reject
 
 MODELS = ("mock", "sonnet")
+
+
+def me_default() -> str:
+    """The name the person at this PC joins with when none is given: the OS login, cleaned; else owner."""
+    raw = os.environ.get("USERNAME") or os.environ.get("USER") or ""
+    if not raw:
+        try:
+            import getpass
+            raw = getpass.getuser()
+        except Exception:  # noqa: BLE001
+            raw = ""
+    n = re.sub(r"[^a-z0-9_-]+", "-", str(raw).strip().lower()).strip("-")[:24]
+    return n if n and NAME_RE.match(n) else "owner"
+
+
+def lan_ip() -> str:
+    """This PC's address on the local network (the one other laptops use), or '' when unknown."""
+    import socket
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(("10.255.255.255", 1))
+            return s.getsockname()[0]
+    except OSError:
+        return ""
 NAME_RE = re.compile(r"^[a-z][a-z0-9_-]{0,23}$")
 
 
@@ -90,7 +114,11 @@ class People:
         for n in by:
             if n not in names:
                 names.append(n)
+        ip = lan_ip() if self.key else ""
+        port = self.url.rsplit(":", 1)[-1]
+        invite = f"http://{ip}:{port}/?key={self.key}" if ip and self.key else ""
         return {"url": self.url, "space_id": self.space_id, "lan": bool(self.key), "models": list(MODELS),
+                "me_default": me_default(), "invite_url": invite,
                 "people": [{"name": n, "join_url": self.join_url(n), "agent": by.get(n)} for n in names]}
 
     def add(self, raw_name, model) -> dict:

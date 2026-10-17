@@ -36,9 +36,19 @@ function PeoplePanel({ api, onClose }) {
   };
   const stop = async (n) => { setBusy(true); setErr(''); try { await post('/api/people/stop', { name: n }); await refresh(); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const people = (data && data.people) || [];
+  const rename = () => {
+    const n = String(window.prompt('Your name in this space', api.me || '') || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 24);
+    if (!n || n === api.me) return;
+    try { localStorage.setItem('htsa.me', n); } catch (e) { /* ignore */ }
+    const u = new URL(location.href); u.searchParams.set('me', n); location.replace(u.toString());
+  };
   return html`<div class="start-panel people-panel">
-    <div class="start-panel__title">People in this space <span class="muted">${data && data.space_id ? data.space_id : ''}</span>
+    <div class="start-panel__title">People <span class="muted">${data && data.space_id ? data.space_id : ''}</span>
       <button class="btn btn--small" type="button" style="float:right" onClick=${onClose}>x</button></div>
+    <div class="people__me">You are <strong>${api.me || 'not joined'}</strong> on this PC <button class="btn btn--small" type="button" onClick=${rename}>change</button></div>
+    <div class="people__invite">${data && data.invite_url
+      ? html`<div>Invite from another laptop: <span class="mono" style="user-select:all">${data.invite_url}&me=&lt;their name&gt;</span></div>`
+      : html`<div class="muted">To invite other laptops, start the space from the hub with "open to other laptops"; you then get a link with a key here.</div>`}</div>
     ${people.length ? html`<ul class="people__list">${people.map((p) => html`<li class="people__row">
         <strong>${p.name}</strong>
         <span class=${`tag ${p.agent && p.agent.alive ? 'tag--on' : ''}`}>${p.agent ? (p.agent.alive ? `agent on ${p.agent.model}` : 'agent stopped') : 'no agent'}</span>
@@ -52,11 +62,11 @@ function PeoplePanel({ api, onClose }) {
         <option value="mock">agent: canned replies (no model)</option>
         <option value="sonnet">agent: Sonnet (real model)</option>
       </select>
-      <button class="btn btn--small btn--primary" type="submit" disabled=${busy || !name.trim()}>Add person and start their agent</button>
+      <button class="btn btn--small btn--primary" type="submit" disabled=${busy || !name.trim()}>Add a second person on this PC</button>
     </form>
     ${made ? html`<div class="people__made">Added ${made.name}. Their link: <span class="mono" style="user-select:all">${made.join_url}</span></div>` : null}
     ${err ? html`<div class="error">${err}</div>` : null}
-    <div class="muted people__foot">A person can also just open <span class="mono">${base}/?me=&lt;name&gt;</span>. New spaces: <a href=${HUB_URL} target="_blank" rel="noopener">the hub</a>.</div>
+    <div class="muted people__foot">A second person on this PC opens another browser (Edge next to Chrome) with their link. New spaces: <a href=${HUB_URL} target="_blank" rel="noopener">the hub</a>.</div>
   </div>`;
 }
 

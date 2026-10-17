@@ -139,7 +139,8 @@ class Hub:
         live = self._live_ports()
         out = [self._row(r, live) for r in rows]
         out.sort(key=lambda x: (not x["alive"], x["name"]))
-        return {"spaces": out, "hub": {"port": HUB_PORT, "lab": str(lab_root())}}
+        from space.people import me_default
+        return {"spaces": out, "hub": {"port": HUB_PORT, "lab": str(lab_root()), "me_default": me_default()}}
 
     def create(self, raw_name, lan=False, memory_dir=None) -> dict:
         name = clean_name(raw_name)
@@ -183,7 +184,22 @@ class Hub:
                     break
                 except OSError:
                     time.sleep(0.1)
+        self._start_my_agent(port)
         return self._row(rec)
+
+    @staticmethod
+    def _start_my_agent(port: int) -> None:
+        """The person at this PC gets their agent as soon as the space exists (Sonnet, canned fallback)."""
+        import urllib.request
+        from space.people import me_default
+        try:
+            body = json.dumps({"name": me_default(), "model": "sonnet"}).encode("utf-8")
+            req = urllib.request.Request("http://127.0.0.1:%d/api/people/add" % port, data=body,
+                                         headers={"Content-Type": "application/json", "X-Space-Actor": me_default(),
+                                                  "X-Space-Kind": "human"}, method="POST")
+            urllib.request.urlopen(req, timeout=5).read()
+        except Exception:  # noqa: BLE001
+            pass
 
     def stop(self, raw_name) -> dict:
         name = clean_name(raw_name)

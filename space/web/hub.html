@@ -35,8 +35,9 @@ async function api(path, body) {
   return j;
 }
 
-function Space({ s, refresh }) {
-  const [me, setMe] = useState('');
+function Space({ s, refresh, meDefault }) {
+  const [me, setMe] = useState(meDefault || '');
+  useEffect(() => { if (!me && meDefault) setMe(meDefault); }, [meDefault]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const act = async (fn) => { setBusy(true); setErr(''); try { await fn(); await refresh(); } catch (e) { setErr(e.message); } setBusy(false); };
@@ -47,15 +48,14 @@ function Space({ s, refresh }) {
       <span class="muted">${s.alive ? `running on port ${s.port}` : (s.port ? 'stopped' : 'not started here')}${s.lan ? ' . open to the network' : ''}</span>
       ${s.people.length ? html`<span class="muted">people: ${s.people.join(', ')}</span>` : null}
       <span style="flex:1"></span>
-      ${s.alive ? html`<a class="btn btn--small btn--primary" href=${`${s.url}/`} target="_blank" rel="noopener">View</a>
+      ${s.alive ? html`<a class="btn btn--small btn--primary" href=${name ? s.join.replace('{name}', name) : `${s.url}/`} target="_blank" rel="noopener">Open</a>
         <a class="btn btn--small" href=${`${s.url}/?stage=1`} target="_blank" rel="noopener" title="the big read-only view for a projector">Projector</a>
         <button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/stop', { name: s.name }))}>Stop</button>`
         : html`<button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/start', { name: s.name }))}>Start</button>`}
     </div>
     ${s.alive ? html`<div class="space__row">
       <label class="muted">Your name <input type="text" value=${me} onInput=${(e) => setMe(e.target.value)} placeholder="ana" /></label>
-      ${join ? html`<a class="btn btn--small btn--primary" href=${join} target="_blank" rel="noopener">Open as ${name}</a>
-        <span class="mono muted" style="user-select:all">${join}</span>` : html`<span class="muted">type a name to get your link</span>`}
+      ${join ? html`<span class="mono muted" style="user-select:all">${join}</span>` : html`<span class="muted">type a name to get your link</span>`}
       ${s.key ? html`<span class="muted">key for other laptops: <span class="mono" style="user-select:all">${s.key}</span></span>` : null}
     </div>` : null}
     ${err ? html`<div class="err">${err}</div>` : null}
@@ -73,7 +73,7 @@ function HubPage() {
   const create = async (e) => {
     e.preventDefault();
     setBusy(true); setErr('');
-    try { const s = await api('/api/spaces', { name, lan }); setName(''); await refresh(); if (s.alive) window.open(`${s.url}/`, '_blank'); }
+    try { const s = await api('/api/spaces', { name, lan }); setName(''); await refresh(); if (s.alive) window.open(s.join.replace('{name}', data.hub.me_default || ''), '_blank'); }
     catch (ex) { setErr(ex.message); }
     setBusy(false);
   };
@@ -86,7 +86,7 @@ function HubPage() {
       <button class="btn btn--small btn--primary" type="submit" disabled=${busy || !name.trim()}>New space</button>
     </form>
     ${err ? html`<div class="err">${err}</div>` : null}
-    ${data.spaces.length ? data.spaces.map((s) => html`<${Space} key=${s.name} s=${s} refresh=${refresh} />`) : html`<div class="muted">No spaces yet. Make one above.</div>`}
+    ${data.spaces.length ? data.spaces.map((s) => html`<${Space} key=${s.name} s=${s} refresh=${refresh} meDefault=${data.hub.me_default} />`) : html`<div class="muted">No spaces yet. Make one above.</div>`}
     <div class="muted" style="margin-top:18px">Spaces live under ${data.hub.lab || ''}/spaces. A stopped space keeps everything and starts again with its log intact.</div>
   </div>`;
 }

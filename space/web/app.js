@@ -344,6 +344,24 @@ export function toast(text) {
 }
 
 // ---- join: names are typed, no login ----------------------------------------------------------------------------------
+// Local use: nobody types a name. The browser remembers who you are; the first time, the server offers the OS
+// login of this PC. The page then reopens itself with ?me=<name>, which the rest of the code reads as before.
+async function autoJoin() {
+  const clean = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 24);
+  let name = clean(ls.get('htsa.me'));
+  if (!name) {
+    try {
+      const r = await fetch(`${base}/api/people${flags.key ? `?key=${encodeURIComponent(flags.key)}` : ''}`, { cache: 'no-store' });
+      const j = await r.json();
+      name = clean(j.me_default);
+    } catch (e) { name = ''; }
+  }
+  if (!name) return false;
+  const u = new URL(location.href); u.searchParams.set('me', name);
+  location.replace(u.toString());
+  return true;
+}
+
 function askName() {
   const top = document.getElementById('topbar');
   const done = (name) => {
@@ -415,7 +433,8 @@ async function mountViews() {
 async function main() {
   [contract, layout] = await Promise.all([loadContract(), loadLayout()]);
   start();
-  if (!flags.me && !flags.stage) askName();
+  if (!flags.me && !flags.stage) { if (await autoJoin()) return; askName(); }
+  if (flags.me) ls.set('htsa.me', flags.me);
   mountRail(document.getElementById('rail'), viewApi);
   mountStart(document.getElementById('start-run'), viewApi);
   mountPeople(document.getElementById('people-panel'), viewApi);

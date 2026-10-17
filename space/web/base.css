@@ -212,3 +212,5 @@ body.is-resizing iframe, body.is-resizing svg { pointer-events: none; }
 #strip.is-collapsed .strip__text, #strip.is-collapsed .strip__agent, #strip.is-collapsed .muted:not(.strip__digest .muted) { display: none; }
 #strip .strip__digest .mono { white-space: normal; overflow-wrap: anywhere; }
 body.is-resizing-y { cursor: row-resize; user-select: none; }
+
+.people__me, .people__invite { padding: 6px 0; border-bottom: 1px solid var(--line-subtle); overflow-wrap: anywhere; }
