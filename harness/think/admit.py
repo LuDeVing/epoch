@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from ..schemas import Candidate
 
+_TOL = 1e-9          # same tolerance as think._at_least: 2 of 3 meets a 2/3 threshold
+
 
 def update(pop: list[Candidate], cands: list[Candidate], conf: dict, verified_ids: set,
            k_pop: int, theta: float) -> list[Candidate]:
@@ -18,5 +20,5 @@ def update(pop: list[Candidate], cands: list[Candidate], conf: dict, verified_id
     key = lambda c: -float(conf.get(c.id, 0.0))                     # noqa: E731
     verified = sorted((c for c in pool.values() if c.id in verified_ids), key=key)
     others = sorted((c for c in pool.values() if c.id not in verified_ids
-                     and float(conf.get(c.id, 0.0)) >= theta), key=key)
+                     and float(conf.get(c.id, 0.0)) >= float(theta) - _TOL), key=key)
     return verified + others[:max(0, k_pop - len(verified))]

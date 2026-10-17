@@ -69,13 +69,16 @@ IRREGULAR_PLURALS = {
 }
 _SINGULAR_OF = {v: k for k, v in IRREGULAR_PLURALS.items()}
 _VOWELS = set("aeiou")
+_ES_STEMS = ("s", "x", "z", "ch", "sh", "o")    # stems whose regular plural adds "es"
 _WORD = re.compile(r"[A-Za-z]+")
 
 
 def plural_forms(word: str) -> set[str]:
     """Lower-case surface forms of one noun: itself, regular plurals and irregular plurals."""
     w = word.lower()
-    forms = {w, w + "s", w + "es"}
+    forms = {w, w + "s"}
+    if w.endswith(_ES_STEMS):            # box -> boxes, hero -> heroes; never car -> cares
+        forms.add(w + "es")
     if w in IRREGULAR_PLURALS:
         forms.add(IRREGULAR_PLURALS[w])
     if w.endswith("man"):
@@ -101,9 +104,11 @@ def base_forms(token: str) -> set[str]:
         out.add(t[:-3] + "y")
     if t.endswith("ves"):
         out |= {t[:-3] + "f", t[:-3] + "fe"}
-    if t.endswith("es"):
+    # a stripped stem must be a plausible noun: "-es" only after s/x/z/ch/sh/o, and never a
+    # stem under 3 letters, so "bees", "notes", "toes" do not yield "be", "not", "to"
+    if t.endswith("es") and len(t) >= 5 and t[:-2].endswith(_ES_STEMS):
         out.add(t[:-2])
-    if t.endswith("s") and not t.endswith("ss"):
+    if t.endswith("s") and not t.endswith("ss") and len(t) >= 4:
         out.add(t[:-1])
     return out
 

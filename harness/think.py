@@ -1124,7 +1124,12 @@ def _vote_verified(ctx: Ctx, st: State):
             r = st.vres.get(c.id)
             if r is None:
                 st.rtype[c.id] = "probe"
-                r = _verify_one(ctx, st, c, 1)
+                try:
+                    r = _verify_one(ctx, st, c, 1)
+                except Exception as e:  # noqa: BLE001 - one probe check must not lose the answer
+                    st.errors.append({"round": st.round, "vote_probe_verify": c.id,
+                                      "error": f"{type(e).__name__}: {str(e)[:300]}"})
+                    continue
                 st.vres[c.id] = r
             if r.status == "verified" and _clears(bar, r):
                 pool.append(c)
