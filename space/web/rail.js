@@ -184,7 +184,7 @@ function ResultsTab({ view }) {
     <div class="best card">
       <div class="card__head">Best so far <button class="btn btn--small" style="float:right" onClick=${exportMd} title="download a markdown summary of the map, the results and the findings">Export</button></div>
       ${best ? html`<div class="best__name">${best.name || best.cand}</div>
-        <div class="muted">${best.status} on ${view.nodes.get(best.node) ? view.nodes.get(best.node).name : best.node || 'the whole problem'}${metrics(best.metrics) ? ` . ${metrics(best.metrics)}` : ''}${best.rung != null ? ` . rung ${best.rung}` : ''}</div>
+        <div class="muted">${plainStatus(best.status)} on ${view.nodes.get(best.node) ? view.nodes.get(best.node).name : best.node || 'the whole problem'}${metrics(best.metrics) ? ` . ${metrics(best.metrics)}` : ''}${best.rung != null ? ` . rung ${best.rung}` : ''}</div>
         ${best.reason ? html`<div class="best__why">${best.reason}</div>` : null}`
         : html`<div class="muted">${rows.length ? 'No candidate has beaten the reference yet.' : 'Nothing built yet. The first results land at built, round 1.'}</div>`}
     </div>
@@ -193,10 +193,9 @@ function ResultsTab({ view }) {
       const grey = ['loss', 'not_preferred', 'failed_check', 'not_built'].includes(r.status);
       return html`<li key=${r.cand} class=${`result result--${r.status}${grey ? ' result--grey' : ''}`}>
         <span class=${`status status--${r.status}`}><i class=${`icon icon--${RESULT_ICON[r.status] || 'dot'}`} aria-hidden="true"></i>${RESULT_WORD[r.status] || r.status}</span>
-        ${r.status === 'win' || r.status === 'preferred' ? html`<span class="badge badge--win">${winner}</span>` : null}
-        <span class="result__name">${r.name || r.key || r.cand}</span> <span class="mono muted">${r.cand}</span>
+        <span class="result__name">${r.name || r.key || r.cand}</span>
         <${Rungs} rung=${r.rung} />
-        <span class="mono metrics">${metrics(r.metrics) || r.reason || ''}</span>
+        <span class="mono metrics" title="the test's numbers">${metrics(r.metrics) || r.reason || ''}</span>
         <span class="voters">${Object.entries(r.voters || {}).map(([who, hm]) => html`<span class=${`tok hue-${hueOf(view, who)} vote--${hm}`}>${cap(who)}: ${hm}</span>`)}</span>
       </li>`; })}</ul>
   </div>`;

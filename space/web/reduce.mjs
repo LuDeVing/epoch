@@ -63,7 +63,7 @@ export const FEED_EXTRA = {
   run_step: 'pressed Go at {stage}, round {round}',
   stage_entered: '{reached} {stage}, round {round}',
   control_applied: 'applied {n_refs} changes at {stage}, round {round}',
-  digest_taken: 'told {agent} {n} changes (e{from_seq} to e{to_seq})',
+  digest_taken: 'read {n} changes by teammates before its step',
 };
 // Kinds the feed leaves to the My agent tab.
 export const NOT_IN_FEED = new Set(['chat_posted', 'agent_said', 'intent_proposed', 'intent_decided']);
@@ -169,7 +169,7 @@ export function chipText(item, run) {
 export function whoText(item) {
   const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
   if (item.cls === 'person') return cap(item.owner);
-  if (item.cls === 'delegate') return `${cap(item.owner)} via agent`;
+  if (item.cls === 'delegate') return `${cap(item.owner)}'s agent`;
   if (item.cls === 'team') return 'the team';
   if (item.cls === 'server') return '';
   return item.by;
