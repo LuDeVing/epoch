@@ -389,6 +389,8 @@ class NanoLoop:
         self.analogies: dict[str, dict] = {}    # structured analogies per part (nano/research.py)
         self.do_analogy, self.do_diagnostics, self.do_premortem = True, True, True
         self.do_dialogue = True                 # team gap B: the author's anchored reply to the pre-mortem (--no-dialogue = control)
+        self.premortem_web = False              # N8b: the critic may ask up to three web questions first (--premortem-web)
+        self.premortem_web_questions = 0        # questions asked across the run (report.json "premortem")
         self.diagnostics_text = ""              # how the baseline behaves (nano/diagnose.py), fed to agents
         self.max_compose = 3                    # mechanical composites per round (nano/compose.py)
         self.control_note = ""                  # a note from control.json that every later agent reads
@@ -1454,20 +1456,26 @@ class NanoLoop:
                 ledger_pack += [l for l in self.diagnostics_text.splitlines() if l.strip()][:10]
                 if self.anomaly_text:
                     ledger_pack += ["anomaly: " + l.lstrip("- ") for l in self.anomaly_text.splitlines() if l.strip()][:5]
+                failed = deepen.failed_pack(self.briefs.get(cl.get("node")))   # N8a: published failures for the part, with URLs
                 evidence = [l for l in (research_txt + "\n" + self.diagnostics_text).splitlines() if l.strip()][:30]
                 # evidence the builder lacked first (outside view), then the information-poor control, then the idea's own facts
                 packs = [("ledger", ledger_pack or evidence), ("script-only", []), ("facts", parsed["known"]), ("evidence", evidence)][: max(1, self.premortems)]
+                chain_txt = deepen.chain_text(parsed.get("chain") or [])
+                _, findings = self._premortem_web(cl, node, brief, constraints, chain_txt, round_no)
                 objections, verdicts = [], []
                 for pack_name, known_pack in packs:
                     est2 = len(prompt) // 4 + 2500
                     if not self._afford("interrogation", est2, "pre-mortem"):
                         break
                     pr = self._call(deepen.premortem_prompt(brief, node.get("name", ""), constraints, self.baseline_src, known_pack,
-                                                            chain=deepen.chain_text(parsed.get("chain") or [])),
+                                                            chain=chain_txt, failed=failed if pack_name == "ledger" else None,
+                                                            findings=findings if pack_name != "script-only" else ""),
                                     "generate", 2500, {"card": "premortem", "operator": cl["cluster_id"], "seed": pack_name,
                                                        "note": f"pre-mortem ({pack_name}) of '{cl['name']}'", "node": cl.get("node")})
                     self._ledger("premortem", cl["cluster_id"], pack_name, pr.call_id, pr.usage, round_no, "generate")
                     pm = deepen.parse_premortem(pr.text or "")
+                    for o in pm["objections"]:
+                        o["idea"] = cl["cluster_id"]
                     seen_o = {o["text"].lower()[:50] for o in objections}
                     objections += [o for o in pm["objections"] if o["text"].lower()[:50] not in seen_o]
                     if pm["verdict"]:
@@ -3089,7 +3097,52 @@ class NanoLoop:
         if not objs:
             return
         resolved = deepen.resolve_objections(objs, rec.get("metrics") or {})
-        rec.setdefault("metrics", {})["objections"] = [{k: o.get(k) for k in ("text", "severity", "cls", "link", "if_true", "status", "measured", "dialogue")} for o in resolved]
+        rec.setdefault("metrics", {})["objections"] = [{k: o.get(k) for k in ("text", "severity", "cls", "link", "if_true", "status", "measured", "dialogue", "idea", "cite")} for o in resolved]
+
+    def _premortem_web(self, cl: dict, node: dict, brief: str, constraints: str, chain: str, round_no: int) -> tuple[list[str], str]:
+        """N8b (--premortem-web, default off): before writing objections the critic asks up to three questions of one
+        shape ("has <mechanism> been reported to fail or fade at small scale or under <condition>?"); the research
+        model answers all of them in one delegated call with URLs, charged to the research meter. -> (questions, findings)."""
+        if not getattr(self, "premortem_web", False) or not self._aux_ok("premortem_web"):
+            return [], ""
+        p = deepen.premortem_questions_prompt(brief, node.get("name", ""), constraints, chain)
+        if not self._afford("interrogation", len(p) // 4 + 400, "pre-mortem questions"):
+            return [], ""
+        meta = {"card": "premortem_web:questions", "operator": cl["cluster_id"], "node": cl.get("node"),
+                "note": f"pre-mortem web questions on '{cl['name']}'"}
+        q = self._call(p, "generate", 400, meta)
+        self._ledger("premortem_web:questions", cl["cluster_id"], "", q.call_id, q.usage, round_no, "generate")
+        questions = deepen.parse_premortem_questions(q.text or "")
+        if not questions:
+            return [], ""
+        with self.lock:
+            self.premortem_web_questions += len(questions)
+        f = self._call(research.findings_prompt(questions, f"the idea '{cl['name']}' in the part '{node.get('name', '')}'"),
+                       "research", 3000, {"card": "premortem_web:findings", "operator": cl["cluster_id"], "node": cl.get("node"),
+                                          "note": f"web research for {len(questions)} pre-mortem questions"},
+                       model=self.research_model, tools=research.RESEARCH_TOOLS, max_turns=40, timeout=1800)
+        self._ledger("premortem_web:findings", cl["cluster_id"], "", f.call_id, f.usage, round_no, "encode")
+        answers = (f.text or "").strip()
+        if not answers:
+            return questions, ""
+        findings = "\n".join(f"Q{i + 1}: {x}" for i, x in enumerate(questions)) + "\nANSWERS (numbered as the questions):\n" + answers
+        return questions, findings
+
+    def _report_premortem(self) -> None:
+        """report.json "premortem": objections the ladder judged on builds, the share it confirmed, and the web arm."""
+        rj = self.run_dir / "report.json"
+        try:
+            d = json.loads(rj.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            d = {}
+        if not self.do_premortem:
+            d["premortem"] = "off"
+        else:
+            measured = [o for v in self.vres.values() for o in ((v.get("metrics") or {}).get("objections") or [])]
+            d["premortem"] = {**deepen.premortem_summary(measured, bool(getattr(self, "premortem_web", False)),
+                                                         getattr(self, "premortem_web_questions", 0)),
+                              "raised": sum(len(n.get("objections") or []) for n in self.deepen_nodes if not n.get("parent"))}
+        rj.write_text(json.dumps(d, indent=1), encoding="utf-8")
 
     def _dialogue(self, dn: dict, cl: dict, brief: str, chain: str, round_no: int) -> None:
         """Team gap B (nano/deepen.py run_dialogue): the idea's author answers the pre-mortem once, typed and anchored;
@@ -3442,6 +3495,7 @@ class NanoLoop:
             if self.mode != "baseline":
                 self._report_modes(answer)
             self._report_dialogue()
+            self._report_premortem()
             rj = self.run_dir / "report.json"           # fetch on demand: requests, answers, re-prompts
             try:
                 d_ = json.loads(rj.read_text(encoding="utf-8")) if rj.exists() else {}
@@ -3626,6 +3680,8 @@ def main() -> int:
     ap.add_argument("--no-diagnostics", action="store_true", help="skip the instrumented baseline run and the diagnosis card")
     ap.add_argument("--no-premortem", action="store_true", help="skip the pre-mortem call per interrogated idea")
     ap.add_argument("--no-dialogue", action="store_true", help="control arm: skip the author's anchored reply to the pre-mortem")
+    ap.add_argument("--premortem-web", action="store_true",
+                    help="arm: the critic may ask up to three web questions (fail or fade at small scale) before its objections")
 
     ap.add_argument("--no-memory", action="store_true",
                     help="control arm: no per-part memory block in prompts, no curator calls, no memory files")
@@ -3699,6 +3755,7 @@ def main() -> int:
     loop.arm, loop.n_builds, loop.immediate_fix = a.arm, a.n_builds, not a.no_immediate_fix
     loop.do_analogy, loop.do_diagnostics, loop.do_premortem = not a.no_analogy, not a.no_diagnostics, not a.no_premortem
     loop.do_dialogue = not a.no_dialogue
+    loop.premortem_web = a.premortem_web
     loop.max_compose, loop.diag_steps = a.max_compose, a.diag_steps
     loop.resume = a.resume
     loop.stop_after, loop.max_sketch_calls = a.stop_after, a.max_sketch_calls

@@ -274,8 +274,15 @@ OBJECTIONS:
 VERDICT: <one sentence: the single most likely way this idea does nothing or hurts>"""
 
 
-def premortem_prompt(brief: str, part_name: str, constraints: str, code: str, known: list[str], chain: str = "") -> str:
+def premortem_prompt(brief: str, part_name: str, constraints: str, code: str, known: list[str], chain: str = "",
+                     failed: list[str] | None = None, findings: str = "") -> str:
+    """`failed`: the research brief's published failures for the part, with URLs (failed_pack). `findings`: the web
+    answers to the critic's own questions (--premortem-web), numbered Q1..Q3."""
     facts = "\n".join(f"- {k}" for k in known[:30]) or "- (none)"
+    failed_block = ("PUBLISHED FAILURES FOR THIS PART (from the research brief; each line has its source):\n"
+                    + "\n".join(f"- {x}" for x in failed) + "\n\n") if failed else ""
+    web_block = (WEB_FINDINGS_HEADER + "\n" + findings.strip() + "\n\nWhen an objection rests on one of these findings, "
+                 "end it with '| cite: Q<n>' and keep the finding's URL in the objection.\n\n") if findings and findings.strip() else ""
     return (f"Pre-mortem. Assume this idea for the part '{part_name}' was built, "
             + fill("{v:full_run}, and did NOT "
                    "beat the baseline. Your only job is to explain why, as concretely as possible, in terms of the script below. "
@@ -284,7 +291,7 @@ def premortem_prompt(brief: str, part_name: str, constraints: str, code: str, kn
                    "than the seed-to-seed noise, and a mistake a builder would make implementing it.\n\n")
             + f"CONSTRAINTS:\n{constraints}\n\nTHE CURRENT SCRIPT:\n```{fill('{v:language}')}\n{code}\n```\n\n"
             f"THE IDEA:\n{brief}\n\n" + (f"{chain}\n\nWhen an objection attacks a link of the chain, end it with '| link: L<n>'.\n\n" if chain else "")
-            + f"WHAT THE INTERROGATION ESTABLISHED:\n{facts}\n\n" + fill(_PREMORTEM_FORMAT))
+            + f"WHAT THE INTERROGATION ESTABLISHED:\n{facts}\n\n" + failed_block + web_block + fill(_PREMORTEM_FORMAT))
 
 
 def parse_premortem(text: str) -> dict:
@@ -298,7 +305,7 @@ def parse_premortem(text: str) -> dict:
             continue                                        # an echoed instruction line, not an objection
         fields = [x.strip() for x in l.split("|")]
         body = fields[0]
-        o = {"text": body.strip()[:300], "severity": "medium", "cls": "", "link": "", "if_true": None}
+        o = {"text": body.strip()[:300], "severity": "medium", "cls": "", "link": "", "if_true": None, "cite": ""}
         for f_ in fields[1:]:
             k_, _, v_ = f_.partition(":")
             k_, v_ = k_.strip().lower(), v_.strip()
@@ -310,6 +317,8 @@ def parse_premortem(text: str) -> dict:
                 o["cls"] = c_ if c_ in OBJECTION_CLASSES else ""
             elif k_ == "link":
                 o["link"] = v_[:6]
+            elif k_ == "cite":
+                o["cite"] = ",".join(re.findall(r"Q\d", v_.upper()))[:12]
             elif k_ == "if_true":
                 mm = re.match(r"(param_ratio|step_ratio|cost_ratio|learn_z|long_z|trend|fidelity)\s+(above|below|>|<)\s*([-+]?\d*\.?\d+)", v_, flags=re.I)
                 if mm:
@@ -318,6 +327,82 @@ def parse_premortem(text: str) -> dict:
         objections.append(o)
     v = re.search(r"^VERDICT:\s*(.+)$", text, flags=re.M)
     return {"objections": objections[:12], "verdict": (v.group(1).strip()[:300] if v else "")}
+
+
+FAILED_CAP = 12             # published failures in the critic's default pack
+
+
+def failed_pack(brief: dict | None, cap: int = FAILED_CAP) -> list[str]:
+    """The research brief's "failed" entries (reported not to help or not to transfer) as pack lines with their
+    URLs. Entries from this lab's own ledger (ledger://) are left out: the pack already has the measured rows."""
+    out = []
+    for e in (brief or {}).get("failed", []) or []:
+        url = str(e.get("url", ""))
+        if not url.startswith(("http://", "https://")):
+            continue
+        out.append(f"reported not to help: {e.get('name', '')}: {e.get('why', '')} {url}"[:400])
+        if len(out) >= cap:
+            break
+    return out
+
+
+# ---------------------------------------------------------------- pre-mortem with the web (--premortem-web, default off)
+# Before writing objections the critic may ask up to three questions of one shape; the research model answers all
+# of them in one delegated call, with URLs. Self-correction helps mainly with reliable external feedback
+# (Kamoi et al. 2024, TACL, https://aclanthology.org/2024.tacl-1.78; CRITIC, https://arxiv.org/abs/2305.11738).
+PREMORTEM_WEB_CAP = 3
+WEB_FINDINGS_HEADER = ("WEB FINDINGS FOR YOUR QUESTIONS (a research assistant searched the web; every claim carries its URL; "
+                       "'no source found' means exactly that):")
+_PM_QUESTION_RE = re.compile(r"^has\s+(?P<mech>.{3,160}?)\s+been reported to fail or fade\s+"
+                             r"(?:at small scale(?:\s+or under\s+(?P<cond>.{3,160}?))?|under\s+(?P<cond2>.{3,160}?))\s*\??$", re.I)
+
+
+def premortem_questions_prompt(brief: str, part_name: str, constraints: str, chain: str = "") -> str:
+    return (f"Pre-mortem, step one. An idea for the part '{part_name}' is about to be built and tested. Before you write "
+            "objections against it, a research assistant with web access can check up to three things for you. "
+            "Ask only about the mechanisms this idea relies on, and only in this exact shape:\n"
+            "has <mechanism> been reported to fail or fade at small scale or under <condition>?\n"
+            "Ask nothing if the reported record would not change your objections.\n\n"
+            f"CONSTRAINTS:\n{constraints}\n\nTHE IDEA:\n{brief}\n\n" + (f"{chain}\n\n" if chain else "")
+            + "Use exactly this form, at most three lines, or the single line NONE:\n"
+            "QUESTIONS:\n1. has <mechanism> been reported to fail or fade at small scale or under <condition>?")
+
+
+def parse_premortem_questions(text: str, cap: int = PREMORTEM_WEB_CAP) -> list[str]:
+    """The critic's questions, kept only when they have the required shape; at most `cap`, repeats once."""
+    m = re.search(r"QUESTIONS:(.*)", text or "", flags=re.S)
+    block = m.group(1) if m else (text or "")
+    out, seen = [], set()
+    for line in block.splitlines():
+        q = re.sub(r"^\s*(?:\d+[.)]|-|\*)\s*", "", line).strip().replace("**", "")
+        if not _PM_QUESTION_RE.match(q):
+            continue
+        q = q.rstrip("?").strip() + "?"
+        if q.lower() in seen:
+            continue
+        seen.add(q.lower())
+        out.append(q[:300])
+        if len(out) >= cap:
+            break
+    return out
+
+
+def premortem_summary(resolved: list[dict], web: bool, web_questions: int = 0) -> dict:
+    """report.json "premortem": the objections the ladder judged, the share it confirmed, and whether the critic
+    had the web, so a run with --premortem-web can be compared with one without. Each objection counts once
+    (by idea and text), a measured status before a pending one."""
+    seen, rows = set(), []
+    for o in sorted(resolved or [], key=lambda x: x.get("status") in (None, "pending")):
+        key = (o.get("idea") or (o.get("dialogue") or {}).get("idea") or "", (o.get("text") or "").lower()[:60])
+        if key in seen:
+            continue
+        seen.add(key)
+        rows.append(o)
+    by = {k: sum(1 for o in rows if (o.get("status") or "pending") == k) for k in ("confirmed", "refuted", "pending", "untestable")}
+    judged = by["confirmed"] + by["refuted"]
+    return {"objections": len(rows), **by, "confirmed_share": round(by["confirmed"] / judged, 3) if judged else None,
+            "web": "on" if web else "off", "web_questions": int(web_questions),
+            "web_cited_objections": sum(1 for o in rows if o.get("cite"))}
 
 
 def resolve_objections(objections: list[dict], metrics: dict) -> list[dict]:
