@@ -40,6 +40,7 @@ from nano import budget as budget_mod                               # noqa: E402
 from nano import predict                                            # noqa: E402
 from nano import novelty as NV                                      # noqa: E402
 from nano import controls as CT                                     # noqa: E402
+from nano import memory as MEM                                      # noqa: E402
 
 
 class StopRun(Exception):
@@ -446,6 +447,11 @@ class NanoLoop:
         self.hedged: set[str] = set()
         self.ledger_texts: dict[str, str] = {}  # hypotheses from earlier runs, for the novelty gate
         self.hash_memory: dict = self._load_hash_memory()
+        # per-part persistent memory (nano/memory.py; research_notes/team_gaps/02_persistent_expertise.md)
+        self.use_memory = True                  # False = the control arm (--no-memory): no block, no curation, no files
+        self._memory: MEM.Memory | None = None
+        self.memory_free: set[int] = set()      # id() of this round's ignores-memory contexts, one per part
+        self.memory_stats = {"parts": set(), "entries_added": 0, "entries_rejected": 0}
         self._cluster_cache: dict[tuple, list[dict]] = {}   # (node, direction, frozenset(sketch ids)) -> groups
         self._tag_cache: dict[tuple, tuple] = {}             # (node, frozenset(members)) -> (prior, match, source)
 
@@ -920,6 +926,7 @@ class NanoLoop:
         specs.sort(key=lambda sp: sp[3] != "upward")
         # the contexts each part (and the off-map node) got this round: selection deals build slots in the same shares
         self.contexts_by_node[round_no] = dict(Counter(sp[2]["id"] for sp in specs if sp[3] != "upward"))
+        specs = self._pick_memory_free(round_no, specs, seeds)
 
         def _one(spec):
             card, seed, node, direction = spec
@@ -928,6 +935,9 @@ class NanoLoop:
             off = node["id"] == tree.OFF_TREE_NODE["id"]
             prompt = (tree.off_tree_prompt(card, self.tree, common, self.diagnostics_text, direction) if off
                       else tree.node_prompt(node, direction, common, self.tree))
+            mem_state = self._memory_state(spec)
+            if mem_state == "block":
+                prompt += self.memory().block(self._part_of(node["id"]))
             if card == "seeded":
                 prompt += f"Starting point: {seed}\n\n"
             elif card == "docs":
@@ -988,6 +998,8 @@ class NanoLoop:
                 family = self.cheap_model                 # arm: another model family for a share of contexts
             meta = {"card": f"sketch:{card}", "operator": direction, "seed": seed, "note": note,
                     "node": node["id"], "web": bool(self.ideation_web), "family": family or (self.model or "default")}
+            if mem_state:
+                meta.update({"memory": mem_state, "round": round_no})
             max_out = (3500 if self.staged_sketch else (2500 if self.ideation_web else 1800)) + (1500 if self.leap_share > 0 else 0)   # the leap scratch pass
             if self.ideation_web:
                 r = self._call_with_web(prompt, "generate", max_out, meta, round_no, "ideate", model=family,
@@ -1368,6 +1380,166 @@ class NanoLoop:
         return len(new_sketches)
 
     # ------------------------------------------------------------ control file and resume
+    # ------------------------------------------------------------ per-part persistent memory (nano/memory.py)
+    def memory(self) -> MEM.Memory:
+        """<lab>/memory/<profile>/ (the profile's `memory_dir` overrides it); mock runs keep theirs under
+        memory/_mock so a dry run never feeds a real one."""
+        if self._memory is None:
+            md = self.pf.get("memory_dir")
+            base = Path(md) if md else (config.MEMORY_DIR / self.pf.name)
+            if not base.is_absolute():
+                base = config.LAB_ROOT / base
+            if self.backend == "mock":
+                base = base.parent / "_mock" / base.name
+            self._memory = MEM.Memory(base.parent, base.name)
+        return self._memory
+
+    def _part_of(self, node_id) -> str | None:
+        """The top-level part a node belongs to (sub-parts and failure questions share their part's memory);
+        None for the root, the off-map node and anything not on the map."""
+        if not node_id or node_id in ("root", tree.OFF_TREE_NODE["id"]) or not any(n["id"] == node_id for n in self.tree or []):
+            return None
+        chain = tree._chain(self.tree, node_id)
+        return chain[-1]["id"] if chain else None
+
+    def _memory_state(self, spec) -> str:
+        """"block" (the prompt gets the memory), "free" (this round's ignores-memory context), "empty" (the part
+        has no memory yet) or "" (memory off, off-map, upward)."""
+        if not self.use_memory or spec[3] == "upward":
+            return ""
+        part = self._part_of(spec[2]["id"])
+        if part is None:
+            return ""
+        if id(spec) in self.memory_free:
+            return "free"
+        return "block" if self.memory().read(part) else "empty"
+
+    def _pick_memory_free(self, round_no: int, specs: list, seeds: list[str]) -> list:
+        """One ignores-memory context per part per round (anti-fixation guard and an in-run control). It is drawn
+        from the part's own contexts when it has two or more; a part with one context gets one extra context,
+        so that the single context still reads the memory. Parts with no memory yet are left alone."""
+        self.memory_free = set()
+        if not self.use_memory:
+            return specs
+        by_part: dict[str, list] = {}
+        for sp in specs:
+            part = self._part_of(sp[2]["id"]) if sp[3] != "upward" else None
+            if part is not None:
+                by_part.setdefault(part, []).append(sp)
+        rng = random.Random(f"memfree:{self.run_id}:{round_no}")
+        extra = []
+        for part, sps in sorted(by_part.items()):
+            if not self.memory().read(part):
+                continue
+            pool = [sp for sp in sps if sp[0] != "owner"] or sps
+            if len(sps) >= 2:
+                pick = rng.choice(pool)
+            else:
+                card, _, node, direction = pool[0]
+                seed = rng.choice([w for w in seeds if w not in self.used_seeds] or seeds) if seeds else ""
+                self.used_seeds.add(seed)
+                pick = (card, seed, node, direction)
+                extra.append(pick)
+            self.memory_free.add(id(pick))
+            self.decisions.append({"round": round_no, "step": "memory_free", "part": part, "node": pick[2]["id"],
+                                   "card": pick[0], "direction": pick[3], "added": len(sps) < 2})
+        if extra:
+            per = self.contexts_by_node.setdefault(round_no, {})
+            for sp in extra:
+                per[sp[2]["id"]] = per.get(sp[2]["id"], 0) + 1
+        return specs + extra
+
+    def _memory_artefacts(self) -> dict:
+        """What a memory entry may cite: candidate ids in verify.jsonl, sketch ids, measured numbers, brief URLs."""
+        cand_ids, numbers = set(), []
+        vp = self.run_dir / "verify.jsonl"
+        for line in vp.read_text(encoding="utf-8").splitlines() if vp.exists() else []:
+            try:
+                row = json.loads(line)
+            except Exception:  # noqa: BLE001
+                continue
+            cand_ids.add(row.get("id"))
+            for v in ((row.get("details") or {}).get("metrics") or {}).values():
+                vals = v.values() if isinstance(v, dict) else [v]
+                numbers += [x for x in vals if isinstance(x, (int, float)) and not isinstance(x, bool)]
+        urls: set[str] = set()
+
+        def walk(o):
+            if isinstance(o, dict):
+                for k, v in o.items():
+                    if k == "url" and isinstance(v, str) and v.startswith("http"):
+                        urls.add(v)
+                    else:
+                        walk(v)
+            elif isinstance(o, list):
+                for v in o:
+                    walk(v)
+        walk(self.briefs)
+        walk(self.analogies)
+        return {"cand_ids": cand_ids - {None}, "sketch_ids": {s.get("id") for s in self.sketches if s.get("id")},
+                "numbers": numbers, "urls": urls}
+
+    def _curate_memory(self, round_no: int) -> None:
+        """End of the verify step: one curator call per part with candidates verified this round. The reply is a
+        delta in the six headers; nano/memory.py keeps an entry only if it cites an artefact that exists and is
+        not a near-duplicate, and appends it with the date, run and round. Never a whole-file rewrite."""
+        if not self.use_memory:
+            return
+        by_part: dict[str, list[dict]] = {}
+        seen = set()
+        for h in self.history:
+            if h.get("round") != round_no or h.get("cand_id") in seen:
+                continue
+            part = self._part_of(h.get("node"))
+            if part is None:
+                continue
+            seen.add(h["cand_id"])
+            cand = next((c for c in self.cands if c.id == h["cand_id"]), None)
+            m = (self.vres.get(h["cand_id"]) or {}).get("metrics") or {}
+            by_part.setdefault(part, []).append({
+                "cand_id": h["cand_id"], "status": h.get("status"), "hypothesis": h.get("hypothesis", ""),
+                "reason": str(h.get("reason") or "")[:300],
+                "metrics": {k: v for k, v in m.items() if isinstance(v, (int, float)) and not isinstance(v, bool)},
+                "sketches": list((cand.extra or {}).get("members") or []) if cand else []})
+        if not by_part:
+            return
+        mem, arte = self.memory(), self._memory_artefacts()
+        for part, results in sorted(by_part.items()):
+            if not self._aux_ok("memory curator"):
+                break
+            node = next((n for n in self.tree if n["id"] == part), {"name": part})
+            brief = json.dumps(self.briefs.get(part) or {})
+            urls = sorted(u for u in arte["urls"] if u in brief)
+            prompt = MEM.curator_prompt(node.get("name", part), part, mem.read(part), results, urls)
+            r = self._call(prompt, "judge", 1500, {"card": "memory_curator", "operator": part, "seed": "",
+                                                   "node": part, "round": round_no}, model=self.cheap_model)
+            self._ledger("memory_curator", part, "", r.call_id, r.usage, round_no, "judge")
+            delta = MEM.Memory.propose_delta(part, r.text or "")
+            res = mem.curate(part, delta, arte, run=self.run_id, round_no=round_no)
+            archived = mem.archive(part, unused_rounds=5)
+            self.memory_stats["parts"].add(part)
+            self.memory_stats["entries_added"] += len(res["added"])
+            self.memory_stats["entries_rejected"] += len(res["rejected"])
+            append_jsonl(self.run_dir / "memory_log.jsonl", {
+                "round": round_no, "part": part, "call_id": r.call_id, "file": str(mem.path(part)),
+                "proposed": len(delta["entries"]),
+                "added": [{k: e[k] for k in ("id", "section", "source", "text")} for e in res["added"]],
+                "rejected": res["rejected"], "bumped": res["bumped"], "archived": archived, "ts": now_ts()})
+            self.decisions.append({"round": round_no, "step": "memory", "part": part, "added": len(res["added"]),
+                                   "rejected": len(res["rejected"]), "archived": len(archived)})
+
+    def _report_memory(self) -> None:
+        """report.json "memory": "off" in the control arm, else the parts curated and entries added or rejected."""
+        rj = self.run_dir / "report.json"
+        try:
+            d = json.loads(rj.read_text(encoding="utf-8")) if rj.exists() else {}
+        except Exception:  # noqa: BLE001
+            d = {}
+        d["memory"] = ("off" if not self.use_memory else
+                       {"parts": len(self.memory_stats["parts"]), "entries_added": self.memory_stats["entries_added"],
+                        "entries_rejected": self.memory_stats["entries_rejected"]})
+        rj.write_text(json.dumps(d, indent=1), encoding="utf-8")
+
     def _stage(self, round_no: int, name: str) -> None:
         """A stage boundary: record it, then obey control.json (pause, stop, skips, note)."""
         st = json.loads((self.run_dir / "state.json").read_text(encoding="utf-8"))
@@ -2671,6 +2843,7 @@ class NanoLoop:
                                          children.get(c.id, 0)))   # productive lineages, closest misses, few children first
             revise_queue = [(c, self.vres[c.id]["feedback"]) for c in near] + revise_queue
             self._write_tree()
+            self._curate_memory(rnd)                         # per-part memory: propose, check against artefacts, append
             self.decisions.append({"round": rnd, "step": "cycle", "spawned": [s[0] for s in specs],
                                    "n_raw": len(new), "n_kept": len(kept), "checked": [c.id for c in checked],
                                    "failed": [c.id for c in failed], "spent": self.spent, "ts": now_ts()})
@@ -3143,6 +3316,8 @@ class NanoLoop:
                 d_ = {}
             d_["fetched_facts"] = self._fetched_facts_report()
             rj.write_text(json.dumps(d_, indent=1), encoding="utf-8")
+
+            self._report_memory()
             try:
                 from nano import lessons as LS
                 if self.backend != "mock":                       # mock runs teach nothing
@@ -3312,6 +3487,9 @@ def main() -> int:
     ap.add_argument("--no-diagnostics", action="store_true", help="skip the instrumented baseline run and the diagnosis card")
     ap.add_argument("--no-premortem", action="store_true", help="skip the pre-mortem call per interrogated idea")
     ap.add_argument("--no-dialogue", action="store_true", help="control arm: skip the author's anchored reply to the pre-mortem")
+
+    ap.add_argument("--no-memory", action="store_true",
+                    help="control arm: no per-part memory block in prompts, no curator calls, no memory files")
     ap.add_argument("--max-compose", type=int, default=3, help="mechanical composites per round (0 = off)")
     ap.add_argument("--diag-steps", type=int, default=100)
     ap.add_argument("--resume", action="store_true", help="continue a run folder of the same batch/replicate from its last completed stage")
@@ -3412,6 +3590,7 @@ def main() -> int:
         print(f"[nano] {lens_note}", flush=True)
         loop.decisions.append({"step": "lens", "decision": "fallback", "lens": loop.lens, "reason": lens_note})
     loop.retest_on_reference_change = a.retest_on_reference_change
+    loop.use_memory = not a.no_memory
     if a.dashboard:
         from nano import dashboard
         threading.Thread(target=dashboard.serve, args=(loop.run_dir, a.port, True), daemon=True).start()
