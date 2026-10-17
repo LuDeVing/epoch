@@ -121,8 +121,13 @@ class Hub:
                     con.close()
         except Exception:  # noqa: BLE001
             people = []
+        try:
+            import datetime as _dt
+            updated = _dt.datetime.fromtimestamp(db.stat().st_mtime).isoformat(timespec="seconds") if db.exists() else None
+        except OSError:
+            updated = None
         return {"name": r["name"], "port": r["port"], "url": url, "alive": alive, "lan": bool(r.get("lan")), "key": key,
-                "db": str(db), "created": r.get("started"), "stopped": r.get("stopped"), "people": people,
+                "db": str(db), "created": r.get("started"), "stopped": r.get("stopped"), "people": people, "updated": updated,
                 "join": url + "/?me=" + "{name}" + (f"&key={key}" if key else "")}
 
     def list(self) -> dict:
@@ -269,10 +274,17 @@ class Handler(BaseHTTPRequestHandler):
                     return None
             if u.path == "/api/spaces":
                 me = auth.whoami(self.headers, self.client_address)[0]
+                if not me:
+                    raise Reject(401, "login_required")
                 d = hub.list()
+                rows = []
                 for row in d["spaces"]:
-                    row["member"] = auth.is_member(row["name"], me) if me else False
-                return self._send(200, dict(d, me=me))
+                    row["members"] = auth.members_of(row["name"])
+                    row["open_to_all"] = row["members"] is None
+                    row["member"] = auth.is_member(row["name"], me)
+                    if row["member"] and not (row["open_to_all"] and row["name"].startswith(("rehearse-", "replay-", "shot"))):
+                        rows.append(row)
+                return self._send(200, dict(d, spaces=rows, me=me))
             p = (WEB / u.path.lstrip("/")).resolve()
             if WEB.resolve() in p.parents and p.is_file():
                 return self._send(200, p.read_bytes(), STATIC_TYPES.get(p.suffix, "application/octet-stream"))

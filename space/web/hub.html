@@ -3,117 +3,230 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HTSA spaces</title>
+<title>HTSA</title>
 <link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="base.css">
 <style>
-  html, body { height: auto; min-height: 100%; overflow: auto; }
-  body { padding: 24px; max-width: 900px; margin: 0 auto; box-sizing: border-box; }
-  h1 { font-size: 18px; margin: 0 0 4px; }
-  .hub__sub { color: var(--text-2); margin-bottom: 18px; }
-  .hub__form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
-  .hub__form input[type=text] { padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-card, var(--bg)); color: inherit; font: inherit; }
-  .space { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
-  .space__head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .space__name { font-weight: 600; font-size: 15px; }
-  .space__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
-  .space__row input[type=text] { padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-card, var(--bg)); color: inherit; font: inherit; width: 120px; }
-  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
-  .dot--on { background: var(--ok); }
-  .err { color: var(--bad); }
+  @font-face { font-family: Inter; src: url(vendor/inter-latin.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--bg-app); color: var(--text-1); font: 14px/1.5 var(--font-ui); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button, input { font: inherit; color: inherit; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-card); cursor: pointer; transition: background var(--t-hover), border-color var(--t-hover), transform var(--t-hover); white-space: nowrap; }
+  .btn:hover { background: var(--bg-hover); border-color: var(--line-strong); }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn--primary { background: var(--owner-a); border-color: transparent; color: #fff; font-weight: 600; }
+  .btn--primary:hover { background: #4b95ea; }
+  .btn--ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+  .btn--ghost:hover { background: var(--bg-hover); color: var(--text-1); }
+  .btn--danger:hover { border-color: var(--bad); color: var(--bad); }
+  .field { display: grid; gap: 6px; }
+  .field label { color: var(--text-2); font-size: 12px; }
+  .input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-app); color: var(--text-1); outline: none; transition: border-color var(--t-hover); }
+  .input:focus { border-color: var(--owner-a); }
+  .muted { color: var(--text-2); }
+  .err { color: var(--bad); font-size: 13px; }
+  .mono { font-family: var(--font-mono); font-size: 12px; }
+
+  .top { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px; height: 56px; padding: 0 24px; background: color-mix(in oklab, var(--bg-app) 85%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-subtle); }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .02em; }
+  .brand__mark { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, var(--owner-a), var(--owner-c)); }
+  .top__spacer { flex: 1; }
+
+  .acct { position: relative; }
+  .bubble { width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; border: 2px solid transparent; cursor: pointer; user-select: none; }
+  .bubble:hover { border-color: var(--line-strong); }
+  .bubble--sm { width: 24px; height: 24px; font-size: 10px; border: 2px solid var(--bg-card); margin-left: -6px; cursor: default; }
+  .hue-a { background: var(--owner-a); } .hue-b { background: var(--owner-b); } .hue-c { background: var(--owner-c); }
+  .menu { position: absolute; right: 0; top: 44px; width: 260px; background: var(--bg-panel); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: 0 14px 40px rgba(0,0,0,.5); padding: 8px; display: grid; gap: 4px; animation: pop var(--t-enter); }
+  @keyframes pop { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
+  .menu__head { display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid var(--line-subtle); margin-bottom: 4px; }
+  .menu__name { font-weight: 600; }
+  .menu__item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px; border-radius: 8px; border: 0; background: transparent; text-align: left; cursor: pointer; }
+  .menu__item:hover { background: var(--bg-hover); }
+  .menu__label { padding: 6px 8px 2px; font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; }
+
+  .login { min-height: calc(100vh - 56px); display: grid; place-items: center; padding: 24px; }
+  .login__card { width: 400px; max-width: 100%; background: var(--bg-panel); border: 1px solid var(--line); border-radius: 16px; padding: 28px; display: grid; gap: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.4); animation: pop var(--t-enter); }
+  .login__title { font-size: 22px; font-weight: 700; margin: 0; }
+  .login__sub { margin: 0; color: var(--text-2); }
+  .tabs { display: flex; gap: 4px; background: var(--bg-app); padding: 4px; border-radius: 10px; }
+  .tab { flex: 1; padding: 8px; border: 0; border-radius: 8px; background: transparent; color: var(--text-2); cursor: pointer; }
+  .tab--on { background: var(--bg-card); color: var(--text-1); font-weight: 600; }
+  .saved { display: grid; gap: 6px; }
+  .saved__row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line-subtle); background: var(--bg-card); cursor: pointer; }
+  .saved__row:hover { border-color: var(--line-strong); background: var(--bg-hover); }
+  .or { display: flex; align-items: center; gap: 10px; color: var(--text-2); font-size: 12px; }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line-subtle); }
+
+  .page { max-width: 1080px; margin: 0 auto; padding: 28px 24px 60px; }
+  .page__head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .page__title { font-size: 20px; font-weight: 700; margin: 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .card { background: var(--bg-panel); border: 1px solid var(--line-subtle); border-radius: 14px; padding: 16px; display: grid; gap: 12px; transition: border-color var(--t-hover), transform var(--t-hover); animation: pop var(--t-enter); }
+  .card:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+  .card__top { display: flex; align-items: center; gap: 10px; }
+  .card__name { font-weight: 700; font-size: 15px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--solid); flex: 0 0 auto; }
+  .dot--on { background: var(--ok); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ok) 25%, transparent); }
+  .card__meta { display: flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 12px; flex-wrap: wrap; }
+  .members { display: inline-flex; align-items: center; padding-left: 6px; }
+  .card__actions { display: flex; gap: 8px; align-items: center; }
+  .grow { flex: 1; justify-content: center; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-2); }
+  .new { border-style: dashed; display: grid; place-items: center; min-height: 150px; cursor: pointer; color: var(--text-2); gap: 6px; text-align: center; }
+  .new:hover { color: var(--text-1); border-color: var(--owner-a); }
+  .new__plus { font-size: 28px; line-height: 1; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-2); }
+  .section { margin-top: 36px; }
+  .section__title { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); margin: 0 0 10px; }
+
+  .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: grid; place-items: center; z-index: 20; animation: fade 160ms ease-out; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .modal { width: 440px; max-width: calc(100vw - 32px); background: var(--bg-panel); border: 1px solid var(--line-strong); border-radius: 16px; padding: 24px; display: grid; gap: 14px; animation: pop var(--t-enter); }
+  .modal__title { margin: 0; font-size: 18px; font-weight: 700; }
+  .switch { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .switch input { width: 18px; height: 18px; }
+  .modal__actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--line-strong); padding: 10px 14px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.5); animation: pop var(--t-enter); }
 </style>
 </head>
 <body>
 <div id="hub"></div>
 <script type="module">
-import { html, render, useState, useEffect } from './vendor/standalone.module.js';
+import { html, render, useState, useEffect, useRef } from './vendor/standalone.module.js';
 import { accounts, switchTo } from './accounts.js';
 
 async function api(path, body) {
   const r = await fetch(path, body ? { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store', credentials: 'same-origin' });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.error ? `${j.error}${j.hint ? `: ${j.hint}` : ''}${j.detail ? `: ${j.detail}` : ''}` : `HTTP ${r.status}`);
+  if (!r.ok) { const e = new Error(j.hint || j.error || `HTTP ${r.status}`); e.status = r.status; throw e; }
   return j;
 }
+const HUES = ['a', 'b', 'c'];
+const hueOf = (name) => { let h = 0; for (const ch of String(name || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return HUES[h % HUES.length]; };
+const initials = (name) => String(name || '?').slice(0, 2).toUpperCase();
+const ago = (iso) => { if (!iso) return ''; const s = (Date.now() - Date.parse(iso)) / 1000; if (!Number.isFinite(s)) return ''; if (s < 60) return 'just now'; if (s < 3600) return `${Math.round(s / 60)} min ago`; if (s < 86400) return `${Math.round(s / 3600)} h ago`; return `${Math.round(s / 86400)} d ago`; };
 
-function Space({ s, refresh, meDefault }) {
-  const [me, setMe] = useState(meDefault || '');
-  useEffect(() => { if (!me && meDefault) setMe(meDefault); }, [meDefault]);
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState('');
-  const act = async (fn) => { setBusy(true); setErr(''); try { await fn(); await refresh(); } catch (e) { setErr(e.message); } setBusy(false); };
-  const name = me.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-');
-  const join = s.alive && name ? s.join.replace('{name}', name) : null;
-  return html`<div class="space">
-    <div class="space__head"><span class=${`dot${s.alive ? ' dot--on' : ''}`}></span><span class="space__name">${s.name}</span>
-      <span class="muted">${s.alive ? `running on port ${s.port}` : (s.port ? 'stopped' : 'not started here')}${s.lan ? ' . open to the network' : ''}${s.member ? ' . you are a member' : ''}</span>
-      ${s.people.length ? html`<span class="muted">people: ${s.people.join(', ')}</span>` : null}
-      <span style="flex:1"></span>
-      ${s.alive ? html`<a class="btn btn--small btn--primary" href=${name ? s.join.replace('{name}', name) : `${s.url}/`} target="_blank" rel="noopener">Open</a>
-        <a class="btn btn--small" href=${`${s.url}/?stage=1`} target="_blank" rel="noopener" title="the big read-only view for a projector">Projector</a>
-        <button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/stop', { name: s.name }))}>Stop</button>`
-        : html`<button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/start', { name: s.name }))}>Start</button>`}
-    </div>
-    ${s.alive ? html`<div class="space__row">
-      <label class="muted">Your name <input type="text" value=${me} onInput=${(e) => setMe(e.target.value)} placeholder="ana" /></label>
-      ${join ? html`<span class="mono muted" style="user-select:all">${join}</span>` : html`<span class="muted">type a name to get your link</span>`}
-      ${s.key ? html`<span class="muted">key for other laptops: <span class="mono" style="user-select:all">${s.key}</span></span>` : null}
+function Bubble({ name, small }) { return html`<span class=${`bubble hue-${hueOf(name)}${small ? ' bubble--sm' : ''}`} title=${name}>${initials(name)}</span>`; }
+
+function AccountMenu({ me, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => { const h = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }; document.addEventListener('pointerdown', h); return () => document.removeEventListener('pointerdown', h); }, []);
+  const others = accounts.list().filter((a) => a.name !== me);
+  const sw = async (a) => { setOpen(false); try { await switchTo(a, ''); onChange(`now ${a.name}`); } catch (e) { onChange(e.message); } };
+  return html`<div class="acct" ref=${ref}>
+    <span class=${`bubble hue-${hueOf(me)}`} onClick=${() => setOpen(!open)} title="account">${initials(me)}</span>
+    ${open ? html`<div class="menu">
+      <div class="menu__head"><${Bubble} name=${me} /><div><div class="menu__name">${me}</div><div class="muted" style="font-size:12px">signed in on this PC</div></div></div>
+      ${others.length ? html`<div class="menu__label">Switch account</div>${others.map((a) => html`<button class="menu__item" onClick=${() => sw(a)}><${Bubble} name=${a.name} small /> ${a.name}</button>`)}` : null}
+      <div class="menu__label">Account</div>
+      <button class="menu__item" onClick=${async () => { setOpen(false); await api('/api/logout', {}); onChange(); }}>Add another account</button>
+      <button class="menu__item" onClick=${async () => { setOpen(false); await api('/api/logout', {}); accounts.drop(me); onChange(); }}>Sign out</button>
     </div>` : null}
-    ${err ? html`<div class="err">${err}</div>` : null}
   </div>`;
 }
 
 function Login({ onDone }) {
-  const [err, setErr] = useState('');
   const [mode, setMode] = useState('login');
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
   const saved = accounts.list();
   const go = async (e) => {
     e.preventDefault();
     const f = e.target.elements;
-    try { const j = await api(`/api/${mode}`, { name: f.name.value, password: f.password.value }); accounts.save(j.name, j.token); onDone(); } catch (ex) { setErr(ex.message); }
+    setBusy(true); setErr('');
+    try { const j = await api(`/api/${mode}`, { name: f.name.value, password: f.password.value }); accounts.save(j.name, j.token); onDone(); }
+    catch (ex) { setErr(ex.message); }
+    setBusy(false);
   };
-  const use = async (a) => { try { await switchTo(a, ''); onDone(); } catch (ex) { setErr(ex.message); } };
-  return html`<form class="hub__form" onSubmit=${go}>
-    ${saved.map((a) => html`<button class="btn btn--small" type="button" onClick=${() => use(a)}>Continue as ${a.name}</button>`)}
-    <input type="text" name="name" placeholder="name" autocomplete="username" />
-    <input type="password" name="password" placeholder="password" autocomplete=${mode === 'login' ? 'current-password' : 'new-password'} />
-    <button class="btn btn--small btn--primary" type="submit">${mode === 'login' ? 'Sign in' : 'Create account'}</button>
-    <button class="btn btn--small" type="button" onClick=${() => setMode(mode === 'login' ? 'register' : 'login')}>${mode === 'login' ? 'New here? Register' : 'I have an account'}</button>
-    ${err ? html`<span class="err">${err}</span>` : null}
-  </form>`;
+  const use = async (a) => { setErr(''); try { await switchTo(a, ''); onDone(); } catch (ex) { setErr(ex.message); } };
+  return html`<div class="login"><form class="login__card" onSubmit=${go}>
+    <div><h1 class="login__title">Welcome to HTSA</h1><p class="login__sub">A team of AI researchers that works with you. Sign in to see your spaces.</p></div>
+    ${saved.length ? html`<div class="saved">${saved.map((a) => html`<div class="saved__row" onClick=${() => use(a)}><${Bubble} name=${a.name} /><div><div style="font-weight:600">${a.name}</div><div class="muted" style="font-size:12px">continue</div></div></div>`)}</div>
+      <div class="or">or</div>` : null}
+    <div class="tabs"><button type="button" class=${`tab${mode === 'login' ? ' tab--on' : ''}`} onClick=${() => setMode('login')}>Sign in</button><button type="button" class=${`tab${mode === 'register' ? ' tab--on' : ''}`} onClick=${() => setMode('register')}>Create account</button></div>
+    <div class="field"><label>Name</label><input class="input" name="name" autocomplete="username" placeholder="your name, letters and digits" autofocus /></div>
+    <div class="field"><label>Password</label><input class="input" name="password" type="password" autocomplete=${mode === 'login' ? 'current-password' : 'new-password'} placeholder=${mode === 'login' ? 'your password' : 'at least 4 characters'} /></div>
+    ${err ? html`<div class="err">${err}</div>` : null}
+    <button class="btn btn--primary" type="submit" disabled=${busy} style="justify-content:center;padding:10px">${mode === 'login' ? 'Sign in' : 'Create account and sign in'}</button>
+    <div class="muted" style="font-size:12px;text-align:center">Accounts live on this PC only. ${mode === 'register' ? 'The first account becomes the owner.' : ''}</div>
+  </form></div>`;
 }
 
-function HubPage() {
-  const [data, setData] = useState({ spaces: [], hub: {} });
+function NewSpace({ onClose, onMade }) {
   const [name, setName] = useState('');
   const [lan, setLan] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
-  const refresh = async () => { try { setData(await api('/api/spaces')); } catch (e) { setErr(e.message); } };
-  useEffect(() => { refresh(); const t = setInterval(refresh, 4000); return () => clearInterval(t); }, []);
-  const create = async (e) => {
+  const go = async (e) => {
     e.preventDefault();
     setBusy(true); setErr('');
-    try { const s = await api('/api/spaces', { name, lan }); setName(''); await refresh(); if (s.alive) window.open(s.join.replace('{name}', data.me || data.hub.me_default || ''), '_blank'); }
-    catch (ex) { setErr(ex.message); }
-    setBusy(false);
+    try { const s = await api('/api/spaces', { name, lan }); onMade(s); } catch (ex) { setErr(ex.message); setBusy(false); }
   };
-  return html`<div>
-    <h1>HTSA spaces</h1>
-    <div class="hub__sub">A space is one shared research room: a problem tree, idea clusters, arguments, results and the people in it. Each runs on its own port on this PC.
-      ${data.me ? html` Signed in as <strong>${data.me}</strong>
-        ${accounts.list().filter((a) => a.name !== data.me).map((a) => html` <button class="btn btn--small" onClick=${async () => { try { await switchTo(a, ''); refresh(); } catch (ex) { setErr(ex.message); } }}>switch to ${a.name}</button>`)}
-        <button class="btn btn--small" onClick=${async () => { await api('/api/logout', {}); refresh(); }}>add account</button>
-        <button class="btn btn--small" onClick=${async () => { await api('/api/logout', {}); accounts.drop(data.me); refresh(); }}>sign out</button>` : null}</div>
-    ${!data.me ? html`<${Login} onDone=${refresh} />` : null}
-    <form class="hub__form" onSubmit=${create}>
-      <input type="text" placeholder="new space name, like packing-2" value=${name} onInput=${(e) => setName(e.target.value)} />
-      <label class="muted"><input type="checkbox" checked=${lan} onChange=${(e) => setLan(e.target.checked)} /> open to other laptops (needs the firewall rule once)</label>
-      <button class="btn btn--small btn--primary" type="submit" disabled=${busy || !name.trim()}>New space</button>
-    </form>
+  return html`<div class="backdrop" onClick=${(e) => { if (e.target === e.currentTarget) onClose(); }}><form class="modal" onSubmit=${go}>
+    <h2 class="modal__title">New space</h2>
+    <div class="field"><label>Name</label><input class="input" value=${name} onInput=${(e) => setName(e.target.value)} placeholder="like packing-rules or paper-review" autofocus /></div>
+    <label class="switch"><input type="checkbox" checked=${lan} onChange=${(e) => setLan(e.target.checked)} /> <span>Open to other laptops on this network <span class="muted">(invite links then work across the room)</span></span></label>
     ${err ? html`<div class="err">${err}</div>` : null}
-    ${data.spaces.length ? data.spaces.map((s) => html`<${Space} key=${s.name} s=${s} refresh=${refresh} meDefault=${data.me || data.hub.me_default} />`) : html`<div class="muted">No spaces yet. Make one above.</div>`}
-    <div class="muted" style="margin-top:18px">Spaces live under ${data.hub.lab || ''}/spaces. A stopped space keeps everything and starts again with its log intact.</div>
+    <div class="modal__actions"><button type="button" class="btn btn--ghost" onClick=${onClose}>Cancel</button><button class="btn btn--primary" type="submit" disabled=${busy || !name.trim()}>${busy ? 'Starting...' : 'Create and open'}</button></div>
+  </form></div>`;
+}
+
+function SpaceCard({ s, me, act }) {
+  const open = s.join.replace('{name}', me);
+  const n = (s.members || []).length;
+  return html`<div class="card">
+    <div class="card__top"><span class=${`dot${s.alive ? ' dot--on' : ''}`}></span><span class="card__name">${s.name}</span>
+      ${s.open_to_all ? html`<span class="tag">open room</span>` : null}${s.lan ? html`<span class="tag">network</span>` : null}</div>
+    <div class="card__meta">
+      ${n ? html`<span class="members">${s.members.slice(0, 5).map((m) => html`<${Bubble} name=${m} small />`)}</span><span>${n} member${n === 1 ? '' : 's'}</span>` : html`<span>everyone signed in</span>`}
+      <span>.</span><span>${s.alive ? `running on port ${s.port}` : 'stopped'}</span>
+      ${s.updated ? html`<span>.</span><span>${ago(s.updated)}</span>` : null}
+    </div>
+    <div class="card__actions">
+      ${s.alive ? html`<a class="btn btn--primary grow" href=${open} target="_blank" rel="noopener">Open</a>
+        <a class="btn" href=${`${s.url}/?stage=1`} target="_blank" rel="noopener" title="big read-only view for a projector">Projector</a>
+        <button class="btn btn--ghost btn--danger" onClick=${() => act('stop', s)} title="stop the server; nothing is lost">Stop</button>`
+        : html`<button class="btn btn--primary grow" onClick=${() => act('start', s)}>Start</button>`}
+    </div>
+  </div>`;
+}
+
+function HubPage() {
+  const [me, setMe] = useState(undefined);
+  const [data, setData] = useState({ spaces: [] });
+  const [modal, setModal] = useState(false);
+  const [toast, setToast] = useState('');
+  const say = (t) => { setToast(t); setTimeout(() => setToast(''), 2600); };
+  const refresh = async (msg) => {
+    if (typeof msg === 'string') say(msg);
+    try { const j = await api('/api/me'); setMe(j.name); } catch (e) { setMe(null); setData({ spaces: [] }); return; }
+    try { setData(await api('/api/spaces')); } catch (e) { if (e.status === 401) setMe(null); }
+  };
+  useEffect(() => { refresh(); }, []);
+  useEffect(() => { if (!me) return undefined; const t = setInterval(refresh, 5000); return () => clearInterval(t); }, [me]);
+  const act = async (what, s) => {
+    try { await api(`/api/spaces/${what}`, { name: s.name }); say(what === 'stop' ? `${s.name} stopped` : `${s.name} started`); await refresh(); }
+    catch (ex) { say(ex.message); }
+  };
+  if (me === undefined) return html`<div class="login"><div class="muted">...</div></div>`;
+  const mine = data.spaces.filter((s) => !s.open_to_all);
+  const openRooms = data.spaces.filter((s) => s.open_to_all);
+  return html`<div>
+    <header class="top"><div class="brand"><span class="brand__mark"></span>HTSA <span class="muted" style="font-weight:400">spaces</span></div><div class="top__spacer"></div>
+      ${me ? html`<button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button><${AccountMenu} me=${me} onChange=${refresh} />` : null}</header>
+    ${!me ? html`<${Login} onDone=${refresh} />` : html`<main class="page">
+      <div class="page__head"><h1 class="page__title">Your spaces</h1><span class="muted">${mine.length ? `${mine.length} you are part of` : ''}</span></div>
+      ${mine.length ? html`<div class="grid">${mine.map((s) => html`<${SpaceCard} key=${s.name} s=${s} me=${me} act=${act} />`)}
+          <div class="card new" onClick=${() => setModal(true)}><span class="new__plus">+</span><span>New space</span></div></div>`
+        : html`<div class="empty"><div style="font-size:16px;color:var(--text-1);margin-bottom:6px">No spaces yet</div><div>Make your first one, or open an invitation link someone sent you.</div><div style="margin-top:16px"><button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button></div></div>`}
+      ${openRooms.length ? html`<div class="section"><h2 class="section__title">Open rooms on this PC</h2><div class="grid">${openRooms.map((s) => html`<${SpaceCard} key=${s.name} s=${s} me=${me} act=${act} />`)}</div></div>` : null}
+    </main>`}
+    ${modal ? html`<${NewSpace} onClose=${() => setModal(false)} onMade=${(s) => { setModal(false); refresh(); if (s.alive) window.open(s.join.replace('{name}', me), '_blank'); }} />` : null}
+    ${toast ? html`<div class="toast">${toast}</div>` : null}
   </div>`;
 }
 render(html`<${HubPage} />`, document.getElementById('hub'));
