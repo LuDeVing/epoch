@@ -222,13 +222,13 @@ class Hub:
             self._save(rows)
         return {"name": name, "stopped": killed}
 
-    def start(self, raw_name) -> dict:
-        """Start again a space that was stopped (same folder, a free port)."""
+    def start(self, raw_name, me=None) -> dict:
+        """Wake a sleeping space (same folder, a free port); the person who wakes it gets their agent."""
         name = clean_name(raw_name)
         rows = self._load()
         hit = [r for r in rows if r["name"] == name]
         lan = bool(hit[-1].get("lan")) if hit else False
-        return self.create(name, lan=lan)
+        return self.create(name, lan=lan, me=me)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -311,8 +311,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._user()
                 return self._send(200, hub.stop(body.get("name")))
             if u.path == "/api/spaces/start":
-                self._user()
-                return self._send(200, hub.start(body.get("name")))
+                return self._send(200, hub.start(body.get("name"), me=self._user()))
             self._send(404, {"error": "no_route"})
         except Reject as r:
             self._send(r.code, r.body)
