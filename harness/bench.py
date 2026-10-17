@@ -206,6 +206,14 @@ def write_cost(batch: str, benchmark: str, backend: str, plain: dict[tuple[str, 
             and int(r.get("tokens") or 0) > 0]
 
 
+def _prior_cot(budget_from: str | None, benchmark: str, backend: str):
+    """cot_median of --budget-from for this benchmark and backend, or None when it has none."""
+    if not budget_from:
+        return None
+    prior = (read_json(bdir(budget_from) / "budget.json", {}) or {}).get(benchmark, {})
+    return (prior.get(backend) or {}).get("cot_median")
+
+
 def set_budget(batch: str, benchmark: str, backend: str, m: int, tokens: list[int],
                budget_from: str | None, split: str | None = None, n_failed: int = 0) -> dict:
     """B = max(m x median plain-CoT tokens per item, HTSA_MIN_B) (section 8 Cost); written to
@@ -213,10 +221,9 @@ def set_budget(batch: str, benchmark: str, backend: str, m: int, tokens: list[in
     plain runs that entered the median (n_failed)."""
     src = "this batch"
     cot = statistics.median(tokens) if tokens else None
-    if budget_from:
-        prior = (read_json(bdir(budget_from) / "budget.json", {}) or {}).get(benchmark, {})
-        if backend in prior:
-            cot, src = prior[backend]["cot_median"], f"batch {budget_from}"
+    prior_cot = _prior_cot(budget_from, benchmark, backend)
+    if prior_cot:                      # a prior batch without a measured median (HTSA_FIXED_B) is no source
+        cot, src = prior_cot, f"batch {budget_from}"
     if not cot:
         raise SystemExit(f"[bench] no successful plain-CoT run for {benchmark}/{backend} in batch "
                          f"{batch} and no --budget-from: cannot set B (see errors.jsonl)")
@@ -324,7 +331,7 @@ def run_bench(args) -> dict:
         plain = run_arm_over("plain", items, budget_of=lambda i, r: None, **common)
         splits = {it.get("split") for it in items}
         tokens = write_cost(args.batch, args.benchmark, args.backend, plain, splits)
-        if not any(not final_failure(r) and int(r.get("spent_tokens") or 0) > 0 for r in plain.values()) and not args.budget_from:
+        if not any(not final_failure(r) and int(r.get("spent_tokens") or 0) > 0 for r in plain.values()) and not _prior_cot(args.budget_from, args.benchmark, args.backend):
             raise SystemExit(f"[bench] no successful plain-CoT run for {args.benchmark}/{args.backend} in batch "
                              f"{args.batch} and no --budget-from: cannot set B (failed runs join the median only "
                              "next to successes; see errors.jsonl)")
