@@ -16,10 +16,10 @@ function save(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (
 export function mountSplitters(panes) {
   if (!panes || panes.querySelector('.splitter')) return null;
   let cols = load();
-  const apply = () => {
+  const apply = (notify = true) => {
     panes.style.gridTemplateColumns = cols.map((c) => `${c}fr`).join(' ');
     place();
-    window.dispatchEvent(new Event('resize'));            // the views refit to the new pane sizes
+    if (notify) window.dispatchEvent(new Event('resize'));   // the views refit once the drag ends, never on every move
   };
   const handles = [0, 1].map((i) => {
     const h = document.createElement('div');
@@ -52,7 +52,7 @@ export function mountSplitters(panes) {
         let left = (x / rect.width) * total - before;                       // the share of pane i
         left = Math.min(Math.max(left, MIN), pair - MIN);
         cols[i] = left; cols[i + 1] = pair - left;
-        apply();
+        apply(false);
       };
       const up = () => {
         h.classList.remove('is-dragging');
@@ -91,13 +91,13 @@ export function mountStripResizer(strip) {
   btn.className = 'strip-handle__btn';
   handle.appendChild(btn);
   strip.parentNode.insertBefore(handle, strip);
-  const apply = () => {
+  const apply = (notify = true) => {
     strip.classList.toggle('is-collapsed', !st.open);
     strip.style.height = st.open && st.h > 0 ? `${st.h}px` : '';
     strip.style.maxHeight = st.open && st.h > 0 ? `${st.h}px` : '';
     btn.textContent = st.open ? 'v' : '^';
     btn.title = st.open ? 'collapse the strip to one line' : 'expand the strip';
-    window.dispatchEvent(new Event('resize'));
+    if (notify) window.dispatchEvent(new Event('resize'));
   };
   btn.addEventListener('click', (e) => { e.stopPropagation(); st.open = !st.open; save(); apply(); });
   handle.addEventListener('dblclick', () => { st = { h: 0, open: true }; save(); apply(); });
@@ -108,11 +108,12 @@ export function mountStripResizer(strip) {
     document.body.classList.add('is-resizing-y');
     const startY = e.clientY, startH = strip.getBoundingClientRect().height;
     const maxH = Math.max(80, window.innerHeight * 0.7);
-    const move = (ev) => { st.h = Math.min(Math.max(startH + (startY - ev.clientY), 28), maxH); st.open = true; apply(); };
+    const move = (ev) => { st.h = Math.min(Math.max(startH + (startY - ev.clientY), 28), maxH); st.open = true; apply(false); };
     const up = () => {
       document.body.classList.remove('is-resizing-y');
       handle.removeEventListener('pointermove', move); handle.removeEventListener('pointerup', up); handle.removeEventListener('pointercancel', up);
       save();
+      apply();
     };
     handle.addEventListener('pointermove', move); handle.addEventListener('pointerup', up); handle.addEventListener('pointercancel', up);
   });

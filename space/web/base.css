@@ -41,7 +41,7 @@ body.following #panes { outline: 3px solid var(--follow); outline-offset: -3px; 
 .pane__title { position: absolute; top: 6px; left: 10px; z-index: 2; color: var(--text-2); font-size: var(--fs-small);
   text-transform: uppercase; letter-spacing: .06em; pointer-events: none; }
 #rail { display: flex; flex-direction: column; background: var(--bg-panel); border-right: 0; }
-#strip { background: var(--bg-panel); border-top: 1px solid var(--line-subtle); padding: 6px 12px; max-height: 22vh; overflow: auto; }
+#strip { background: var(--bg-panel); border-top: 1px solid var(--line-subtle); padding: 6px 12px; max-height: 22vh; overflow: auto; box-sizing: border-box; flex: 0 0 auto; }
 .strip__text { margin: 4px 0 0; white-space: pre-wrap; font: var(--fs-small)/1.4 var(--font-mono); color: var(--text-2); }
 .strip__agent { color: var(--text-2); }
 body:not(.stage) .strip__text { max-height: none; overflow: visible; overflow-wrap: anywhere; }
