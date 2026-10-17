@@ -370,8 +370,8 @@ def resolve_view(card: dict, spec: CardSpec, problem, flags: dict | None = None)
     """(variant, perm): spec.variant overrides the card view; a shuffled view with perm 0
     takes the problem's replicate permutation (REP-08). The run's flags decide: with
     flags.shuffle_facts off (pre-gate flag 4) every spec renders the canonical order, perm 0.
-    `flags` is the run's merged flag dict; config.FLAGS is the fallback for callers without one."""
-    flags = flags if flags is not None else config.FLAGS
+    `flags` is the run's merged flag dict; config.flags() is the fallback for callers without one."""
+    flags = flags if flags is not None else config.flags()
     variant = spec.variant or card.get("view", "canonical")
     perm = int(spec.perm or 0)
     shuffle = bool(flags.get("shuffle_facts", True))
@@ -392,8 +392,8 @@ def format_text(benchmark: str, n: int, flags: dict | None = None) -> str:
     includes checking the rule against the examples: generator self-checking, which Pr1 bans
     for generators, so it is an experimental arm only, off by default and recorded in the run
     header and every call record."""
-    flags = flags if flags is not None else config.FLAGS
-    ta = str(flags.get("experimental_think_aloud_self_check") or "off")
+    flags = flags if flags is not None else config.flags()
+    ta =str(flags.get("experimental_think_aloud_self_check") or "off")
     on = ta not in ("off", "0", "", "False", "false")
     name = ((f"format_think2.{benchmark}" if ta == "2" else f"format_think.{benchmark}")
             if (on and benchmark == "arc") else f"format.{benchmark}")

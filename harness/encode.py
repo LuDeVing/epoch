@@ -84,10 +84,10 @@ def grid_spaced(g) -> str:
 
 
 def raw_view() -> bool:
-    """config.FLAGS["raw_view"] (env HTSA_RAW_VIEW; recorded in the run header and every call
-    record): no decomposition, every view is the raw item with spaced grids and no X-renaming,
-    so low_prior is the raw item too."""
-    return bool(config.FLAGS.get("raw_view"))
+    """The run's effective raw_view flag (config.flags(): env HTSA_RAW_VIEW or think --flag;
+    recorded in the run header and every call record): no decomposition, every view is the raw
+    item with spaced grids and no X-renaming, so low_prior is the raw item too."""
+    return bool(config.flags().get("raw_view"))
 
 
 def render_item(item: dict, style: str = "compact") -> str:
