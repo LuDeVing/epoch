@@ -2,6 +2,7 @@
 // and a model: the server starts their agent and hands back the join link), stop an agent, and the link to the hub
 // where new spaces are made. Routes: GET /api/people, POST /api/people/add, POST /api/people/stop (space/people.py).
 import { html, render, useState, useEffect } from './vendor/standalone.module.js';
+import { accounts, useAccount } from './accounts.js';
 
 export const HUB_URL = 'http://127.0.0.1:8760/';
 
@@ -45,16 +46,14 @@ function PeoplePanel({ api, onClose }) {
   const makeInvite = async () => { setBusy(true); setErr(''); try { await post('/api/invites', {}); await loadInvites(); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const setPassword = async (e) => { e.preventDefault(); setBusy(true); setErr(''); try { await post('/api/password', { password: pw }); setPw(''); setMade({ name: api.me, join_url: '', password: true }); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const inviteBase = (data && data.invite_url) ? data.invite_url.split('?')[0] : `${base}/`;
-  const rename = () => {
-    const n = String(window.prompt('Your name in this space', api.me || '') || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 24);
-    if (!n || n === api.me) return;
-    try { localStorage.setItem('htsa.me', n); } catch (e) { /* ignore */ }
-    const u = new URL(location.href); u.searchParams.set('me', n); location.replace(u.toString());
-  };
   return html`<div class="start-panel people-panel">
     <div class="start-panel__title">People <span class="muted">${data && data.space_id ? data.space_id : ''}</span>
       <button class="btn btn--small" type="button" style="float:right" onClick=${onClose}>x</button></div>
-    <div class="people__me">You are <strong>${api.me || 'not joined'}</strong> on this PC <button class="btn btn--small" type="button" onClick=${rename}>change</button></div>
+    <div class="people__me">You are <strong>${api.me || 'not joined'}</strong>
+      ${accounts.list().filter((a) => a.name !== api.me).length ? html` <label class="muted">switch to <select onChange=${(e) => { const a = accounts.list().find((x) => x.name === e.target.value); if (a) useAccount(a, base).catch((ex) => setErr(ex.message)); }}>
+        <option value="">another account</option>${accounts.list().filter((a) => a.name !== api.me).map((a) => html`<option value=${a.name}>${a.name}</option>`)}</select></label>` : null}
+      <button class="btn btn--small" type="button" onClick=${() => { const u = new URL(location.href); u.searchParams.delete('me'); u.searchParams.set('switch', '1'); location.href = u.toString(); }}>add account</button>
+      <button class="btn btn--small" type="button" onClick=${async () => { try { await post('/api/logout', {}); } catch (e) { /* ignore */ } accounts.drop(api.me); const u = new URL(location.href); u.searchParams.delete('me'); location.href = u.toString(); }}>sign out</button></div>
     <div class="people__invite">
       <div class="muted">${members && members.open_to_all ? 'This space is open to every signed-in account.' : `Members: ${((members && members.members) || []).join(', ') || 'none yet'}`}</div>
       <div><button class="btn btn--small btn--primary" type="button" disabled=${busy} onClick=${makeInvite}>Invite an account</button>

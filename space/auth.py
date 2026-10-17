@@ -293,10 +293,18 @@ def handle(path: str, body: dict, headers, client_address, space_id: str | None,
             raise Reject(401, "bad_login", hint="wrong name or password")
         if body.get("invite"):
             accept_invite(body["invite"], name)
-        return 200, {"name": name}, set_cookie(new_session(name))
+        t = new_session(name)
+        return 200, {"name": name, "token": t}, set_cookie(t)
     if path == "/api/register":
         name = register(body.get("name"), body.get("password"), body.get("invite") or None)
-        return 200, {"name": name}, set_cookie(new_session(name))
+        t = new_session(name)
+        return 200, {"name": name, "token": t}, set_cookie(t)
+    if path == "/api/session/use":                          # switch account: a token this browser saved earlier
+        t = str(body.get("token") or "")
+        name = session_name(t)
+        if not name:
+            raise Reject(401, "bad_session", hint="that saved sign-in expired; sign in again")
+        return 200, {"name": name, "token": t}, set_cookie(t)
     if path == "/api/logout":
         drop_session(tok)
         return 200, {"ok": True}, set_cookie(None)

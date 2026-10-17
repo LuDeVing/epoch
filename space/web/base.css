@@ -214,3 +214,4 @@ body.is-resizing iframe, body.is-resizing svg { pointer-events: none; }
 body.is-resizing-y { cursor: row-resize; user-select: none; }
 
 .people__me, .people__invite { padding: 6px 0; border-bottom: 1px solid var(--line-subtle); overflow-wrap: anywhere; }
+.join__saved { display: inline-flex; gap: 6px; flex-wrap: wrap; }

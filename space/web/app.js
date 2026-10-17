@@ -13,6 +13,7 @@ import { mountStart } from './start.js';
 import { mountInspector } from './inspect.js';
 import { mountPeople } from './people.js';
 import { mountSplitters, mountStripResizer } from './splitters.js';
+import { accounts, useAccount } from './accounts.js';
 
 const BEAT_MS = 5000, GO_LOCK_MS = 2000, OFFLINE_AFTER_MS = 10000, FOCUS_MIN_MS = 250;
 
@@ -358,6 +359,7 @@ async function autoJoin() {
     if (r.ok) name = clean((await r.json()).name);
   } catch (e) { name = ''; }
   if (!name) return false;
+  if (!accounts.list().some((a) => a.name === name)) { /* signed in by cookie only: nothing to save without its token */ }
   const code = params.get('invite');
   if (code) {                                            // signed in and holding an invitation: join this space
     try { await fetch(`${base}/api/invites/accept${kq}`, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) }); } catch (e) { /* shown later */ }
@@ -367,11 +369,12 @@ async function autoJoin() {
   return true;
 }
 
-// Sign in with a password, or join with an invitation code (from a ?invite= link) and choose a password.
+// Sign in with a password, register, continue as a saved account, or join with an invitation (?invite=).
 function askLogin() {
   const top = document.getElementById('topbar');
   const invite = params.get('invite') || '';
   let mode = invite ? 'register' : 'login', err = '';
+  const saved = accounts.list();
   const go = async (e) => {
     e.preventDefault();
     const f = e.target.elements;
@@ -382,11 +385,13 @@ function askLogin() {
         headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) { err = j.hint || j.error || `HTTP ${r.status}`; draw(); return; }
-      const u = new URL(location.href); u.searchParams.set('me', j.name); u.searchParams.delete('invite'); location.replace(u.toString());
+      accounts.save(j.name, j.token);
+      const u = new URL(location.href); u.searchParams.set('me', j.name); u.searchParams.delete('invite'); u.searchParams.delete('switch'); location.replace(u.toString());
     } catch (ex) { err = 'The server is offline.'; draw(); }
   };
   const draw = () => render(html`<form class="join" onSubmit=${go}>
     <span class="brand">HTSA space</span>
+    ${saved.length ? html`<span class="join__saved">${saved.map((a) => html`<button class="btn btn--small" type="button" onClick=${() => useAccount(a).catch((ex) => { err = ex.message; draw(); })}>Continue as ${a.name}</button>`)}</span>` : null}
     ${invite ? html`<span class="tag">invitation ${invite.slice(0, 6)}...</span>` : null}
     <label>Name <input name="name" autocomplete="username" autofocus /></label>
     <label>Password <input name="password" type="password" autocomplete=${mode === 'login' ? 'current-password' : 'new-password'} /></label>
@@ -469,7 +474,7 @@ async function mountViews() {
 async function main() {
   [contract, layout] = await Promise.all([loadContract(), loadLayout()]);
   start();
-  if (!flags.me && !flags.stage) { if (await autoJoin()) return; askLogin(); return; }
+  if (!flags.me && !flags.stage) { if (params.get('switch') !== '1' && await autoJoin()) return; askLogin(); return; }
   if (flags.me) ls.set('htsa.me', flags.me);
   mountRail(document.getElementById('rail'), viewApi);
   mountStart(document.getElementById('start-run'), viewApi);

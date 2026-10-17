@@ -27,6 +27,7 @@
 <div id="hub"></div>
 <script type="module">
 import { html, render, useState, useEffect } from './vendor/standalone.module.js';
+import { accounts, switchTo } from './accounts.js';
 
 async function api(path, body) {
   const r = await fetch(path, body ? { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store', credentials: 'same-origin' });
@@ -65,12 +66,15 @@ function Space({ s, refresh, meDefault }) {
 function Login({ onDone }) {
   const [err, setErr] = useState('');
   const [mode, setMode] = useState('login');
+  const saved = accounts.list();
   const go = async (e) => {
     e.preventDefault();
     const f = e.target.elements;
-    try { await api(`/api/${mode}`, { name: f.name.value, password: f.password.value }); onDone(); } catch (ex) { setErr(ex.message); }
+    try { const j = await api(`/api/${mode}`, { name: f.name.value, password: f.password.value }); accounts.save(j.name, j.token); onDone(); } catch (ex) { setErr(ex.message); }
   };
+  const use = async (a) => { try { await switchTo(a, ''); onDone(); } catch (ex) { setErr(ex.message); } };
   return html`<form class="hub__form" onSubmit=${go}>
+    ${saved.map((a) => html`<button class="btn btn--small" type="button" onClick=${() => use(a)}>Continue as ${a.name}</button>`)}
     <input type="text" name="name" placeholder="name" autocomplete="username" />
     <input type="password" name="password" placeholder="password" autocomplete=${mode === 'login' ? 'current-password' : 'new-password'} />
     <button class="btn btn--small btn--primary" type="submit">${mode === 'login' ? 'Sign in' : 'Create account'}</button>
@@ -97,7 +101,10 @@ function HubPage() {
   return html`<div>
     <h1>HTSA spaces</h1>
     <div class="hub__sub">A space is one shared research room: a problem tree, idea clusters, arguments, results and the people in it. Each runs on its own port on this PC.
-      ${data.me ? html` Signed in as <strong>${data.me}</strong> <button class="btn btn--small" onClick=${async () => { await api('/api/logout', {}); refresh(); }}>sign out</button>` : null}</div>
+      ${data.me ? html` Signed in as <strong>${data.me}</strong>
+        ${accounts.list().filter((a) => a.name !== data.me).map((a) => html` <button class="btn btn--small" onClick=${async () => { try { await switchTo(a, ''); refresh(); } catch (ex) { setErr(ex.message); } }}>switch to ${a.name}</button>`)}
+        <button class="btn btn--small" onClick=${async () => { await api('/api/logout', {}); refresh(); }}>add account</button>
+        <button class="btn btn--small" onClick=${async () => { await api('/api/logout', {}); accounts.drop(data.me); refresh(); }}>sign out</button>` : null}</div>
     ${!data.me ? html`<${Login} onDone=${refresh} />` : null}
     <form class="hub__form" onSubmit=${create}>
       <input type="text" placeholder="new space name, like packing-2" value=${name} onInput=${(e) => setName(e.target.value)} />
