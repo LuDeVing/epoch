@@ -1,0 +1,10 @@
+{
+ "note": "Vendored copies, fetched once with curl.exe on 2026-10-17. The page loads scripts and fonts only from vendor/. d3.min.js is owned by the views part (P5).",
+ "files": [
+  {"file": "standalone.module.js", "what": "htm 3.1.1 with its bundled Preact (ES module)", "url": "https://cdn.jsdelivr.net/npm/htm@3.1.1/preact/standalone.module.js", "bytes": 13194, "sha256": "72284e8e9079c87817145df1110f74e8a2aa040b2fc384922e18dfcb46fc1fd7", "owner": "space-web-core"},
+  {"file": "auto-animate.mjs", "what": "@formkit/auto-animate 0.10.0 index.mjs (ES module)", "url": "https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.10.0/index.mjs", "bytes": 27409, "sha256": "cd5fca8eadcf0fb0474ff672de65851a4f58f1b13d76863bc649c2cf189a51d3", "owner": "space-web-core"},
+  {"file": "inter-latin.woff2", "what": "Inter variable, latin subset, weights 400 to 700 (Google Fonts v20)", "url": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2", "bytes": 48256, "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62", "owner": "space-web-core"},
+  {"file": "jetbrains-mono-latin.woff2", "what": "JetBrains Mono variable, latin subset, weights 400 and 500 (Google Fonts v24)", "url": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2", "bytes": 31432, "sha256": "83c005d49d8a6a50474c73a5a36ac0468076e9c4a29da7bdb14995d80560a5be", "owner": "space-web-core"},
+  {"file": "d3.min.js", "what": "D3 7.9.0 UMD", "url": "https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js", "bytes": 279706, "sha256": null, "owner": "space-web-views"}
+ ]
+}
