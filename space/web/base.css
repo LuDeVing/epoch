@@ -215,3 +215,26 @@ body.is-resizing-y { cursor: row-resize; user-select: none; }
 
 .people__me, .people__invite { padding: 6px 0; border-bottom: 1px solid var(--line-subtle); overflow-wrap: anywhere; }
 .join__saved { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+
+/* Findings tab, file-first (findings.js) */
+.drop { border: 1px dashed var(--line-strong); border-radius: 12px; padding: 18px 14px; text-align: center; cursor: pointer; background: var(--bg-card); transition: border-color var(--t-hover), background var(--t-hover); margin-bottom: 10px; }
+.drop:hover, .drop--over { border-color: var(--owner-a); background: var(--bg-hover); }
+.drop__title { font-weight: 600; margin-bottom: 4px; }
+.fcard { background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: 10px; padding: 10px 12px; margin: 8px 0; display: grid; gap: 6px; list-style: none; }
+.fcard--pending { border-color: var(--owner-a); }
+.fcard--replaced { opacity: .55; }
+.fcard__head { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.fcard__name { font-weight: 600; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fcard__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.fcard__row select, .fcard input, .fcard textarea { background: var(--bg-app); color: var(--text-1); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font: inherit; width: 100%; box-sizing: border-box; }
+.fcard__row select { width: auto; flex: 1 1 auto; }
+.fcard__excerpt { margin: 0; max-height: 160px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font: var(--fs-small)/1.4 var(--font-mono); color: var(--text-2); background: var(--bg-app); border-radius: 6px; padding: 6px 8px; }
+.fcard__text { white-space: pre-wrap; }
+.fcard__meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: var(--fs-small); }
+.fcard__file { text-decoration: underline; }
+.fico { display: inline-flex; width: 18px; justify-content: center; color: var(--solid-hover); font-size: 14px; }
+.findings__bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 10px 0 4px; }
+.findings__count { margin-left: auto; }
+.findings__list { list-style: none; margin: 0; padding: 0; }
+.findings__empty { padding: 14px 4px; }
+.tag--warn { color: var(--warn); border-color: var(--warn); }

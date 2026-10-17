@@ -1754,6 +1754,9 @@ class NanoLoop:
             part = str(f.get("part") or "root")
             vals = ", ".join(f"{k}={v}" for k, v in (f.get("values") or {}).items() if isinstance(v, (int, float)))
             body = " ".join(str(f.get("text") or "").split())[:400]
+            fl = f.get("file") if isinstance(f.get("file"), dict) else None
+            if fl:
+                body = (body + " " if body else "") + f"[file {fl.get('name')}] " + " ".join(str(f.get("excerpt") or "").split())[:300]
             text = (f"{f.get('title')}: {body} (by {f.get('by')}, source {f.get('source') or 'own work'}"
                     + (f", {vals}" if vals else "") + f", e{seq})").replace("|", "/")
             try:

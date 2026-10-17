@@ -140,6 +140,8 @@ def merge(events, *, loop="team.loop", claims=(), since=0, file_ctl=None) -> dic
                              "title": str(d.get("title") or "")[:120], "text": str(d.get("text") or "")[:4000],
                              "kind": str(d.get("kind") or "note"), "source": str(d.get("source") or "own work")[:200],
                              "values": d.get("values") if isinstance(d.get("values"), dict) else {},
+                             "file": d.get("file") if isinstance(d.get("file"), dict) else None,
+                             "excerpt": str(d.get("excerpt") or "")[:3000],
                              "replaces": d.get("replaces") if isinstance(d.get("replaces"), int) else None})
         elif kind == "opinion_given":
             target = str(d.get("target") or "")

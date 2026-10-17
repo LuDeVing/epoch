@@ -27,7 +27,7 @@ import traceback
 import urllib.parse
 from pathlib import Path
 
-from space import auth, contract, control, digest, launch, people, snapshot
+from space import auth, contract, control, digest, files as filestore, launch, people, snapshot
 from space.claims import Claims
 from space.presence import Presence
 from space.replay import Replayer
@@ -418,6 +418,18 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
                 raise Reject(413, "too_big")
             raw = self._read_body(n)
             self._key(q)
+            if u.path == "/api/upload":                        # a file a person shares with the team (raw body)
+                by, by_kind = self._who(q)
+                if by_kind == "human":
+                    auth.require_human(by, self.headers, self.client_address,
+                                       getattr(sp.store, "space_id", None), bool(getattr(self.server, "open_mode", False)))
+                if n > filestore.MAX_BYTES:
+                    raise Reject(413, "too_big", limit=filestore.MAX_BYTES)
+                fs = filestore.Files(Path(sp.store.path).parent)
+                name = urllib.parse.unquote(self.headers.get("X-Space-Filename") or q.get("name", ["file"])[0])
+                rec = fs.save(name, raw, by, self.headers.get_content_type() or "")
+                rec["url"] = f"{self._base_url()}/api/files/{rec['id']}"
+                return self._send(200, {k: v for k, v in rec.items() if k != "path"})
             if self.headers.get_content_type() != "application/json":
                 raise Reject(415, "bad_content_type")
             if n > MAX_BODY:
@@ -476,6 +488,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
             if u.path in ("/api/me", "/api/invites", "/api/members"):
                 if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
                     return None
+            if u.path.startswith("/api/files/"):              # a shared file, served back
+                rec, data = filestore.Files(Path(sp.store.path).parent).get(u.path.rsplit("/", 1)[-1])
+                self.send_response(200)
+                self.send_header("Content-Type", rec.get("type") or "application/octet-stream")
+                self.send_header("Content-Length", str(len(data)))
+                self.send_header("Content-Disposition", "inline; filename=\"%s\"" % rec.get("name", "file"))
+                self.send_header("Cache-Control", "private, max-age=3600")
+                self.end_headers()
+                self.wfile.write(data)
+                return None
             if u.path == "/api/events":                        # first load, catch-up, long-poll, agents
                 since = max(0, int(one("since", "0")))
                 wait = max(0.0, min(WAIT_MAX, float(one("wait", "0"))))

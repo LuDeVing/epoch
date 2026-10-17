@@ -551,6 +551,7 @@ export function makeReducer({ layoutTree, layoutClusters, anchorFor, contract } 
       const d = ev.data || {};
       const row = { seq: ctx.seq, by: ctx.owner, node: d.part || null, title: d.title || '', text: d.text || '', kind: d.kind || 'note',
         source: d.source || 'own work', values: d.values && typeof d.values === 'object' ? d.values : {}, replaces: d.replaces ?? null,
+        file: d.file && typeof d.file === 'object' ? d.file : null, excerpt: d.excerpt || '',
         replacedBy: null, pending: ctx.pending, ts: ev.ts || null };
       s.findings = s.findings.map((f) => (row.replaces != null && f.seq === row.replaces ? { ...f, replacedBy: row.seq } : f)).concat([row]);
     },

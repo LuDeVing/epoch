@@ -850,11 +850,17 @@ class LoopSpace:
             vals = ", ".join(f"{k}={v}" for k, v in (f.get("values") or {}).items() if isinstance(v, (int, float)))
             text = " ".join(str(f.get("text") or "").split())[:600]
             where = f.get("part") or "the whole problem"
-            line = f"- [e{f.get('seq')}] {f.get('by')} on {where}: \"{f.get('title')}\": {text}"
+            line = f"- [e{f.get('seq')}] {f.get('by')} on {where}: \"{f.get('title')}\"" + (f": {text}" if text else "")
             if f.get("source"):
                 line += f" (source: {f['source']})"
             if vals:
                 line += f" (values: {vals})"
+            fl = f.get("file") if isinstance(f.get("file"), dict) else None
+            if fl:
+                line += f" [file {fl.get('name')}, {fl.get('bytes')} bytes" + (f", {fl.get('lines')} lines" if fl.get("lines") else "") + "]"
+            ex = " ".join(str(f.get("excerpt") or "").split())
+            if ex:
+                line += "\n    FILE CONTENT (start): " + ex[:1500].replace("\n", " ")
             lines.append(line)
         return "\n".join(lines)[:cap]
 
