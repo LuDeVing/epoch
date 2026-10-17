@@ -314,7 +314,9 @@ function Strip({ v }) {
   const receipt = flags.me ? v.feed.filter((l) => l.owner === flags.me && l.receipt).at(-1) : v.feed.filter((l) => l.receipt).at(-1);
   const agentLines = flags.stage ? [...v.chat.values()].flat().filter((l) => l.from && l.from.endsWith('.agent')).sort((a, b) => a.seq - b.seq).slice(-3) : [];
   const rName = (a) => (a === 'team.loop' ? 'the team' : a.endsWith('.agent') ? `${whoText({ cls: 'person', owner: a.slice(0, -6) })}'s agent` : a);
-  const body = latest && latest.text ? stripRefs(latest.text.split('\n').slice(1).join('\n')).trim() : '';
+  const plain = (t) => t.replace(/ via agent/g, "'s agent").replace(/\bsketches\b/g, 'ideas').replace(/\bsketch\b/g, 'idea')
+    .replace(/\bclusters\b/g, 'groups').replace(/\bcluster\b/g, 'group').replace(/the team team question is now/g, "the team's next question is").replace(/^- /gm, '');
+  const body = latest && latest.text ? plain(stripRefs(latest.text.split('\n').slice(1).join('\n'))).trim() : '';
   return html`<div class="strip__digest">${latest ? html`<strong>What ${rName(latest.agent)} was told</strong><span class="muted"> before its last step (round ${latest.round}, ${STAGE_DONE[latest.stage] || latest.stage}): ${latest.n} change${latest.n === 1 ? '' : 's'} by teammates</span>`
       : html`<span class="muted">Before each step, every agent is told what the others changed. That note shows here.</span>`}</div>
     ${body ? html`<pre class="strip__text">${body}</pre>` : null}
