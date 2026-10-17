@@ -722,7 +722,8 @@ def deal_contexts(nodes: list[dict], per: int, round_no: int = 1, skip=None) -> 
     for n in nodes or []:
         if n["id"] == "root" or skip(n["id"]):
             continue
-        if not n.get("parent") or n.get("parent") == "root" or n.get("parent") not in ids:
+        if not n.get("parent") or n.get("parent") == "root" or n.get("parent") not in ids or skip(n["parent"]):
+            # a live node under a skipped parent (a scope that names a sub-part only) is dealt as a part
             for d in n.get("directions", []):
                 if d != "upward":
                     give(n, d, min(per, 1) if n.get("priority") == "low" else per)   # kept by a re-plan, no longer drawn

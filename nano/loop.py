@@ -716,15 +716,18 @@ class NanoLoop:
         """Yield per origin: contexts, sketches, distinct clusters, built, checked and wins for ideas that came
         from a branch of the map (tree) and for ideas that came from off the map (off)."""
         out = {}
+        off_node = tree.OFF_TREE_NODE["id"]
         for origin in ("tree", "off"):
-            sk = [s for s in self.sketches if s.get("origin", "tree") == origin]
+            # an interrogation offshoot carries no origin: it takes its node's (an off-map idea's offshoot stays off)
+            sk = [s for s in self.sketches
+                  if (s.get("origin") or ("off" if s.get("node") == off_node else "tree")) == origin]
             ids = {s["id"] for s in sk}
             built = [c for c in self.cands if not c.card.startswith("control")
                      and (("off" if (c.extra or {}).get("node") == tree.OFF_TREE_NODE["id"] else "tree") == origin)
                      and (c.extra or {}).get("node") not in ("tune", "control", "program")]
             checked = [c for c in built if self.vres.get(c.id, {}).get("status") == "checked"]
             wins = [c for c in checked if self._gain(c) is not None and self._gain(c) < 0]
-            ctx = len({s.get("call_id") for s in sk if s.get("call_id")})
+            ctx = len({s.get("call_id") for s in sk if s.get("call_id") and s.get("card") != "deepen"})   # idea contexts, not interrogation calls
             out[origin] = {"contexts": ctx, "sketches": len(sk),
                            "clusters": sum(1 for c in self.clusters if any(m in ids for m in c["members"])),
                            "built": len(built), "checked": len(checked), "wins": len(wins)}
@@ -946,11 +949,13 @@ class NanoLoop:
         """A part the owner excluded (control.json skip_nodes) or outside the --only-nodes scope. The scope is
         resolved against the planned map by id or by the default part's name, since the planner renames and
         splits parts (arch-1 lost every context to an id mismatch)."""
-        if node_id in self.skip_nodes:
+        # a sub-part, win or failure question belongs to its part: skipped with it, in scope with it
+        line = {node_id} | {n["id"] for n in tree._chain(self.tree or [], node_id)}
+        if line & set(self.skip_nodes):
             return True
         if not self.only_nodes or node_id == "root":        # the root's reframing contexts are cheap and always stay
             return False
-        return node_id not in tree.resolve_scope(self.only_nodes, self.tree or tree.DEFAULT_TREE)
+        return not (line & tree.resolve_scope(self.only_nodes, self.tree or tree.DEFAULT_TREE))
 
     # ------------------------------------------------------------ the doubt card: measure, map, read, then doubt
     DOUBT_LIT_CAP = 3000            # characters of literature shown to a doubt card
@@ -964,7 +969,7 @@ class NanoLoop:
     def _doubt_ready(self, round_no: int) -> tuple[bool, int, int]:
         """Doubt cards are dealt only after reading: briefs for at least half of the non-root parts, or a
         later round with any brief. Returns (ready, parts with a brief, parts)."""
-        parts = [n for n in (self.tree or []) if n["id"] not in ("root", tree.OFF_TREE_NODE["id"]) and not self._skipped(n["id"])]
+        parts = [n for n in (self.tree or []) if self._researchable(n) and tree.kind(n) == "part"]   # not questions or wins
         k = sum(1 for n in parts if self._read_entries(self.briefs.get(n["id"])) > 0)
         any_read = any(self._read_entries(b) > 0 for b in self.briefs.values())
         ready = (k > 0 and 2 * k >= len(parts)) or (round_no > 1 and any_read)
@@ -1064,7 +1069,8 @@ class NanoLoop:
             if not d:
                 continue
             s["doubt"] = d[:500]
-            nid = self._node_by_name(d.split(":")[0]) or next(
+            nid = self._node_by_name(d.split(":")[0])
+            nid = (nid if nid != tree.OFF_TREE_NODE["id"] else None) or next(
                 (n["id"] for n in (self.tree or []) if n["id"] not in ("root", tree.OFF_TREE_NODE["id"])
                  and str(n.get("name", "")).lower() in d.lower()), None)
             rows.append({"round": round_no, "node": nid or s.get("node", tree.OFF_TREE_NODE["id"]),
@@ -1153,10 +1159,9 @@ class NanoLoop:
                 seed = self.rng.choice([w for w in seeds if w not in self.used_seeds] or seeds)
                 self.used_seeds.add(seed)
                 specs.append((off_cards[i % len(off_cards)], seed, off_node, "inward" if i % 2 == 0 else "outward"))
-            self.decisions.append({"round": round_no, "step": "off_tree", "on_map": n_on, "off_map": n_off, "share": self.off_tree_share})
-            self.decisions.append({"round": round_no, "step": "doubt_cards", "dealt": sum(1 for sp in specs if sp[0] == "doubt"),
-                                   "reason": f"briefs for {k_read} of {m_parts} parts"
-                                             + ("" if ready else "; doubt waits until the team has read (briefs for half the parts)")})
+            off_note = {"ready": ready, "k_read": k_read, "m_parts": m_parts}
+        else:
+            off_note = None
 
         if self.max_sketch_calls > 0 and len(specs) > self.max_sketch_calls:
             # test mode: the contexts that read the most (owner, research, diagnosis, analogy) first, dealt round-robin
@@ -1167,18 +1172,27 @@ class NanoLoop:
             specs = keep_upward(specs, ups)
             self.decisions.append({"round": round_no, "step": "ideate", "capped_to": len(specs),
                                    "upward": sum(1 for sp in specs if sp[3] == "upward")})
+        if off_note is not None:                     # logged after the cap: the contexts that will run, not those dealt
+            n_off = sum(1 for sp in specs if sp[2]["id"] == tree.OFF_TREE_NODE["id"])
+            self.decisions.append({"round": round_no, "step": "off_tree", "on_map": sum(1 for sp in specs if sp[3] != "upward") - n_off,
+                                   "off_map": n_off, "share": self.off_tree_share})
+            self.decisions.append({"round": round_no, "step": "doubt_cards", "dealt": sum(1 for sp in specs if sp[0] == "doubt"),
+                                   "reason": f"briefs for {off_note['k_read']} of {off_note['m_parts']} parts"
+                                             + ("" if off_note["ready"] else "; doubt waits until the team has read (briefs for half the parts)")})
+        # the room the test cap leaves for the extra memory-free contexts (the focus contexts below are never capped)
+        room = max(0, self.max_sketch_calls - len(specs)) if self.max_sketch_calls > 0 else None
         # the team's chosen question: extra inward contexts on its node (an upward proposal's on the root), after the
         # test cap so they are never cut; the question text goes into the prompt
         if self._focus_q is not None:
             fnode = next((n for n in self.tree if n["id"] == self._focus_q.get("node")), None)
-            if fnode is not None:
+            if fnode is not None and not self._skipped(fnode["id"]):     # never on a part the owner excluded
                 for i in range(self.focus_contexts):
                     specs.append(("focus", f"question {self._focus_q['id']} #{i + 1}", fnode, "inward"))
         # upward contexts go first, so the ideation budget check (_afford) meets them before the other contexts spend it
         specs.sort(key=lambda sp: sp[3] != "upward")
         # the contexts each part (and the off-map node) got this round: selection deals build slots in the same shares
         self.contexts_by_node[round_no] = dict(Counter(sp[2]["id"] for sp in specs if sp[3] != "upward"))
-        specs = self._pick_memory_free(round_no, specs, seeds)
+        specs = self._pick_memory_free(round_no, specs, seeds, room)
 
         def _one(spec):
             card, seed, node, direction = spec
@@ -1388,7 +1402,9 @@ class NanoLoop:
         self.decisions += [{"round": self.round_now, "for": "build", **d} for d in short_log]
         for c in main:
             c["lane"] = "main"
+        self._drop_selection_rows()                   # called once per deepen generation: the round's last call is its record
         if k_long <= 0:
+            self._log_selection(by_node, main, [], done, {}, 1.0)
             self._log_slots_by_origin(main, ctx)
             return main
         taken = {c["cluster_id"] for c in main} | done
@@ -1405,6 +1421,41 @@ class NanoLoop:
         self._log_selection(by_node, main, picks, done, weights, wsum)
         self._log_slots_by_origin(main + picks, ctx)
         return main + picks
+
+    def _drop_selection_rows(self) -> None:
+        """Remove this round's selection.jsonl rows and slots_by_origin decision written by an earlier call: the
+        selection is re-run after every interrogation generation, and only the round's final one is the record."""
+        self.decisions = [d for d in self.decisions if not (d.get("step") == "slots_by_origin" and d.get("round") == self.round_now)]
+        p = self.run_dir / "selection.jsonl"
+        if not p.exists():
+            return
+        lines = p.read_text(encoding="utf-8").splitlines()
+        keep = []
+        for ln in lines:
+            try:
+                if json.loads(ln).get("round") == self.round_now:
+                    continue
+            except Exception:  # noqa: BLE001
+                pass
+            keep.append(ln)
+        if len(keep) != len(lines):
+            p.write_text("".join(ln + "\n" for ln in keep), encoding="utf-8")
+
+    def _close_yields(self) -> None:
+        """source_yield.json and seed_yield.json are written at the start of each round with the yield so far, so the
+        last round's yield is never written: one final record (round = the last round) after the last round."""
+        if not self.sketches:
+            return
+        st = self._origin_stats()
+        self.source_yield = [r for r in self.source_yield if not r.get("final")]
+        self.source_yield.append({"round": self.round_now, "final": True, "tree": st["tree"], "off": st["off"],
+                                  "share_before": self.off_tree_share, "share_next": self.off_tree_share})
+        write_json(self.run_dir / "source_yield.json", {"rounds": self.source_yield})
+        if self.seed_mode != "random":
+            self.seed_yield = [r for r in self.seed_yield if not r.get("final")]
+            self.seed_yield.append({"round": self.round_now, "final": True,
+                                    **SEEDS.yield_history(self.sketches, self.clusters, self.seed_info)})
+            write_json(self.run_dir / "seed_yield.json", {"rounds": self.seed_yield, "mode": self.seed_mode})
 
     def _log_slots_by_origin(self, picks: list, ctx: dict) -> None:
         """Build slots vs idea contexts per origin this round, so the off-map share of each can be compared."""
@@ -1558,8 +1609,11 @@ class NanoLoop:
             parsed = deepen.parse(r.text or "")
             sk = ideate.parse_sketches(parsed["sketch_text"], card="deepen", operator=cl.get("direction", ""),
                                        seed="", call_id=r.call_id, idgen=lambda: new_id("s"))
+            origin = next((s.get("origin") for s in sketches_now if s.get("id") in set(cl.get("members", [])) and s.get("origin")),
+                          "off" if cl.get("node") == tree.OFF_TREE_NODE["id"] else "tree")
             for x in sk:
                 x["node"], x["direction"], x["parent_cluster"] = cl.get("node"), cl.get("direction"), cl["cluster_id"]
+                x["origin"], x["round"] = origin, round_no      # _origin_stats and the resume rebuild read both
                 other = self._node_by_name(x.get("part", ""))      # an idea for another part is filed under that part
                 if other and other != cl.get("node"):
                     x["node"], x["filed_from"] = other, cl.get("node")
@@ -1716,10 +1770,13 @@ class NanoLoop:
                 specs[i] = (specs[i][0], pk["word"]) + tuple(specs[i][2:])
         return specs
 
-    def _pick_memory_free(self, round_no: int, specs: list, seeds: list[str]) -> list:
+    def _pick_memory_free(self, round_no: int, specs: list, seeds: list[str], room: int | None = None) -> list:
         """One ignores-memory context per part per round (anti-fixation guard and an in-run control). It is drawn
         from the part's own contexts when it has two or more; a part with one context gets one extra context,
-        so that the single context still reads the memory. Parts with no memory yet are left alone."""
+        so that the single context still reads the memory. Parts with no memory yet are left alone. `room`: how many
+        extra contexts the --max-sketch-calls cap still allows (None: no cap). With no room left, the extra takes
+        the place of a context from a part that can spare one (one with no memory and two or more contexts, or one
+        with memory and three or more); with no such part, the single-context part gets no guard."""
         self.memory_free = set()
         if not self.use_memory:
             return specs
@@ -1730,18 +1787,44 @@ class NanoLoop:
                 by_part.setdefault(part, []).append(sp)
         rng = random.Random(f"memfree:{self.run_id}:{round_no}")
         extra = []
-        for part, sps in sorted(by_part.items()):
-            if not self.memory().read(part):
+        has_mem = {part: bool(self.memory().read(part)) for part in by_part}
+        dropped: set = set()                          # ids of contexts given up to make room under the test cap
+
+        def _live(part):
+            return [sp for sp in by_part.get(part, []) if id(sp) not in dropped]
+
+        def _make_room():
+            for sp in reversed(specs):                 # the last dealt (lowest priority) first
+                part = self._part_of(sp[2]["id"]) if sp[3] != "upward" else None
+                if part is None or id(sp) in dropped or id(sp) in self.memory_free or sp[0] in ("owner", "focus"):
+                    continue
+                if len(_live(part)) >= (3 if has_mem.get(part) else 2):
+                    dropped.add(id(sp))
+                    per = self.contexts_by_node.setdefault(round_no, {})
+                    per[sp[2]["id"]] = max(0, per.get(sp[2]["id"], 0) - 1)
+                    return sp
+            return None
+        for part in sorted(by_part):
+            sps = _live(part)
+            if not has_mem[part] or not sps:
                 continue
             pool = [sp for sp in sps if sp[0] != "owner"] or sps
             if len(sps) >= 2:
                 pick = rng.choice(pool)
             else:
-                card, _, node, direction = pool[0]
-                seed = rng.choice([w for w in seeds if w not in self.used_seeds] or seeds) if seeds else ""
-                if card == "seeded" and self.seed_mode != "random":
-                    seed = self._seed_for(part, 1, round_no, "memfree")[0]["word"]
-                self.used_seeds.add(seed)
+                if room is not None and len(extra) >= room:   # the test cap is full: the extra replaces a spare context
+                    gone = _make_room()
+                    if gone is None:
+                        self.decisions.append({"round": round_no, "step": "memory_free", "part": part, "skipped": "max-sketch-calls cap"})
+                        continue
+                    room += 1
+                    self.decisions.append({"round": round_no, "step": "memory_free", "part": part, "room_from": gone[2]["id"], "card": gone[0]})
+                card, seed, node, direction = pool[0]
+                if card not in ("owner", "contradiction"):          # their "seed" is the text the prompt shows
+                    seed = rng.choice([w for w in seeds if w not in self.used_seeds] or seeds) if seeds else ""
+                    if card == "seeded" and self.seed_mode != "random":
+                        seed = self._seed_for(part, 1, round_no, "memfree")[0]["word"]
+                    self.used_seeds.add(seed)
                 pick = (card, seed, node, direction)
                 extra.append(pick)
             self.memory_free.add(id(pick))
@@ -1751,7 +1834,7 @@ class NanoLoop:
             per = self.contexts_by_node.setdefault(round_no, {})
             for sp in extra:
                 per[sp[2]["id"]] = per.get(sp[2]["id"], 0) + 1
-        return specs + extra
+        return [sp for sp in specs if id(sp) not in dropped] + extra
 
     def _memory_artefacts(self) -> dict:
         """What a memory entry may cite: candidate ids in verify.jsonl, sketch ids, measured numbers, brief URLs."""
@@ -3865,6 +3948,7 @@ class NanoLoop:
         return self._finish(t0)
 
     def _finish(self, t0: float) -> dict:
+        self._close_yields()                         # the last round's yield (ideation half; written per round otherwise)
         if self.long_steps > 0:
             self.long_runs()
         if self.backend != "mock":                   # sourced facts from the interrogation enter the shared brief cache
