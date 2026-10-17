@@ -63,17 +63,23 @@ class People:
         return cmd
 
     # ---- routes
-    def status(self, people_in_log) -> dict:
+    def status(self, people_in_log, roster=None) -> dict:
         rows = self._load()
         by = {}
+        # an agent started outside this panel (the stage, or by hand) shows as alive while it is in the presence roster
+        for r in roster or ():
+            who = str((r.get("by") if isinstance(r, dict) else r) or "")
+            if who.endswith(".agent"):
+                by[who[:-6]] = {"alive": True, "pid": None, "model": "running", "started": None, "ended": None, "log": None}
         changed = False
         for r in rows:
             alive = pid_alive(r.get("pid"), r.get("created"))
             if not alive and not r.get("ended"):
                 r["ended"] = _now()
                 changed = True
-            by[r["name"]] = {"alive": alive, "pid": r.get("pid"), "model": r.get("model"), "started": r.get("started"),
-                             "ended": r.get("ended"), "log": r.get("log")}
+            if alive or r["name"] not in by:
+                by[r["name"]] = {"alive": alive, "pid": r.get("pid"), "model": r.get("model"), "started": r.get("started"),
+                                 "ended": r.get("ended"), "log": r.get("log")}
         if changed:
             self._save(rows)
         names = []
@@ -140,7 +146,8 @@ def register(httpd) -> People:
 
     def people_route(b, q):
         snap = sp.snapshot(None) if sp is not None else {}
-        return pe.status(snap.get("people") if isinstance(snap, dict) else [])
+        roster = sp.presence.as_list() if sp is not None and hasattr(sp, "presence") else []
+        return pe.status(snap.get("people") if isinstance(snap, dict) else [], roster)
 
     def add_route(b, q):
         if not isinstance(b, dict):
