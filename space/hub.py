@@ -282,7 +282,9 @@ class Handler(BaseHTTPRequestHandler):
                     row["members"] = auth.members_of(row["name"])
                     row["open_to_all"] = row["members"] is None
                     row["member"] = auth.is_member(row["name"], me)
-                    if row["member"] and not (row["open_to_all"] and row["name"].startswith(("rehearse-", "replay-", "shot"))):
+                    # your own spaces always; an open room (no members list) only while it runs, so old stage
+                    # folders do not pile up on the page
+                    if row["member"] and (not row["open_to_all"] or row["alive"]):
                         rows.append(row)
                 return self._send(200, dict(d, spaces=rows, me=me))
             p = (WEB / u.path.lstrip("/")).resolve()
