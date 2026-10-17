@@ -11,10 +11,18 @@ model, executes candidate programs (formal card, exec_feedback = final-only).
 Spend accounting rules of this module:
 - usage is parsed before any error is raised, and an error carries it (CallError.usage);
 - call() sums the usage of every attempt, failed ones included;
-- a call that times out is charged a conservative estimate (prompt chars / 4 + max_tokens +
-  the CLI overhead) and the log record says usage_estimated = true;
+- a call that times out is charged a conservative estimate: prompt chars / 4 + the CLI
+  overhead + the real output cap the backend was given (output_cap: on cli_json that is
+  max(4 x max_tokens, 32000), not max_tokens), and the log record says usage_estimated = true;
+- a timeout is retried at most once, and the reason is logged in retry_reasons; a second
+  timeout ends the call (a call that timed out twice would most likely time out again);
 - the CLI output cap is passed through CLAUDE_CODE_MAX_OUTPUT_TOKENS and every record logs
   max_tokens beside output_tokens (over_cap when the reply exceeded it).
+
+Prompt length: a prompt over config.MAX_PROMPT_CHARS is cut in the middle with a visible
+marker by fit_prompt (run_card.render_prompt applies it before writing prompts/<id>.txt, so
+the file matches what was sent) and the record carries prompt_truncated. A CLI call without a
+cwd runs in a fresh empty folder, never in the repo (no git context reaches the model).
 """
 from __future__ import annotations
 
@@ -22,6 +30,8 @@ import json
 import os
 import shutil
 import subprocess
+import sys
+import tempfile
 import threading
 import time
 from dataclasses import dataclass, asdict
@@ -60,6 +70,8 @@ class CallResult:
     max_tokens: int | None = None
     usage_estimated: bool = False          # a timeout was charged by estimate, not measured
     attempt_errors: list | None = None     # errors of retried attempts (usage already summed)
+    retry_reasons: list | None = None      # why each retry was (or was not) made
+    prompt_truncated: dict | None = None   # fit_prompt info when the prompt was cut
 
     @property
     def total_tokens(self) -> int:
@@ -116,10 +128,42 @@ def _estimate_tokens(text: str) -> int:
     return max(1, len(text) // 4)
 
 
-def timeout_estimate(prompt: str, max_tokens: int, backend: str) -> Usage:
-    """Conservative charge for a call that never returned a usage record."""
+def output_cap(max_tokens: int, backend: str | None, thinking_budget: int | None = None) -> int:
+    """The output cap the backend is really given for a call with this max_tokens. cli_json:
+    max(4 x max_tokens, 32000) (see _call_cli); messages_api: max_tokens plus any thinking
+    budget; mock: max_tokens. Timeouts are charged at this cap and estimators reserve it."""
+    if backend in (None, "cli_json"):
+        return max(int(max_tokens) * 4, 32000)
+    if backend == "messages_api":
+        return int(max_tokens) + int(thinking_budget or 0)
+    return int(max_tokens)
+
+
+def timeout_estimate(prompt: str, max_tokens: int, backend: str,
+                     thinking_budget: int | None = None) -> Usage:
+    """Conservative charge for a call that never returned a usage record: the prompt, the CLI
+    overhead and the full output cap the backend was allowed to spend."""
     overhead = config.CLI_OVERHEAD_TOKENS_EST if backend == "cli_json" else 0
-    return Usage(_estimate_tokens(prompt) + overhead, int(max_tokens), 0, 0)
+    return Usage(_estimate_tokens(prompt) + overhead, output_cap(max_tokens, backend, thinking_budget), 0, 0)
+
+
+PROMPT_CUT_MARKER = ("\n\n[... {n} characters removed here by the harness: the prompt was over "
+                     "its length cap ...]\n\n")
+
+
+def fit_prompt(prompt: str, limit: int | None = None) -> tuple[str, dict | None]:
+    """(prompt, info): a prompt over the cap is cut in the middle, keeping the head and the
+    tail (the format instruction), with a marker that says how much was removed. info is None
+    when nothing was cut."""
+    limit = int(limit or config.MAX_PROMPT_CHARS)
+    if len(prompt) <= limit:
+        return prompt, None
+    room = max(0, limit - len(PROMPT_CUT_MARKER.format(n=len(prompt))))
+    head, tail = room // 2, room - room // 2
+    removed = len(prompt) - head - tail
+    out = prompt[:head] + PROMPT_CUT_MARKER.format(n=removed) + (prompt[-tail:] if tail else "")
+    return out, {"original_chars": len(prompt), "sent_chars": len(out), "removed_chars": removed,
+                 "limit": limit}
 
 
 # ---------------------------------------------------------------- cost
@@ -216,7 +260,7 @@ def _call_cli(prompt: str, model_id: str, max_tokens: int, cwd: Path | None, tim
     # the last continuation, so the head of the reply is lost (a sketch call lost its first four sketches to a
     # 2500 cap, thinking included). The cap is therefore set well above the expected length; max_tokens stays
     # the accounting intent (over_cap is reported when the reply exceeds it).
-    env["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = str(max(int(max_tokens) * 4, 32000))   # thinking counts against it
+    env["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = str(output_cap(max_tokens, "cli_json"))   # thinking counts against it
     if effort:
         env["CLAUDE_CODE_EFFORT_LEVEL"] = str(effort)          # reasoning effort per role: high for builders, low for clerks
     popen_kw: dict = {}
@@ -224,10 +268,23 @@ def _call_cli(prompt: str, model_id: str, max_tokens: int, cwd: Path | None, tim
         popen_kw["creationflags"] = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
     else:
         popen_kw["start_new_session"] = True
+    scratch = None
+    if cwd is None:                      # never the repo: an empty folder, removed afterwards
+        scratch = tempfile.mkdtemp(prefix="htsa_call_")
+        cwd = Path(scratch)
+    try:
+        return _run_cli(cmd, prompt, cwd, env, timeout, popen_kw)
+    finally:
+        if scratch:
+            shutil.rmtree(scratch, ignore_errors=True)
+
+
+def _run_cli(cmd: list, prompt: str, cwd: Path, env: dict, timeout: int,
+             popen_kw: dict) -> tuple[str, Usage, dict]:
     try:
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE, text=True, encoding="utf-8",
-                                errors="replace", cwd=str(cwd) if cwd else None, env=env,
+                                errors="replace", cwd=str(cwd), env=env,
                                 shell=False, **popen_kw)
     except OSError as e:
         raise CallError(f"cannot start {cmd[0]}: {e}") from e
@@ -290,6 +347,14 @@ def _call_api(prompt: str, model_id: str, max_tokens: int, timeout: int,
 
 # ---------------------------------------------------------------- public entry point
 TRANSIENT = ("rate_limit", "overloaded", "529", "503", "502", "timeout", "Timeout", "connection")
+MAX_TIMEOUT_RETRIES = 1          # a timed-out call is retried once at most, with a logged reason
+
+
+def _is_timeout(e: Exception) -> bool:
+    """A call that ran out of time: the CLI kill path, or an SDK / socket timeout."""
+    if isinstance(e, CallError):
+        return bool(e.estimated)
+    return "timeout" in type(e).__name__.lower() or "timed out" in str(e).lower()
 RAW_KEYS = ("usage", "stop_reason", "model", "id", "num_turns", "total_cost_usd", "session_id",
             "modelUsage", "_usage_info", "duration_ms", "duration_api_ms")
 
@@ -310,11 +375,13 @@ def call(prompt: str, *, role: str, tools: list[str] | None = None, call_id: str
     max_tokens = max_tokens or config.PARAMS["max_tokens"].get(role, 3000)
     timeout = timeout or config.PARAMS["call_timeout_s"]
     max_turns = max_turns or config.PARAMS["max_turns"]
-    if len(prompt) > config.MAX_PROMPT_CHARS:
-        prompt = prompt[: config.MAX_PROMPT_CHARS]
+    prompt, truncated = fit_prompt(prompt)
+    if truncated:
+        print(f"[llm] {call_id}: prompt over {truncated['limit']} chars, cut in the middle "
+              f"({truncated['removed_chars']} removed)", file=sys.stderr)
     t0 = time.time()
     text, total, raw, err, stop = "", Usage(), {}, None, None
-    attempts, estimated, attempt_errors = 0, False, []
+    attempts, estimated, attempt_errors, retry_reasons, timeouts = 0, False, [], [], 0
     while attempts <= retries:
         attempts += 1
         try:
@@ -338,27 +405,37 @@ def call(prompt: str, *, role: str, tools: list[str] | None = None, call_id: str
         except Exception as e:  # noqa: BLE001
             err = f"{type(e).__name__}: {str(e)[:500]}"
             attempt_errors.append(err)
+            timed_out = _is_timeout(e)
+            if timed_out:                             # charge the real output cap, not max_tokens
+                timeouts += 1
+                total = total.add(timeout_estimate(prompt, max_tokens, backend, thinking_budget))
+                estimated = True
+            elif isinstance(e, CallError):
+                total = total.add(e.usage)
             if isinstance(e, CallError):
-                if e.estimated:                       # timeout: charge the conservative bound
-                    total = total.add(timeout_estimate(prompt, max_tokens, backend))
-                    estimated = True
-                else:
-                    total = total.add(e.usage)
                 raw = e.raw or raw
-            if attempts > retries or not any(t in err for t in TRANSIENT):
+            if attempts > retries or not (timed_out or any(t in err for t in TRANSIENT)):
                 break
+            if timed_out and timeouts > MAX_TIMEOUT_RETRIES:
+                retry_reasons.append(f"attempt {attempts}: timeout again; not retried")
+                break
+            retry_reasons.append(f"attempt {attempts}: " + (
+                "timeout; retried once in case the stall was transient" if timed_out
+                else f"transient error ({err[:120]})"))
             time.sleep(min(30, 2 ** attempts))
     res = CallResult(call_id=call_id, role=role, backend=backend, model=logical, text=text,
                      usage=total, cost_usd=cost_usd(logical, total),
                      duration_ms=int((time.time() - t0) * 1000), stop_reason=stop, error=err,
                      attempts=attempts, max_tokens=int(max_tokens), usage_estimated=estimated,
-                     attempt_errors=attempt_errors)
+                     attempt_errors=attempt_errors, retry_reasons=retry_reasons,
+                     prompt_truncated=truncated)
     if log_dir is not None:
         log_dir = Path(log_dir)
         log_dir.mkdir(parents=True, exist_ok=True)
         rec = res.to_dict()
         rec["meta"] = meta
         rec["prompt_chars"] = len(prompt)
+        rec["flags"] = {k: config.FLAGS.get(k) for k in config.ENV_FLAGS}
         rec["raw"] = {k: v for k, v in raw.items() if k in RAW_KEYS}
         p = log_dir / f"{call_id}.json"
         write_json(p, rec)

@@ -1,9 +1,11 @@
 """Verifier construction and execution (ARCHITECTURE.md section 3 /verify; section 5 m_verify, k,
 feedback caps; section 8 verification types).
 
-build() makes a hashed, read-only verifier handle from the key-stripped item:
-  ARC: type demo_match, data {train, test_input}, hash = sha256 of the train pairs.
-  BT:  type agreement, data {question, choices}, hash = sha256 of question + choices.
+build() makes a hashed, read-only verifier handle from the key-stripped item and the
+problem's merged checklist (constraints.json):
+  ARC: type demo_match, data {train, test_input, checklist}, hash = sha256 of all three, so
+       a changed test input or checklist fails check_hash like a changed train pair.
+  BT:  type agreement, data {question, choices, checklist}, hash = sha256 of all three.
 run() checks the hash before every use (REP-03, EVL-18), then:
   ARC: executes the program on the train inputs and the test input in one child process
        (arc_exec). verified iff every train pair matches and a valid test grid was predicted
@@ -11,6 +13,19 @@ run() checks the hash before every use (REP-03, EVL-18), then:
        partial_score = matched / total and a feedback.py record.
   BT:  no external check at P0: status unverified, verification_type agreement,
        partial_score = the agreement value the driver supplies. No LLM calls at P0.
+Checklist half of the solve bar (Pr14): every result carries details["checklist"], one
+boolean per checklist item ("c1", "c2", ... in constraints.json order), and
+details["checklist_basis"] says what decided each one. The driver's clears() requires every
+item true when bar.all_items is set. ARC: the base item ("reproduce every example") holds iff
+every train pair matched; the other items are restatements of the rule that the executable
+model checks as a whole (section 3 /verify step 1: an executable model is the strongest
+check), so they hold iff the demo match passed and a valid test grid was predicted. BT: the
+base item holds iff the prediction is one of A-D; other items have no script check at P0 and
+are false (not established), which keeps a BT result from clearing on the checklist alone.
+Not built at P0: the perturbation checks (colour permutation, rotation equivariance) and the
+program-length prior of section 3 /verify step 1. Section 8's ablation table marks
+perturbation checks P1 (post-gate), so at P0 verified means train-pair match plus a valid
+test grid, nothing more.
 The driver chooses which candidates to verify (m_verify) and the attempt budget k; run() logs k
 as details["attempts_budget"] and the attempts actually used in VerifyResult.attempts (ARC: 1,
 since execution is deterministic; BT: 0). surprise needs conf, which run() never sees (the
@@ -23,7 +38,7 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from . import arc_exec, config, feedback
+from . import arc_exec, config, encode, feedback
 from .schemas import Candidate, VerifyResult, append_jsonl, now_ts, strip_key
 
 # P1 hook (EVL-02): adversarial-LLM falsifier for non-executable items. Off at P0; when built it
@@ -36,7 +51,7 @@ LLM_FALSIFIER_ENABLED = False
 class VerifierHandle:
     type: str
     hash: str
-    data: dict = field(default_factory=dict)
+    data: dict = field(default_factory=dict)   # item data plus "checklist" (all hashed)
 
 
 # ---------------------------------------------------------------- build
@@ -47,14 +62,22 @@ def _sha(obj) -> str:
 
 def _hash_for(vtype: str, data: dict) -> str:
     if vtype == "demo_match":
-        return _sha(data["train"])
-    return _sha({"question": data["question"], "choices": data["choices"]})
+        return _sha({"train": data["train"], "test_input": data["test_input"],
+                     "checklist": data.get("checklist", [])})
+    return _sha({"question": data["question"], "choices": data["choices"],
+                 "checklist": data.get("checklist", [])})
 
 
 def _item_of(problem) -> dict:
     """Accept an encode.Problem (uses .item) or an item dict; always key-stripped."""
     item = getattr(problem, "item", problem)
     return strip_key(dict(item))
+
+
+def _checklist_of(problem, benchmark: str) -> list[str]:
+    """The problem's merged checklist; an item dict without one gets the base constraint."""
+    items = [str(x) for x in (getattr(problem, "checklist", None) or []) if str(x).strip()]
+    return items or [encode.BASE_CONSTRAINT[benchmark]]
 
 
 def build(problem, benchmark: str) -> VerifierHandle:
@@ -69,6 +92,7 @@ def build(problem, benchmark: str) -> VerifierHandle:
         vtype = "agreement"
     else:
         raise ValueError(f"unknown benchmark {benchmark}")
+    data["checklist"] = _checklist_of(problem, benchmark)
     return VerifierHandle(type=vtype, hash=_hash_for(vtype, data), data=data)
 
 
@@ -81,6 +105,27 @@ def check_hash(handle: VerifierHandle) -> bool:
 
 
 # ---------------------------------------------------------------- run
+def _is_base(item: str, benchmark: str) -> bool:
+    return encode.norm_item(item) == encode.norm_item(encode.BASE_CONSTRAINT[benchmark])
+
+
+def checklist_map(handle: VerifierHandle, benchmark: str, *, base_ok: bool,
+                  whole_ok: bool | None) -> tuple[dict, dict]:
+    """({"c1": bool, ...}, {"c1": basis, ...}) for every checklist item (Pr14). base_ok
+    decides the benchmark's base item; whole_ok decides the others when an executable model
+    checks the rule as a whole (ARC), and None means no script check exists (BT)."""
+    chk, basis = {}, {}
+    for i, item in enumerate(handle.data.get("checklist") or [], 1):
+        key = f"c{i}"
+        if _is_base(item, benchmark):
+            chk[key], basis[key] = bool(base_ok), ("demo_match" if benchmark == "arc" else "option_letter")
+        elif whole_ok is not None:
+            chk[key], basis[key] = bool(whole_ok), "demo_match (executable model, whole rule)"
+        else:
+            chk[key], basis[key] = False, "unchecked at P0"
+    return chk, basis
+
+
 def _program_of(cand: Candidate) -> str | None:
     if cand.program:
         return cand.program
@@ -93,8 +138,10 @@ def _run_arc(cand: Candidate, handle: VerifierHandle, attempts: int) -> VerifyRe
     details = {"hash": handle.hash, "attempts_budget": attempts}
     if src is None:
         demo = {"matched": 0, "total": len(train), "diffs": [], "errors": ["no program found in candidate"]}
+        chk, basis = checklist_map(handle, "arc", base_ok=False, whole_ok=False)
         return VerifyResult(id=cand.id, status="fail", verification_type="demo_match", attempts=0,
-                            partial_score=0.0, details=details | {"matched": 0, "total": len(train)},
+                            partial_score=0.0, details=details | {"matched": 0, "total": len(train),
+                                                                  "checklist": chk, "checklist_basis": basis},
                             feedback_record=feedback.record_for(cand, demo, "arc", config.PARAMS["feedback_cap_tokens"]))
     res = arc_exec.execute(src, [p["input"] for p in train] + [handle.data["test_input"]])
     outs, errs = res["outputs"], res["errors"]
@@ -105,9 +152,12 @@ def _run_arc(cand: Candidate, handle: VerifierHandle, attempts: int) -> VerifyRe
     if test_err:
         demo["errors"].append(f"test input: {test_err[-arc_exec.ERROR_TAIL_CHARS:]}")
     total = demo["total"]
-    ok = total > 0 and demo["matched"] == total and pred is not None
+    all_train = total > 0 and demo["matched"] == total
+    ok = all_train and pred is not None
+    chk, basis = checklist_map(handle, "arc", base_ok=all_train, whole_ok=ok)
     details |= {"matched": demo["matched"], "total": total, "pred_shape": arc_exec.shape(pred),
-                "test_error": test_err, "timed_out": res["timed_out"], "duration_ms": res["duration_ms"]}
+                "test_error": test_err, "timed_out": res["timed_out"], "duration_ms": res["duration_ms"],
+                "checklist": chk, "checklist_basis": basis}
     return VerifyResult(id=cand.id, status="verified" if ok else "fail", verification_type="demo_match",
                         attempts=1, partial_score=(demo["matched"] / total) if total else 0.0,
                         feedback_record=None if ok else feedback.record_for(
@@ -127,10 +177,13 @@ def _run_bt(cand: Candidate, handle: VerifierHandle, attempts: int, agreement: f
     """Section 8: BRAINTEASER has no external check at P0; agreement-only placeholder."""
     if LLM_FALSIFIER_ENABLED:
         return llm_falsifier(cand, handle, attempts=attempts, run_dir=run_dir)
+    chk, basis = checklist_map(handle, "bt", base_ok=str(cand.pred or "") in ("A", "B", "C", "D"),
+                               whole_ok=None)
     return VerifyResult(id=cand.id, status="unverified", verification_type="agreement", attempts=0,
                         partial_score=float(agreement) if agreement is not None else 0.0,
                         details={"hash": handle.hash, "attempts_budget": attempts, "pred": cand.pred,
-                                 "llm_falsifier": "off (P1 hook)"})
+                                 "llm_falsifier": "off (P1 hook)", "checklist": chk,
+                                 "checklist_basis": basis})
 
 
 def _log(run_dir: Path | None, res: VerifyResult, benchmark: str) -> None:
@@ -151,8 +204,9 @@ def run(cand: Candidate, handle: VerifierHandle, *, attempts: int, benchmark: st
         agreement: float | None, run_dir: Path) -> VerifyResult:
     """README interface; section 3 /verify steps 1, 3 and 7."""
     if not check_hash(handle):
+        chk = {f"c{i}": False for i in range(1, len(handle.data.get("checklist") or []) + 1)}
         res = VerifyResult(id=cand.id, status="unverified", verification_type="none", attempts=0,
-                           details={"hash_mismatch": True, "hash": handle.hash})
+                           details={"hash_mismatch": True, "hash": handle.hash, "checklist": chk})
     elif benchmark == "arc":
         res = _run_arc(cand, handle, attempts)
     elif benchmark == "bt":

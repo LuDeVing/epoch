@@ -9,7 +9,6 @@ private/defaults.json, private/noun_map.json, variants/*.md, encode.json.
 """
 from __future__ import annotations
 
-import os
 import random
 import re
 from dataclasses import dataclass, field
@@ -84,7 +83,11 @@ def grid_spaced(g) -> str:
     return "\n".join(" ".join(str(c) for c in row) for row in g)
 
 
-RAW_VIEW = bool(os.environ.get("HTSA_RAW_VIEW"))   # no decomposition: the raw item, spaced grids, no X-renaming
+def raw_view() -> bool:
+    """config.FLAGS["raw_view"] (env HTSA_RAW_VIEW; recorded in the run header and every call
+    record): no decomposition, every view is the raw item with spaced grids and no X-renaming,
+    so low_prior is the raw item too."""
+    return bool(config.FLAGS.get("raw_view"))
 
 
 def render_item(item: dict, style: str = "compact") -> str:
@@ -207,7 +210,7 @@ def view_parts(problem: Problem, variant: str = "canonical", perm: int = 0,
                data_style: str = "compact") -> dict[str, str]:
     """Routed text blocks {facts, resources, goal, constraints} for one view (step 5).
     facts carries the item data then the numbered facts in view order."""
-    if RAW_VIEW:
+    if raw_view():
         return {"facts": "Data:\n" + render_item(problem.item, "spaced"), "resources": "", "goal": problem.goal,
                 "constraints": numbered_block(problem.checklist)}
     if variant == "low_prior":
@@ -233,13 +236,15 @@ def view_text(parts: dict[str, str]) -> str:
 
 
 def domain_nouns(parsed: list[dict], item: dict) -> list[str]:
-    """Per-item domain-noun list: the encode NOUNS sections, ARC colour names, and for BT a
-    content-word fallback from the question when the encode calls list none (REP-02)."""
+    """Per-item domain-noun list from the original item: the encode NOUNS sections, ARC colour
+    names, and for BT a content-word fallback from the question and every option when the
+    encode calls list none (REP-02)."""
     nouns = [n for p in parsed for n in p.get("nouns", [])]
     if item.get("benchmark") == "arc":
         nouns += ARC_COLORS
     elif not nouns:
-        nouns = [w.lower() for w in re.findall(r"[A-Za-z]{4,}", str(item.get("question", "")))]
+        text = " ".join([str(item.get("question", ""))] + [str(c) for c in item.get("choices", [])])
+        nouns = [w.lower() for w in re.findall(r"[A-Za-z]{4,}", text)]
     out: list[str] = []
     for n in nouns:
         n = n.strip().lower()
@@ -249,7 +254,8 @@ def domain_nouns(parsed: list[dict], item: dict) -> list[str]:
 
 
 def neutralize(text: str, noun_map: dict[str, str]) -> str:
-    """Replace each domain noun (and simple plural) with its neutral token, longest first."""
+    """Replace each domain noun (every surface form: regular and irregular plurals) with its
+    neutral token, longest first. lint.lint_domain checks the result with its own matcher."""
     for noun in sorted(noun_map, key=len, reverse=True):
         text = lint.noun_regex(noun).sub(noun_map[noun], text)
     return text
@@ -302,8 +308,10 @@ def parse_defaults(text: str, benchmark: str) -> list[str]:
 def encode(item: dict, run_dir: Path, *, backend: str, replicate: int, log_dir: Path) -> Problem:
     """Section 3 /encode at P0. Writes problem.md, constraints.json, private/defaults.json,
     private/noun_map.json, variants/{canonical,shuffled,low_prior}.md and encode.json.
-    Step 6 cap: once encode tokens reach 2x one plain CoT call (max_tokens.plain proxy) the
-    optional resolve call is skipped; the two checklist calls and the defaults call always run."""
+    Step 6 cap: cap = encode_cap_mult x max_tokens["plain"] (2 x 16000 = 32000 tokens at the
+    defaults). This is a fixed proxy, not 2x a measured plain CoT call. It is consulted only
+    before the optional resolve call, which is skipped once encode tokens reach the cap; the
+    two checklist calls and the defaults call always run, whatever they cost."""
     from . import run_card as rc   # lazy: run_card imports this module
     s = strip_key(item)
     b, run_dir = s["benchmark"], Path(run_dir)
@@ -318,7 +326,7 @@ def encode(item: dict, run_dir: Path, *, backend: str, replicate: int, log_dir: 
         log["encode_tokens"] += res.usage.total_tokens
         return res.text
 
-    if RAW_VIEW:                                   # decomposition off: no encode or defaults calls
+    if raw_view():                                 # decomposition off: no encode or defaults calls
         bar = {"required_verification": REQUIRED_VERIFICATION[b], "all_items": True}
         checklist = with_base([], b)
         write_json(run_dir / "constraints.json", {"checklist": checklist, "bar": bar})
@@ -360,7 +368,7 @@ def encode(item: dict, run_dir: Path, *, backend: str, replicate: int, log_dir: 
     p.problem_md = problem_markdown(p)
     (run_dir / "problem.md").write_text(p.problem_md, encoding="utf-8")
     p.meta["encode"] = log
-    write_json(run_dir / "encode.json", {**log, "shuffled_perm": p.meta["shuffled_perm"],
+    write_json(run_dir / "encode.json", {**log, "raw_view": False, "shuffled_perm": p.meta["shuffled_perm"],
                                          "low_prior_lint": p.meta["low_prior_lint"]})
     return p
 
@@ -369,7 +377,7 @@ def _write_views(p: Problem, run_dir: Path, replicate: int, nouns: list[str]) ->
     """Step 5: canonical, shuffled (perm id logged) and linted low_prior views in variants/."""
     perm = shuffled_perm_id(p.item_id, replicate)
     lp, noun_map = build_low_prior(p, nouns)
-    p.meta.update(shuffled_perm=perm, low_prior=lp, n_domain_nouns=len(nouns))
+    p.meta.update(shuffled_perm=perm, low_prior=lp, n_domain_nouns=len(nouns), domain_nouns=list(nouns))
     p.views = {"canonical": view_text(view_parts(p, "canonical", 0)),
                "shuffled": view_text(view_parts(p, "canonical", perm)),
                "low_prior": view_text(view_parts(p, "low_prior", 0))}
