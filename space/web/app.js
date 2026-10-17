@@ -12,7 +12,7 @@ import { PresenceChips, focusOf } from './presence.js';
 import { mountStart } from './start.js';
 import { mountInspector } from './inspect.js';
 import { mountPeople } from './people.js';
-import { mountSplitters } from './splitters.js';
+import { mountSplitters, mountStripResizer } from './splitters.js';
 
 const BEAT_MS = 5000, GO_LOCK_MS = 2000, OFFLINE_AFTER_MS = 10000, FOCUS_MIN_MS = 250;
 
@@ -420,7 +420,7 @@ async function main() {
   mountStart(document.getElementById('start-run'), viewApi);
   mountPeople(document.getElementById('people-panel'), viewApi);
   await mountViews();
-  try { mountSplitters(document.getElementById('panes')); } catch (e) { console.warn('splitters not mounted', e); }
+  try { mountSplitters(document.getElementById('panes')); mountStripResizer(document.getElementById('strip')); } catch (e) { console.warn('splitters not mounted', e); }
   if (following) setFollow(following);
   publish();
   beat();

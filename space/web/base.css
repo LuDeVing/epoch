@@ -44,7 +44,7 @@ body.following #panes { outline: 3px solid var(--follow); outline-offset: -3px; 
 #strip { background: var(--bg-panel); border-top: 1px solid var(--line-subtle); padding: 6px 12px; max-height: 22vh; overflow: auto; }
 .strip__text { margin: 4px 0 0; white-space: pre-wrap; font: var(--fs-small)/1.4 var(--font-mono); color: var(--text-2); }
 .strip__agent { color: var(--text-2); }
-body:not(.stage) .strip__text { max-height: 6em; overflow: auto; }
+body:not(.stage) .strip__text { max-height: none; overflow: visible; overflow-wrap: anywhere; }
 
 /* buttons, chips, tags */
 .btn { background: var(--bg-card); border: 1px solid var(--line); border-radius: 5px; padding: 2px 10px; cursor: pointer;
@@ -195,3 +195,14 @@ body.stage .chat__form, body.stage .switch { display: none; }
 body.is-resizing { cursor: col-resize; user-select: none; }
 body.is-resizing iframe, body.is-resizing svg { pointer-events: none; }
 @media (max-width: 900px) { .splitter { display: none; } }
+
+/* The strip's resize handle (splitters.js) */
+.strip-handle { position: relative; height: 8px; cursor: row-resize; background: var(--bg-panel); border-top: 1px solid var(--line-subtle); touch-action: none; }
+.strip-handle::after { content: ""; position: absolute; left: 50%; top: 3px; width: 48px; height: 2px; margin-left: -24px; background: var(--line); border-radius: 2px; }
+.strip-handle:hover::after { background: var(--line-strong); }
+.strip-handle__btn { position: absolute; right: 8px; top: -9px; height: 18px; line-height: 14px; padding: 0 8px; font: var(--fs-small) var(--font-mono); color: var(--text-2);
+  background: var(--bg-panel); border: 1px solid var(--line); border-radius: 9px; cursor: pointer; z-index: 2; }
+#strip.is-collapsed { height: auto; max-height: 2.2em; overflow: hidden; }
+#strip.is-collapsed .strip__text, #strip.is-collapsed .strip__agent, #strip.is-collapsed .muted:not(.strip__digest .muted) { display: none; }
+#strip .strip__digest .mono { white-space: normal; overflow-wrap: anywhere; }
+body.is-resizing-y { cursor: row-resize; user-select: none; }
