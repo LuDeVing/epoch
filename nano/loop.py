@@ -470,15 +470,26 @@ class NanoLoop:
         self._tag_cache: dict[tuple, tuple] = {}             # (node, frozenset(members)) -> (prior, match, source)
 
     # ------------------------------------------------------------ web research per part
+    def _researchable(self, node: dict) -> bool:
+        """Parts that get a web brief, analogies and ledger memory: not the root, not the off-map pseudo-node
+        (it has no frame to research), not question nodes (they belong to a part), not skipped parts."""
+        return (node["id"] not in ("root", tree.OFF_TREE_ID) and tree.kind(node) != "question"
+                and not self._skipped(node["id"]))
+
+    def _research_key(self, node: dict) -> str:
+        """The research cache key: part id plus a hash of profile, lens, baseline version and the part's frame."""
+        return research.cache_key(node, PF.current().name, self.lens, self.baseline_version)
+
     def research_round(self, round_no: int) -> None:
-        """One research call per part (web search + fetch enabled), cached under memory/research."""
+        """One research call per part (web search + fetch enabled), cached under memory/research/<cache key>.
+        Runs after plan_tree (and its preread): the map exists, so each part is read with its own frame."""
         cache = config.MEMORY_DIR / "research"
         goal_md = (self.run_dir / "problem.md").read_text(encoding="utf-8")
-        nodes = [n for n in (self.tree or []) if n["id"] != "root" and not self._skipped(n["id"])]
+        nodes = [n for n in (self.tree or []) if self._researchable(n)]
         (self.run_dir / "research").mkdir(exist_ok=True)
 
         def _one(node):
-            cached = research.load_cached(cache, node["id"], self.research_max_age_days)
+            cached = research.load_cached(cache, self._research_key(node), self.research_max_age_days)
             if cached:
                 return node["id"], cached, "cache"
             if not self._aux_ok("research brief: " + node["name"]):
@@ -505,7 +516,7 @@ class NanoLoop:
             if brief:
                 brief["backend"] = self.backend
                 if self.backend != "mock":           # mock briefs never enter the shared cache
-                    research.save_cache(cache, brief)
+                    research.save_cache(cache, brief, self._research_key(node))
             return node["id"], brief, "web"
 
         with ThreadPoolExecutor(max_workers=4) as ex:
@@ -525,7 +536,8 @@ class NanoLoop:
     def _analogy_one(self, spec) -> tuple:
         """Structured analogies for one part: problems of the same shape in other fields, with sources."""
         node, goal_md, cache, round_no = spec
-        cached = research.load_cached(cache, node["id"] + "_analogy", self.research_max_age_days)
+        akey = self._research_key(node) + "_analogy"
+        cached = research.load_cached(cache, akey, self.research_max_age_days)
         if cached:
             return node["id"], cached, "cache"
         if not self._aux_ok("analogies: " + node["name"]):
@@ -539,19 +551,21 @@ class NanoLoop:
         if an:
             an["backend"] = self.backend
             if self.backend != "mock":
-                research.save_cache(cache, an)
+                research.save_cache(cache, an, akey)
         return node["id"], an, "web"
 
     def inject_ledger(self, nodes: list[dict]) -> None:
-        """Previous overnight verdicts (this baseline version) go to EVERY part's brief as known / failed
-        entries and a "tried before" block: planner-made part ids differ between runs."""
+        """Previous overnight verdicts (this baseline version) go to every part's brief as known / failed
+        entries and a "tried before" block: planner-made part ids differ between runs. Parts only: the root, the
+        off-map pseudo-node and question nodes get no brief. Ledger rows are memory, not reading: they never
+        make a part eligible for the research or adapt card (ideate_round counts literature rows only)."""
         ledger = config.MEMORY_DIR / "experiments" / "ledger.jsonl"
         known, failed = research.ledger_entries(ledger, None, self.baseline_version)
         if not (known or failed):
             return
         tried = ([{"name": e["name"], "why": e.get("effect", ""), "url": e["url"]} for e in known]
                  + [{"name": e["name"], "why": e.get("why", ""), "url": e["url"]} for e in failed])
-        for node in nodes:
+        for node in [n for n in nodes if self._researchable(n)]:
             b = self.briefs.setdefault(node["id"], {"node": node["id"], "known": [], "failed": [], "open": [], "queries": []})
             b["known"] = [e for e in b.get("known", []) if not str(e.get("url", "")).startswith("ledger://")] + known
             b["failed"] = [e for e in b.get("failed", []) if not str(e.get("url", "")).startswith("ledger://")] + failed
@@ -592,12 +606,57 @@ class NanoLoop:
         return self._common(self.baseline_src, False) + ideate.SKETCH_FORMAT      # formal
 
     # ------------------------------------------------------------ problem tree (nano/tree.py)
+    do_preread = True               # --no-preread is the control arm: the planner draws the map without the reading
+
+    def preread(self, round_no: int, goal: str) -> dict | None:
+        """One reading call on the whole problem before the map (card "preread"): the research model summarises,
+        with URLs, how the field splits this kind of problem and its known weak spots, capped to about 2000 tokens.
+        Cached per profile, lens, baseline version and goal text; saved to <run>/preread.json and logged."""
+        cache = config.MEMORY_DIR / "research"
+        key = "preread__" + research.cache_key({"id": "preread", "frame": goal}, PF.current().name, self.lens,
+                                               self.baseline_version).split("__", 1)[1]
+        pre, src = research.load_cached(cache, key, self.research_max_age_days), "cache"
+        if pre is None:
+            if not self._aux_ok("reading before the map"):
+                self.decisions.append({"round": round_no, "step": "preread", "result": "skipped (aux budget)", "ts": now_ts()})
+                return None
+            r = self._call(research.preread_prompt(goal), "research", 4000,
+                           {"card": "preread", "operator": "root", "note": "reading how the field splits this problem"},
+                           model=self.research_model, tools=research.RESEARCH_TOOLS, max_turns=40, timeout=1800)
+            self._ledger("preread", "root", "", r.call_id, r.usage, round_no, "encode")
+            pre, src = research.parse_preread(r.text or ""), "web"
+            if pre:
+                pre.update({"node": "preread", "backend": self.backend})
+                if self.backend != "mock":
+                    research.save_cache(cache, pre, key)
+        if pre:
+            write_json(self.run_dir / "preread.json", {**pre, "source": src})
+        self.decisions.append({"round": round_no, "step": "preread", "source": src if pre else "none",
+                               "sourced_lines": (pre or {}).get("n_sourced", 0), "chars": len((pre or {}).get("text", "")),
+                               "ts": now_ts()})
+        return pre
+
     def plan_tree(self, round_no: int) -> None:
-        """One planner call refines the default tree; fallback is the hand-written DEFAULT_TREE."""
+        """One planner call refines the default tree; fallback is the hand-written DEFAULT_TREE.
+
+        Order of work (N3, decided 2026-10-17): measure, read the whole problem, map, read per part, then doubt.
+        1. Measurements first: the baseline diagnostics are in the planner prompt and outrank everything else.
+        2. Preread (self.preread, card "preread", off with --no-preread or --no-research): one research call on
+           the whole problem, how the field splits it and where it is weak, shown to the planner as "WHAT THE
+           FIELD SAYS ABOUT THIS PROBLEM". Experts represent a problem by its deep structure, which comes from
+           domain knowledge (Chi, Feltovich & Glaser 1981), and research agents read before they generate
+           (AI co-scientist, ResearchAgent, Chain of Ideas, whose ablation found the organised literature the
+           largest single contributor). The reading reports structure and weak spots, never fixes, because
+           worked examples shown first narrow what people produce (Jansson & Smith 1991).
+        3. The map (this call). 4. Per-part research (research_round) with each part's own frame.
+        5. Doubt cards (off-map) only after reading, comparing the map's facts with measurements and literature."""
         nodes = None
         if self.plan_with_model:
             goal = (self.run_dir / "problem.md").read_text(encoding="utf-8")
-            r = self._call(tree.planner_prompt(goal, self.baseline_src, self.lens, self.diagnostics_text), "encode", 2500,
+            pre = self.preread(round_no, goal) if (self.do_preread and self.do_research) else None
+            if not (self.do_preread and self.do_research):
+                self.decisions.append({"round": round_no, "step": "preread", "source": "off", "ts": now_ts()})
+            r = self._call(tree.planner_prompt(goal + research.preread_block(pre), self.baseline_src, self.lens, self.diagnostics_text), "encode", 2500,
                            {"card": "plan", "note": "decomposing the problem into parts"})   # the strong model: the map decides what the search can see
             self._ledger("plan", "none", "", r.call_id, r.usage, round_no, "encode")
             nodes = tree.parse_planner(r.text or "")
@@ -965,6 +1024,11 @@ class NanoLoop:
             with self.lock:
                 append_jsonl(self.run_dir / "disputed_facts.jsonl", rows)
 
+    def _literature_known(self, node_id) -> list[dict]:
+        """A part's KNOWN entries from the literature: no ledger:// rows (the run's own earlier hypotheses)."""
+        return [e for e in (self.briefs.get(node_id) or {}).get("known", []) or []
+                if isinstance(e, dict) and not research._is_ledger(e)]
+
     def ideate_round(self, round_no: int, seeds: list[str]) -> list[dict]:
         """Node x direction contexts (per_node each), plus upward contexts at the root. Cards cycle
         over the push types so every part is seen from several framings."""
@@ -998,19 +1062,20 @@ class NanoLoop:
                     self.used_seeds.add(seed)
                     specs.append((card, seed, node, direction))
                 # one extra context per part x direction reads the research brief; the others do not,
-                # so "with research" vs "without" is measured inside every run
-                if direction != "upward" and node["id"] in self.briefs:
+                # so "with research" vs "without" is measured inside every run. Only a brief with literature
+                # rows counts: ledger rows alone (also present with --no-research) are memory, not research
+                if direction != "upward" and self._read_entries(self.briefs.get(node["id"])) > 0:
                     seed = self.rng.choice([w for w in seeds if w not in self.used_seeds] or seeds)
                     self.used_seeds.add(seed)
                     specs.append(("research", seed, node, direction))
             # one analogy context per part (outward: structure from other fields) and one diagnosis context
             # (inward: aim at what the measurements show), in round 1
             if round_no == 1 and node["id"] != "root" and tree.depth(self.tree, node["id"]) <= 1:   # parts only, not their children
-                if node["id"] in self.analogies:
+                if node["id"] in self.analogies and self._researchable(node):
                     specs.append(("analogy", "", node, "outward"))
                 if self.diagnostics_text:
                     specs.append(("diagnosis", "", node, "inward"))
-                if self.adapt_card and len((self.briefs.get(node["id"]) or {}).get("known", [])) >= 2:
+                if self.adapt_card and len(self._literature_known(node["id"])) >= 2:   # ledger rows are not known techniques
                     specs.append(("adapt", "", node, "inward"))
         if self.seed_mode != "random":              # N7: seeded contexts get different functions per part, mixed distances
             specs = self._assign_seeds(round_no, specs)
@@ -1091,7 +1156,7 @@ class NanoLoop:
             elif card == "owner":
                 prompt += ideate.OWNER_ADDENDUM.format(text=seed)
             elif card == "adapt":
-                known = (self.briefs.get(node["id"]) or {}).get("known", [])[:3]
+                known = self._literature_known(node["id"])[:3]
                 prompt += ("KNOWN TECHNIQUES FOR THIS PART (with their measured effects):\n"
                            + "\n".join(f"- {e['name']}: {e.get('mechanism', '')} Effect: {e.get('effect', '')} ({e.get('where', '')}) {e.get('url', '')}" for e in known)
                            + "\n\n" + ideate.ADAPT_ADDENDUM)
@@ -3477,8 +3542,12 @@ class NanoLoop:
         if self.backend != "mock":                   # sourced facts from the interrogation enter the shared brief cache
             cache = config.MEMORY_DIR / "research"
             for node_id in {n.get("node") for n in self.deepen_nodes}:
-                facts = [k for n in self.deepen_nodes if n.get("node") == node_id for k in n.get("known", [])]
-                research.merge_facts(cache, node_id, facts)
+                part = next((t for t in self.tree or [] if t["id"] == node_id), None)
+                if part is None or not self._researchable(part):
+                    continue
+                facts = [t for n in self.deepen_nodes if n.get("node") == node_id      # known_tagged keeps the fact check
+                         for t in (n.get("known_tagged") or [{"text": k, "prov": "untagged"} for k in n.get("known", [])])]
+                research.merge_facts(cache, self._research_key(part), facts, run=self.run_id)
 
         def rank_key(c):
             m = self.vres[c.id]["metrics"]
@@ -3759,6 +3828,8 @@ def main() -> int:
                     help="share of idea contexts that work off the problem map (blank / gaps / doubt cards); 0 = off; moves with yield")
     ap.add_argument("--no-planner", action="store_true", help="use the default tree without a planner call")
     ap.add_argument("--no-research", action="store_true", help="skip the web research stage")
+    ap.add_argument("--no-preread", action="store_true",
+                    help="control arm: no whole-problem reading call before the planner draws the map")
     ap.add_argument("--research-model", default="sonnet", help="model for the research role (retrieval)")
     ap.add_argument("--research-max-age", type=float, default=7.0, help="reuse cached briefs younger than N days")
     ap.add_argument("--cheap-model", default="sonnet", help="model for the planner and clustering roles")
@@ -3785,6 +3856,7 @@ def main() -> int:
     loop.off_tree_share = max(0.0, min(0.6, a.off_tree_share))
     loop.plan_with_model = not a.no_planner
     loop.do_research, loop.research_model, loop.research_max_age_days = (not a.no_research), a.research_model, a.research_max_age
+    loop.do_preread = not a.no_preread
     loop.cheap_model = a.cheap_model
     loop.aux_budget = a.aux_budget if a.aux_budget > 0 else 10 * a.budget
     loop.web_mode = "off" if a.no_ideation_web else a.web_mode

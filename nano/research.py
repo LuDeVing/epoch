@@ -8,10 +8,18 @@ Brief schema (JSON from the model, filtered by script):
    "open":   [{"direction", "why", "url"}],                        # named but untested at small scale
    "queries": [...], "node": id, "ts": ...}
 Every entry without an http(s) URL is dropped, so the brief cannot carry invented citations.
-Cached per part under memory/research/<node_id>.json; refreshed only on request.
+Cached per part under memory/research/<key>.json, where the key (cache_key) holds the part id plus a hash of
+the profile, lens, baseline version and the part's frame, so a same-id part from another map never reuses a brief.
+Facts found later (merge_facts) go to an append-only <key>.facts.jsonl beside it, each row with its run, source and
+fact-check verdict; the brief file itself is written once per research call.
+
+Order of reading (see NanoLoop.plan_tree): measurements first, then one whole-problem reading call (preread_prompt:
+how the field splits this kind of problem and where it is known to be weak), then the map, then one brief per part,
+then doubt. The preread informs the parts; it never lists fixes, and the measurements outrank it.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import threading
@@ -26,7 +34,7 @@ RESEARCH_TOOLS = ["WebSearch", "WebFetch"]
 
 def research_prompt(node: dict, goal_md: str, year: int = 2026) -> str:
     assumptions = "\n".join(f"- {a}" for a in node["assumptions"])
-    return (fill("You are researching ONE part of a problem in {v:field} before anyone proposes ideas. ")
+    return (fill("Research ONE part of a problem in {v:field} before anyone proposes ideas. ")
             + f"Use web search as much as needed (prefer {year} and {year - 1} sources: " + fill("{v:sources}). ")
             + "Read the most relevant results.\n\n"
             f"GOAL OF THE WHOLE PROBLEM:\n{goal_md[:1500]}\n\nPART UNDER STUDY: {node['name']}\n"
@@ -177,7 +185,18 @@ def _brief_time(d: dict, p: Path) -> float:
     return p.stat().st_mtime
 
 
+def cache_key(node: dict, profile: str = "", lens: str = "", baseline_version: str = "") -> str:
+    """The research cache key of a part: its id plus a hash of the profile name, the lens, the baseline version and
+    the part's frame (frame, assumptions, boundary). A part with the same id on another map gets its own brief."""
+    frame = json.dumps([str(profile or ""), str(lens or ""), str(baseline_version or ""), str(node.get("frame", "")),
+                        [str(a) for a in node.get("assumptions") or []], str(node.get("boundary", ""))], sort_keys=True)
+    nid = re.sub(r"[^A-Za-z0-9_-]+", "_", str(node.get("id", "x")))[:40]
+    return f"{nid}__{hashlib.sha1(frame.encode('utf-8')).hexdigest()[:12]}"
+
+
 def load_cached(cache_dir: Path, node_id: str, max_age_days: float) -> dict | None:
+    """The cached brief under `node_id` (a cache key) if young enough, with the facts merged into it since:
+    supported or unchecked facts as known entries, "not supported" ones under "disputed" (never shown as known)."""
     p = cache_dir / f"{node_id}.json"
     if not p.exists():
         return None
@@ -188,13 +207,26 @@ def load_cached(cache_dir: Path, node_id: str, max_age_days: float) -> dict | No
     age = time.time() - _brief_time(d, p)         # own timestamp: merge_facts rewrites the file
     if d.get("backend") == "mock":
         return None                                   # never reuse a brief made without the web
-    return d if age <= max_age_days * 86400 else None
+    if age > max_age_days * 86400:
+        return None
+    for row in read_facts(cache_dir, node_id):
+        if row.get("check") == "not supported":
+            d.setdefault("disputed", []).append(row)
+            continue
+        effect = f"fact check: {row['check']}" if row.get("check") else "not checked against its page"
+        d.setdefault("known", []).append({"name": row["text"][:80], "mechanism": row["text"][:400], "effect": effect,
+                                          "where": "found while interrogating an idea", "url": row["url"],
+                                          "check": row.get("check") or "", "prov": row.get("prov") or ""})
+    return d
 
 
-def save_cache(cache_dir: Path, brief: dict) -> None:
+def save_cache(cache_dir: Path, brief: dict, key: str | None = None) -> None:
+    """Write a brief once, under `key` (cache_key) or its node id. Later facts never rewrite it (merge_facts)."""
     cache_dir.mkdir(parents=True, exist_ok=True)
     brief.setdefault("ts", time.strftime("%Y-%m-%dT%H:%M:%S"))   # the research time; later fact merges do not renew it
-    (cache_dir / f"{brief['node']}.json").write_text(json.dumps(brief, indent=1), encoding="utf-8")
+    if key:
+        brief["cache_key"] = key
+    (cache_dir / f"{key or brief['node']}.json").write_text(json.dumps(brief, indent=1), encoding="utf-8")
 
 
 # ---------------------------------------------------------------- memory across runs (experiments ledger)
@@ -238,31 +270,111 @@ def ledger_entries(ledger_path: Path, node_id: str | None = None, baseline_versi
     return known, failed
 
 
-def merge_facts(cache_dir: Path, node_id: str, facts: list[str]) -> int:
-    """Add sourced facts from an interrogation to the cached brief of a part (dedup by URL + text)."""
-    p = cache_dir / f"{node_id}.json"
-    if not p.exists():
+def facts_path(cache_dir: Path, key: str) -> Path:
+    return cache_dir / f"{key}.facts.jsonl"
+
+
+def read_facts(cache_dir: Path, key: str) -> list[dict]:
+    """The append-only fact rows of a brief, in order; unreadable lines are skipped."""
+    p = facts_path(cache_dir, key)
+    out = []
+    if p.exists():
+        for line in p.read_text(encoding="utf-8").splitlines():
+            try:
+                row = json.loads(line)
+            except Exception:  # noqa: BLE001
+                continue
+            if isinstance(row, dict) and row.get("url") and row.get("text"):
+                out.append(row)
+    return out
+
+
+def merge_facts(cache_dir: Path, node_id: str, facts: list, run: str = "") -> int:
+    """Append sourced facts from an interrogation to the brief `node_id` (a cache key) as rows of the append-only
+    <key>.facts.jsonl: text, url, provenance, the fact-check verdict (_check_web_facts: supported, not supported,
+    unclear, or "" when not checked) with its quote, the run and the time. `facts` holds strings or the
+    interrogation's known_tagged dicts {"text", "prov", "check", "check_quote"}; beliefs are not facts and are
+    skipped. Dedup by URL + text. The brief must exist; nothing is ever rewritten. Returns rows added."""
+    if not (cache_dir / f"{node_id}.json").exists():
         return 0
-    try:
-        d = json.loads(p.read_text(encoding="utf-8"))
-    except Exception:  # noqa: BLE001
-        return 0
-    have = {(e.get("url"), e.get("mechanism", "")[:60]) for e in d.get("known", [])}
-    added = 0
+    have = {(r.get("url"), str(r.get("text", ""))[:60]) for r in read_facts(cache_dir, node_id)}
+    rows = []
     for f in facts:
-        m = URL_RE.search(f)
+        t = f if isinstance(f, dict) else {"text": str(f)}
+        text = str(t.get("text", ""))
+        if t.get("prov") == "belief":
+            continue
+        m = URL_RE.search(text)
         if not m:
             continue
-        key = (m.group(0), f[:60])
+        key = (m.group(0), text[:60])
         if key in have:
             continue
         have.add(key)
-        d.setdefault("known", []).append({"name": f[:80], "mechanism": f[:400], "effect": "",
-                                          "where": "found while interrogating an idea", "url": m.group(0)})
-        added += 1
-    if added:
-        p.write_text(json.dumps(d, indent=1), encoding="utf-8")
-    return added
+        rows.append({"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "run": run, "text": text[:400], "url": m.group(0),
+                     "prov": str(t.get("prov") or "untagged"), "check": str(t.get("check") or ""),
+                     "check_quote": str(t.get("check_quote") or "")[:200], "source": "interrogation"})
+    if rows:
+        with facts_path(cache_dir, node_id).open("a", encoding="utf-8") as fh:
+            for r in rows:
+                fh.write(json.dumps(r) + "\n")
+    return len(rows)
+
+
+# ---------------------------------------------------------------- reading before the map (whole problem)
+PREREAD_CHARS = 8000            # about 2000 tokens of the summary reach the planner
+
+
+def preread_prompt(goal_md: str, year: int = 2026) -> str:
+    """One reading call on the whole problem before the planner draws the map: how the field splits this kind of
+    problem and where it is known to be weak. It reports structure, not fixes, so the map is not anchored on ideas."""
+    return (fill("Read what is known about this problem in {v:field} before anyone splits it into parts. ")
+            + f"Use web search and fetch as much as it takes. Prefer {year} and {year - 1} sources, "
+            "then the best-supported older work.\n\n"
+            f"THE PROBLEM:\n{goal_md[:3000]}\n\n"
+            "Report two things.\n"
+            "1. HOW THE FIELD SPLITS IT: the parts or stages that papers, surveys and strong practitioners use to "
+            "describe this kind of problem, and which of them they treat as separate or coupled.\n"
+            "2. KNOWN WEAK SPOTS: where measured gains have come from, where they stopped, and which parts are "
+            "reported to matter more than they look.\n"
+            "Rules: every line carries the URL of its source on the same line; a line without a source is dropped. "
+            "Do not propose changes or ideas; report how the field sees the problem. Under 1200 words.\n\n"
+            "Answer in this form:\nPARTS:\n- <part>: <what it covers> <URL>\nWEAK SPOTS:\n- <spot>: <what is reported> <URL>")
+
+
+_PREREAD_HEADS = ("PARTS", "WEAK SPOTS", "HOW THE FIELD SPLITS IT", "KNOWN WEAK SPOTS")
+
+
+def parse_preread(text: str, cap: int = PREREAD_CHARS) -> dict | None:
+    """Keep the sourced lines (and the two headings) of a preread reply, capped to `cap` characters.
+    None when fewer than two sourced lines survive."""
+    keep, used, n_src = [], 0, 0
+    for line in str(text or "").replace("**", "").splitlines():
+        line = line.rstrip()
+        if not line.strip():
+            continue
+        head = line.strip().lstrip("#0123456789. ").rstrip(":").upper() in _PREREAD_HEADS
+        if not head and not URL_RE.search(line):
+            continue
+        if used + len(line) + 1 > cap:
+            break
+        keep.append(line)
+        used += len(line) + 1
+        n_src += 0 if head else 1
+    if n_src < 2:
+        return None
+    body = "\n".join(keep)
+    return {"text": body, "n_sourced": n_src, "urls": sorted(set(URL_RE.findall(body)))[:40],
+            "ts": time.strftime("%Y-%m-%dT%H:%M:%S")}
+
+
+def preread_block(pre: dict | None) -> str:
+    """The planner's block. The measurements outrank it; it names parts and weak spots, not fixes."""
+    if not pre or not pre.get("text"):
+        return ""
+    return ("\n\nWHAT THE FIELD SAYS ABOUT THIS PROBLEM (read before drawing the map; every line has a source; "
+            "use it to name parts and weak spots the map should show, not as a list of fixes; where it disagrees "
+            "with the measurements below, the measurements win):\n" + pre["text"])
 
 
 # ---------------------------------------------------------------- model-based prior-art tagging
@@ -310,7 +422,7 @@ def parse_tags(text: str, valid_ids: set[str], brief: dict) -> dict[str, tuple[s
 # ---------------------------------------------------------------- structured analogy (cross-domain research)
 def analogy_prompt(node: dict, goal_md: str) -> str:
     assumptions = "\n".join(f"- {a}" for a in node["assumptions"])
-    return (fill("You are looking for ANALOGIES in OTHER fields to one part of a {v:recipe} from {v:field}. The point is ")
+    return (fill("Find ANALOGIES in OTHER fields to one part of a {v:recipe} from {v:field}. The point is ")
             + f"to transfer structure, not to copy a technique.\n\nGOAL OF THE WHOLE PROBLEM:\n{goal_md[:1200]}\n\n"
             f"PART: {node['name']}\nCURRENT DESIGN: {node['frame']}\nASSUMPTIONS:\n{assumptions}\n\n"
             "Use web search as much as needed. Find 5 problems in other fields (biology, control, signal "
@@ -382,9 +494,9 @@ def parse_questions(text: str, cap: int = 8) -> list[str]:
 
 def findings_prompt(questions: list[str], context: str = "", year: int = 2026) -> str:
     qs = "\n".join(f"{i + 1}. {q}" for i, q in enumerate(questions))
-    return (fill("You are the research assistant of an idea agent that is improving {v:problem_brief}. ")
+    return (fill("An idea agent that is improving {v:problem_brief} listed the questions below. ")
             + (f"The agent is working on: {context}. " if context else "")
-            + f"Answer each of its questions below with facts from the web. Use web search and fetch as much as it takes. "
+            + f"Answer each question below with facts from the web. Use web search and fetch as much as it takes. "
             f"Newest first ({year} and {year - 1}), then the best-supported older work. "
             + fill("Give measured numbers ({v:measured_numbers}) whenever the source has them, and say at what {v:size_word} they were measured. ")
             + "Every claim carries the URL of its source on the same line; a claim without a source is not an answer. "
@@ -432,7 +544,7 @@ def normalise_question(q: str) -> str:
 def fetch_prompt(question: str, node: dict | None = None, year: int = 2026) -> str:
     part = (f" The agent is working on this part: {node.get('name')} ({node.get('frame', '')})."
             if isinstance(node, dict) and node.get("name") else "")
-    return ("You are the research assistant of an agent that is writing code and is missing one fact." + part
+    return ("An agent that is writing code is missing one fact." + part
             + f" Find this one fact on the web. Use web search and fetch as much as it takes. Prefer {year} and {year - 1} "
             "sources, then the best-supported older work. Give the measured number or the exact rule when the source has it. "
             "Do not propose ideas. Report what the source says.\n\n"
