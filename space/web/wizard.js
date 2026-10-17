@@ -102,6 +102,8 @@ function Wizard({ api, initial, onDone, onClose }) {
     onDone(sp);
   };
 
+  // rendered as a plain call, not as a component: a component made inside render is a new one each time, so
+  // Preact would rebuild the inputs on every keystroke and the focus would be lost after one character
   const Step = () => {
     switch (step) {
       case 0: return html`<div class="wz-step">
@@ -168,7 +170,7 @@ function Wizard({ api, initial, onDone, onClose }) {
     <div class="wz" role="dialog" aria-label="Describe your problem">
       <div class="wz-head"><div class="wz-title">Describe your problem</div><button class="btn btn--small" type="button" onClick=${onClose}>x</button></div>
       <ol class="wz-steps">${STEPS.map((s, i) => html`<li class=${`wz-stepname${i === step ? ' is-on' : ''}${i < step ? ' is-done' : ''}`} onClick=${() => { if (i <= step || checks[0]) setStep(i); }}>${i + 1}. ${s}</li>`)}</ol>
-      <div class="wz-body"><${Step} /></div>
+      <div class="wz-body">${Step()}</div>
       ${nudges[step] ? html`<div class="wz-nudge">${nudges[step]}</div>` : null}
       ${err ? html`<div class="error">${err}</div>` : null}
       <div class="wz-foot">
