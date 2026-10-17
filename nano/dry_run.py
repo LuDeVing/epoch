@@ -106,7 +106,8 @@ def _mock_profiles(prompt: str, role: str, meta: dict, name: str) -> str | None:
             out.append(f"IDEA: {t} variant {i}\nMECHANISM: apply {t} to the {meta.get('node')} part.\n"
                        f"PREDICTION: a better score at the first check\nTEST: {PF.current().v('cheap_test')}\nSOURCE: own"
                        + ("\nKIND: leap\nBREAKS: every case is treated alike\nKEEPS: the interface\nP_SUCCESS: 0.1\n"
-                          "KILL: a worse score at the first check" if i % 3 == 0 else "\nKIND: port"))
+                          "KILL: a worse score at the first check" if i % 3 == 0 else "\nKIND: port")
+                       + ("\nREMOVES: every item is treated alike" if "Direction OUTWARD" in prompt else ""))
         return "\n\n".join(out)
     if role == "judge" and card == "panel" and name == "review_process":
         k = len(re.findall(r"^K\d+\. ", prompt, flags=re.M)) or 4
@@ -299,7 +300,8 @@ def mock(prompt: str, role: str, meta: dict) -> str:
                        + "\nTARGET: lower loss on rare tokens\nSCOPE: validation loss at 1024"
                        + ("\nKIND: leap\nBREAKS: every layer computes the same thing\nKEEPS: the residual stream and the loss\nP_SUCCESS: 0.1\nKILL: loss gap above +0.05 at 45 steps" if i % 3 == 0 else "\nKIND: port")
                        + ("\nMAPPING: objects: their queue -> our batch; their clock -> our step | relations: r1; r2; r3 | inference: i | break: none" if card == "sketch:analogy" else "")
-                       + ("\nADAPTATION: zero-init the new path" if card == "sketch:adapt" else ""))
+                       + ("\nADAPTATION: zero-init the new path" if card == "sketch:adapt" else "")
+                       + ("\nREMOVES: every layer computes the same thing" if "Direction OUTWARD" in prompt else ""))
         return "\n\n".join(out)
     if role == "judge" and card == "cluster":
         groups: dict[str, list[str]] = {}
