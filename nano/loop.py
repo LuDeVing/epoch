@@ -186,6 +186,8 @@ class CheckerAdapter:
 
     def baseline(self, profile_dir: Path, baseline_file: Path, seeds=None, **kw) -> dict:
         if hasattr(self.impl, "refresh_profile"):
+            if seeds is not None:                    # the profile's seeds reach the old-name path too
+                kw["seeds"] = tuple(seeds)
             return self._call(self.impl.refresh_profile, profile_dir, **kw)
         return self._call(self.impl.baseline_profile, baseline_file, profile_dir,
                           seeds if seeds is not None else (0, 1, 2), **kw)
