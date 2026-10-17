@@ -209,8 +209,9 @@ def check(candidate: Path, out: Path, baseline: dict, *, learn_steps: int = LEAR
                                "forward pass, or detached): " + ", ".join(aj.get("dead_params", [])[:5])}
             return rec
         if aj.get("verdict") == "no_effect_suspect":
-            rec["feedback"] = {"rung": 1, "reason": "the model code changed but the forward pass at initialisation is identical to the "
-                               "original's and no parameter was added: the change does nothing (a path never taken, or a value never read)"}
+            rec["feedback"] = {"rung": 1, "reason": aj.get("reason") or "the model code changed but the forward pass at initialisation "
+                               "is identical to the original's and no parameter was added: the change does nothing (a path never taken, "
+                               "or a value never read)"}
             return rec
     if rung_max < 2:
         rec["status"] = "checked"
