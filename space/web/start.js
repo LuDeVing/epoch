@@ -4,6 +4,7 @@
 // stopped) with Stop. GET /api/run/status every 3 s while a run is alive.
 // mountStart(el, api): api is app.js's viewApi ({ me, flags, base, subscribe }). Colours come from tokens.css only.
 import { html, render } from './vendor/standalone.module.js';
+import { mountWizard } from './wizard.js';
 
 export const POLL_MS = 3000;
 const IDLE_CHECK_MS = 15000;           // without a live run: look again at most this often, on page activity
@@ -61,6 +62,8 @@ export function mountStart(el, api = {}) {
     problem: { title: '', goal: '', success: '', known: '', fixed: '', parts: '', field: '' },
   };
   let timer = null, lastCheck = 0;
+  const wizard = mountWizard(api);
+  const describe = () => wizard.open(S.problem, (sp) => { S.problem = sp; S.profile = '__custom__'; S.confirming = false; S.open = true; draw(); });
 
   const headers = () => {
     const h = { 'Content-Type': 'application/json', 'X-Space-Actor': api.me || 'anon', 'X-Space-Kind': 'human' };
@@ -199,20 +202,18 @@ export function mountStart(el, api = {}) {
       ${!S.loaded && !S.error ? html`<div class="muted">Loading...</div>` : null}
       ${S.loaded ? html`
         <label class="start-field"><span class="start-field__name">Problem</span>
-          <select value=${S.profile} onChange=${(e) => { S.profile = e.target.value; S.confirming = false; draw(); }}>
+          <select value=${S.profile} onChange=${(e) => { S.profile = e.target.value; S.confirming = false; draw(); if (S.profile === '__custom__' && !S.problem.goal) describe(); }}>
             <option value="__custom__">Describe your own problem...</option>
             ${S.profiles.filter((p) => !p.custom).map((p) => html`<option value=${p.name}>${p.name}</option>`)}
             ${S.profiles.some((p) => p.custom) ? html`<optgroup label="Problems you described before">${S.profiles.filter((p) => p.custom).map((p) => html`<option value=${p.name}>${p.goal_short ? p.goal_short.slice(0, 70) : p.name}</option>`)}</optgroup>` : null}
           </select></label>
         ${S.profile === '__custom__' ? html`<div class="start-problem">
-          <input class="start-problem__input" placeholder="Title: what is this about, in a few words" value=${S.problem.title} onInput=${(e) => { S.problem.title = e.target.value; }} maxlength="120" />
-          <textarea class="start-problem__input" rows="3" placeholder="The goal: what you want to find out or improve, and the situation. Required." value=${S.problem.goal} onInput=${(e) => { S.problem.goal = e.target.value; }}></textarea>
-          <textarea class="start-problem__input" rows="2" placeholder="What a good answer looks like, one line each (becomes what the judges score). Optional." value=${S.problem.success} onInput=${(e) => { S.problem.success = e.target.value; }}></textarea>
-          <textarea class="start-problem__input" rows="2" placeholder="What is known: facts, numbers, results, one per line. Optional; files go to the Findings tab." value=${S.problem.known} onInput=${(e) => { S.problem.known = e.target.value; }}></textarea>
-          <textarea class="start-problem__input" rows="2" placeholder="What must stay fixed: rules, limits, things that cannot change. Optional." value=${S.problem.fixed} onInput=${(e) => { S.problem.fixed = e.target.value; }}></textarea>
-          <input class="start-problem__input" placeholder="Parts, comma separated, if you already see them. Optional; the mapper draws them otherwise." value=${S.problem.parts} onInput=${(e) => { S.problem.parts = e.target.value; }} />
-          <input class="start-problem__input" placeholder="Field, like clinic operations or compiler design. Optional." value=${S.problem.field} onInput=${(e) => { S.problem.field = e.target.value; }} maxlength="80" />
-          <div class="muted start-hint">No scorer exists for a described problem, so a blind panel of judges ranks the proposals on your "good answer" lines. People's opinions count at a bounded weight.</div>
+          ${S.problem.goal ? html`<div class="start-problem__sum"><strong>${S.problem.title || 'Your problem'}</strong><div class="muted start-problem__goal">${S.problem.goal.slice(0, 220)}${S.problem.goal.length > 220 ? '...' : ''}</div>
+              <div class="muted">${(S.problem.criteria || []).length} criteria . ${(S.problem.facts || []).length + (S.problem.files || []).length} known . ${(S.problem.limits || []).length} limits</div>
+              <button class="btn btn--small" onClick=${describe}>Edit</button></div>`
+            : html`<div class="start-problem__sum"><div class="muted">Six short steps: the goal, what good looks like, what is known, the limits, the shape, a review.</div>
+              <button class="btn btn--primary" onClick=${describe}>Describe the problem</button></div>`}
+          <div class="muted start-hint">No scorer exists for a described problem, so a blind panel of judges ranks the proposals on your criteria. People's opinions count at a bounded weight.</div>
         </div>` : null}
         ${prof && (prof.goal_short || prof.note) ? html`<div class="muted start-hint">${prof.goal_short}${prof.note ? html`<span class="start-warn"> Note: ${prof.note}.</span>` : null}</div>` : null}
         <fieldset class="start-sizes"><legend class="start-field__name">Size</legend>
