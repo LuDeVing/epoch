@@ -99,6 +99,7 @@ def _fake_loop(tmp_path, replies):
         return SimpleNamespace(text=replies.pop(0), call_id="c", usage=None)
 
     fake = SimpleNamespace(plan_with_model=True, run_dir=tmp_path, baseline_src="x = 1", lens="parts",
+                           _afford=lambda stage, est, note="": True,   # the planner and preread calls are budget-gated (I10)
                            diagnostics_text="", only_nodes={"mix"}, decisions=[], tree=None,
                            _call=call, _ledger=lambda *a, **k: None, _ensure_off_node=lambda: None,
                            _write_tree=lambda: None)

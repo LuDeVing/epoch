@@ -662,8 +662,13 @@ class NanoLoop:
         nodes = None
         if self.plan_with_model:
             goal = (self.run_dir / "problem.md").read_text(encoding="utf-8")
-            pre = self.preread(round_no, goal) if (self.do_preread and self.do_research) else None
-            if not (self.do_preread and self.do_research):
+            want_pre = bool(getattr(self, "do_preread", False) and getattr(self, "do_research", False))
+            pre = None
+            if want_pre and self._afford("research", len(goal) // 4 + 4000, "preread"):   # the reading call is charged like the planner (I10)
+                pre = self.preread(round_no, goal)
+            elif want_pre:
+                self.decisions.append({"round": round_no, "step": "preread", "result": "not affordable", "ts": now_ts()})
+            else:
                 self.decisions.append({"round": round_no, "step": "preread", "source": "off", "ts": now_ts()})
             p = tree.planner_prompt(goal + research.preread_block(pre), self.baseline_src, self.lens, self.diagnostics_text)
             if self._afford("research", len(p) // 4 + 2500, "planner"):   # refused: the default map, as for unusable output
