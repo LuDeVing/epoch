@@ -5,16 +5,11 @@ from __future__ import annotations
 
 import importlib.util
 import json
-import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 REPO = Path(__file__).resolve().parents[2]
-LAB = Path(os.environ.get("HTSA_REAL_LAB_ROOT", "D:/AGI-lab"))
 BATCH = "mock-fix-assume"
 
 
@@ -71,20 +66,26 @@ def test_old_files_migrate():
     assert "assumptions_added" not in old
 
 
-@pytest.mark.skipif(not Path("D:/AGI-lab/.venv").exists(), reason="needs the lab's venv and mock baseline cache")
-def test_mock_run_keeps_design_assumptions():
+def test_mock_run_keeps_design_assumptions(monkeypatch):
+    """A mock run in the test's temp lab, stopped after the interrogation, with the baseline measurement stubbed:
+    nothing is trained and no GPU or lab venv is needed."""
+    from harness import config, llm
+    from nano import dry_run, loop as L
     PF = _llm()
     original = {n["id"]: len(n["assumptions"]) for n in PF.current().tree}
-    for old in (LAB / "runs").glob(BATCH + "__*"):
-        shutil.rmtree(old, ignore_errors=True)
-    env = {**os.environ, "HTSA_LAB_ROOT": str(LAB), "HTSA_BACKEND": "mock", "PYTHONIOENCODING": "utf-8"}
-    r = subprocess.run([sys.executable, "-m", "nano.dry_run", "--batch", BATCH, "--max-sketch-calls", "8",
-                        "--implement", "2", "--rounds", "1"]
-                       + ([] if os.environ.get("HTSA_FIX_FULL_RUN") else ["--stop-after", "deepened"]),   # no GPU checks by default
-                       cwd=REPO, env=env, capture_output=True, text=True,
-                       encoding="utf-8", errors="replace", timeout=3000)
-    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
-    run = next((LAB / "runs").glob(BATCH + "__*"))
+
+    def light_profile(self):                     # no baseline measurement: ideation and deepening need only the text
+        self.diagnostics_text = "measured: validation loss 6.63 at 45 steps; step time 0.12 s"
+        return {"params_nonembed": 21_000_000, "step_s": 0.12, "smoke_loss_first": 10.8, "smoke_loss_last": 6.6,
+                "smoke_steps": 12}
+    monkeypatch.setattr(L.NanoLoop, "_load_profile", light_profile)
+    monkeypatch.setattr(sys, "argv", ["dry_run", "--batch", BATCH, "--max-sketch-calls", "8", "--implement", "2",
+                                      "--rounds", "1", "--stop-after", "deepened"])
+    try:
+        assert dry_run.main() == 0
+    finally:
+        llm.set_mock(None)
+    run = next(config.RUNS_DIR.glob(BATCH + "__*"))
     pt = json.loads((run / "problem_tree.json").read_text(encoding="utf-8"))
     deep = json.loads((run / "deepen.json").read_text(encoding="utf-8")) if (run / "deepen.json").exists() else {}
     for n in pt["nodes"]:

@@ -1,9 +1,7 @@
 """Cheap, GPU-free checks of the nano loop's pure parts: controls, the planner parser, the dry-run mock."""
 import json
-import os
 from pathlib import Path
 
-os.environ.setdefault("HTSA_LAB_ROOT", "D:/AGI-lab")
 ROOT = Path(__file__).resolve().parents[2]
 BASE = (ROOT / "nano" / "train.py").read_text(encoding="utf-8")
 
