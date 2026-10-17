@@ -78,6 +78,21 @@ test('stream: gap filled, duplicate ignored, ping catch-up, 503 reopen with sinc
   assert.deepEqual(status.filter((s) => s === 'live').length, 3);
 });
 
+test('stream: the browser retrying by itself (readyState 0) shows reconnecting, then live again', () => {
+  FakeES.all = [];
+  globalThis.EventSource = FakeES;
+  const status = [];
+  const c = connectSpace({ base: '', since: 0, silentMs: 60000, onEvent: () => {}, onStatus: (s) => status.push(s), onReset: () => {} });
+  const es = FakeES.all[0];
+  es.open();
+  es.readyState = 0; es.onerror();                      // the server went away; the browser reconnects by itself
+  assert.deepEqual(status, ['live', 'reconnecting']);
+  assert.equal(FakeES.all.length, 1, 'no second EventSource while the browser retries');
+  es.open();
+  assert.deepEqual(status, ['live', 'reconnecting', 'live']);
+  c.close();
+});
+
 test('stream: a server reset message stops the module and calls onReset', () => {
   FakeES.all = [];
   globalThis.EventSource = FakeES;

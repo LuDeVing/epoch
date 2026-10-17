@@ -2,7 +2,7 @@
 // kind of contract.json. Deterministic (no clock, no random). Run: node space/web/fixtures/make_log_sample.mjs
 // The story: the loop plans 7 parts; Ana adds "item order" at planned r1 and her agent claims it; Ben notes and
 // presses Go; round 1 ideates, clusters, regroups "choice" (one cluster born, one dead), argues, builds, tests;
-// people vote (hit and miss), veto and choose (Ana's choice overwrites Ben's); the pick of round 1 lists the veto.
+// people vote (hit and miss), veto and choose (Ana's choice overwrites Ben's); the pick for round 2 lists the veto.
 // Round 2 fills the rest with sketches, digests and agent lines until the log holds exactly 300 events.
 
 import { writeFileSync } from 'node:fs';
@@ -144,9 +144,9 @@ export function buildLog() {
     card: { will: 'mark "ties never matter" as disputed', on: 'ties', because: 'Ben doubts it (event ' + chat2 + ')', apply_at: 'at once' } }, { cause: chat2 });
   ev('ben', 'intent_decided', { intent_id: 'i1', decision: 'apply', action: { type: 'dispute_fact', fact: 'ties never matter', reason: 'seed 3 differs', evidence_tag: 'belief', evidence_ref: '' } });
   const disp2 = ev('ben.agent', 'fact_disputed', { node: 'ties', fact: 'ties never matter', reason: 'seed 3 differs', tag: 'belief', ref: '' }, { cause: chat2 });
-  // the pick of round 1 lists Ana's veto and takes Ana's choice
+  // the pick for round 2 (the loop's pick record names the round it picks for) lists Ana's veto and takes Ana's choice
   const step2 = ev('ana', 'run_step', { round: 1, stage: 'verified' });
-  team('question_picked', { round: 1, top3: [{ id: 'q_00000001', kind: 'question', text: 'does item order matter for best fit?', score: 0.8 },
+  team('question_picked', { round: 2, top3: [{ id: 'q_00000001', kind: 'question', text: 'does item order matter for best fit?', score: 0.8 },
     { id: 'q_00000002', kind: 'question', text: 'is the residual tree worth its cost?', score: 0.6 }],
   chosen: 'q_00000001', by: 'person', vetoed: ['u0000000003'] }, { round: 1, stage: 'verified' });
   team('control_applied', { refs: [disp1, pause1, pause1 + 1, skip, skip + 1, disp2, step2], round: 1, stage: 'verified',

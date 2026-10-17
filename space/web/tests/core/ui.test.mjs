@@ -64,7 +64,7 @@ test('every rail tab renders over the reduced fixture', async () => {
   let text = el.textContent;
   assert.match(text, /Next question/);
   assert.match(text, /measure bins used, not time/);
-  assert.match(text, /applied at the pick of round 1/);
+  assert.match(text, /applied at the pick of round 2/);
   assert.match(text, /is working on part/);
   assert.match(text, /applied in round 1, stage planned/);
   assert.match(text, /Ana via agent/);

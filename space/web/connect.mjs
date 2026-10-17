@@ -1,6 +1,8 @@
 // connect.mjs: the live connection to the space server.
 // connectStream is note 02 Appendix A.3 verbatim (research_notes/multiplayer/02_realtime_sync.md), only renamed so
 // that connectSpace can choose between it and the long-poll mode (?poll=1, design section 2).
+// One addition to A.3: an error while the browser retries by itself (readyState 0) reports 'reconnecting', so a
+// killed server shows Reconnecting at once instead of after the 25 s watchdog. Delivery is unchanged.
 // Both modes give the same callbacks: onEvent(ev) once per seq in order, onStatus('live' | 'reconnecting' |
 // 'hello' | 'presence', info), onReset() when the server's epoch changed or it sent `reset`.
 
@@ -59,7 +61,8 @@ export function connectStream({ base, key = '', since = 0, silentMs = 25000, onE
     });
     es.addEventListener('presence', (e) => { if (stopped) return; arm(); onStatus('presence', JSON.parse(e.data)); });
     es.addEventListener('reset', reset);
-    es.onerror = () => { if (es.readyState === 2) restart('closed_by_browser'); };   // 0 = browser retries itself
+    es.onerror = () => { if (es.readyState === 2) restart('closed_by_browser');   // 0 = browser retries itself
+      else if (!stopped) onStatus('reconnecting', 'browser_retry'); };            // P4 addition: show it (section 13.3)
   }
 
   open();

@@ -85,7 +85,8 @@ export function actorClass(by, byKind, owner) {          // contract.actor_class
 
 export function ownerOf(by) { return String(by || '').split('.')[0]; }
 
-export function cleanId(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9_]+/g, '_').slice(0, 16); }
+// The loop's cleaning (nano/loop.py _add_human_nodes, space/store.py clean_id): drop every other character.
+export function cleanId(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 16); }
 
 export function q(text, cap = QUOTE_CAP) {               // a person's words: tags stripped, whitespace folded, cut
   let t = String(text == null ? '' : text).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
@@ -565,6 +566,8 @@ export function makeReducer({ layoutTree, layoutClusters, anchorFor, contract } 
         else if (refs.has(n.seq) && (n.status === 'queued' || n.status === 'pending')) patchNode(s, ctx, n.id, { status: 'applied', appliedAt: at });
       }
       ctx.applied = { refs, dropped, at };
+      // the loop folds only after the Go: the wait at this boundary is over, so new items wait for the next one
+      if (s.run.waiting && at.round === s.run.round && at.stage === s.run.stage) s.run = { ...s.run, waiting: false };
     },
     digest_taken(s, ev, ctx) {
       const d = ev.data || {};

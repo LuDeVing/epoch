@@ -116,7 +116,9 @@ function onReset() {
 }
 function onStatus(kind, info) {
   if (kind === 'live') { net.status = 'live'; net.since = Date.now(); }
-  else if (kind === 'reconnecting') { if (net.status !== 'reconnecting' && net.status !== 'offline') net.since = Date.now(); net.status = 'reconnecting'; }
+  else if (kind === 'reconnecting') {                         // Offline stays until the line is live again
+    if (net.status !== 'reconnecting' && net.status !== 'offline') { net.since = Date.now(); net.status = 'reconnecting'; }
+  }
   else if (kind === 'hello') {
     net.epoch = info.epoch || net.epoch;
     net.replay = info.replay || null;

@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { makeReducer, trivialLayout, SENTENCES, FEED_EXTRA, NOT_IN_FEED, chipText, hashLayout, hashState, nextBoundary,
-  groupFeed, whoText, q } from '../../reduce.mjs';
+  groupFeed, whoText, q, cleanId } from '../../reduce.mjs';
 import { loadContract, loadLog, pythonKinds } from './contract_src.mjs';
 
 const LOG = loadLog();
@@ -177,6 +177,9 @@ test('one op moves pending, queued, applied (and a dropped add is shown as dropp
   s = R.reduce(s, { seq: 11, kind: 'control_applied', by: 'team.loop', by_kind: 'system', owner: 'team', data: { refs: [10], round: 1, stage: 'planned', dropped: [] } });
   assert.equal(s.nodes.get('order2').status, 'applied');
   assert.equal(chipText(s.feed.find((l) => l.seq === 10), s.run), 'applied in round 1, stage planned');
+  // the Go was consumed: the loop left planned, so a new item waits for the next boundary and Go is not offered
+  assert.equal(s.run.waiting, false, 'control_applied at the boundary the loop waits at ends the wait');
+  assert.equal(chipText({ status: 'queued', kind: 'node_added' }, s.run), 'waits for ideated, round 1');
   s = R.reduce(s, { seq: 12, kind: 'node_added', by: 'ben', by_kind: 'human', owner: 'ben', op: 'ben-1-1', data: { id: 'x2', name: 'x', parent: 'root', origin: 'human' } });
   s = R.reduce(s, { seq: 13, kind: 'control_applied', by: 'team.loop', by_kind: 'system', owner: 'team', data: { refs: [], round: 1, stage: 'ideated', dropped: [{ seq: 12, reason: 'id_taken' }] } });
   assert.equal(s.nodes.get('x2').status, 'rejected');
@@ -200,17 +203,17 @@ test('a veto stays "acts at the next pick" until question_picked lists it', () =
   }
   const v = s.questions.vetoes.get('u0000000003')[0];
   assert.equal(v.status, 'applied');
-  assert.equal(chipText(v, s.run), 'applied at the pick of round 1');
+  assert.equal(chipText(v, s.run), 'applied at the pick of round 2', 'the loop names the round it picks for');
   // Ben's earlier choice was replaced by Ana's, then the pick took Ana's
   const benChoice = s.feed.find((l) => l.kind === 'question_chosen' && l.owner === 'ben');
   assert.equal(chipText(benChoice, s.run), `replaced by Ana's choice at #${benChoice.seq + 1}`);
-  assert.equal(chipText(s.questions.chosen, s.run), 'applied at the pick of round 1');
+  assert.equal(chipText(s.questions.chosen, s.run), 'applied at the pick of round 2');
   // a choice that is not in the top 3 at the pick says so
   const R2 = makeReducer(trivialLayout);
   let t = LOG.filter((e) => e.seq < pickSeq && !(e.kind === 'question_chosen' && e.owner === 'ana')).reduce((st, e) => R2.reduce(st, e), R2.init());
   t = R2.reduce(t, { seq: 900, kind: 'question_chosen', by: 'ana', by_kind: 'human', owner: 'ana', data: { question: 'u0000000009', text: 'far away' } });
   t = R2.reduce(t, { ...LOG[pickSeq - 1], seq: 901 });
-  assert.equal(chipText(t.questions.chosen, t.run), 'not in the top 3 at the pick of round 1');
+  assert.equal(chipText(t.questions.chosen, t.run), 'not in the top 3 at the pick of round 2');
 });
 
 test('chip texts of section 4.7 and the next boundary', () => {
@@ -238,6 +241,17 @@ test('who wrote it, bursts, quotes', () => {
   assert.deepEqual(g.map((x) => [x.seq, x.count]), [[2, 2], [3, 1], [4, 1]]);
   assert.equal(q('<b>hi</b>\n  there'), 'hi there');
   assert.equal(q('x'.repeat(200)).length, 160);
+});
+
+test('node ids are cleaned the way the loop and the server clean them', () => {
+  assert.equal(cleanId('Item-Order'), 'itemorder');
+  assert.equal(cleanId('item order rule long'), 'itemorderrulelon');
+  const R = makeReducer(trivialLayout);
+  let s = upTo(9).reduce((st, e) => R.reduce(st, e), R.init());
+  s = R.reduce(s, { seq: 10, kind: 'node_added', by: 'ana', by_kind: 'human', owner: 'ana', op: 'ana-1-1',
+    data: { id: 'Item-Order', name: 'item order', parent: 'root', origin: 'human' } });
+  s = R.reduce(s, { seq: 11, kind: 'node_skipped', by: 'ben', by_kind: 'human', owner: 'ben', op: 'ben-1-1', subject: 'node:itemorder', data: {} });
+  assert.equal(s.nodes.get('itemorder').skippedBy, 'ben');
 });
 
 test('private keys never reach the view state', () => {
