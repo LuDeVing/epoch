@@ -40,11 +40,15 @@ TAIL_BYTES = 32768
 
 # rounds, builds per round, idea agents per round (None: no cap), the inventing model's token budget
 PRESETS = {
+    # demo: the whole loop on Haiku in a few minutes, to show the team at work; not research quality
+    "demo": {"rounds": 1, "implement": 1, "max_sketch_calls": 4, "budget": 150_000, "model": "haiku",
+             "note": "Demo only: every role runs on Haiku, one round, four idea agents, one build. Fast and cheap; "
+                     "the ideas and the judging are not research quality. Use it on stage, not for results."},
     "small": {"rounds": 1, "implement": 2, "max_sketch_calls": 8, "budget": 600_000},
     "medium": {"rounds": 2, "implement": 4, "max_sketch_calls": 16, "budget": 2_000_000},
     "big": {"rounds": 3, "implement": 10, "max_sketch_calls": None, "budget": 5_000_000},
 }
-PRESET_ORDER = ("small", "medium", "big")
+PRESET_ORDER = ("demo", "small", "medium", "big")
 REAL_MODEL = "fable"           # the inventing model of a real run; the loop's own default would be the cheap model
 
 # Measured on past runs: Fable tokens per call kind, minutes per call, calls in parallel.
@@ -97,15 +101,20 @@ def estimate(preset, profile=None) -> dict:
     calls = 2 + rounds * (sketches + chains * 3 + builds * 2)
     raw = rounds * (sketches * SKETCH_TOKENS + chains * CHAIN_TOKENS + builds * BUILD_TOKENS)
     tokens = min(raw, p["budget"])
-    minutes = round(calls * MINUTES_PER_CALL / PARALLEL)
+    model = p.get("model") or REAL_MODEL
+    minutes = round(calls * MINUTES_PER_CALL / PARALLEL * (0.4 if p.get("model") == "haiku" else 1.0))
     return {"preset": preset, "profile": profile, "rounds": rounds, "sketches": sketches, "chains": chains,
             "builds": builds, "calls": calls, "tokens": tokens, "tokens_uncapped": raw, "capped": raw > p["budget"],
-            "budget": p["budget"], "minutes": minutes}
+            "budget": p["budget"], "minutes": max(1, minutes), "model": model, "demo": bool(p.get("model")),
+            "note": p.get("note", "")}
 
 
 def estimate_words(e: dict) -> str:
     """The estimate in one sentence (the confirm step and the 400 answer repeat it)."""
     cap = " (the budget stops it there)" if e["capped"] else ""
+    if e.get("demo"):
+        return ("A demo run on Haiku: about %d model calls, a few minutes, %d round, %d idea agents and %d build. "
+                "For showing the team at work, not for results." % (e["calls"], e["rounds"], e["sketches"], e["builds"]))
     return ("A real run makes about %d model calls, spends up to %s Fable tokens%s and takes about %d minutes "
             "(%d round%s, %d idea agents and %d builds per round)."
             % (e["calls"], "{:,}".format(e["tokens"]), cap, e["minutes"], e["rounds"], "" if e["rounds"] == 1 else "s",
@@ -124,7 +133,11 @@ def command(preset, profile, mode, batch, space_url, overrides=None) -> list[str
                "--rounds", str(p["rounds"])]
         if p["max_sketch_calls"]:
             cmd += ["--max-sketch-calls", str(p["max_sketch_calls"])]
-        return cmd + ["--model", REAL_MODEL, "--budget", str(p["budget"]), "--space", space_url]
+        model = p.get("model") or REAL_MODEL
+        cmd += ["--model", model]
+        if p.get("model"):                                   # a demo run: the cheap roles and the judges on it too
+            cmd += ["--research-model", model, "--cheap-model", model, "--judge-model", model]
+        return cmd + ["--budget", str(p["budget"]), "--space", space_url]
     raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
 
 

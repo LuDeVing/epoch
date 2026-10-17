@@ -47,3 +47,6 @@ body.stage .start-log { display: none; }
 /* the panel never leaves the screen: it scrolls inside itself */
 .start-panel { max-height: calc(100vh - 56px); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; }
 .start-log { max-height: 40vh; overflow: auto; }
+
+.tag--demo { font-size: 10px; padding: 1px 6px; border: 1px solid var(--ok); color: var(--ok); border-radius: 999px; margin-left: 6px; font-weight: 500; }
+.start-size__warn { display: block; font-size: var(--fs-small); margin-top: 2px; }

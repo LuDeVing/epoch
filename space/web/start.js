@@ -7,7 +7,7 @@ import { html, render } from './vendor/standalone.module.js';
 
 export const POLL_MS = 3000;
 const IDLE_CHECK_MS = 15000;           // without a live run: look again at most this often, on page activity
-const SIZE_TEXT = { small: 'Small', medium: 'Medium', big: 'Big' };
+const SIZE_TEXT = { demo: 'Demo', small: 'Small', medium: 'Medium', big: 'Big' };
 
 // ---- pure helpers (tested under Node) -----------------------------------------------------------------------------
 export function fmtTokens(n) {
@@ -55,8 +55,8 @@ export function mountStart(el, api = {}) {
   const base = api.base || (typeof location !== 'undefined' ? location.origin : '');
   const canStart = !!api.me && !flags.stage;           // the projector never writes; a person joins first
   const S = {
-    open: false, loaded: false, profiles: [], presets: {}, order: ['small', 'medium', 'big'],
-    profile: '', preset: 'small', mode: 'real', confirming: false, busy: false, error: '',
+    open: false, loaded: false, profiles: [], presets: {}, order: ['demo', 'small', 'medium', 'big'],
+    profile: '', preset: 'demo', mode: 'real', confirming: false, busy: false, error: '',
     runs: [], showLog: false, showReport: false, report: null,
     problem: { title: '', goal: '', success: '', known: '', fixed: '', parts: '', field: '' },
   };
@@ -219,13 +219,14 @@ export function mountStart(el, api = {}) {
           ${S.order.filter((k) => S.presets[k]).map((k) => html`<label class=${`start-size${S.preset === k ? ' start-size--on' : ''}`}>
             <input type="radio" name="start-size" value=${k} checked=${S.preset === k}
               onChange=${() => { S.preset = k; S.confirming = false; draw(); }} />
-            <span class="start-size__name">${SIZE_TEXT[k] || k}</span>
-            <span class="muted start-size__what">${presetLine(S.presets[k])}</span>
-            <span class="mono start-size__est">${estimateLine(S.presets[k].estimate)}</span>
+            <span class="start-size__name">${SIZE_TEXT[k] || k}${k === 'demo' ? html` <span class="tag tag--demo">recommended for demos</span>` : null}</span>
+            <span class="muted start-size__what">${presetLine(S.presets[k])}${k === 'demo' ? ' . every role on Haiku' : ''}</span>
+            <span class="mono start-size__est">${k === 'demo' ? `${S.presets[k].estimate.calls} calls, about ${S.presets[k].estimate.minutes} min, cheap` : estimateLine(S.presets[k].estimate)}</span>
+            ${k === 'demo' && S.preset === 'demo' ? html`<span class="start-warn start-size__warn">Demo only: fast and cheap on Haiku, not research quality. Use Small or bigger for real results.</span>` : null}
           </label>`)}
         </fieldset>
         <div class="start-modes" role="group" aria-label="Spend">
-          <span class="muted start-hint">Runs the real team: ideas on Fable, critics and builders on Opus, research on Sonnet. Spends tokens.</span>
+          <span class="muted start-hint">${S.preset === 'demo' ? 'Runs the whole team on Haiku: fast, cheap, for showing how it works.' : 'Runs the real team: ideas on Fable, critics and builders on Opus, research on Sonnet. Spends tokens.'}</span>
         </div>
         ${S.confirming ? html`<div class="start-confirm" role="alert">
             <div>${words}</div>
