@@ -27,7 +27,7 @@ import traceback
 import urllib.parse
 from pathlib import Path
 
-from space import contract, control, digest, snapshot
+from space import contract, control, digest, launch, snapshot
 from space.claims import Claims
 from space.presence import Presence
 from space.replay import Replayer
@@ -427,6 +427,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
                 interrupts = sp.claims.renew_listed(by, d.get("claims"))
                 return self._send(200, {"head": sp.head(), "interrupts": interrupts,
                                         "claims_ok": not any(i["type"] == "claim_lost" for i in interrupts)})
+            ext = getattr(self.server, "routes", {}).get(("POST", u.path))     # space/launch.py: /api/run/*
+            if ext:
+                return self._send(200, ext(d, q))
             raise Reject(404, "no_route")
         except Reject as r:
             self._send(r.code, r.body)
@@ -470,6 +473,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
                 return self._send(200, sp.snapshot(one("me")))
             if u.path == "/api/memory":
                 return self._send(200, sp.memory(one("part")))
+            ext = getattr(self.server, "routes", {}).get(("GET", u.path))      # space/launch.py: /api/run/*
+            if ext:
+                return self._send(200, ext(None, q))
             raise Reject(404, "no_route")
         except Reject as r:
             self._send(r.code, r.body)
@@ -584,6 +590,7 @@ def make(db, port=contract.PORT, host=contract.HOST, web_dir=None, key="", memor
         httpd.server_close()
         raise
     httpd.space = sp
+    launch.register(httpd)                                             # the /api/run/* routes (start a research)
     if replay:
         sp.start_replay(replay, speed, seek)
     return Running(sp, httpd, reap_s)

@@ -1,0 +1,45 @@
+/* start.css: the "Start a research" button, panel and run chip (start.js, part P8). Colours only through the tokens of
+   tokens.css (no raw hex here). The mount sits over the right end of the top bar. */
+#start-run { position: fixed; top: 6px; right: 12px; z-index: 40; display: grid; justify-items: end; gap: 6px;
+  max-width: calc(100vw - 24px); pointer-events: none; }
+#start-run > * { pointer-events: auto; }
+.start-bar { display: flex; align-items: center; gap: var(--gap); min-height: 26px; }
+.btn--start { border-color: var(--owner-c); }
+
+.run-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px;
+  padding: 1px 4px 1px 10px; background: var(--bg-card); font-size: var(--fs-small); }
+.run-chip__text { background: none; border: 0; padding: 0; cursor: pointer; color: var(--text-1); }
+.run-chip__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--owner-team); flex: none; }
+.run-chip--running { border-color: var(--warn); } .run-chip--running .run-chip__dot { background: var(--warn); animation: run-pulse 1.2s ease-in-out infinite; }
+.run-chip--finished { border-color: var(--ok); } .run-chip--finished .run-chip__dot { background: var(--ok); }
+.run-chip--failed { border-color: var(--bad); } .run-chip--failed .run-chip__dot { background: var(--bad); }
+.run-chip--stopped { border-color: var(--line-strong); } .run-chip--stopped .run-chip__dot { background: var(--solid); }
+@keyframes run-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .run-chip--running .run-chip__dot { animation: none; } }
+
+.start-panel, .start-log { background: var(--bg-panel); border: 1px solid var(--line-strong); border-radius: 8px;
+  padding: 10px 12px; width: 380px; max-width: calc(100vw - 24px); display: grid; gap: 8px; }
+.start-panel__title { font-weight: 600; }
+.start-field { display: flex; align-items: center; gap: var(--gap); }
+.start-field__name { color: var(--text-2); font-size: var(--fs-small); min-width: 48px; }
+.start-field select { flex: 1; background: var(--bg-card); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; }
+.start-hint { font-size: var(--fs-small); }
+.start-warn { color: var(--warn); }
+.start-sizes { border: 0; margin: 0; padding: 0; display: grid; gap: 4px; }
+.start-sizes legend { padding: 0 0 4px; }
+.start-size { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: baseline; cursor: pointer;
+  border: 1px solid var(--line-subtle); border-radius: 6px; padding: 4px 8px; }
+.start-size:hover { background: var(--bg-hover); }
+.start-size--on { border-color: var(--owner-c); background: var(--bg-card); }
+.start-size input { grid-row: span 3; margin: 0; accent-color: var(--owner-c); }
+.start-size__name { font-weight: 600; }
+.start-size__what, .start-size__est { font-size: var(--fs-small); }
+.start-modes { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.start-actions { display: flex; align-items: center; gap: var(--gap); flex-wrap: wrap; }
+.start-confirm { border: 1px solid var(--warn); border-radius: 6px; padding: 8px; display: grid; gap: 6px; background: var(--bg-card); }
+.start-error { color: var(--bad); font-size: var(--fs-small); }
+.start-log__head { display: flex; align-items: center; justify-content: space-between; gap: var(--gap); }
+.start-log__dir { font-size: var(--fs-small); overflow-wrap: anywhere; }
+.start-log__text { margin: 0; max-height: 240px; overflow: auto; font: var(--fs-small)/1.4 var(--font-mono); color: var(--text-2);
+  white-space: pre-wrap; overflow-wrap: anywhere; }
+body.stage .start-log { display: none; }

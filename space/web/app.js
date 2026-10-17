@@ -9,6 +9,7 @@ import { makeStore } from './store.mjs';
 import { makeReducer, trivialLayout, chipText, whoText } from './reduce.mjs';
 import { mountRail } from './rail.js';
 import { PresenceChips, focusOf } from './presence.js';
+import { mountStart } from './start.js';
 
 const BEAT_MS = 5000, GO_LOCK_MS = 2000, OFFLINE_AFTER_MS = 10000, FOCUS_MIN_MS = 250;
 
@@ -412,6 +413,7 @@ async function main() {
   start();
   if (!flags.me && !flags.stage) askName();
   mountRail(document.getElementById('rail'), viewApi);
+  mountStart(document.getElementById('start-run'), viewApi);
   await mountViews();
   if (following) setFollow(following);
   publish();

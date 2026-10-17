@@ -1,0 +1,478 @@
+"""Start a research from the page (part P8, start-run). Standard library only.
+
+A person picks a profile, a size preset and Mock or Real; the server spawns the loop detached, writes its output to
+HTSA_LAB_ROOT/spaces/<space>/runs/<batch>.log, records the run in runs.json next to the log, and posts a
+run_started and a run_finished event (as note_posted by the server while contract.KINDS has no run kinds).
+
+Routes (added to the server by register(httpd)):
+    GET  /api/run/profiles                      the profiles, the presets and their estimates
+    GET  /api/run/estimate?preset=&profile=     calls, Fable tokens and minutes for one preset
+    POST /api/run/start {preset, profile, mode, confirm}
+    GET  /api/run/status                        every run: alive, rc, run_dir, the last 20 log lines
+    POST /api/run/stop {batch}                  ends the process tree (taskkill /T /PID)
+
+A real run needs confirm true in the body (else 400 with the estimate). One run at a time (else 409 run_alive),
+because the owner's PC crashed under parallel load.
+"""
+from __future__ import annotations
+
+import json
+import os
+import re
+import subprocess
+import sys
+import threading
+import time
+from pathlib import Path
+
+from space import contract
+from space.store import Reject
+
+REPO = Path(__file__).resolve().parent.parent
+PYTHON = r"D:\AGI-lab\.venv\Scripts\python.exe"
+PROFILES_DIR = REPO / "nano" / "profiles"
+MODES = ("mock", "real")
+TAIL_LINES = 20
+TAIL_BYTES = 32768
+
+# rounds, builds per round, idea agents per round (None: no cap), the inventing model's token budget
+PRESETS = {
+    "small": {"rounds": 1, "implement": 2, "max_sketch_calls": 8, "budget": 600_000},
+    "medium": {"rounds": 2, "implement": 4, "max_sketch_calls": 16, "budget": 2_000_000},
+    "big": {"rounds": 3, "implement": 10, "max_sketch_calls": None, "budget": 5_000_000},
+}
+PRESET_ORDER = ("small", "medium", "big")
+
+# Measured on past runs: Fable tokens per call kind, minutes per call, calls in parallel.
+SKETCH_TOKENS, CHAIN_TOKENS, BUILD_TOKENS = 65_000, 40_000, 35_000
+MINUTES_PER_CALL, PARALLEL = 2.5, 6
+UNCAPPED_SKETCHES = 22                 # what the loop sends per round without a sketch cap (the big preset)
+MAX_CHAINS = 6                         # critic chains per round
+
+PROFILE_NOTES = {"llm": "trains a small model on the GPU, also in mock mode"}
+DEFAULT_PROFILE = "binpack_nobase"
+
+_GOAL_RE = re.compile(r"""["']goal_short["']\s*:\s*\(?\s*["']([^"']*)["']""")
+
+
+# ---------------------------------------------------------------- pure parts: profiles, estimate, command
+def profiles() -> list[dict]:
+    """The profiles under nano/profiles with their goal_short (read as text: importing llm.py would load torch)."""
+    out = []
+    for p in sorted(PROFILES_DIR.glob("*.py")):
+        if p.name.startswith("_"):
+            continue
+        try:
+            m = _GOAL_RE.search(p.read_text(encoding="utf-8", errors="replace"))
+        except OSError:
+            m = None
+        out.append({"name": p.stem, "goal_short": m.group(1) if m else "", "note": PROFILE_NOTES.get(p.stem, "")})
+    return out
+
+
+def profile_names() -> list[str]:
+    return [p["name"] for p in profiles()]
+
+
+def _preset(preset) -> dict:
+    if preset not in PRESETS:
+        raise Reject(422, "bad_preset", preset=preset if isinstance(preset, str) else None, presets=list(PRESET_ORDER))
+    return PRESETS[preset]
+
+
+def estimate(preset, profile=None) -> dict:
+    """Calls, Fable tokens and minutes for one preset. Per round: `sketches` idea agents, min(6, sketches) critic
+    chains of three calls and `builds` builds of two calls; plus two planning calls per run. Tokens stop at the
+    preset's budget. Minutes: 2.5 per call with 6 calls in parallel."""
+    p = _preset(preset)
+    rounds, builds = p["rounds"], p["implement"]
+    sketches = p["max_sketch_calls"] or UNCAPPED_SKETCHES
+    chains = min(MAX_CHAINS, sketches)
+    calls = 2 + rounds * (sketches + chains * 3 + builds * 2)
+    raw = rounds * (sketches * SKETCH_TOKENS + chains * CHAIN_TOKENS + builds * BUILD_TOKENS)
+    tokens = min(raw, p["budget"])
+    minutes = round(calls * MINUTES_PER_CALL / PARALLEL)
+    return {"preset": preset, "profile": profile, "rounds": rounds, "sketches": sketches, "chains": chains,
+            "builds": builds, "calls": calls, "tokens": tokens, "tokens_uncapped": raw, "capped": raw > p["budget"],
+            "budget": p["budget"], "minutes": minutes}
+
+
+def estimate_words(e: dict) -> str:
+    """The estimate in one sentence (the confirm step and the 400 answer repeat it)."""
+    cap = " (the budget stops it there)" if e["capped"] else ""
+    return ("A real run makes about %d model calls, spends up to %s Fable tokens%s and takes about %d minutes "
+            "(%d round%s, %d idea agents and %d builds per round)."
+            % (e["calls"], "{:,}".format(e["tokens"]), cap, e["minutes"], e["rounds"], "" if e["rounds"] == 1 else "s",
+               e["sketches"], e["builds"]))
+
+
+def command(preset, profile, mode, batch, space_url, overrides=None) -> list[str]:
+    """The exact argv of a run. Mock: nano.dry_run (no model, no spend). Real: nano.loop with the preset's budget."""
+    p = dict(_preset(preset), **(overrides or {}))
+    if mode == "mock":
+        cap = p["max_sketch_calls"] or UNCAPPED_SKETCHES
+        return [PYTHON, "-m", "nano.dry_run", "--profile", profile, "--batch", batch, "--implement", str(p["implement"]),
+                "--rounds", str(p["rounds"]), "--max-sketch-calls", str(cap), "--space", space_url]
+    if mode == "real":
+        cmd = [PYTHON, "-m", "nano.loop", "--profile", profile, "--batch", batch, "--implement", str(p["implement"]),
+               "--rounds", str(p["rounds"])]
+        if p["max_sketch_calls"]:
+            cmd += ["--max-sketch-calls", str(p["max_sketch_calls"])]
+        return cmd + ["--budget", str(p["budget"]), "--space", space_url]
+    raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
+
+
+# ---------------------------------------------------------------- processes (Windows first, POSIX fallback)
+def _win_proc(pid: int):
+    """(exists, still running, creation time as an int or None) through kernel32."""
+    import ctypes
+    from ctypes import wintypes
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    k32.OpenProcess.restype = wintypes.HANDLE
+    k32.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
+    k32.GetExitCodeProcess.argtypes = (wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD))
+    k32.GetProcessTimes.argtypes = (wintypes.HANDLE,) + (ctypes.POINTER(wintypes.FILETIME),) * 4
+    k32.CloseHandle.argtypes = (wintypes.HANDLE,)
+    h = k32.OpenProcess(0x1000, False, int(pid))          # PROCESS_QUERY_LIMITED_INFORMATION
+    if not h:
+        return False, False, None
+    try:
+        code = wintypes.DWORD()
+        running = bool(k32.GetExitCodeProcess(h, ctypes.byref(code))) and code.value == 259     # STILL_ACTIVE
+        ft = [wintypes.FILETIME() for _ in range(4)]
+        created = None
+        if k32.GetProcessTimes(h, *[ctypes.byref(f) for f in ft]):
+            created = (ft[0].dwHighDateTime << 32) | ft[0].dwLowDateTime
+        return True, running, created
+    finally:
+        k32.CloseHandle(h)
+
+
+def proc_created(pid) -> int | None:
+    """The creation time of a live process (Windows), so a reused pid is never taken for the run."""
+    if not pid or os.name != "nt":
+        return None
+    try:
+        return _win_proc(pid)[2]
+    except (OSError, AttributeError, ValueError):
+        return None
+
+
+def pid_alive(pid, created=None) -> bool:
+    """True while the process runs. With `created`, a reused pid (another process) counts as dead."""
+    try:
+        pid = int(pid or 0)
+    except (TypeError, ValueError):
+        return False
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        try:
+            exists, running, ctime = _win_proc(pid)
+        except (OSError, AttributeError, ValueError):
+            return False
+        if not (exists and running):
+            return False
+        return created is None or ctime is None or ctime == created
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+
+def kill_tree(pid) -> bool:
+    """End a process and its children (taskkill /T /F /PID). Harmless on a dead pid: returns False."""
+    try:
+        pid = int(pid or 0)
+    except (TypeError, ValueError):
+        return False
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        try:
+            r = subprocess.run(["taskkill", "/T", "/F", "/PID", str(pid)], capture_output=True, timeout=20,
+                               creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+            return r.returncode == 0
+        except (OSError, subprocess.SubprocessError):
+            return False
+    try:
+        os.killpg(pid, 15)
+        return True
+    except OSError:
+        return False
+
+
+def tail(path, n: int = TAIL_LINES) -> list[str]:
+    """The last n lines of a log (read from its last 32 KB)."""
+    if not path:
+        return []
+    try:
+        with open(path, "rb") as f:
+            f.seek(0, 2)
+            size = f.tell()
+            f.seek(max(0, size - TAIL_BYTES))
+            data = f.read()
+    except OSError:
+        return []
+    lines = data.decode("utf-8", errors="replace").replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    if size > TAIL_BYTES:
+        lines = lines[1:]                                   # the first line may be cut
+    while lines and not lines[-1].strip():
+        lines.pop()
+    return lines[-n:]
+
+
+# ---------------------------------------------------------------- the launcher: one per server
+def space_name(db_path) -> str:
+    """spaces/<name>/space.db gives <name>; any other file gives its stem."""
+    p = Path(str(db_path))
+    name = p.parent.name if p.stem == "space" and p.parent.name else p.stem
+    return re.sub(r"[^A-Za-z0-9_.-]", "_", name) or "space"
+
+
+def lab_root() -> Path:
+    return Path(os.environ.get("HTSA_LAB_ROOT") or "D:/AGI-lab")
+
+
+def _now() -> str:
+    return time.strftime("%Y-%m-%dT%H:%M:%S")
+
+
+class Launcher:
+    """Starts, watches and stops the runs of one space. Paths are resolved at call time (HTSA_LAB_ROOT)."""
+
+    def __init__(self, db_path, space_url: str, space=None):
+        self.db_path, self.space_url, self.space = str(db_path), space_url, space
+        self.lock = threading.RLock()
+        self.procs: dict[str, subprocess.Popen] = {}
+        self.overrides: dict = {}          # tests only, e.g. {"implement": 1, "max_sketch_calls": 4}
+
+    # ---- files
+    @property
+    def runs_dir(self) -> Path:
+        return lab_root() / "spaces" / space_name(self.db_path) / "runs"
+
+    def _load(self) -> list[dict]:
+        try:
+            rows = json.loads((self.runs_dir / "runs.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return []
+        return [r for r in rows if isinstance(r, dict) and r.get("batch")] if isinstance(rows, list) else []
+
+    def _save(self, rows: list[dict]) -> None:
+        d = self.runs_dir
+        d.mkdir(parents=True, exist_ok=True)
+        tmp = d / "runs.json.tmp"
+        tmp.write_text(json.dumps(rows, indent=1), encoding="utf-8")
+        os.replace(tmp, d / "runs.json")
+
+    # ---- events (note_posted by the server until contract.KINDS has run_started and run_finished)
+    def _post(self, what: str, rec: dict, text: str) -> None:
+        sp = self.space
+        if sp is None:
+            return
+        kind = what if what in contract.KINDS else "note_posted"
+        data = {"text": text[:contract.NOTE_CAP], "event": what, "batch": rec["batch"], "preset": rec.get("preset"),
+                "profile": rec.get("profile"), "mode": rec.get("mode")}
+        if what == "run_finished":
+            data["rc"] = rec.get("rc")
+            data["state"] = self._state(rec, False)
+        try:
+            sp.store.append("server", "system", {"kind": kind, "owner": "server", "subject": "run:" + rec["batch"],
+                                                 "label": what.replace("_", " "), "data": data})
+        except Exception:                                   # a closing server never fails the run
+            pass
+
+    # ---- start
+    def start(self, preset, profile, mode="mock", confirm=False) -> dict:
+        est = estimate(preset, profile)
+        if mode not in MODES:
+            raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
+        if profile not in profile_names():
+            raise Reject(422, "bad_profile", profile=profile if isinstance(profile, str) else None,
+                         profiles=profile_names())
+        if mode == "real" and confirm is not True:
+            raise Reject(400, "confirm_needed", estimate=est, words=estimate_words(est))
+        with self.lock:
+            live = [r["batch"] for r in self.status()["runs"] if r["alive"]]
+            if live:
+                raise Reject(409, "run_alive", batch=live[0])
+            batch = self._new_batch(preset)
+            cmd = command(preset, profile, mode, batch, self.space_url, self.overrides)
+            d = self.runs_dir
+            d.mkdir(parents=True, exist_ok=True)
+            log = d / (batch + ".log")
+            env = dict(os.environ, HTSA_LAB_ROOT=str(lab_root()), PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
+            if mode == "mock":
+                env["HTSA_BACKEND"] = "mock"
+            if not env.get("HTSA_EXEC_PYTHON"):                # candidate scripts: a temp lab root has no venv
+                env["HTSA_EXEC_PYTHON"] = PYTHON if os.path.exists(PYTHON) else sys.executable
+            if os.name == "nt":
+                kw = {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS}
+            else:
+                kw = {"start_new_session": True}
+            with open(log, "ab") as out:
+                out.write(("$ %s\n" % " ".join(cmd)).encode("utf-8"))
+                out.flush()
+                proc = subprocess.Popen(cmd, cwd=str(REPO), env=env, stdin=subprocess.DEVNULL, stdout=out,
+                                        stderr=subprocess.STDOUT, **kw)
+            rec = {"batch": batch, "pid": proc.pid, "created": proc_created(proc.pid), "preset": preset,
+                   "profile": profile, "mode": mode, "cmd": cmd, "started": _now(), "log": str(log),
+                   "run_dir": None, "rc": None, "finished": None, "stopped": False, "estimate": est}
+            rows = self._load()
+            rows.append(rec)
+            self._save(rows)
+            self.procs[batch] = proc
+        self._post("run_started", rec, "Run %s started: %s, %s preset, profile %s, about %d calls and %d minutes." % (
+            batch, mode, preset, profile, est["calls"], est["minutes"]))
+        threading.Thread(target=self._watch, args=(batch, proc), name="run-" + batch, daemon=True).start()
+        return self._view(rec)
+
+    def _new_batch(self, preset: str) -> str:
+        used = {r["batch"] for r in self._load()}
+        stem = "space-%s-%s" % (preset, time.strftime("%m%d-%H%M%S"))
+        batch, n = stem, 1
+        while batch in used or (self.runs_dir / (batch + ".log")).exists():
+            n += 1
+            batch = "%s-%d" % (stem, n)
+        return batch
+
+    # ---- finish
+    def _watch(self, batch: str, proc: subprocess.Popen) -> None:
+        self._finish(batch, proc.wait())
+
+    def _finish(self, batch: str, rc) -> None:
+        with self.lock:
+            rows = self._load()
+            rec = next((r for r in rows if r["batch"] == batch), None)
+            if rec is None or rec.get("finished"):
+                return
+            rec["rc"], rec["finished"] = rc, _now()
+            rec["run_dir"] = rec.get("run_dir") or self._run_dir(batch)
+            self._save(rows)
+            self.procs.pop(batch, None)
+        state = self._state(rec, False)
+        self._post("run_finished", rec, "Run %s %s%s." % (
+            batch, state, " (exit code unknown)" if rc is None else " (exit code %s)" % rc))
+
+    @staticmethod
+    def _run_dir(batch: str) -> str | None:
+        try:
+            hits = sorted((lab_root() / "runs").glob(batch + "__*"))
+        except OSError:
+            hits = []
+        return str(hits[0]) if hits else None
+
+    @staticmethod
+    def _state(rec: dict, alive: bool) -> str:
+        if alive:
+            return "running"
+        if rec.get("stopped"):
+            return "stopped"
+        return "finished" if rec.get("rc") == 0 else "failed"
+
+    def _alive(self, rec: dict) -> bool:
+        proc = self.procs.get(rec["batch"])
+        if proc is not None:
+            return proc.poll() is None
+        return pid_alive(rec.get("pid"), rec.get("created"))
+
+    def _view(self, rec: dict) -> dict:
+        alive = self._alive(rec)
+        v = dict(rec, alive=alive, state=self._state(rec, alive), tail=tail(rec.get("log")))
+        if not v.get("run_dir"):
+            v["run_dir"] = self._run_dir(rec["batch"])
+        return v
+
+    # ---- status and stop
+    def status(self) -> dict:
+        with self.lock:
+            rows = self._load()
+            out = []
+            for rec in rows:
+                if not rec.get("finished") and rec["batch"] not in self.procs and not self._alive(rec):
+                    self._finish(rec["batch"], None)        # ended while no server watched it: exit code unknown
+                    rec = next((r for r in self._load() if r["batch"] == rec["batch"]), rec)
+                out.append(self._view(rec))
+        out.reverse()                                       # newest first
+        return {"runs": out, "alive": any(r["alive"] for r in out)}
+
+    def stop(self, batch) -> dict:
+        with self.lock:
+            rec = next((r for r in self._load() if r["batch"] == batch), None)
+        if rec is None:
+            raise Reject(404, "no_run", batch=batch)
+        alive = self._alive(rec)
+        killed = kill_tree(rec["pid"]) if alive else False   # never signal a pid that is no longer this run
+        if alive:
+            with self.lock:
+                rows = self._load()
+                for r in rows:
+                    if r["batch"] == batch:
+                        r["stopped"] = True
+                self._save(rows)
+            proc = self.procs.get(batch)
+            if proc is not None:
+                try:
+                    proc.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    pass
+        return {"ok": True, "batch": batch, "was_alive": alive, "killed": killed}
+
+
+# ---------------------------------------------------------------- the server hook
+def _one(q, name: str, default=None):
+    v = (q or {}).get(name)
+    if isinstance(v, list):
+        return v[0] if v else default
+    return v if isinstance(v, str) else default
+
+
+def register(httpd) -> Launcher:
+    """Add the /api/run/* routes to a SpaceServer: httpd.routes[(method, path)] = fn(body, query) -> dict.
+    A handler raises Reject for an error answer."""
+    host, port = httpd.server_address[:2]
+    url = "http://%s:%d" % ("127.0.0.1" if host in ("0.0.0.0", "") else host, port)
+    sp = getattr(httpd, "space", None)
+    la = Launcher(sp.store.path if sp is not None else "space.db", url, sp)
+    httpd.launcher = la
+
+    def body_of(b) -> dict:
+        if not isinstance(b, dict):
+            raise Reject(422, "bad_envelope")
+        return b
+
+    def profiles_route(b, q):
+        return {"profiles": profiles(), "default_profile": DEFAULT_PROFILE, "modes": list(MODES),
+                "order": list(PRESET_ORDER),
+                "presets": {k: dict(PRESETS[k], estimate=estimate(k), words=estimate_words(estimate(k)))
+                            for k in PRESET_ORDER}}
+
+    def estimate_route(b, q):
+        e = estimate(_one(q, "preset", "small"), _one(q, "profile"))
+        return dict(e, words=estimate_words(e))
+
+    def start_route(b, q):
+        b = body_of(b)
+        return la.start(b.get("preset", "small"), b.get("profile") or DEFAULT_PROFILE, b.get("mode", "mock"),
+                        b.get("confirm") is True)
+
+    def status_route(b, q):
+        return la.status()
+
+    def stop_route(b, q):
+        return la.stop(str(body_of(b).get("batch") or ""))
+
+    routes = getattr(httpd, "routes", None)
+    if routes is None:
+        routes = httpd.routes = {}
+    routes.update({("GET", "/api/run/profiles"): profiles_route, ("GET", "/api/run/estimate"): estimate_route,
+                   ("POST", "/api/run/start"): start_route, ("GET", "/api/run/status"): status_route,
+                   ("POST", "/api/run/stop"): stop_route})
+    return la
+
+
+if __name__ == "__main__":                                  # python -m space.launch prints the presets and estimates
+    for k in PRESET_ORDER:
+        print(k, json.dumps(estimate(k)), file=sys.stdout)
