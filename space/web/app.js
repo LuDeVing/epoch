@@ -147,6 +147,8 @@ function headers() {
 }
 const ENVELOPE = ['subject', 'label', 'base', 'round', 'stage', 'claim', 'cause'];
 
+let loginShown = false;
+function needLogin() { if (loginShown) return; loginShown = true; toast('Sign in to take part.'); const u = new URL(location.href); u.searchParams.delete('me'); setTimeout(() => location.replace(u.toString()), 900); }
 export async function post(kind, data, extra = {}) {
   if (!flags.me) { toast('Join with your name first.'); return null; }
   if (flags.stage) return null;                              // the projector never writes
@@ -168,7 +170,8 @@ export async function post(kind, data, extra = {}) {
       }
     } else {
       store.reject(op);
-      toast(chipText({ status: 'rejected', reason: res.error || `http ${r.status}` }));
+      if (r.status === 401) needLogin();
+      else toast(chipText({ status: 'rejected', reason: res.error || `http ${r.status}` }));
     }
   } catch (e) {
     store.reject(op);
@@ -348,19 +351,47 @@ export function toast(text) {
 // login of this PC. The page then reopens itself with ?me=<name>, which the rest of the code reads as before.
 async function autoJoin() {
   const clean = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 24);
-  let name = clean(ls.get('htsa.me'));
-  if (!name) {
-    try {
-      const r = await fetch(`${base}/api/people${flags.key ? `?key=${encodeURIComponent(flags.key)}` : ''}`, { cache: 'no-store' });
-      const j = await r.json();
-      name = clean(j.me_default);
-    } catch (e) { name = ''; }
-  }
+  let name = '';
+  try {
+    const r = await fetch(`${base}/api/me${flags.key ? `?key=${encodeURIComponent(flags.key)}` : ''}`, { cache: 'no-store', credentials: 'same-origin' });
+    if (r.ok) name = clean((await r.json()).name);
+  } catch (e) { name = ''; }
   if (!name) return false;
-  const u = new URL(location.href); u.searchParams.set('me', name);
+  const u = new URL(location.href); u.searchParams.set('me', name); u.searchParams.delete('invite');
   location.replace(u.toString());
   return true;
 }
+
+// Sign in with a password, or join with an invitation code (from a ?invite= link) and choose a password.
+function askLogin() {
+  const top = document.getElementById('topbar');
+  const invite = params.get('invite') || '';
+  let mode = invite ? 'register' : 'login', err = '';
+  const go = async (e) => {
+    e.preventDefault();
+    const f = e.target.elements;
+    const body = mode === 'login' ? { name: f.name.value, password: f.password.value }
+      : { name: f.name.value, password: f.password.value, invite: f.invite.value };
+    try {
+      const r = await fetch(`${base}/api/${mode}${flags.key ? `?key=${encodeURIComponent(flags.key)}` : ''}`, { method: 'POST', credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) { err = j.hint || j.error || `HTTP ${r.status}`; draw(); return; }
+      const u = new URL(location.href); u.searchParams.set('me', j.name); u.searchParams.delete('invite'); location.replace(u.toString());
+    } catch (ex) { err = 'The server is offline.'; draw(); }
+  };
+  const draw = () => render(html`<form class="join" onSubmit=${go}>
+    <span class="brand">HTSA space</span>
+    ${mode === 'register' ? html`<label>Invitation <input name="invite" value=${invite} autocomplete="off" /></label>` : null}
+    <label>Name <input name="name" autocomplete="username" autofocus /></label>
+    <label>Password <input name="password" type="password" autocomplete=${mode === 'login' ? 'current-password' : 'new-password'} /></label>
+    <button class="btn btn--primary" type="submit">${mode === 'login' ? 'Sign in' : 'Join with the invitation'}</button>
+    <button class="btn" type="button" onClick=${() => { mode = mode === 'login' ? 'register' : 'login'; err = ''; draw(); }}>${mode === 'login' ? 'I have an invitation' : 'I have a password'}</button>
+    ${err ? html`<span class="error">${err}</span>` : null}
+    <span class="muted">or open with ?stage=1 to watch</span></form>`, top);
+  draw();
+}
+
 
 function askName() {
   const top = document.getElementById('topbar');
@@ -433,7 +464,7 @@ async function mountViews() {
 async function main() {
   [contract, layout] = await Promise.all([loadContract(), loadLayout()]);
   start();
-  if (!flags.me && !flags.stage) { if (await autoJoin()) return; askName(); }
+  if (!flags.me && !flags.stage) { if (await autoJoin()) return; askLogin(); return; }
   if (flags.me) ls.set('htsa.me', flags.me);
   mountRail(document.getElementById('rail'), viewApi);
   mountStart(document.getElementById('start-run'), viewApi);

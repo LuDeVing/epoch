@@ -17,7 +17,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from space import contract
+from space import auth, contract
 from space.launch import PYTHON, REPO, _now, kill_tree, lab_root, pid_alive, proc_created
 from space.store import Reject
 
@@ -142,7 +142,7 @@ class Hub:
         from space.people import me_default
         return {"spaces": out, "hub": {"port": HUB_PORT, "lab": str(lab_root()), "me_default": me_default()}}
 
-    def create(self, raw_name, lan=False, memory_dir=None) -> dict:
+    def create(self, raw_name, lan=False, memory_dir=None, me=None) -> dict:
         name = clean_name(raw_name)
         with self.lock:
             rows = self._load()
@@ -184,19 +184,21 @@ class Hub:
                     break
                 except OSError:
                     time.sleep(0.1)
-        self._start_my_agent(port)
+        self._start_my_agent(port, me)
         return self._row(rec)
 
     @staticmethod
-    def _start_my_agent(port: int) -> None:
-        """The person at this PC gets their agent as soon as the space exists (Sonnet, canned fallback)."""
+    def _start_my_agent(port: int, me: str | None = None) -> None:
+        """The person who made the space gets their agent as soon as it exists (Sonnet, canned fallback). The agent
+        is a local process, so the request goes as the agent itself, which needs no session."""
         import urllib.request
         from space.people import me_default
+        me = me or me_default()
         try:
-            body = json.dumps({"name": me_default(), "model": "sonnet"}).encode("utf-8")
+            body = json.dumps({"name": me, "model": "sonnet"}).encode("utf-8")
             req = urllib.request.Request("http://127.0.0.1:%d/api/people/add" % port, data=body,
-                                         headers={"Content-Type": "application/json", "X-Space-Actor": me_default(),
-                                                  "X-Space-Kind": "human"}, method="POST")
+                                         headers={"Content-Type": "application/json", "X-Space-Actor": f"{me}.agent",
+                                                  "X-Space-Kind": "agent"}, method="POST")
             urllib.request.urlopen(req, timeout=5).read()
         except Exception:  # noqa: BLE001
             pass
@@ -228,14 +230,31 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):  # quiet
         pass
 
-    def _send(self, code: int, body, ctype="application/json"):
+    def _send(self, code: int, body, ctype="application/json", cookie=None):
         data = body if isinstance(body, bytes) else json.dumps(body).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "no-store")
+        if cookie:
+            self.send_header("Set-Cookie", cookie)
         self.end_headers()
         self.wfile.write(data)
+
+    def _auth(self, path, body) -> bool:
+        res = auth.handle(path, body if isinstance(body, dict) else {}, self.headers, self.client_address, None,
+                          "http://127.0.0.1:%d" % self.server.server_address[1])
+        if res is None:
+            return False
+        code, obj, cookie = res
+        self._send(code, obj, cookie=cookie)
+        return True
+
+    def _user(self) -> str:
+        name, _ = auth.whoami(self.headers, self.client_address)
+        if not name:
+            raise Reject(401, "login_required")
+        return name
 
     def do_GET(self):
         u = urlparse(self.path)
@@ -243,8 +262,11 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if u.path in ("/", "/index.html"):
                 return self._send(200, (WEB / "hub.html").read_bytes(), "text/html; charset=utf-8")
+            if u.path in ("/api/me", "/api/invites"):
+                if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
+                    return None
             if u.path == "/api/spaces":
-                return self._send(200, hub.list())
+                return self._send(200, dict(hub.list(), me=auth.whoami(self.headers, self.client_address)[0]))
             p = (WEB / u.path.lstrip("/")).resolve()
             if WEB.resolve() in p.parents and p.is_file():
                 return self._send(200, p.read_bytes(), STATIC_TYPES.get(p.suffix, "application/octet-stream"))
@@ -260,11 +282,16 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(n) or b"{}") if n else {}
             if not isinstance(body, dict):
                 raise Reject(422, "bad_envelope")
+            if self._auth(u.path, body):
+                return None
             if u.path == "/api/spaces":
-                return self._send(200, hub.create(body.get("name"), lan=bool(body.get("lan")), memory_dir=body.get("memory_dir")))
+                me = self._user()
+                return self._send(200, hub.create(body.get("name"), lan=bool(body.get("lan")), memory_dir=body.get("memory_dir"), me=me))
             if u.path == "/api/spaces/stop":
+                self._user()
                 return self._send(200, hub.stop(body.get("name")))
             if u.path == "/api/spaces/start":
+                self._user()
                 return self._send(200, hub.start(body.get("name")))
             self._send(404, {"error": "no_route"})
         except Reject as r:

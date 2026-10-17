@@ -29,7 +29,7 @@
 import { html, render, useState, useEffect } from './vendor/standalone.module.js';
 
 async function api(path, body) {
-  const r = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' });
+  const r = await fetch(path, body ? { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store', credentials: 'same-origin' });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error ? `${j.error}${j.hint ? `: ${j.hint}` : ''}${j.detail ? `: ${j.detail}` : ''}` : `HTTP ${r.status}`);
   return j;
@@ -62,6 +62,22 @@ function Space({ s, refresh, meDefault }) {
   </div>`;
 }
 
+function Login({ onDone }) {
+  const [err, setErr] = useState('');
+  const go = async (e) => {
+    e.preventDefault();
+    const f = e.target.elements;
+    try { await api('/api/login', { name: f.name.value, password: f.password.value }); onDone(); } catch (ex) { setErr(ex.message); }
+  };
+  return html`<form class="hub__form" onSubmit=${go}>
+    <input type="text" name="name" placeholder="name" autocomplete="username" />
+    <input type="password" name="password" placeholder="password" autocomplete="current-password" />
+    <button class="btn btn--small btn--primary" type="submit">Sign in</button>
+    ${err ? html`<span class="err">${err}</span>` : null}
+    <span class="muted">On this PC the owner is signed in by itself; others sign in with the password they chose with their invitation.</span>
+  </form>`;
+}
+
 function HubPage() {
   const [data, setData] = useState({ spaces: [], hub: {} });
   const [name, setName] = useState('');
@@ -73,20 +89,22 @@ function HubPage() {
   const create = async (e) => {
     e.preventDefault();
     setBusy(true); setErr('');
-    try { const s = await api('/api/spaces', { name, lan }); setName(''); await refresh(); if (s.alive) window.open(s.join.replace('{name}', data.hub.me_default || ''), '_blank'); }
+    try { const s = await api('/api/spaces', { name, lan }); setName(''); await refresh(); if (s.alive) window.open(s.join.replace('{name}', data.me || data.hub.me_default || ''), '_blank'); }
     catch (ex) { setErr(ex.message); }
     setBusy(false);
   };
   return html`<div>
     <h1>HTSA spaces</h1>
-    <div class="hub__sub">A space is one shared research room: a problem tree, idea clusters, arguments, results and the people in it. Each runs on its own port on this PC.</div>
+    <div class="hub__sub">A space is one shared research room: a problem tree, idea clusters, arguments, results and the people in it. Each runs on its own port on this PC.
+      ${data.me ? html` Signed in as <strong>${data.me}</strong> <button class="btn btn--small" onClick=${async () => { await api('/api/logout', {}); refresh(); }}>sign out</button>` : null}</div>
+    ${!data.me ? html`<${Login} onDone=${refresh} />` : null}
     <form class="hub__form" onSubmit=${create}>
       <input type="text" placeholder="new space name, like packing-2" value=${name} onInput=${(e) => setName(e.target.value)} />
       <label class="muted"><input type="checkbox" checked=${lan} onChange=${(e) => setLan(e.target.checked)} /> open to other laptops (needs the firewall rule once)</label>
       <button class="btn btn--small btn--primary" type="submit" disabled=${busy || !name.trim()}>New space</button>
     </form>
     ${err ? html`<div class="err">${err}</div>` : null}
-    ${data.spaces.length ? data.spaces.map((s) => html`<${Space} key=${s.name} s=${s} refresh=${refresh} meDefault=${data.hub.me_default} />`) : html`<div class="muted">No spaces yet. Make one above.</div>`}
+    ${data.spaces.length ? data.spaces.map((s) => html`<${Space} key=${s.name} s=${s} refresh=${refresh} meDefault=${data.me || data.hub.me_default} />`) : html`<div class="muted">No spaces yet. Make one above.</div>`}
     <div class="muted" style="margin-top:18px">Spaces live under ${data.hub.lab || ''}/spaces. A stopped space keeps everything and starts again with its log intact.</div>
   </div>`;
 }

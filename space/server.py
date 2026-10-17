@@ -27,7 +27,7 @@ import traceback
 import urllib.parse
 from pathlib import Path
 
-from space import contract, control, digest, launch, people, snapshot
+from space import auth, contract, control, digest, launch, people, snapshot
 from space.claims import Claims
 from space.presence import Presence
 from space.replay import Replayer
@@ -352,14 +352,30 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
         self.send_error(404, "not found")
         return None
 
-    def _send(self, code: int, obj) -> None:
+    def _send(self, code: int, obj, cookie: str | None = None) -> None:
         b = json.dumps(obj, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(b)))
         self.send_header("Cache-Control", "no-store")
+        if cookie:
+            self.send_header("Set-Cookie", cookie)
         self.end_headers()
         self.wfile.write(b)
+
+    def _base_url(self) -> str:
+        host, port = self.server.server_address[:2]
+        return "http://%s:%d" % ("127.0.0.1" if host in ("0.0.0.0", "") else host, port)
+
+    def _auth(self, path: str, body) -> bool:
+        """The shared login routes (space/auth.py). True when the path was one of them and was answered."""
+        space_id = getattr(self.server.space.store, "space_id", None) if self.server.space else None
+        res = auth.handle(path, body if isinstance(body, dict) else {}, self.headers, self.client_address, space_id, self._base_url())
+        if res is None:
+            return False
+        code, obj, cookie = res
+        self._send(code, obj, cookie)
+        return True
 
     def _who(self, q):
         by = self.headers.get("X-Space-Actor") or q.get("me", ["anon"])[0]
@@ -411,7 +427,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
                 d = json.loads(raw.decode("utf-8") or "{}")
             except (ValueError, UnicodeDecodeError):
                 raise Reject(422, "bad_envelope", detail="json")
+            if self._auth(u.path, d):                      # /api/login, /api/register, /api/logout, /api/password, /api/invites
+                return None
             by, by_kind = self._who(q)
+            if by_kind == "human":
+                auth.require_human(by, self.headers, self.client_address)
+            elif not auth.is_local(self.client_address):   # agents and the loop are processes on this PC
+                raise Reject(403, "local_only", detail="agents and the loop run on the PC that hosts the space")
             if u.path == "/api/events":
                 if isinstance(d, dict) and "events" in d and "kind" not in d:
                     return self._send(200, sp.post_batch(by, by_kind, d["events"]))
@@ -449,6 +471,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
         try:
             self._key(q)
             one = lambda name, default=None: q.get(name, [default])[0]          # noqa: E731
+            if u.path in ("/api/me", "/api/invites"):
+                if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
+                    return None
             if u.path == "/api/events":                        # first load, catch-up, long-poll, agents
                 since = max(0, int(one("since", "0")))
                 wait = max(0.0, min(WAIT_MAX, float(one("wait", "0"))))

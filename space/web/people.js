@@ -22,7 +22,7 @@ function PeoplePanel({ api, onClose }) {
   };
   useEffect(() => { refresh(); const t = setInterval(refresh, 4000); return () => clearInterval(t); }, []);
   const post = async (path, body) => {
-    const r = await fetch(`${base}${path}`, { method: 'POST', headers: headers(), body: JSON.stringify(body) });
+    const r = await fetch(`${base}${path}`, { method: 'POST', credentials: 'same-origin', headers: headers(), body: JSON.stringify(body) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(j.error ? `${j.error}${j.hint ? `: ${j.hint}` : ''}` : `HTTP ${r.status}`);
     return j;
@@ -36,6 +36,13 @@ function PeoplePanel({ api, onClose }) {
   };
   const stop = async (n) => { setBusy(true); setErr(''); try { await post('/api/people/stop', { name: n }); await refresh(); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const people = (data && data.people) || [];
+  const [invites, setInvites] = useState([]);
+  const [pw, setPw] = useState('');
+  const loadInvites = async () => { try { const r = await fetch(`${base}/api/invites`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setInvites(((await r.json()).invites) || []); } catch (e) { /* offline */ } };
+  useEffect(() => { loadInvites(); }, []);
+  const makeInvite = async () => { setBusy(true); setErr(''); try { await post('/api/invites', {}); await loadInvites(); } catch (ex) { setErr(ex.message); } setBusy(false); };
+  const setPassword = async (e) => { e.preventDefault(); setBusy(true); setErr(''); try { await post('/api/password', { password: pw }); setPw(''); setMade({ name: api.me, join_url: '', password: true }); } catch (ex) { setErr(ex.message); } setBusy(false); };
+  const inviteBase = (data && data.invite_url) ? data.invite_url.split('?')[0] : `${base}/`;
   const rename = () => {
     const n = String(window.prompt('Your name in this space', api.me || '') || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 24);
     if (!n || n === api.me) return;
@@ -46,9 +53,16 @@ function PeoplePanel({ api, onClose }) {
     <div class="start-panel__title">People <span class="muted">${data && data.space_id ? data.space_id : ''}</span>
       <button class="btn btn--small" type="button" style="float:right" onClick=${onClose}>x</button></div>
     <div class="people__me">You are <strong>${api.me || 'not joined'}</strong> on this PC <button class="btn btn--small" type="button" onClick=${rename}>change</button></div>
-    <div class="people__invite">${data && data.invite_url
-      ? html`<div>Invite from another laptop: <span class="mono" style="user-select:all">${data.invite_url}&me=&lt;their name&gt;</span></div>`
-      : html`<div class="muted">To invite other laptops, start the space from the hub with "open to other laptops"; you then get a link with a key here.</div>`}</div>
+    <div class="people__invite">
+      <div><button class="btn btn--small btn--primary" type="button" disabled=${busy} onClick=${makeInvite}>Create an invitation</button>
+        <span class="muted">one link per person; they choose a name and a password when they open it</span></div>
+      ${invites.length ? html`<ul class="people__list">${invites.slice(0, 6).map((i) => html`<li class="people__row">
+          <span class="mono" style="user-select:all">${inviteBase}?invite=${i.code}${data && data.lan ? `&key=${data.invite_url.split('key=')[1] || ''}` : ''}</span>
+          <span class=${`tag ${i.used_by ? 'tag--on' : ''}`}>${i.used_by ? `used by ${i.used_by}` : 'open'}</span></li>`)}</ul>` : null}
+      ${!(data && data.lan) ? html`<div class="muted">Links work on this PC; for other laptops start the space from the hub with "open to other laptops".</div>` : null}
+      <form class="people__add" onSubmit=${setPassword}><input type="password" placeholder="set your password (to sign in elsewhere)" value=${pw} onInput=${(e) => setPw(e.target.value)} />
+        <button class="btn btn--small" type="submit" disabled=${busy || pw.length < 4}>Save password</button></form>
+    </div>
     ${people.length ? html`<ul class="people__list">${people.map((p) => html`<li class="people__row">
         <strong>${p.name}</strong>
         <span class=${`tag ${p.agent && p.agent.alive ? 'tag--on' : ''}`}>${p.agent ? (p.agent.alive ? `agent on ${p.agent.model}` : 'agent stopped') : 'no agent'}</span>
@@ -64,7 +78,7 @@ function PeoplePanel({ api, onClose }) {
       </select>
       <button class="btn btn--small btn--primary" type="submit" disabled=${busy || !name.trim()}>Add a second person on this PC</button>
     </form>
-    ${made ? html`<div class="people__made">Added ${made.name}. Their link: <span class="mono" style="user-select:all">${made.join_url}</span></div>` : null}
+    ${made ? html`<div class="people__made">${made.password ? 'Password saved.' : html`Added ${made.name}. Their link: <span class="mono" style="user-select:all">${made.join_url}</span>`}</div>` : null}
     ${err ? html`<div class="error">${err}</div>` : null}
     <div class="muted people__foot">A second person on this PC opens another browser (Edge next to Chrome) with their link. New spaces: <a href=${HUB_URL} target="_blank" rel="noopener">the hub</a>.</div>
   </div>`;
