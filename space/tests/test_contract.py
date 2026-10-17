@@ -130,6 +130,5 @@ def test_kernel_imports_only_the_standard_library():
 def test_contract_is_section_6_1_verbatim():
     doc = (ROOT / "docs" / "MULTIPLAYER_DESIGN.md").read_text(encoding="utf-8")
     m = re.search(r"### 6\.1 .*?```python\n(.*?)```", doc, flags=re.S)
-    if not m:                                      # the doc moved on; the module is still the contract
-        return
+    assert m, "section 6.1 code block not found in docs/MULTIPLAYER_DESIGN.md"
     assert (SPACE / "contract.py").read_text(encoding="ascii").replace("\r\n", "\n") == m.group(1)

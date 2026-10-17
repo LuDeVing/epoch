@@ -284,3 +284,15 @@ def test_make_digest_generic_panel_text():
     for cap in (400, 800, 1200):
         t, _ = make_digest(evs, "carl", cap)
         assert len(t) <= cap and "HUMAN ben" in t
+
+
+def test_question_picked_label_comes_from_the_chosen_question():
+    """The loop's pick record carries the question in data.chosen (a dict, or an id in top3), not in data.text."""
+    top3 = [{"id": "u1", "kind": "tie", "text": "which rule wins ties", "score": 0.9}]
+    as_dict = ev(1, "question_picked", "team.loop", {"round": 2, "top3": top3, "chosen": dict(top3[0]), "by": "default"})
+    as_id = ev(2, "question_picked", "team.bridge", {"round": 3, "top3": top3, "chosen": "u1", "by": "person"})
+    t = render_digest([as_dict, as_id], "ana.agent", "person")
+    assert '"which rule wins ties" (default) [e1]' in t and '"which rule wins ties" (person) [e2]' in t
+    assert '"?"' not in t
+    other = ev(3, "question_picked", "team.loop", {"round": 3, "top3": [], "chosen": "u7", "by": "person"})
+    assert 'is now "u7" (person)' in render_digest([other], "ana.agent", "person")

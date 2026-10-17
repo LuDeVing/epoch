@@ -79,6 +79,14 @@ def _in_scope(ev: dict, scope: set[str]) -> bool:
 def _label(ev: dict, d: dict) -> str:
     if ev.get("label"):
         return str(ev["label"])
+    ch = d.get("chosen") if ev.get("kind") == "question_picked" else None
+    if isinstance(ch, dict):                       # the loop's pick record: chosen is the question itself
+        ch = ch.get("text") or ch.get("id")
+    elif ch not in (None, ""):                     # or its id: the text comes from top3
+        top = [t for t in (d.get("top3") or []) if isinstance(t, dict) and t.get("id") == ch and t.get("text")]
+        ch = top[0]["text"] if top else ch
+    if ch not in (None, ""):
+        return str(ch)
     for k in LABEL_KEYS.get(ev.get("kind"), ()) + ("name", "node"):
         if d.get(k) not in (None, ""):
             return str(d[k])
