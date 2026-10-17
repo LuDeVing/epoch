@@ -233,6 +233,18 @@ def migrate_node(node: dict) -> dict:
     return node
 
 
+# The upward reply format. An upward context proposes a new verifier, not a code change, so the sketch form
+# (IDEA, MECHANISM, PREDICTION, TEST) does not fit it; nano.loop.parse_upward reads these five fields.
+UPWARD_FORMAT = """List 1 to 3 distinct proposals. Do not write code. Use exactly this form for each, one blank line between proposals:
+
+PROPOSAL: <one line: the reframed problem>
+REFRAMING: <what would be modelled or measured differently from the current framing>
+NEW MEASURE: <the new success measure and how it would be computed>
+WHY: <what the current framing cannot see that this one can>
+COST: <what a run judged by the new measure would need: data, compute, code, people>
+"""
+
+
 def node_prompt(node: dict, direction: str, common: str) -> str:
     assumptions = "\n".join(f"- {a}" for a in node["assumptions"])
     head = direction_text(direction)

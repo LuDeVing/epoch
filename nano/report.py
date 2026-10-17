@@ -209,7 +209,8 @@ def collect(run: Path) -> dict:
                             "control_changes": control_changes} if commitments else None,
             "selection": selection, "reproduction": repro, "run_dir": str(run),
             "fidelity": {"checkable": len(fid_checkable), "held": sum(1 for f in fid_checkable if f.get("ok"))} if fidelity else None,
-            "upward": answer.get("upward_proposals", []), "briefs": {k: {"known": len(b.get("known", [])), "failed": len(b.get("failed", [])),
+            "upward": ([u for u in _jsonl(run / "proposals_upward.jsonl") if u.get("proposal")]
+                       or answer.get("upward_proposals", [])), "briefs": {k: {"known": len(b.get("known", [])), "failed": len(b.get("failed", [])),
                                                                          "open": len(b.get("open", [])), "source": b.get("source")} for k, b in briefs.items()},
             "ts": time.strftime("%Y-%m-%dT%H:%M:%S")}
 
@@ -369,7 +370,17 @@ def markdown(d: dict) -> str:
     if d.get("metric_blind_built"):
         L += ["", f"Built ideas whose benefit lies outside this exam (metric-blind): {d['metric_blind_built']}", ""]
     if d["upward"]:
-        L += ["", "## Proposals to reframe the problem (logged, not built)", ""] + [f"- {u.get('idea')}: {u.get('mechanism')}" for u in d["upward"][:10]]
+        L += ["", "## Proposals for a new verifier (upward)", "",
+              "Logged, not acted on: adopting a new success measure is a human decision, so the loop builds and checks "
+              "nothing here. Each proposal reframes the whole problem; the same list is under the root node of "
+              "problem_tree.json (\"proposals\") for reading and voting.", ""]
+        for u in d["upward"][:20]:
+            if u.get("proposal"):
+                L += [f"- **{u['proposal']}** (round {u.get('round', '?')}, {u.get('id', '')})",
+                      f"  - Reframing: {u.get('reframing', '')}", f"  - New measure: {u.get('new_measure', '')}",
+                      f"  - Why: {u.get('why', '')}", f"  - Cost: {u.get('cost', '')}"]
+            else:                                    # a run from before the upward format
+                L.append(f"- {u.get('idea')}: {u.get('mechanism')}")
     return "\n".join(L) + "\n"
 
 
