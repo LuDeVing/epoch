@@ -479,11 +479,36 @@ def _dedup(ctx: Ctx, st: State, C: list[Candidate]) -> tuple[list[Candidate], fl
     dup_rate = float(dd.rate(C, st.all_cands, ctx.benchmark))
     if not ctx.flags["dedup"]:
         return C, dup_rate
-    kept, rows = dd.drop(C, st.all_cands, ctx.benchmark, st.round)
+    try:                          # ARC: a same-grid program that passes the examples is never dropped unverified
+        kept, rows = dd.drop(C, st.all_cands, ctx.benchmark, st.round, demo_of=_demo_pass(ctx, st))
+    except TypeError:             # a stand-in drop without the demo_of keyword
+        kept, rows = dd.drop(C, st.all_cands, ctx.benchmark, st.round)
     if rows:
         append_jsonl(ctx.run_dir / "clusters.jsonl", [{**r, "round": r.get("round", st.round)}
                                                       for r in rows])
     return kept, dup_rate
+
+
+def _demo_pass(ctx: Ctx, st: State):
+    """demo_of for dedup.drop on ARC (0 tokens): True when the program reproduces every train pair.
+    Uses a finished demo_match verification when there is one; dedup calls it only on a grid collision."""
+    if ctx.benchmark != "arc":
+        return None
+    cache: dict[str, bool] = {}
+
+    def f(c: Candidate) -> bool:
+        r = st.vres.get(c.id)
+        if r is not None and getattr(r, "verification_type", None) == "demo_match":
+            return r.status == "verified"
+        if c.id not in cache:
+            src = c.program or (c.text if "def transform" in (c.text or "") else None)
+            try:
+                d = _m("arc_exec").demo_match(src, ctx.P.item["train"]) if src else {}
+            except Exception:  # noqa: BLE001 - an unrunnable program does not pass
+                d = {}
+            cache[c.id] = bool(d.get("total")) and d.get("matched") == d.get("total")
+        return cache[c.id]
+    return f
 
 
 def _est_judge(ctx: Ctx, C: list[Candidate]) -> int:
@@ -884,7 +909,8 @@ def _mk(ctx: Ctx, st: State, cand: Candidate | None, status: str, reason: str,
 
 def _vote_verified(ctx: Ctx, st: State):
     """Among the candidates that reproduce every example (and the probe's programs, checked the same way), group
-    by test answer, take the largest group, break ties by the shortest program: self-consistency over
+    by test answer, take the largest group, break ties by agreement on augmented test inputs, then by the
+    shortest program (dedup.vote, the rule portfolio_arc uses too): self-consistency over
     independent attempts (Wang et al. 2022), behaviour clustering (AlphaCode, Li et al. 2022), Occam."""
     pool = [c for c in st.all_cands if (st.vres.get(c.id) and st.vres[c.id].status == "verified")]
     if ctx.benchmark == "arc" and getattr(ctx, "probe", None) is not None:
@@ -894,26 +920,16 @@ def _vote_verified(ctx: Ctx, st: State):
                 d = ex.demo_match(c.program, ctx.P.item["train"])
                 if d.get("total") and d.get("matched") == d.get("total"):
                     pool.append(c)
-    pool = [c for c in pool if c.pred is not None]
-    if not pool:
-        return None, 0, 0
-    groups = {}
-    aug = os.environ.get("HTSA_SELECT_AUG") and ctx.benchmark == "arc"
-    if aug:                       # behaviour on augmented copies of the test input: rules that agree on the test
-        t = ctx.P.item["test_input"]            # but differ elsewhere are told apart (AlphaCode clustering; ARC augmentation)
-        variants = [t, [list(r) for r in zip(*t[::-1])], [r[::-1] for r in t], t[::-1], [list(r) for r in zip(*t)]]
-        ex = _m("arc_exec")
-    for c in pool:
-        if aug and c.program:
+    aug_of = None
+    if ctx.benchmark == "arc":    # same rule as the portfolio: test answer first, augmented outputs only break ties
+        ex, variants = _m("arc_exec"), _m("arc_exec").augmented(ctx.P.item["test_input"])
+
+        def aug_of(c):
             try:
-                key = json.dumps(ex.run_program(c.program, variants))
+                return ex.aug_key(ex.run_program(c.program, variants)) if c.program else None
             except Exception:  # noqa: BLE001
-                key = json.dumps(c.pred)
-        else:
-            key = json.dumps(c.pred)
-        groups.setdefault(key, []).append(c)
-    best = max(groups.values(), key=lambda g: (len(g), -min(len(x.program or "") for x in g)))
-    return min(best, key=lambda x: len(x.program or "")), len(best), len(groups)
+                return None
+    return _m("dedup").vote(pool, lambda c: c.pred, lambda c: len(c.program or ""), aug_of)
 
 
 def _final(ctx: Ctx, st: State, cause: str) -> Answer:

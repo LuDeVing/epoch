@@ -9,10 +9,13 @@ Per puzzle:
      pose a rival rule, using the logical procedure (rival rule + discriminating input, simplicity as a default).
   3. Every candidate is checked on the examples (free). If none passes, one revision per best near miss, shown its
      actual outputs against the expected ones (execution feedback).
-  4. Selection: passing candidates grouped by behaviour on the test input and its rotations/mirrors; groups are
-     scored by the number of distinct attempts in them, plain and divergent alike; the simplest program breaks ties.
-     If nothing passes, the answer of the plain attempts' largest group (never worse than plain's own reading).
-The plain arm's answers for the same puzzles come from an earlier harness.bench batch (--plain-from).
+  4. Selection (dedup.vote, the same rule think.py uses): passing candidates grouped by test answer; the largest
+     group wins, plain and divergent attempts alike; on a tie, agreement on rotated/mirrored copies of the test input,
+     then the simplest program (00_IDEAS.md item 16). If nothing passes, the answer of the plain attempts' largest
+     group (never worse than plain's own reading).
+solve() sees only the key-stripped item; score() reads the answer key after every model call of the puzzle.
+The plain arm's answers for the same puzzles come from an earlier harness.bench batch (--plain-from), one row per
+puzzle; that batch must use the same HTSA_PLAIN_EFFORT (runs.jsonl does not record the effort).
 
     $env:HTSA_LAB_ROOT = "D:\\AGI-lab"; $env:HTSA_MODEL = "haiku"; $env:HTSA_ARC_SET = "arc2"
     python -m harness.portfolio_arc --batch arc2-portfolio --items 10 --plain-from D:\\AGI-lab\\results\\arc2-haiku-plain
@@ -28,9 +31,10 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from . import config, llm
+from . import config, llm, score as SC
 from .arms.plain import arc_data, build_prompt, parse_program
 from .schemas import strip_key
+from .think import dedup as DD
 
 FORMAT = ("Give your final answer as exactly one python code block that defines transform(grid) -> grid. The argument is "
           "the input grid as a list of lists of ints; the function returns the output grid in the same form, uses only the "
@@ -64,19 +68,32 @@ def call(prompt, args, tag, log_dir):
 def run_prog(ex, prog, clean):
     ins = [p["input"] for p in clean["train"]]
     t = clean["test_input"]
-    aug = [[list(r) for r in zip(*t[::-1])], [r[::-1] for r in t], t[::-1], [list(r) for r in zip(*t)]]
-    res = ex.execute(prog, ins + [t] + aug)
+    res = ex.execute(prog, ins + [t] + ex.augmented(t))
     outs, errs = res["outputs"], res["errors"]
     demo = ex.demo_from_outputs(clean["train"], outs[: len(ins)], errs[: len(ins)])
     return {"passed": demo["matched"], "total": demo["total"], "diffs": demo["diffs"][:2], "pred": outs[len(ins)],
-            "behaviour": json.dumps(outs[len(ins):])}
+            "behaviour": ex.aug_key(outs[len(ins) + 1:])}
 
 
-def solve(item, args, out_dir):
+def select(cands):
+    """Passing candidates by dedup.vote (test answer, then augmented agreement, then shortest); else plain majority.
+    Returns (chosen candidate or None, how, passing candidates)."""
+    full = [c for c in cands if c["pred"] is not None and c["passed"] == c["total"]]
+    if full:
+        chosen, k, _n = DD.vote(full, lambda c: c["pred"], lambda c: len(c["prog"] or ""), lambda c: c["behaviour"])
+        return chosen, f"vote {k} of {len(full)} passing", full
+    plain = [c for c in cands if c["kind"] == "plain" and c["pred"] is not None]
+    votes = Counter(json.dumps(c["pred"]) for c in plain)
+    chosen = next((c for c in plain if json.dumps(c["pred"]) == votes.most_common(1)[0][0]), None) if votes else None
+    return chosen, "no candidate passed; plain majority", full
+
+
+def solve(clean, args, out_dir):
+    """All model calls and the selection for one puzzle. Sees only the key-stripped item (no test_output)."""
     from . import arc_exec as EX
-    clean = strip_key(item)
+    assert "test_output" not in clean, "solve() must get the key-stripped item"
     data = arc_data(clean, list(range(len(clean["train"]))))
-    log_dir = out_dir / "calls" / item["id"]
+    log_dir = out_dir / "calls" / clean["id"]
     log_dir.mkdir(parents=True, exist_ok=True)
     cands, tokens = [], 0
 
@@ -116,25 +133,49 @@ def solve(item, args, out_dir):
                       f"ones:\n{fb}\n\nWork out from these differences what the rule really is, check the corrected rule against "
                       "every example, then " + FORMAT[0].lower() + FORMAT[1:])
             attempt("revise", c["kind"] + "_" + c["name"], prompt)
-        full = [c for c in cands if c["pred"] is not None and c["passed"] == c["total"]]
     # 4. selection
-    if full:
-        groups = {}
-        for c in full:
-            groups.setdefault(c["behaviour"], []).append(c)
-        best = max(groups.values(), key=lambda g: (len(g), -min(len(x["prog"]) for x in g)))
-        chosen, how = min(best, key=lambda x: len(x["prog"])), f"vote {len(best)} of {len(full)} passing"
-    else:
-        plain = [c for c in cands if c["kind"] == "plain" and c["pred"] is not None]
-        votes = Counter(json.dumps(c["pred"]) for c in plain)
-        chosen = next((c for c in plain if json.dumps(c["pred"]) == votes.most_common(1)[0][0]), None) if votes else None
-        how = "no candidate passed; plain majority"
-    key = item["test_output"]                                       # read by this scorer only
-    return {"id": item["id"], "solved": bool(chosen and chosen["pred"] == key), "how": how, "tokens": tokens,
+    chosen, how, full = select(cands)
+    return {"id": clean["id"], "answer": chosen["pred"] if chosen else None, "how": how, "tokens": tokens,
             "stopped_early": stopped_early, "n": len(cands), "n_pass": len(full),
-            "any_right": any(c["pred"] == key for c in cands),
-            "attempts": [{"kind": c["kind"], "name": c["name"], "passed": f"{c['passed']}/{c['total']}", "right": c["pred"] == key}
+            "attempts": [{"kind": c["kind"], "name": c["name"], "passed": f"{c['passed']}/{c['total']}", "pred": c["pred"]}
                          for c in cands]}
+
+
+def right(item, pred) -> bool:
+    """score.is_correct on an ARC grid (the item rows of the ARC file may lack the benchmark field)."""
+    return SC.is_correct({**item, "benchmark": "arc"}, pred)
+
+
+def score(item, rec):
+    """Read the answer key once the puzzle's model calls are done; the written row carries no predicted grids."""
+    attempts = [{k: v for k, v in a.items() if k != "pred"} | {"right": right(item, a["pred"])} for a in rec["attempts"]]
+    return {k: v for k, v in rec.items() if k not in ("answer", "attempts")} | {
+        "solved": right(item, rec["answer"]), "any_right": any(a["right"] for a in attempts), "attempts": attempts}
+
+
+def plain_rows(plain_from, items) -> dict:
+    """One plain-arm row per puzzle from an earlier harness.bench batch: replicate 0 if present, else the first row,
+    so replicates do not inflate the denominator. Same rule in arc_think."""
+    ids = {it["id"] for it in items}
+    out = {}
+    for l in (Path(plain_from) / "runs.jsonl").read_text(encoding="utf-8").splitlines():
+        if not l.strip():
+            continue
+        r = json.loads(l)
+        if r.get("arm") != "plain" or r.get("item_id") not in ids:
+            continue
+        old = out.get(r["item_id"])
+        if old is None or (int(r.get("replicate") or 0) == 0 and int(old.get("replicate") or 0) != 0):
+            out[r["item_id"]] = r
+    return out
+
+
+def plain_line(plain_from, items) -> str:
+    pl = plain_rows(plain_from, items)
+    by_id = {it["id"]: it for it in items}
+    ok = sum(1 for k, r in pl.items() if right(by_id[k], r.get("answer")))
+    return (f"| plain (one answer) | {ok}/{len(pl)} | "
+            f"{sum(int(r.get('spent_tokens') or 0) for r in pl.values()) / max(1, len(pl)):,.0f} |")
 
 
 def main() -> int:
@@ -146,7 +187,7 @@ def main() -> int:
     ap.add_argument("--k-div", type=int, default=2)
     ap.add_argument("--k-revise", type=int, default=2)
     ap.add_argument("--no-early-stop", dest="early_stop", action="store_false")
-    ap.add_argument("--effort", default=os.environ.get("HTSA_PLAIN_EFFORT", "medium"))
+    ap.add_argument("--effort", default=os.environ.get("HTSA_PLAIN_EFFORT", ""))   # same default as arms/plain
     ap.add_argument("--backend", default=None)
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--plain-from", default=None)
@@ -165,10 +206,10 @@ def main() -> int:
                 r = json.loads(l)
                 done[r["id"]] = r
     lock = threading.Lock()
-    print(f"[portfolio] {len(items)} puzzles, {args.k_plain} plain + {args.k_div} divergent, effort {args.effort}, model {config.DEFAULT_MODEL}", flush=True)
+    print(f"[portfolio] {len(items)} puzzles, {args.k_plain} plain + {args.k_div} divergent, effort {args.effort or 'default'}, model {config.DEFAULT_MODEL}", flush=True)
 
     def work(it):
-        r = solve(it, args, out_dir)
+        r = score(it, solve(strip_key(it), args, out_dir))
         with lock:
             with rows_path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(r) + "\n")
@@ -187,14 +228,7 @@ def main() -> int:
     lines.append(f"| plain, one answer (first plain attempt, same run, same effort) | {first}/{len(rows)} | |")
     lines.append(f"| any attempt right (upper bound for selection) | {sum(r['any_right'] for r in rows)}/{len(rows)} | |")
     if args.plain_from:
-        prow = [json.loads(l) for l in (Path(args.plain_from) / "runs.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
-        keys = {it["id"]: it["test_output"] for it in items}
-        pl = {}
-        for r in prow:
-            if r.get("arm") == "plain" and r["item_id"] in keys:
-                pl[r["item_id"]] = r
-        ok = sum(1 for k, r in pl.items() if r.get("answer") == keys[k])
-        lines.append(f"| plain (one answer) | {ok}/{len(pl)} | {sum(int(r.get('spent_tokens') or 0) for r in pl.values()) / max(1, len(pl)):,.0f} |")
+        lines.append(plain_line(args.plain_from, items))
     kinds = Counter()
     rights = Counter()
     for r in rows:
