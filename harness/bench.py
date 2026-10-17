@@ -324,6 +324,10 @@ def run_bench(args) -> dict:
         plain = run_arm_over("plain", items, budget_of=lambda i, r: None, **common)
         splits = {it.get("split") for it in items}
         tokens = write_cost(args.batch, args.benchmark, args.backend, plain, splits)
+        if not any(not final_failure(r) and int(r.get("spent_tokens") or 0) > 0 for r in plain.values()) and not args.budget_from:
+            raise SystemExit(f"[bench] no successful plain-CoT run for {args.benchmark}/{args.backend} in batch "
+                             f"{args.batch} and no --budget-from: cannot set B (failed runs join the median only "
+                             "next to successes; see errors.jsonl)")
         budget = set_budget(args.batch, args.benchmark, args.backend, args.m, tokens, args.budget_from,
                             ",".join(sorted(s for s in splits if s)),
                             sum(1 for r in plain.values() if final_failure(r)))

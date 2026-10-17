@@ -309,16 +309,18 @@ def test_result_line_cannot_be_forged():
 
 # ================================================================ best-of-N batch sizing
 def test_next_batch_size_is_conservative_near_the_budget():
+    """Superseded by test_fix_bench.test_next_batch_size_follows_the_plan (plan.md s2: mean-cost rule with one call in
+    reserve, overshoot at most one call); kept as a smoke check of the shared cases."""
     assert bon.next_batch_size(0, 0, 1000, 80) == 1
-    assert bon.next_batch_size(100, 1, 1000, 80, max_cost=100) == 6
-    assert bon.next_batch_size(100, 1, 350, 80, max_cost=100) == 2
-    assert bon.next_batch_size(100, 1, 250, 80, max_cost=100) == 1
-    assert bon.next_batch_size(100, 1, 199, 80, max_cost=100) == 0
-    assert bon.next_batch_size(100, 1, 1000, 80, max_cost=400) == 2     # sized by the largest call
+    assert bon.next_batch_size(100, 1, 1000, 80) == 6
+    assert bon.next_batch_size(100, 1, 199, 80) == 0
 
 
 # ================================================================ bench: cost hygiene and matched cost
-def test_bench_errored_plain_run_is_retried_and_kept_out_of_cost(bench_lab, monkeypatch):  # noqa: F811
+def test_bench_errored_plain_run_is_final_and_counted_in_cost(bench_lab, monkeypatch):  # noqa: F811
+    """B9 (fix pass 2026-10-17): a plain run that fails after spending tokens is final, never retried, scored wrong,
+    and its spend enters the cost median (it is a real cost of the plain arm). Earlier the row was excluded and retried,
+    which inflated vs_plain."""
     monkeypatch.setattr(llm.time, "sleep", lambda s: None)
     items = tb.data.load_items("bt", "dev-tune")[:2]
     bad = items[0]["id"]
@@ -333,16 +335,14 @@ def test_bench_errored_plain_run_is_retried_and_kept_out_of_cost(bench_lab, monk
                 "--m", "3", "--batch", "flaky"])
     out = config.RESULTS_DIR / "flaky"
     rows = {r["item_id"]: r for r in read_jsonl(out / "runs.jsonl")}
-    assert rows[bad]["status"] == "error" and rows[bad]["spent_tokens"] == 150   # 3 attempts charged
-    assert {r["item_id"] for r in read_jsonl(out / "cost.jsonl")} == {items[1]["id"]}
-    assert read_json(out / "budget.json")["bt"]["mock"]["n"] == 1
+    assert rows[bad]["status"] == "error" and rows[bad]["spent_tokens"] > 0
+    assert {r["item_id"] for r in read_jsonl(out / "cost.jsonl")} == {items[0]["id"], items[1]["id"]}
     assert any(r["run_id"] == rows[bad]["run_id"] for r in read_jsonl(out / "errors.jsonl"))
     state["fail"] = False
     bench.main(["--benchmark", "bt", "--arm", "plain", "--items", "2", "--backend", "mock",
                 "--m", "3", "--batch", "flaky"])
     rows2 = [r for r in read_jsonl(out / "runs.jsonl") if r["item_id"] == bad]
-    assert rows2[-1]["status"] != "error" and len(rows2) == 2          # retried, old row kept
-    assert len(read_jsonl(out / "cost.jsonl")) == 2
+    assert len(rows2) == 1 and rows2[0]["status"] == "error"          # final: not retried
     assert (out / "lint.json").exists() and read_json(out / "lint.json")["n_prompts"] >= 2
 
 
