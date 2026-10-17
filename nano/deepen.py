@@ -18,6 +18,7 @@ A node: {"id", "cluster_id", "cluster_name", "gen", "depth", "parent", "root", "
 """
 from __future__ import annotations
 
+import math
 import re
 
 from nano.ideate import PF, fill  # noqa: F401  (PF: nano/profile.py, or the shim with the LLM defaults in ideate.py)
@@ -150,7 +151,7 @@ def parse(text: str) -> dict:
         if prov != "belief":
             known.append(k)                                 # beliefs never travel as facts
     chain = []
-    for cm in re.finditer(r"^L(\d+):\s*(.+)$", section("CHAIN") or text.split("QUESTIONS")[0], flags=re.M):
+    for cm in re.finditer(r"^L(\d+):[ \t]*(.+)$", section("CHAIN") or text.split("QUESTIONS")[0], flags=re.M):
         parts = [x.strip() for x in cm.group(2).split("|")]
         link = {"id": f"L{cm.group(1)}", "text": parts[0][:200]}
         for pt in parts[1:]:
@@ -318,14 +319,14 @@ def parse_premortem(text: str) -> dict:
             elif k_ == "link":
                 o["link"] = v_[:6]
             elif k_ == "cite":
-                o["cite"] = ",".join(re.findall(r"Q\d", v_.upper()))[:12]
+                o["cite"] = ",".join(re.findall(r"Q\d+", v_.upper()))[:12]
             elif k_ == "if_true":
                 mm = re.match(r"(param_ratio|step_ratio|cost_ratio|learn_z|long_z|trend|fidelity)\s+(above|below|>|<)\s*([-+]?\d*\.?\d+)", v_, flags=re.I)
                 if mm:
                     o["if_true"] = {"metric": mm.group(1).lower(), "op": "above" if mm.group(2) in ("above", ">") else "below",
                                     "threshold": float(mm.group(3))}
         objections.append(o)
-    v = re.search(r"^VERDICT:\s*(.+)$", text, flags=re.M)
+    v = re.search(r"^VERDICT:[ \t]*(.+)$", text, flags=re.M)
     return {"objections": objections[:12], "verdict": (v.group(1).strip()[:300] if v else "")}
 
 
@@ -414,17 +415,23 @@ def resolve_objections(objections: list[dict], metrics: dict) -> list[dict]:
         it = o.get("if_true")
         if not it:
             r["status"] = "untestable"
+        elif not isinstance(it, dict) or it.get("metric") is None or it.get("threshold") is None:
+            r["status"] = "untestable"
         else:
             m = it["metric"]
             val = metrics.get(m)
             if m == "fidelity":
                 fid = metrics.get("fidelity")
                 val = (1.0 if fid.get("ok") else 0.0) if isinstance(fid, dict) and fid.get("checkable") else None
-            if val is None:
+            try:                                            # a list, a dict, a word or NaN is not a measurement
+                val = float(val) if val is not None and not isinstance(val, (dict, list, tuple)) else None
+            except (TypeError, ValueError):
+                val = None
+            if val is None or not math.isfinite(val):
                 r["status"] = "pending"
             else:
-                hit = (float(val) > it["threshold"]) if it["op"] == "above" else (float(val) < it["threshold"])
-                r["status"], r["measured"] = ("confirmed" if hit else "refuted"), round(float(val), 4)
+                hit = (val > float(it["threshold"])) if it.get("op") == "above" else (val < float(it["threshold"]))
+                r["status"], r["measured"] = ("confirmed" if hit else "refuted"), round(val, 4)
         out.append(r)
     return out
 
@@ -553,9 +560,9 @@ def parse_replies(text: str) -> dict:
         if not m:
             continue
         r = {"kind": m.group(2).lower(), "change": "", "fact": "", "source": "", "test": None}
-        cm = re.search(r"^\s*CHANGE:\s*(.+)$", block, flags=re.M | re.I)
-        fm = re.search(r"^\s*FACT:\s*(.+)$", block, flags=re.M | re.I)
-        tm = re.search(r"^\s*TEST:\s*(.+)$", block, flags=re.M | re.I)
+        cm = re.search(r"^[ \t]*CHANGE:[ \t]*(.+)$", block, flags=re.M | re.I)    # [ \t]: an empty line never takes the next one
+        fm = re.search(r"^[ \t]*FACT:[ \t]*(.+)$", block, flags=re.M | re.I)
+        tm = re.search(r"^[ \t]*TEST:[ \t]*(.+)$", block, flags=re.M | re.I)
         if cm:
             r["change"] = " ".join(cm.group(1).split())[:300]
         if fm:
@@ -567,14 +574,14 @@ def parse_replies(text: str) -> dict:
         if tm:
             r["test"] = _parse_test(tm.group(1))
         replies.setdefault(int(m.group(1)), r)
-    rv = re.search(r"^\s*REVISED IDEA:\s*(.+)$", text, flags=re.M | re.I)
+    rv = re.search(r"^[ \t]*REVISED IDEA:[ \t]*(.+)$", text, flags=re.M | re.I)
     return {"replies": replies, "revised": (" ".join(rv.group(1).split())[:400] if rv else "")}
 
 
 def parse_updates(text: str) -> dict[int, dict]:
     """CRITIC_UPDATE_FORMAT -> {i: {"verdict", "reason"}}."""
     out: dict[int, dict] = {}
-    for m in re.finditer(r"^\s*UPDATE\s+(\d+)\s*:\s*(resolved|revised|standing)\b\s*\|?\s*(.*)$", text or "", flags=re.M | re.I):
+    for m in re.finditer(r"^[ \t]*UPDATE[ \t]+(\d+)[ \t]*:[ \t]*(resolved|revised|standing)\b[ \t]*\|?[ \t]*(.*)$", text or "", flags=re.M | re.I):
         out.setdefault(int(m.group(1)), {"verdict": m.group(2).lower(), "reason": m.group(3).strip()[:300]})
     return out
 
@@ -628,6 +635,9 @@ def run_dialogue(objections: list[dict], ask_author, ask_critic, max_exchanges: 
                          "fact": (r or {}).get("fact", ""), "source": (r or {}).get("source", ""),
                          "test": test_text((r or {}).get("test")), "change": (r or {}).get("change", ""),
                          "verdict": v, "reason": state[i]["reason"], "exchange": ex})
+        if utext is None:                               # the critic could not be paid: no further exchange
+            stop = "budget"
+            break
         if not changed:
             stop = "nothing changed"
             break

@@ -423,8 +423,8 @@ def parse_sketches(text: str, *, card: str, operator: str, seed: str, call_id: s
         f = {}
         for key in ("IDEA", "MECHANISM", "PREDICTION", "TEST", "SOURCE", "MAPPING", "TARGET", "SCOPE", "ADAPTATION", "PART",
                     "KIND", "BREAKS", "KEEPS", "P_SUCCESS", "KILL", "SLOT", "REMOVES"):
-            m = re.search(rf"{key}:\s*(.+?)(?=\n[A-Z_]+:|\Z)", b, flags=re.S)
-            if m:
+            m = re.search(rf"{key}:[ \t]*(.*?)(?=\n[A-Z_]+:|\Z)", b, flags=re.S)   # an empty field never takes the next line
+            if m and m.group(1).strip():
                 f[key.lower()] = " ".join(m.group(1).split())
         if "idea" in f and "mechanism" in f:
             if card == "analogy" and not mapping_ok(f.get("mapping", "")):
@@ -552,7 +552,7 @@ def cluster_prompt(sketches: list[dict]) -> str:
 
 
 def parse_cluster_json(text: str, valid_ids: set[str]) -> list[dict] | None:
-    m = re.search(r"\[.*\]", text, flags=re.S)
+    m = re.search(r"\[.*\]", text or "", flags=re.S)
     if not m:
         return None
     try:
@@ -563,7 +563,7 @@ def parse_cluster_json(text: str, valid_ids: set[str]) -> list[dict] | None:
     for c in arr:
         if not isinstance(c, dict) or not isinstance(c.get("members"), list):
             continue
-        mem = [i for i in (c.get("members") or []) if i in valid_ids and i not in seen]
+        mem = [i for i in (c.get("members") or []) if isinstance(i, str) and i in valid_ids and i not in seen]
         if not mem:
             continue
         seen.update(mem)
