@@ -6,10 +6,16 @@ Two layers, because harness.config binds its paths at import time:
    `pytest harness/tests` binds config to a temp root even when a test file forgets to;
 2. an autouse fixture repoints every config path to this test's tmp_path, so tests cannot see
    each other's run folders or ledger rows (think raises on an existing run folder).
+A second autouse fixture saves and restores the active nano profile and the mock LLM responder:
+nano.loop.main installs the --profile it is given globally (PF.set_current) and nano.dry_run installs
+its mock, so without it one test's profile or mock leaks into the next.
+Tests that need the GPU or the real lab are opt-in: they skip unless an environment variable names the
+real resource (test_bench: HTSA_REAL_DATA). None runs by default.
 """
 from __future__ import annotations
 
 import os
+import sys
 import tempfile
 from pathlib import Path
 
@@ -21,6 +27,7 @@ os.environ.setdefault("HTSA_ARC_SET", "arc1")   # tests use the synthetic ARC-1 
 import pytest  # noqa: E402
 
 from harness import config  # noqa: E402
+from nano import profile as PF  # noqa: E402
 
 REAL_LAB_ROOT = Path(r"D:\AGI-lab").resolve()
 LAB_PATHS = ("LAB_ROOT", "RUNS_DIR", "MEMORY_DIR", "VIEWS_DIR", "LEDGER_PATH", "DATA_DIR",
@@ -46,3 +53,21 @@ def _temp_lab_root(tmp_path, monkeypatch):
         p = Path(getattr(config, name)).resolve()
         t = tmp_path.resolve()
         assert p == t or t in p.parents, f"{name} escaped tmp_path: {p}"
+
+
+@pytest.fixture(autouse=True)
+def _restore_profile(monkeypatch):
+    """Every test starts with no profile installed and HTSA_PROFILE unset (so PF.current() is the default
+    profile), and any profile it installs is undone afterwards. The same for the mock LLM responder, which
+    nano.dry_run installs and never removes, and for the dry-run mock's reply counters (its replies cycle by
+    call count, so a test calling dry_run.mock directly would otherwise see what earlier tests left)."""
+    from harness import llm
+    prev, prev_mock = PF._current, llm._mock_fn
+    monkeypatch.delenv("HTSA_PROFILE", raising=False)
+    PF._current = None
+    dry = sys.modules.get("nano.dry_run")
+    if dry is not None:
+        dry._counter.clear()
+    yield
+    PF._current = prev
+    llm.set_mock(prev_mock)

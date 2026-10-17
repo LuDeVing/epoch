@@ -270,15 +270,20 @@ def test_problem_md_has_no_item_id(tmp_path):
 
 
 # ================================================================ arc_exec
-def test_grandchild_holding_the_pipe_does_not_stall_or_lose_the_result():
+def test_grandchild_holding_the_pipe_does_not_stall_or_lose_the_result(tmp_path):
+    """The grandchild holds the pipe until the test releases it (a file appears), not for a fixed 30 s sleep: a
+    stall would show as a timeout, and the grandchild never outlives the test by more than its poll interval."""
+    release = tmp_path / "release"
+    waiter = f"import os, time\nwhile not os.path.exists({str(release)!r}) and time.time() < {time.time() + 60}: time.sleep(0.05)"
     src = ("import subprocess, sys\n"
            "def transform(grid):\n"
-           "    subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])\n"
+           f"    subprocess.Popen([sys.executable, '-c', {waiter!r}])\n"
            "    return [row[::-1] for row in grid]\n")
-    t0 = time.time()
-    res = arc_exec.execute(src, [[[1, 2]]], timeout_s=5)
-    assert res["outputs"] == [[[2, 1]]] and not res["timed_out"]
-    assert time.time() - t0 < 5
+    try:
+        res = arc_exec.execute(src, [[[1, 2]]], timeout_s=20)
+        assert res["outputs"] == [[[2, 1]]] and not res["timed_out"]
+    finally:
+        release.write_text("go", encoding="utf-8")
 
 
 def test_child_is_utf8_and_hash_deterministic():

@@ -4,6 +4,7 @@ depend on other owners' modules."""
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 import types
@@ -23,8 +24,10 @@ FLIP = "```python\ndef transform(grid):\n    return [row[::-1] for row in grid]\
 IDENT = "```python\ndef transform(grid):\n    return [row[:] for row in grid]\n```"
 TEST_IN = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 TEST_OUT_TEXT = "3 2 1\n6 5 4\n9 8 7"
-REAL_ARC = Path(r"D:\AGI-lab\data\arc\ARC-AGI-master\data\evaluation")
-REAL_BT = Path(r"D:\AGI-lab\data\brainteaser\SP.jsonl")
+# the real raw downloads: opt-in only (set HTSA_REAL_DATA to the lab's data folder, e.g. D:\AGI-lab\data)
+REAL_DATA = Path(os.environ["HTSA_REAL_DATA"]) if os.environ.get("HTSA_REAL_DATA") else None
+REAL_ARC = REAL_DATA / "arc" / "ARC-AGI-master" / "data" / "evaluation" if REAL_DATA else None
+REAL_BT = REAL_DATA / "brainteaser" / "SP.jsonl" if REAL_DATA else None
 
 
 # ---------------------------------------------------------------- fixtures
@@ -146,7 +149,8 @@ def test_build_items_fake(lab):
     assert {it["split"] for it in data.load_items("arc", "test")} == {"test"}
 
 
-@pytest.mark.skipif(not (REAL_ARC.exists() and REAL_BT.exists()), reason="raw downloads absent")
+@pytest.mark.skipif(not (REAL_DATA and REAL_ARC.exists() and REAL_BT.exists()),
+                    reason="opt-in: set HTSA_REAL_DATA to a folder with the raw ARC and BRAINTEASER downloads")
 def test_build_items_real(lab):
     counts = data.build_items(arc_dir=REAL_ARC, bt_path=REAL_BT)
     assert counts["arc"]["total"] == 40 and counts["bt"]["total"] == 120
@@ -253,6 +257,33 @@ def test_is_correct_and_bootstrap():
     cl = score.paired_bootstrap([1, 1, 0, 0], [0, 0, 0, 0], clusters=["g", "g", "h", "h"])
     assert cl["n_clusters"] == 2 and cl["mean_diff"] == 0.5
     assert score.paired_bootstrap([], [])["mean_diff"] is None
+
+
+def test_paired_bootstrap_known_answers():
+    """Non-degenerate inputs whose bootstrap distribution is known in closed form."""
+    # 40 items, differences +1 or -1 half each: the bootstrap sum is 2*Binomial(40, 1/2) - 40, so
+    # P(mean <= 0) = P(Binomial(40, 1/2) <= 20) = 0.5627 and the 95% interval is about +-1.96/sqrt(40) = +-0.31
+    r = score.paired_bootstrap([1] * 20 + [0] * 20, [0] * 20 + [1] * 20, n=20000, seed=1)
+    assert r["mean_diff"] == 0 and r["n_items"] == 40 and r["n_clusters"] == 40
+    assert abs(r["p_le0"] - 0.5627) < 0.015
+    assert -0.36 <= r["ci_low"] <= -0.25 and 0.25 <= r["ci_high"] <= 0.36
+    # 30 of 40 items gain 1, 10 gain 0: mean 0.75, sd of the bootstrap mean sqrt(0.75 * 0.25 / 40) = 0.0685
+    r = score.paired_bootstrap([1] * 30 + [0] * 10, [0] * 40, n=20000, seed=2)
+    assert r["mean_diff"] == 0.75 and r["p_le0"] == 0.0
+    assert abs(r["ci_low"] - (0.75 - 1.96 * 0.0685)) < 0.03 and abs(r["ci_high"] - min(1.0, 0.75 + 1.96 * 0.0685)) < 0.03
+    # two one-item clusters with differences 1 and 0: draws give 1, 0.5 or 0 with chance 1/4, 1/2, 1/4
+    r = score.paired_bootstrap([1, 0], [0, 0], n=20000, seed=3)
+    assert r["mean_diff"] == 0.5 and r["ci_low"] == 0.0 and r["ci_high"] == 1.0
+    assert abs(r["p_le0"] - 0.25) < 0.015
+    # unequal clusters (g: three items of +1, h: one item of 0): resampling clusters weights by items, so a
+    # draw of {g, h} gives 3/4, not 1/2; the point estimate is the item mean 0.75, not the cluster mean 0.5
+    r = score.paired_bootstrap([1, 1, 1, 0], [0, 0, 0, 0], clusters=["g", "g", "g", "h"], n=20000, seed=4)
+    assert r["mean_diff"] == 0.75 and r["n_clusters"] == 2 and r["n_items"] == 4
+    assert abs(r["p_le0"] - 0.25) < 0.015 and r["ci_low"] == 0.0 and r["ci_high"] == 1.0
+    # deterministic for a seed, and the sign flips with the order of the arms
+    assert score.paired_bootstrap([1, 0, 1, 1], [0, 0, 1, 0], seed=7) == score.paired_bootstrap([1, 0, 1, 1], [0, 0, 1, 0], seed=7)
+    a, b = score.paired_bootstrap([1, 0, 1, 1], [0, 0, 1, 0], seed=7), score.paired_bootstrap([0, 0, 1, 0], [1, 0, 1, 1], seed=7)
+    assert a["mean_diff"] == -b["mean_diff"] and abs(a["ci_low"] + b["ci_high"]) < 1e-12
 
 
 # ---------------------------------------------------------------- bench.py end to end

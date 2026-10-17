@@ -457,6 +457,38 @@ def test_bt_returns_unverified_best_guess(stubs):
     assert_no_leak(rd, item)
 
 
+def _cost_after_first_cards(stubs, later_cost):
+    """est_cost unpinned: 1000 tokens until the first card has run, then later_cost for every spec."""
+    state = {"ran": False}
+    real_run_card = stubs.mods["run_card"].run_card
+
+    def run_card(*a, **kw):
+        state["ran"] = True
+        return real_run_card(*a, **kw)
+    stubs.mods["run_card"] = SimpleNamespace(run_card=run_card)
+    stubs.mods["allocate"].est_cost = lambda s, v, b: later_cost if state["ran"] else 1000
+
+
+@pytest.mark.parametrize("above", [True, False])
+def test_value_stop_fires_when_no_spec_is_worth_its_cost(stubs, above):
+    """With no strategy stats p_s is the prior 0.5, so the value stop fires exactly when every next spec costs more
+    than 0.5 * B; one token below that the run continues."""
+    item = arc_item(f"t_arc_value_{above}")
+    batch = f"tc_value_{above}"
+    llm.set_mock(make_varied_mock())                       # wrong programs: no verified stop in the first cycle
+    B = int(20 * config.PARAMS["max_tokens"]["plain"] * 1.5)
+    _cost_after_first_cards(stubs, B // 2 + 1 if above else B // 2 - 1)
+    ans = think.think(item, m=20, replicate=0, backend="mock", batch=batch)
+    st = read_json(run_dir_of(batch, item) / "state.json")
+    assert st["B"] == B
+    cycles = [d["action"] for d in st["decisions"] if d["step"].startswith("cycle")]
+    if above:
+        assert cycles == ["value_stop"] and ans.rounds == 1
+        assert ans.status == "abstain" and st["decisions"][-1]["signal"]["cause"] == "value_stop"
+    else:
+        assert cycles[0] == "continue" and "value_stop" not in cycles
+
+
 def test_budget_from_cost_jsonl_and_budget_stop(stubs):
     item = arc_item("t_arc_budget")
     append_jsonl(Path(config.RESULTS_DIR) / "tc_budget" / "cost.jsonl",

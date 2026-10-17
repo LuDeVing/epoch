@@ -2,13 +2,11 @@
 gets its context share of the slots instead of one slot in nine; with no (or equal) weights the order is unchanged."""
 import copy
 import importlib.util
-import os
 import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
 
-os.environ.setdefault("HTSA_LAB_ROOT", "D:/AGI-lab")
 ROOT = Path(__file__).resolve().parents[2]
 
 PARTS = ["io", "mix", "ffn", "depth", "opt", "data", "recipe", "objective", "offtree"]
