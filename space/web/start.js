@@ -219,14 +219,13 @@ export function mountStart(el, api = {}) {
           ${S.order.filter((k) => S.presets[k]).map((k) => html`<label class=${`start-size${S.preset === k ? ' start-size--on' : ''}`}>
             <input type="radio" name="start-size" value=${k} checked=${S.preset === k}
               onChange=${() => { S.preset = k; S.confirming = false; draw(); }} />
-            <span class="start-size__name">${SIZE_TEXT[k] || k}${k === 'demo' ? html` <span class="tag tag--demo">recommended for demos</span>` : null}</span>
-            <span class="muted start-size__what">${presetLine(S.presets[k])}${k === 'demo' ? ' . every role on Haiku' : ''}</span>
+            <span class="start-size__name">${SIZE_TEXT[k] || k}${k === 'demo' ? html` <span class="tag tag--demo">for demos</span>` : null}</span>
+            <span class="muted start-size__what">${k === 'demo' ? '1 round, 1 build, 4 idea agents, all on Haiku' : presetLine(S.presets[k])}</span>
             <span class="mono start-size__est">${k === 'demo' ? `${S.presets[k].estimate.calls} calls, about ${S.presets[k].estimate.minutes} min, cheap` : estimateLine(S.presets[k].estimate)}</span>
-            ${k === 'demo' && S.preset === 'demo' ? html`<span class="start-warn start-size__warn">Demo only: fast and cheap on Haiku, not research quality. Use Small or bigger for real results.</span>` : null}
           </label>`)}
         </fieldset>
         <div class="start-modes" role="group" aria-label="Spend">
-          <span class="muted start-hint">${S.preset === 'demo' ? 'Runs the whole team on Haiku: fast, cheap, for showing how it works.' : 'Runs the real team: ideas on Fable, critics and builders on Opus, research on Sonnet. Spends tokens.'}</span>
+          <span class=${S.preset === 'demo' ? 'start-warn start-hint' : 'muted start-hint'}>${S.preset === 'demo' ? 'Demo only: the whole team on Haiku, fast and cheap, not research quality. Use Small or bigger for real results.' : 'Runs the real team: ideas on Fable, critics and builders on Opus, research on Sonnet. Spends tokens.'}</span>
         </div>
         ${S.confirming ? html`<div class="start-confirm" role="alert">
             <div>${words}</div>
