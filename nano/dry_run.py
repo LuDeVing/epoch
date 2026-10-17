@@ -143,9 +143,33 @@ def mock_upward(meta: dict) -> str:
             "COST: a timed training harness and repeated runs to control timing noise.")
 
 
+MADE_UP_ID = "n0000dead00"                     # a candidate id no run has: the curator must reject its entry
+
+
+def mock_curator(prompt: str) -> str:
+    """A memory delta (nano/memory.py) that cites one real candidate id from the prompt, one measured number,
+    and one made-up id, so curation keeps the first entries and rejects the last."""
+    ids = re.findall(r"^- candidate (n[0-9a-f]{10}) \| status (\w+)", prompt, flags=re.M)
+    cid, status = ids[0] if ids else ("n0000000000", "fail")
+    m = re.search(r"^- candidate " + re.escape(cid) + r" .*?metrics: (.*?)(?: \| |$)", prompt, flags=re.M)
+    num = next((v for v in re.findall(r"\b\w+ (-?\d+\.\d{2,})", m.group(1))), "") if m else ""
+    return ("FACTS:\n"
+            f"- measured | candidate {cid} ended with status {status} on this part | {cid}\n"
+            f"- belief | a rule like {MADE_UP_ID} would pack tighter | {MADE_UP_ID}\n"
+            "TRIED:\n"
+            f"- the rule in {cid} | {num or 'no number'} | it {'passed' if status == 'checked' else 'failed'} the quick score | {cid}\n"
+            "PRIORS:\n- simple greedy rules pass the quick score about 3 in 4 times here | " + cid + "\n"
+            "CUES:\n- when a rule ties the reference -> try a different tie-break first | " + cid + "\n"
+            "OPEN QUESTIONS:\n- does the gain hold on larger instances? | " + cid + "\n"
+            "FAILED FRAMINGS:\n- treating every item alike regardless of size | " + MADE_UP_ID + "\n"
+            "USED:\n- none")
+
+
 def mock(prompt: str, role: str, meta: dict) -> str:
     if "Direction UPWARD" in prompt:           # upward contexts answer in their own format (tree.UPWARD_FORMAT)
         return mock_upward(meta)
+    if meta.get("card") == "memory_curator":   # per-part memory curator (nano/memory.py)
+        return mock_curator(prompt)
     name = PF.current().name
     if name in ("binpack_nobase", "review_process"):
         r = _mock_profiles(prompt, role, meta, name)
