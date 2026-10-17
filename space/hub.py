@@ -78,8 +78,32 @@ class Hub:
         except OSError:
             return ""
 
-    def _row(self, r: dict) -> dict:
+    def _live_ports(self) -> dict:
+        """space_id -> port for every space server answering on the usual ports (spaces started outside the hub)."""
+        import urllib.request
+        out = {}
+        for port in range(contract.PORT, contract.PORT + 40):
+            with socket.socket() as s:
+                s.settimeout(0.05)
+                try:
+                    s.connect(("127.0.0.1", port))
+                except OSError:
+                    continue
+            try:
+                with urllib.request.urlopen("http://127.0.0.1:%d/api/people" % port, timeout=0.5) as r:
+                    d = json.loads(r.read().decode("utf-8", "replace"))
+                sid = d.get("space_id") if isinstance(d, dict) else None
+                if sid:
+                    out[str(sid)] = port
+            except Exception:  # noqa: BLE001
+                continue
+        return out
+
+    def _row(self, r: dict, live: dict | None = None) -> dict:
         alive = pid_alive(r.get("pid"), r.get("created"))
+        if not alive and live and r["name"] in live:          # started outside the hub (the stage, or by hand)
+            r = dict(r, port=live[r["name"]])
+            alive = True
         key = self._key_of(r) if alive else ""
         url = "http://127.0.0.1:%d" % r["port"]
         db = Path(r["db"])
@@ -112,7 +136,10 @@ class Hub:
                                  "lan": False, "log": "", "started": None, "stopped": None, "external": True})
         except OSError:
             pass
-        return {"spaces": [self._row(r) for r in rows], "hub": {"port": HUB_PORT, "lab": str(lab_root())}}
+        live = self._live_ports()
+        out = [self._row(r, live) for r in rows]
+        out.sort(key=lambda x: (not x["alive"], x["name"]))
+        return {"spaces": out, "hub": {"port": HUB_PORT, "lab": str(lab_root())}}
 
     def create(self, raw_name, lan=False, memory_dir=None) -> dict:
         name = clean_name(raw_name)
