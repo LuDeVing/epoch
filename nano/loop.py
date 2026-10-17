@@ -42,6 +42,7 @@ from nano import predict                                            # noqa: E402
 from nano import novelty as NV                                      # noqa: E402
 from nano import controls as CT                                     # noqa: E402
 from nano import memory as MEM                                      # noqa: E402
+from nano import seeds as SEEDS                                     # noqa: E402
 
 
 class StopRun(Exception):
@@ -341,6 +342,10 @@ class NanoLoop:
         if hasattr(self.checker.impl, "set_caller"):
             self.checker.impl.set_caller(self._judge_call)   # Mode 3: the panel's judges go through self._call
         self.used_seeds: set[str] = set()
+        self.seed_mode = "function"            # N7: seeded contexts get seeds by function and distance; "random" = old draw
+        self.seed_info: dict[str, dict] = {}    # word -> {function, band, domain, hint} for words nano/seeds.py chose
+        self.seeds_by_part: dict[str, set] = {}  # words used on each part, never reused there while others remain
+        self.seed_yield: list[dict] = []        # per round: seeded sketches and distinct clusters per function and seed
         self.lock = threading.Lock()
         self.inflight: dict[str, dict] = {}
         self.phase = "starting"
@@ -569,7 +574,7 @@ class NanoLoop:
 
     def sketch_prompt(self, card: str, seed: str, operator: str) -> str:
         if card == "seeded":
-            return self._common(self.baseline_src, True, "sk:" + seed) + f"Starting point: {seed}\n\n" + ideate.SKETCH_FORMAT
+            return self._common(self.baseline_src, True, "sk:" + seed) + SEEDS.prompt_line(self.seed_info.get(seed), seed) + "\n\n" + ideate.SKETCH_FORMAT
         if card == "low_prior":
             return (self._common(_strip_comments(self.baseline_src), True, "sk:low:" + seed)
                     + f"The {_artifact_word()} above is given without its comments.\n\n" + ideate.SKETCH_FORMAT)
@@ -1005,6 +1010,8 @@ class NanoLoop:
                     specs.append(("diagnosis", "", node, "inward"))
                 if self.adapt_card and len((self.briefs.get(node["id"]) or {}).get("known", [])) >= 2:
                     specs.append(("adapt", "", node, "inward"))
+        if self.seed_mode != "random":              # N7: seeded contexts get different functions per part, mixed distances
+            specs = self._assign_seeds(round_no, specs)
         # the owner's seed mechanisms: one context each, on the part they name, in round 1
         if round_no == 1:
             for sd in self.owner_seeds:
@@ -1068,7 +1075,7 @@ class NanoLoop:
             if mem_state == "block":
                 prompt += self.memory().block(self._part_of(node["id"]))
             if card == "seeded":
-                prompt += f"Starting point: {seed}\n\n"
+                prompt += SEEDS.prompt_line(self.seed_info.get(seed), seed) + "\n\n"
             elif card == "docs":
                 prompt += (PF.fill("REFERENCE MATERIAL ({v:reference_what}):\n\n")
                            + _doc_text("reference") + "\n\n")
@@ -1545,6 +1552,36 @@ class NanoLoop:
             return "free"
         return "block" if self.memory().read(part) else "empty"
 
+    def _seed_for(self, key: str, k: int, round_no: int, tag: str = "") -> list[dict]:
+        """k seeds for one part (nano/seeds.py): distinct functions, mixed distances, none used on the part before;
+        function weights from this run's earlier seeded sketches; the draw is fixed by run id, round and part."""
+        hist = SEEDS.yield_history(self.sketches, self.clusters, self.seed_info)
+        used = self.seeds_by_part.setdefault(key, set())
+        picks = SEEDS.choose(key, k, used, hist, random.Random(f"seeds:{self.run_id}:{round_no}:{key}:{tag}"),
+                             words=_seeds())
+        for pk in picks:
+            used.add(pk["word"])
+            self.used_seeds.add(pk["word"])
+            self.seed_info.setdefault(pk["word"], pk)
+        self.decisions.append({"round": round_no, "step": "seeds", "part": key, "tag": tag,
+                               "picked": [[pk["word"], pk["function"], pk["band"]] for pk in picks]})
+        return picks
+
+    def _assign_seeds(self, round_no: int, specs: list) -> list:
+        """Replace the random word of each seeded context with one chosen per part (N7), and log the yield so far."""
+        hist = SEEDS.yield_history(self.sketches, self.clusters, self.seed_info)
+        self.seed_yield.append({"round": round_no, **hist})
+        write_json(self.run_dir / "seed_yield.json", {"rounds": self.seed_yield, "mode": self.seed_mode})
+        groups: dict[str, list[int]] = {}
+        for i, sp in enumerate(specs):
+            if sp[0] == "seeded":
+                groups.setdefault(self._part_of(sp[2]["id"]) or sp[2]["id"], []).append(i)
+        specs = list(specs)
+        for key, idx in sorted(groups.items()):
+            for i, pk in zip(idx, self._seed_for(key, len(idx), round_no)):
+                specs[i] = (specs[i][0], pk["word"]) + tuple(specs[i][2:])
+        return specs
+
     def _pick_memory_free(self, round_no: int, specs: list, seeds: list[str]) -> list:
         """One ignores-memory context per part per round (anti-fixation guard and an in-run control). It is drawn
         from the part's own contexts when it has two or more; a part with one context gets one extra context,
@@ -1568,6 +1605,8 @@ class NanoLoop:
             else:
                 card, _, node, direction = pool[0]
                 seed = rng.choice([w for w in seeds if w not in self.used_seeds] or seeds) if seeds else ""
+                if card == "seeded" and self.seed_mode != "random":
+                    seed = self._seed_for(part, 1, round_no, "memfree")[0]["word"]
                 self.used_seeds.add(seed)
                 pick = (card, seed, node, direction)
                 extra.append(pick)
@@ -3642,6 +3681,8 @@ def main() -> int:
     ap.add_argument("--tune-top", type=int, default=3, help="tuning candidates kept for the long run and the night")
     ap.add_argument("--anomaly-seeds", type=int, default=3, help="diagnostics seeds for the anomaly map (1 = no map)")
     ap.add_argument("--sham-share", type=float, default=0.1, help="chance that one anomaly row is a fabricated control (chasing is measured)")
+    ap.add_argument("--seeds", choices=("function", "random"), default="function",
+                    help="seeded idea card: words by function and distance per part (default) or the old random draw (control arm)")
     ap.add_argument("--seeds-file", default="", help="owner-written seed mechanisms: JSON list of {part, text}; default memory/owner_seeds.json when it exists")
     ap.add_argument("--family-variants", type=int, default=2, help="near-miss variants built per round from the ambitious lane (0 = off)")
     ap.add_argument("--leap-share", type=float, default=0.25, help="quota: share of each idea agent's sketches that must be leaps (rule breaks); 0 = off")
@@ -3710,6 +3751,7 @@ def main() -> int:
     loop.tune, loop.tune_top = not a.no_tune, max(0, a.tune_top)
     loop.effort_by_role, loop.fact_check = not a.no_effort, not a.no_fact_check
     loop.tune_knobs = [x.strip() for x in a.tune_knobs.split(",") if x.strip()]
+    loop.seed_mode = a.seeds
     seeds_path = Path(a.seeds_file) if a.seeds_file else (config.MEMORY_DIR / "owner_seeds.json")
     if seeds_path.exists():
         try:
