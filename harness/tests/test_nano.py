@@ -297,28 +297,27 @@ def test_reach_audit_verdicts(tmp_path):
     zero-init gate and a constants-only change apart."""
     from nano import audit
     anchor = "        self.attn, self.mlp = Attention(cfg), MLP(cfg)"
-    assert BASE.count(anchor) == 1
+    ret = "        return self.combine(x, branch, 1)"                 # the edits below must land on lines that exist
+    assert BASE.count(anchor) == 1 and BASE.count(ret) == 1
     cases = {
         "marker": (BASE.replace(anchor, anchor + "\n        self.marker = 1", 1), ["Block.__init__"], "no_effect_suspect"),
         "dead": (BASE.replace(anchor, anchor + "\n        self.dead = nn.Parameter(torch.zeros(1))", 1), ["Block.__init__"], "dead_path"),
         "gate": (BASE.replace(anchor, anchor + "\n        self.g = nn.Parameter(torch.zeros(1))", 1)
-                 .replace("        return x + self.mlp(self.n2(x))", "        return (x + self.mlp(self.n2(x))) * (1 + self.g)", 1),
+                 .replace(ret, "        return self.combine(x, branch * (1 + self.g), 1)", 1),
                  ["Block.__init__", "Block.forward"], "ok"),
         "lr": (BASE.replace("    lr: float = 0.02 ", "    lr: float = 0.028", 1), ["Config"], "ok"),
         # identical at init only: the final gain multiplies the lookup too (a gain of one changes nothing at step 0)
-        "gain_tie": (BASE.replace("        x = self.tok(idx)", "        x = self.tok(idx) * self.norm.weight", 1), ["GPT.forward"], "ok"),
+        "gain_tie": (BASE.replace("self.tok(idx).unsqueeze(2)", "(self.tok(idx) * self.norm.weight).unsqueeze(2)", 1), ["GPT.forward"], "ok"),
         # dead at init only: a zero table feeding a projection; the projection gets gradient once the table moves
-        "zero_chain": (BASE.replace(anchor, anchor + "\n        self.t2 = nn.Embedding(cfg.vocab_size, 8); nn.init.zeros_(self.t2.weight); self.pj = nn.Linear(8, cfg.d_model, bias=False)", 1)
-                       .replace("        return x + self.mlp(self.n2(x))", "        return x + self.mlp(self.n2(x)) + self.pj(self.t2(self._idx)) if hasattr(self, '_idx') else x + self.mlp(self.n2(x))", 1),
-                       ["Block.__init__", "Block.forward"], None),
+        "zero_chain": (BASE.replace(anchor, anchor + "\n        self.t2 = nn.Linear(cfg.d_model, 8, bias=False); nn.init.zeros_(self.t2.weight); self.pj = nn.Linear(8, cfg.d_model, bias=False)", 1)
+                       .replace(ret, "        return self.combine(x, branch + self.pj(self.t2(branch)), 1)", 1),
+                       ["Block.__init__", "Block.forward"], "ok"),
     }
     base = tmp_path / "train.py"; base.write_text(BASE, encoding="utf-8")
     for name, (src, changed, expect) in cases.items():
         assert src != BASE, name
         c = tmp_path / f"{name}.py"; c.write_text(src, encoding="utf-8")
         res = audit.run(str(c), str(base), changed)
-        if expect is None:
-            continue
         assert res["verdict"] == expect, (name, res)
         if name == "gate":
             assert res["forward_identical"] and res["new_params"] and not res["dead_params"]
