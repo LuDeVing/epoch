@@ -1,0 +1,613 @@
+{
+ "caps": {
+  "chat": 1500,
+  "digest": 1200,
+  "note": 600,
+  "quote": 160,
+  "seed": 1500
+ },
+ "guarded": [
+  "candidate_built",
+  "cluster_snapshot",
+  "memory_added",
+  "objection_marked",
+  "objection_raised",
+  "reply_posted",
+  "sketch_batch",
+  "test_result"
+ ],
+ "human_kinds": [
+  "chat_posted",
+  "fact_disputed",
+  "intent_decided",
+  "node_added",
+  "node_edited",
+  "node_skipped",
+  "node_unskipped",
+  "note_posted",
+  "opinion_given",
+  "question_chosen",
+  "question_unvetoed",
+  "question_vetoed",
+  "reply_posted",
+  "run_paused",
+  "run_resumed",
+  "run_step",
+  "seed_added",
+  "vote_cast"
+ ],
+ "kinds": {
+  "agent_said": {
+   "by": [
+    "delegate"
+   ],
+   "control_key": null,
+   "data": [
+    "kind",
+    "text"
+   ],
+   "tier": null
+  },
+  "candidate_built": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "node",
+    "cand",
+    "idea",
+    "hypothesis",
+    "round"
+   ],
+   "tier": 3
+  },
+  "chat_posted": {
+   "by": [
+    "person"
+   ],
+   "control_key": null,
+   "data": [
+    "to",
+    "text"
+   ],
+   "tier": null
+  },
+  "claim_expired": {
+   "by": [
+    "server"
+   ],
+   "control_key": "skip_nodes",
+   "data": [
+    "owner_was"
+   ],
+   "tier": 1
+  },
+  "claim_granted": {
+   "by": [
+    "server"
+   ],
+   "control_key": "skip_nodes",
+   "data": [
+    "owner",
+    "ttl_s"
+   ],
+   "tier": 1
+  },
+  "claim_released": {
+   "by": [
+    "server"
+   ],
+   "control_key": "skip_nodes",
+   "data": [
+    "owner"
+   ],
+   "tier": 1
+  },
+  "claim_taken_over": {
+   "by": [
+    "server"
+   ],
+   "control_key": "skip_nodes",
+   "data": [
+    "from",
+    "to"
+   ],
+   "tier": 1
+  },
+  "cluster_snapshot": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "node",
+    "direction",
+    "round",
+    "stage",
+    "clusters"
+   ],
+   "tier": 3
+  },
+  "control_applied": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "refs",
+    "round",
+    "stage"
+   ],
+   "tier": null
+  },
+  "digest_taken": {
+   "by": [
+    "team",
+    "delegate"
+   ],
+   "control_key": null,
+   "data": [
+    "from_seq",
+    "to_seq",
+    "n",
+    "chars",
+    "role"
+   ],
+   "tier": null
+  },
+  "fact_disputed": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "disputes",
+   "data": [
+    "node",
+    "fact",
+    "reason",
+    "tag"
+   ],
+   "tier": 0
+  },
+  "intent_decided": {
+   "by": [
+    "person"
+   ],
+   "control_key": null,
+   "data": [
+    "intent_id",
+    "decision"
+   ],
+   "tier": null
+  },
+  "intent_proposed": {
+   "by": [
+    "delegate"
+   ],
+   "control_key": null,
+   "data": [
+    "intent_id",
+    "action",
+    "card"
+   ],
+   "tier": null
+  },
+  "memory_added": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "node",
+    "round",
+    "added"
+   ],
+   "tier": 3
+  },
+  "node_added": {
+   "by": [
+    "person",
+    "delegate",
+    "team"
+   ],
+   "control_key": "add_nodes",
+   "data": [
+    "id",
+    "name",
+    "parent",
+    "origin"
+   ],
+   "tier": 0
+  },
+  "node_edited": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": null,
+   "data": [
+    "fields"
+   ],
+   "tier": 1
+  },
+  "node_skipped": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "skip_nodes",
+   "data": [],
+   "tier": 0
+  },
+  "node_unskipped": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "skip_nodes",
+   "data": [],
+   "tier": 0
+  },
+  "note_posted": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "note",
+   "data": [
+    "text"
+   ],
+   "tier": 0
+  },
+  "objection_marked": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "node",
+    "idea",
+    "objection",
+    "verdict"
+   ],
+   "tier": 2
+  },
+  "objection_raised": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "node",
+    "idea",
+    "objection",
+    "cls",
+    "severity",
+    "text"
+   ],
+   "tier": 2
+  },
+  "opinion_given": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "opinions",
+   "data": [
+    "target",
+    "score"
+   ],
+   "tier": 0
+  },
+  "question_chosen": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "choose",
+   "data": [
+    "question"
+   ],
+   "tier": 0
+  },
+  "question_picked": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "round",
+    "top3",
+    "chosen",
+    "by"
+   ],
+   "tier": 1
+  },
+  "question_preview": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "round_next",
+    "top3"
+   ],
+   "tier": null
+  },
+  "question_unvetoed": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "veto",
+   "data": [
+    "question"
+   ],
+   "tier": 0
+  },
+  "question_vetoed": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "veto",
+   "data": [
+    "question"
+   ],
+   "tier": 0
+  },
+  "reply_posted": {
+   "by": [
+    "team",
+    "person",
+    "delegate"
+   ],
+   "control_key": null,
+   "data": [
+    "node",
+    "idea",
+    "objection",
+    "kind",
+    "text"
+   ],
+   "tier": 2
+  },
+  "run_paused": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "pause",
+   "data": [],
+   "tier": 1
+  },
+  "run_resumed": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "pause",
+   "data": [],
+   "tier": 1
+  },
+  "run_step": {
+   "by": [
+    "person"
+   ],
+   "control_key": "step",
+   "data": [
+    "round",
+    "stage"
+   ],
+   "tier": null
+  },
+  "seed_added": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "seeds",
+   "data": [
+    "node",
+    "text"
+   ],
+   "tier": 1
+  },
+  "sketch_batch": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "node",
+    "direction",
+    "round",
+    "count",
+    "items"
+   ],
+   "tier": 3
+  },
+  "space_opened": {
+   "by": [
+    "server"
+   ],
+   "control_key": null,
+   "data": [
+    "space_id",
+    "epoch"
+   ],
+   "tier": null
+  },
+  "stage_entered": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "round",
+    "stage",
+    "waiting"
+   ],
+   "tier": null
+  },
+  "test_result": {
+   "by": [
+    "team"
+   ],
+   "control_key": null,
+   "data": [
+    "node",
+    "cand",
+    "idea",
+    "status"
+   ],
+   "tier": 1
+  },
+  "vote_cast": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": null,
+   "data": [
+    "idea",
+    "value"
+   ],
+   "tier": 3
+  }
+ },
+ "no_digest": [
+  "agent_said",
+  "chat_posted",
+  "control_applied",
+  "digest_taken",
+  "intent_decided",
+  "intent_proposed",
+  "question_preview",
+  "run_step",
+  "space_opened",
+  "stage_entered"
+ ],
+ "private_keys": [
+  "obvious",
+  "obvious_match",
+  "private"
+ ],
+ "roles": [
+  "person",
+  "critic",
+  "author",
+  "builder",
+  "planner",
+  "interrogation",
+  "idea"
+ ],
+ "routes": {
+  "claims": [
+   "POST",
+   "/api/claims"
+  ],
+  "control": [
+   "GET",
+   "/api/control"
+  ],
+  "digest": [
+   "GET",
+   "/api/digest"
+  ],
+  "events": [
+   "GET",
+   "/api/events"
+  ],
+  "memory": [
+   "GET",
+   "/api/memory"
+  ],
+  "post": [
+   "POST",
+   "/api/events"
+  ],
+  "presence": [
+   "POST",
+   "/api/presence"
+  ],
+  "snapshot": [
+   "GET",
+   "/api/snapshot"
+  ],
+  "static": [
+   "GET",
+   "/"
+  ],
+  "stream": [
+   "GET",
+   "/api/stream"
+  ]
+ },
+ "server_only": [
+  "claim_expired",
+  "claim_granted",
+  "claim_released",
+  "claim_taken_over",
+  "space_opened"
+ ],
+ "stages": [
+  "planned",
+  "ideated",
+  "clustered",
+  "deepened",
+  "built",
+  "verified"
+ ],
+ "status_words": {
+  "baseline": [
+   "win",
+   "tie",
+   "loss",
+   "failed_check",
+   "not_built"
+  ],
+  "check_only": [
+   "win",
+   "tie",
+   "loss",
+   "failed_check",
+   "not_built"
+  ],
+  "no_check": [
+   "preferred",
+   "not_preferred",
+   "split",
+   "failed_check",
+   "not_built"
+  ]
+ },
+ "team_kinds": [
+  "candidate_built",
+  "cluster_snapshot",
+  "control_applied",
+  "digest_taken",
+  "memory_added",
+  "node_added",
+  "objection_marked",
+  "objection_raised",
+  "question_picked",
+  "question_preview",
+  "reply_posted",
+  "sketch_batch",
+  "stage_entered",
+  "test_result"
+ ],
+ "ttl": {
+  "claim_s": 90.0,
+  "heartbeat_s": 5.0,
+  "presence_s": 20.0
+ },
+ "version": 1,
+ "winner_word": {
+  "baseline": "won",
+  "check_only": "won",
+  "no_check": "preferred"
+ }
+}

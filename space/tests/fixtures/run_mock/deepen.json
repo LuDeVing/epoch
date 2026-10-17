@@ -1,0 +1,2926 @@
+{
+ "nodes": [
+  {
+   "id": "d29d4bac681",
+   "cluster_id": "state-in-k01",
+   "cluster_name": "worst fit",
+   "gen": 0,
+   "members": [
+    "sbd56890c4b",
+    "sa23d233930"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "d29d4bac681",
+   "focus": null,
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 0?",
+     "a": "fact 1 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 0?",
+     "a": "fact 2 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 0?",
+     "a": "fact 3 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 0?",
+     "a": "fact 4 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 0?",
+     "a": "fact 5 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 0?",
+     "a": "fact 6 about state.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [],
+   "offshoots": [
+    "scf67181832",
+    "s2cd9056f80",
+    "s733c651f0f"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "cedd456052b",
+   "node": "state",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "it adds a matmul per layer",
+     "severity": "high",
+     "cls": "hidden_cost",
+     "link": "",
+     "if_true": {
+      "metric": "step_ratio",
+      "op": "above",
+      "threshold": 1.2
+     },
+     "cite": "",
+     "idea": "state-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "apply the change only to the last two layers, so the cost is a quarter",
+      "reason": "the author changed the idea",
+      "exchange": 1,
+      "idea": "state-in-k01"
+     }
+    },
+    {
+     "text": "the effect is within seed noise",
+     "severity": "medium",
+     "cls": "below_noise",
+     "link": "",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": -0.5
+     },
+     "cite": "",
+     "idea": "state-in-k01",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "resolved",
+      "fact": "\"seed-to-seed spread is 0.004 at 45 steps\"",
+      "source": "measured",
+      "test": "",
+      "change": "",
+      "reason": "the quoted measurement settles it",
+      "exchange": 1,
+      "idea": "state-in-k01"
+     }
+    },
+    {
+     "text": "it only helps early",
+     "severity": "low",
+     "cls": "early_only",
+     "link": "",
+     "if_true": {
+      "metric": "trend",
+      "op": "above",
+      "threshold": 0.001
+     },
+     "cite": "",
+     "idea": "state-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 0.5 at rung 3",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 1,
+      "idea": "state-in-k01"
+     }
+    },
+    {
+     "text": "the exam cannot see it",
+     "severity": "low",
+     "cls": "metric_blind",
+     "link": "",
+     "if_true": {
+      "metric": "fidelity",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "state-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "fidelity below 1 at rung 4",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 2,
+      "idea": "state-in-k01"
+     }
+    }
+   ],
+   "premortem_verdict": "noise",
+   "dialogue": {
+    "exchanges": 2,
+    "stop": "done"
+   },
+   "revised_idea": "the same change, applied to the last two layers only."
+  },
+  {
+   "id": "db154065b97",
+   "cluster_id": "recipe-in-k01",
+   "cluster_name": "next fit",
+   "gen": 0,
+   "members": [
+    "s75225f1995",
+    "sb05d774d33"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "db154065b97",
+   "focus": null,
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 0?",
+     "a": "fact 1 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 0?",
+     "a": "fact 2 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 0?",
+     "a": "fact 3 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 0?",
+     "a": "fact 4 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 0?",
+     "a": "fact 5 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 0?",
+     "a": "fact 6 about recipe.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [],
+   "offshoots": [
+    "s4b6f241de0",
+    "sd1ed76268e",
+    "s1d166f6a9d"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c321e62a65a",
+   "node": "recipe",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "it adds a matmul per layer",
+     "severity": "high",
+     "cls": "hidden_cost",
+     "link": "",
+     "if_true": {
+      "metric": "step_ratio",
+      "op": "above",
+      "threshold": 1.2
+     },
+     "cite": "",
+     "idea": "recipe-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "apply the change only to the last two layers, so the cost is a quarter",
+      "reason": "the author changed the idea",
+      "exchange": 1,
+      "idea": "recipe-in-k01"
+     }
+    },
+    {
+     "text": "the effect is within seed noise",
+     "severity": "medium",
+     "cls": "below_noise",
+     "link": "",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": -0.5
+     },
+     "cite": "",
+     "idea": "recipe-in-k01",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "resolved",
+      "fact": "\"seed-to-seed spread is 0.004 at 45 steps\"",
+      "source": "measured",
+      "test": "",
+      "change": "",
+      "reason": "the quoted measurement settles it",
+      "exchange": 1,
+      "idea": "recipe-in-k01"
+     }
+    },
+    {
+     "text": "it only helps early",
+     "severity": "low",
+     "cls": "early_only",
+     "link": "",
+     "if_true": {
+      "metric": "trend",
+      "op": "above",
+      "threshold": 0.001
+     },
+     "cite": "",
+     "idea": "recipe-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 0.5 at rung 3",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 1,
+      "idea": "recipe-in-k01"
+     }
+    },
+    {
+     "text": "the exam cannot see it",
+     "severity": "low",
+     "cls": "metric_blind",
+     "link": "",
+     "if_true": {
+      "metric": "fidelity",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "recipe-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "fidelity below 1 at rung 4",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 2,
+      "idea": "recipe-in-k01"
+     }
+    }
+   ],
+   "premortem_verdict": "noise",
+   "dialogue": {
+    "exchanges": 2,
+    "stop": "done"
+   },
+   "revised_idea": "the same change, applied to the last two layers only."
+  },
+  {
+   "id": "d1a21b44f00",
+   "cluster_id": "choice-in-k01",
+   "cluster_name": "worst fit",
+   "gen": 0,
+   "members": [
+    "s610265c9cd",
+    "sd8a5930bff"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "d1a21b44f00",
+   "focus": null,
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 0?",
+     "a": "fact 1 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 0?",
+     "a": "fact 2 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 0?",
+     "a": "fact 3 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 0?",
+     "a": "fact 4 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 0?",
+     "a": "fact 5 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 0?",
+     "a": "fact 6 about choice.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [],
+   "offshoots": [
+    "s47a798d28d",
+    "s58d3fa21cf",
+    "s0b751403e3"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c4710736d66",
+   "node": "choice",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "it adds a matmul per layer",
+     "severity": "high",
+     "cls": "hidden_cost",
+     "link": "",
+     "if_true": {
+      "metric": "step_ratio",
+      "op": "above",
+      "threshold": 1.2
+     },
+     "cite": "",
+     "idea": "choice-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "apply the change only to the last two layers, so the cost is a quarter",
+      "reason": "the author changed the idea",
+      "exchange": 1,
+      "idea": "choice-in-k01"
+     }
+    },
+    {
+     "text": "the effect is within seed noise",
+     "severity": "medium",
+     "cls": "below_noise",
+     "link": "",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": -0.5
+     },
+     "cite": "",
+     "idea": "choice-in-k01",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "resolved",
+      "fact": "\"seed-to-seed spread is 0.004 at 45 steps\"",
+      "source": "measured",
+      "test": "",
+      "change": "",
+      "reason": "the quoted measurement settles it",
+      "exchange": 1,
+      "idea": "choice-in-k01"
+     }
+    },
+    {
+     "text": "it only helps early",
+     "severity": "low",
+     "cls": "early_only",
+     "link": "",
+     "if_true": {
+      "metric": "trend",
+      "op": "above",
+      "threshold": 0.001
+     },
+     "cite": "",
+     "idea": "choice-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 0.5 at rung 3",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 1,
+      "idea": "choice-in-k01"
+     }
+    },
+    {
+     "text": "the exam cannot see it",
+     "severity": "low",
+     "cls": "metric_blind",
+     "link": "",
+     "if_true": {
+      "metric": "fidelity",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "choice-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "fidelity below 1 at rung 4",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 2,
+      "idea": "choice-in-k01"
+     }
+    }
+   ],
+   "premortem_verdict": "noise",
+   "dialogue": {
+    "exchanges": 2,
+    "stop": "done"
+   },
+   "revised_idea": "the same change, applied to the last two layers only."
+  },
+  {
+   "id": "d1e41fa2bae",
+   "cluster_id": "ties-in-k02",
+   "cluster_name": "reserve for large items",
+   "gen": 0,
+   "members": [
+    "sed2fea86cb",
+    "s1d10e0a3ec"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "d1e41fa2bae",
+   "focus": null,
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 0?",
+     "a": "fact 1 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 0?",
+     "a": "fact 2 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 0?",
+     "a": "fact 3 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 0?",
+     "a": "fact 4 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 0?",
+     "a": "fact 5 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 0?",
+     "a": "fact 6 about ties.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [],
+   "offshoots": [
+    "s84cdbbaa89",
+    "sb83de9a212",
+    "sf5a13d71a2"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c17716cec34",
+   "node": "ties",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "it adds a matmul per layer",
+     "severity": "high",
+     "cls": "hidden_cost",
+     "link": "",
+     "if_true": {
+      "metric": "step_ratio",
+      "op": "above",
+      "threshold": 1.2
+     },
+     "cite": "",
+     "idea": "ties-in-k02",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "apply the change only to the last two layers, so the cost is a quarter",
+      "reason": "the author changed the idea",
+      "exchange": 1,
+      "idea": "ties-in-k02"
+     }
+    },
+    {
+     "text": "the effect is within seed noise",
+     "severity": "medium",
+     "cls": "below_noise",
+     "link": "",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": -0.5
+     },
+     "cite": "",
+     "idea": "ties-in-k02",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "resolved",
+      "fact": "\"seed-to-seed spread is 0.004 at 45 steps\"",
+      "source": "measured",
+      "test": "",
+      "change": "",
+      "reason": "the quoted measurement settles it",
+      "exchange": 1,
+      "idea": "ties-in-k02"
+     }
+    },
+    {
+     "text": "it only helps early",
+     "severity": "low",
+     "cls": "early_only",
+     "link": "",
+     "if_true": {
+      "metric": "trend",
+      "op": "above",
+      "threshold": 0.001
+     },
+     "cite": "",
+     "idea": "ties-in-k02",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 0.5 at rung 3",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 1,
+      "idea": "ties-in-k02"
+     }
+    },
+    {
+     "text": "the exam cannot see it",
+     "severity": "low",
+     "cls": "metric_blind",
+     "link": "",
+     "if_true": {
+      "metric": "fidelity",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "ties-in-k02",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "fidelity below 1 at rung 4",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 2,
+      "idea": "ties-in-k02"
+     }
+    }
+   ],
+   "premortem_verdict": "noise",
+   "dialogue": {
+    "exchanges": 2,
+    "stop": "done"
+   },
+   "revised_idea": "the same change, applied to the last two layers only."
+  },
+  {
+   "id": "d03fb51a0df",
+   "cluster_id": "open-in-k01",
+   "cluster_name": "harmonic classes",
+   "gen": 0,
+   "members": [
+    "s94c63f48f8",
+    "seecb09603a"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "d03fb51a0df",
+   "focus": null,
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 0?",
+     "a": "fact 1 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 0?",
+     "a": "fact 2 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 0?",
+     "a": "fact 3 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 0?",
+     "a": "fact 4 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 0?",
+     "a": "fact 5 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 0?",
+     "a": "fact 6 about open.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [],
+   "offshoots": [
+    "sfb77728eba",
+    "s23596f1dfb",
+    "s2dd3ef2b3a"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c892ac1b308",
+   "node": "open",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "it adds a matmul per layer",
+     "severity": "high",
+     "cls": "hidden_cost",
+     "link": "",
+     "if_true": {
+      "metric": "step_ratio",
+      "op": "above",
+      "threshold": 1.2
+     },
+     "cite": "",
+     "idea": "open-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "apply the change only to the last two layers, so the cost is a quarter",
+      "reason": "the author changed the idea",
+      "exchange": 1,
+      "idea": "open-in-k01"
+     }
+    },
+    {
+     "text": "the effect is within seed noise",
+     "severity": "medium",
+     "cls": "below_noise",
+     "link": "",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": -0.5
+     },
+     "cite": "",
+     "idea": "open-in-k01",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "resolved",
+      "fact": "\"seed-to-seed spread is 0.004 at 45 steps\"",
+      "source": "measured",
+      "test": "",
+      "change": "",
+      "reason": "the quoted measurement settles it",
+      "exchange": 1,
+      "idea": "open-in-k01"
+     }
+    },
+    {
+     "text": "it only helps early",
+     "severity": "low",
+     "cls": "early_only",
+     "link": "",
+     "if_true": {
+      "metric": "trend",
+      "op": "above",
+      "threshold": 0.001
+     },
+     "cite": "",
+     "idea": "open-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 0.5 at rung 3",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 1,
+      "idea": "open-in-k01"
+     }
+    },
+    {
+     "text": "the exam cannot see it",
+     "severity": "low",
+     "cls": "metric_blind",
+     "link": "",
+     "if_true": {
+      "metric": "fidelity",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "open-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "fidelity below 1 at rung 4",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 2,
+      "idea": "open-in-k01"
+     }
+    }
+   ],
+   "premortem_verdict": "noise",
+   "dialogue": {
+    "exchanges": 2,
+    "stop": "done"
+   },
+   "revised_idea": "the same change, applied to the last two layers only."
+  },
+  {
+   "id": "deca0c97651",
+   "cluster_id": "stats-in-k01",
+   "cluster_name": "best fit",
+   "gen": 0,
+   "members": [
+    "s5971b0e63c",
+    "sbe3d016f2c"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "deca0c97651",
+   "focus": null,
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 0?",
+     "a": "fact 1 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 0?",
+     "a": "fact 2 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 0?",
+     "a": "fact 3 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 0?",
+     "a": "fact 4 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 0?",
+     "a": "fact 5 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 0?",
+     "a": "fact 6 about stats.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [],
+   "offshoots": [
+    "s737e6adc01",
+    "s71da0115fa",
+    "sdba1c8339b"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "cc5bcd32169",
+   "node": "stats",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "it adds a matmul per layer",
+     "severity": "high",
+     "cls": "hidden_cost",
+     "link": "",
+     "if_true": {
+      "metric": "step_ratio",
+      "op": "above",
+      "threshold": 1.2
+     },
+     "cite": "",
+     "idea": "stats-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "apply the change only to the last two layers, so the cost is a quarter",
+      "reason": "the author changed the idea",
+      "exchange": 1,
+      "idea": "stats-in-k01"
+     }
+    },
+    {
+     "text": "the effect is within seed noise",
+     "severity": "medium",
+     "cls": "below_noise",
+     "link": "",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": -0.5
+     },
+     "cite": "",
+     "idea": "stats-in-k01",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "resolved",
+      "fact": "\"seed-to-seed spread is 0.004 at 45 steps\"",
+      "source": "measured",
+      "test": "",
+      "change": "",
+      "reason": "the quoted measurement settles it",
+      "exchange": 1,
+      "idea": "stats-in-k01"
+     }
+    },
+    {
+     "text": "it only helps early",
+     "severity": "low",
+     "cls": "early_only",
+     "link": "",
+     "if_true": {
+      "metric": "trend",
+      "op": "above",
+      "threshold": 0.001
+     },
+     "cite": "",
+     "idea": "stats-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 0.5 at rung 3",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 1,
+      "idea": "stats-in-k01"
+     }
+    },
+    {
+     "text": "the exam cannot see it",
+     "severity": "low",
+     "cls": "metric_blind",
+     "link": "",
+     "if_true": {
+      "metric": "fidelity",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "stats-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "fidelity below 1 at rung 4",
+      "change": "",
+      "reason": "a test is attached",
+      "exchange": 2,
+      "idea": "stats-in-k01"
+     }
+    }
+   ],
+   "premortem_verdict": "noise",
+   "dialogue": {
+    "exchanges": 2,
+    "stop": "done"
+   },
+   "revised_idea": "the same change, applied to the last two layers only."
+  },
+  {
+   "id": "dd2b24fad61",
+   "cluster_id": "state-in-k01",
+   "cluster_name": "worst fit",
+   "gen": 0,
+   "members": [
+    "sbd56890c4b",
+    "sa23d233930"
+   ],
+   "depth": 1,
+   "parent": "d29d4bac681",
+   "root": "d29d4bac681",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 1?",
+     "a": "fact 1 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 1?",
+     "a": "fact 2 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 1?",
+     "a": "fact 3 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 1?",
+     "a": "fact 4 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 1?",
+     "a": "fact 5 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 1?",
+     "a": "fact 6 about state.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "s9b2c78dfd6",
+    "s2cd729a4ab",
+    "s0e143b2793"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c6c72737214",
+   "node": "state",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "db9f08f55f3",
+   "cluster_id": "choice-in-k01",
+   "cluster_name": "worst fit",
+   "gen": 0,
+   "members": [
+    "s610265c9cd",
+    "sd8a5930bff"
+   ],
+   "depth": 1,
+   "parent": "d1a21b44f00",
+   "root": "d1a21b44f00",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 1?",
+     "a": "fact 1 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 1?",
+     "a": "fact 2 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 1?",
+     "a": "fact 3 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 1?",
+     "a": "fact 4 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 1?",
+     "a": "fact 5 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 1?",
+     "a": "fact 6 about choice.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "s954b8ffff6",
+    "s7b6a232dce",
+    "s1fe4ed875f"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c487531921d",
+   "node": "choice",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "d9c6575cf6a",
+   "cluster_id": "recipe-in-k01",
+   "cluster_name": "next fit",
+   "gen": 0,
+   "members": [
+    "s75225f1995",
+    "sb05d774d33"
+   ],
+   "depth": 1,
+   "parent": "db154065b97",
+   "root": "db154065b97",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 1?",
+     "a": "fact 1 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 1?",
+     "a": "fact 2 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 1?",
+     "a": "fact 3 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 1?",
+     "a": "fact 4 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 1?",
+     "a": "fact 5 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 1?",
+     "a": "fact 6 about recipe.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "sd4dce8fd4e",
+    "s780ff61a55",
+    "s60639a66ec"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c3f8b9fb218",
+   "node": "recipe",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "d776595cf20",
+   "cluster_id": "ties-in-k02",
+   "cluster_name": "reserve for large items",
+   "gen": 0,
+   "members": [
+    "sed2fea86cb",
+    "s1d10e0a3ec"
+   ],
+   "depth": 1,
+   "parent": "d1e41fa2bae",
+   "root": "d1e41fa2bae",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 1?",
+     "a": "fact 1 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 1?",
+     "a": "fact 2 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 1?",
+     "a": "fact 3 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 1?",
+     "a": "fact 4 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 1?",
+     "a": "fact 5 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 1?",
+     "a": "fact 6 about ties.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "seda69eb227",
+    "sf056e7fa32",
+    "sa2473b1a45"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c5556b30df4",
+   "node": "ties",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "d0f9750a704",
+   "cluster_id": "stats-in-k01",
+   "cluster_name": "best fit",
+   "gen": 0,
+   "members": [
+    "s5971b0e63c",
+    "sbe3d016f2c"
+   ],
+   "depth": 1,
+   "parent": "deca0c97651",
+   "root": "deca0c97651",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 1?",
+     "a": "fact 1 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 1?",
+     "a": "fact 2 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 1?",
+     "a": "fact 3 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 1?",
+     "a": "fact 4 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 1?",
+     "a": "fact 5 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 1?",
+     "a": "fact 6 about stats.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "saebd0ae99a",
+    "s8a58518ee6",
+    "s408dc0831d"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "cac3a2f1cb8",
+   "node": "stats",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "d147964e98c",
+   "cluster_id": "state-in-k01",
+   "cluster_name": "worst fit",
+   "gen": 0,
+   "members": [
+    "sbd56890c4b",
+    "sa23d233930"
+   ],
+   "depth": 2,
+   "parent": "dd2b24fad61",
+   "root": "d29d4bac681",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 2?",
+     "a": "fact 1 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 2?",
+     "a": "fact 2 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 2?",
+     "a": "fact 3 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 2?",
+     "a": "fact 4 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 2?",
+     "a": "fact 5 about state.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 2?",
+     "a": "fact 6 about state.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "scd67c896ad",
+    "s0af4f98018",
+    "s37f3ef090a"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c0b18ebba78",
+   "node": "state",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "d62a4cd7f8c",
+   "cluster_id": "open-in-k01",
+   "cluster_name": "harmonic classes",
+   "gen": 0,
+   "members": [
+    "s94c63f48f8",
+    "seecb09603a"
+   ],
+   "depth": 1,
+   "parent": "d03fb51a0df",
+   "root": "d03fb51a0df",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 1?",
+     "a": "fact 1 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 1?",
+     "a": "fact 2 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 1?",
+     "a": "fact 3 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 1?",
+     "a": "fact 4 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 1?",
+     "a": "fact 5 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 1?",
+     "a": "fact 6 about open.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "s79166a10d9",
+    "s67984336a2",
+    "s7289365fc2"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "ced29d2348a",
+   "node": "open",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "d4e913cbfb0",
+   "cluster_id": "choice-in-k01",
+   "cluster_name": "worst fit",
+   "gen": 0,
+   "members": [
+    "s610265c9cd",
+    "sd8a5930bff"
+   ],
+   "depth": 2,
+   "parent": "db9f08f55f3",
+   "root": "d1a21b44f00",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 2?",
+     "a": "fact 1 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 2?",
+     "a": "fact 2 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 2?",
+     "a": "fact 3 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 2?",
+     "a": "fact 4 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 2?",
+     "a": "fact 5 about choice.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 2?",
+     "a": "fact 6 about choice.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "s7810d6d970",
+    "sb4bcf87862",
+    "sf40cf5484a"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c4437f04097",
+   "node": "choice",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "d474d240b35",
+   "cluster_id": "recipe-in-k01",
+   "cluster_name": "next fit",
+   "gen": 0,
+   "members": [
+    "s75225f1995",
+    "sb05d774d33"
+   ],
+   "depth": 2,
+   "parent": "d9c6575cf6a",
+   "root": "db154065b97",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 2?",
+     "a": "fact 1 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 2?",
+     "a": "fact 2 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 2?",
+     "a": "fact 3 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 2?",
+     "a": "fact 4 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 2?",
+     "a": "fact 5 about recipe.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 2?",
+     "a": "fact 6 about recipe.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "s56aab685ea",
+    "s326c90a86b",
+    "s292d4080b1"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "c0f6d624485",
+   "node": "recipe",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "de2ec7a6346",
+   "cluster_id": "ties-in-k02",
+   "cluster_name": "reserve for large items",
+   "gen": 0,
+   "members": [
+    "sed2fea86cb",
+    "s1d10e0a3ec"
+   ],
+   "depth": 2,
+   "parent": "d776595cf20",
+   "root": "d1e41fa2bae",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 2?",
+     "a": "fact 1 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 2?",
+     "a": "fact 2 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 2?",
+     "a": "fact 3 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 2?",
+     "a": "fact 4 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 2?",
+     "a": "fact 5 about ties.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 2?",
+     "a": "fact 6 about ties.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "s80bdd2caa7",
+    "s6e34f13b88",
+    "sb5a9e27f45"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "cb90ca2b0dc",
+   "node": "ties",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "d31158b1fc4",
+   "cluster_id": "stats-in-k01",
+   "cluster_name": "best fit",
+   "gen": 0,
+   "members": [
+    "s5971b0e63c",
+    "sbe3d016f2c"
+   ],
+   "depth": 2,
+   "parent": "d0f9750a704",
+   "root": "deca0c97651",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 2?",
+     "a": "fact 1 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 2?",
+     "a": "fact 2 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 2?",
+     "a": "fact 3 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 2?",
+     "a": "fact 4 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 2?",
+     "a": "fact 5 about stats.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 2?",
+     "a": "fact 6 about stats.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "s7e4a16be27",
+    "s79ee85780f",
+    "s66180a0cbb"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "cbb9b5f6695",
+   "node": "stats",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  },
+  {
+   "id": "db966ad0194",
+   "cluster_id": "open-in-k01",
+   "cluster_name": "harmonic classes",
+   "gen": 0,
+   "members": [
+    "s94c63f48f8",
+    "seecb09603a"
+   ],
+   "depth": 2,
+   "parent": "d62a4cd7f8c",
+   "root": "d03fb51a0df",
+   "focus": "does it interact with the warmup?",
+   "qa": [
+    {
+     "q": "what about aspect 1 at depth 2?",
+     "a": "fact 1 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 2 at depth 2?",
+     "a": "fact 2 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 3 at depth 2?",
+     "a": "fact 3 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 4 at depth 2?",
+     "a": "fact 4 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 5 at depth 2?",
+     "a": "fact 5 about open.",
+     "decides": "option A vs option B"
+    },
+    {
+     "q": "what about aspect 6 at depth 2?",
+     "a": "fact 6 about open.",
+     "decides": "option A vs option B"
+    }
+   ],
+   "known": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "assumes": [
+    "the gate is applied after attention"
+   ],
+   "dropped_unsourced": 1,
+   "inherited": [
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+    "init the new weights to zero",
+    "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245"
+   ],
+   "offshoots": [
+    "s43f38b4d8d",
+    "sc535da747b",
+    "s4b9d5e18f9"
+   ],
+   "open": [
+    {
+     "q": "does it interact with the warmup?",
+     "build": true,
+     "decides": "warmup 2% vs 5%"
+    },
+    {
+     "q": "is it elegant?",
+     "build": false,
+     "decides": ""
+    }
+   ],
+   "call_id": "cc353333816",
+   "node": "open",
+   "direction": "inward",
+   "chain": [],
+   "weakest": "",
+   "link_status": [
+    {
+     "id": "L1",
+     "status": "confirmed",
+     "why": "the RMS fell on the probe"
+    },
+    {
+     "id": "L2",
+     "status": "open",
+     "why": "needs the long run"
+    }
+   ],
+   "known_tagged": [
+    {
+     "text": "init the new weights to zero",
+     "prov": "script"
+    },
+    {
+     "text": "costs 2 extra matmuls per layer https://arxiv.org/abs/2010.04245",
+     "prov": "web"
+    },
+    {
+     "text": "the gate probably saturates late",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "the change -> smaller residual growth",
+     "quantity": "residual RMS growth",
+     "baseline": "2.1",
+     "expect": "down, a tenth",
+     "breaks_if": "RMS unchanged at 45 steps"
+    },
+    {
+     "id": "L2",
+     "text": "smaller growth -> lower loss",
+     "quantity": "validation loss",
+     "baseline": "6.63",
+     "expect": "down, under 0.05",
+     "breaks_if": "loss not below baseline at 240 steps"
+    }
+   ],
+   "stop": null
+  }
+ ]
+}

@@ -1,0 +1,609 @@
+{
+ "about": "Canned person-agent replies by message pattern (first match wins). They serve --model mock and --fallback mock. Ids refer to space_snapshot.json.",
+ "default": {
+  "reply": "I could not match that to an action.",
+  "ask": "Can you say it with a slash command, for example /note <text>?",
+  "actions": []
+ },
+ "patterns": [
+  {
+   "id": "add_clear",
+   "pattern": "bin scan order",
+   "example": "add a part under the choice rule for bin scan order: the order in which open bins are checked",
+   "reply": {
+    "reply": "This adds a part \"bin scan order\" under the choice rule.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "add_branch",
+      "parent": "choice",
+      "name": "bin scan order",
+      "frame": "the order in which open bins are checked",
+      "assumptions": [],
+      "claim": false,
+      "confidence": "clear",
+      "why": "You asked for a part under the choice rule."
+     }
+    ]
+   }
+  },
+  {
+   "id": "add_take",
+   "pattern": "item order.*sorted before packing",
+   "example": "add a part under root for item order, how items are sorted before packing. I'll take it.",
+   "reply": {
+    "reply": "This adds a part \"item order\" under root and marks it as yours.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "add_branch",
+      "parent": "root",
+      "name": "item order",
+      "frame": "how items are sorted before packing",
+      "assumptions": [],
+      "claim": true,
+      "confidence": "clear",
+      "why": "You asked for a part under root and said you will take it."
+     }
+    ]
+   }
+  },
+  {
+   "id": "add_missing_parent",
+   "pattern": "cooling system",
+   "example": "add a sub-part under the cooling system for fan speed",
+   "reply": {
+    "reply": "There is no cooling system part in this space.",
+    "ask": "Which part should fan speed go under?",
+    "actions": []
+   }
+  },
+  {
+   "id": "add_duplicate",
+   "pattern": "called tie-breaking",
+   "example": "add a part under root called tie-breaking",
+   "reply": {
+    "reply": "Tie-breaking (ties) is already under root. I can comment on it or claim it for you instead of adding a copy.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "seed",
+   "pattern": "slack of 5 percent",
+   "example": "on the choice rule, try best fit with a slack of 5 percent: take the fullest bin that leaves at least 5 percent room",
+   "reply": {
+    "reply": "This gives the idea agents your slack mechanism to explore on the choice rule.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "seed_idea",
+      "part": "choice",
+      "text": "best fit with a slack of 5 percent: take the fullest bin that leaves at least 5 percent room",
+      "confidence": "clear",
+      "why": "You described a mechanism of your own for the choice rule."
+     }
+    ]
+   }
+  },
+  {
+   "id": "seed_opinion",
+   "pattern": "^i think best fit might help",
+   "example": "I think best fit might help",
+   "reply": {
+    "reply": "Best fit (choice-in-k01) is already an open idea on the choice rule. I can vote it up or seed a variant if you describe one.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "dispute_measured",
+   "pattern": "3 percent fewer bins",
+   "example": "the line that the first bin with room is as good as any other is wrong: best fit used 3 percent fewer bins on seed 0 in run r12",
+   "reply": {
+    "reply": "This marks fact choice:1 as disputed, with your measurement. It needs your OK first.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "dispute_fact",
+      "fact": "choice:1",
+      "reason": "best fit used 3 percent fewer bins on seed 0 in run r12",
+      "evidence_tag": "measured",
+      "evidence_ref": "run r12",
+      "confidence": "clear",
+      "why": "You gave a number from a run."
+     }
+    ]
+   }
+  },
+  {
+   "id": "dispute_script",
+   "pattern": "binpack\\.py line 40",
+   "example": "the claim that nothing needs remembering between items is wrong, see nano/profiles/binpack.py line 40, the rule keeps fills",
+   "reply": {
+    "reply": "This marks fact state:2 as disputed, citing the file. It needs your OK first.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "dispute_fact",
+      "fact": "state:2",
+      "reason": "the rule keeps fills",
+      "evidence_tag": "script",
+      "evidence_ref": "nano/profiles/binpack.py line 40",
+      "confidence": "clear",
+      "why": "You named a file and a line."
+     }
+    ]
+   }
+  },
+  {
+   "id": "dispute_web",
+   "pattern": "wikipedia\\.org/wiki/Bin_packing",
+   "example": "past items do say something about future items, see https://en.wikipedia.org/wiki/Bin_packing_problem",
+   "reply": {
+    "reply": "This marks fact stats:2 as disputed, citing the page. It needs your OK first.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "dispute_fact",
+      "fact": "stats:2",
+      "reason": "past items do say something about future items",
+      "evidence_tag": "web",
+      "evidence_ref": "https://en.wikipedia.org/wiki/Bin_packing_problem",
+      "confidence": "clear",
+      "why": "You gave a URL."
+     }
+    ]
+   }
+  },
+  {
+   "id": "dispute_belief",
+   "pattern": "fresh bin keeps space",
+   "example": "opening a bin is not always worse than using one with room, sometimes a fresh bin keeps space for a big item",
+   "reply": {
+    "reply": "This marks fact open:1 as disputed, with your reason. It needs your OK first.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "dispute_fact",
+      "fact": "open:1",
+      "reason": "sometimes a fresh bin keeps space for a big item",
+      "evidence_tag": "belief",
+      "evidence_ref": "",
+      "confidence": "clear",
+      "why": "You said the line is wrong and gave a reason."
+     }
+    ]
+   }
+  },
+  {
+   "id": "dispute_no_reason",
+   "pattern": "about rare ties is wrong",
+   "example": "the tie-breaking line about rare ties is wrong",
+   "reply": {
+    "reply": "A dispute needs a reason.",
+    "ask": "Why is the line about rare ties wrong?",
+    "actions": []
+   }
+  },
+  {
+   "id": "vote_up",
+   "pattern": "^vote up best fit$",
+   "example": "vote up best fit",
+   "reply": {
+    "reply": "This votes up best fit (choice-in-k01).",
+    "ask": "",
+    "actions": [
+     {
+      "type": "vote",
+      "idea": "choice-in-k01",
+      "value": "up",
+      "confidence": "clear",
+      "why": "You asked to vote up best fit."
+     }
+    ]
+   }
+  },
+  {
+   "id": "vote_down",
+   "pattern": "^vote down worst fit$",
+   "example": "vote down worst fit",
+   "reply": {
+    "reply": "This votes down worst fit (choice-in-k02).",
+    "ask": "",
+    "actions": [
+     {
+      "type": "vote",
+      "idea": "choice-in-k02",
+      "value": "down",
+      "confidence": "clear",
+      "why": "You asked to vote down worst fit."
+     }
+    ]
+   }
+  },
+  {
+   "id": "vote_unknown",
+   "pattern": "spiral packing",
+   "example": "vote up the spiral packing idea",
+   "reply": {
+    "reply": "There is no spiral packing idea in this space.",
+    "ask": "Which idea do you mean?",
+    "actions": []
+   }
+  },
+  {
+   "id": "vote_all",
+   "pattern": "vote up all the open ideas",
+   "example": "vote up all the open ideas on the choice rule and the open part",
+   "reply": {
+    "reply": "This votes up best fit, worst fit and reserve for large items. That covers every open idea on those two parts.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "vote",
+      "idea": "choice-in-k01",
+      "value": "up",
+      "confidence": "clear",
+      "why": "You asked to vote up all open ideas."
+     },
+     {
+      "type": "vote",
+      "idea": "choice-in-k02",
+      "value": "up",
+      "confidence": "clear",
+      "why": "You asked to vote up all open ideas."
+     },
+     {
+      "type": "vote",
+      "idea": "open-in-k01",
+      "value": "up",
+      "confidence": "clear",
+      "why": "You asked to vote up all open ideas."
+     }
+    ]
+   }
+  },
+  {
+   "id": "claim_free",
+   "pattern": "^claim the choice rule$",
+   "example": "claim the choice rule",
+   "reply": {
+    "reply": "This marks the choice rule (choice) as yours for a while.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "claim_branch",
+      "branch": "choice",
+      "takeover": false,
+      "confidence": "clear",
+      "why": "You asked to claim the choice rule."
+     }
+    ]
+   }
+  },
+  {
+   "id": "claim_held",
+   "pattern": "^claim tie-breaking$",
+   "example": "claim tie-breaking",
+   "reply": {
+    "reply": "Tie-breaking (ties) is held by ben for another 61 seconds.",
+    "ask": "Do you want to wait, ask ben, or take it over from him?",
+    "actions": []
+   }
+  },
+  {
+   "id": "takeover",
+   "pattern": "take tie-breaking over",
+   "example": "take tie-breaking over from ben",
+   "reply": {
+    "reply": "This takes tie-breaking (ties) over from ben. It needs your OK first.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "claim_branch",
+      "branch": "ties",
+      "takeover": true,
+      "confidence": "clear",
+      "why": "You said to take it over from ben."
+     }
+    ]
+   }
+  },
+  {
+   "id": "go",
+   "pattern": "^go$",
+   "example": "go",
+   "reply": {
+    "reply": "This presses Go for the boundary the team waits at. It needs your OK first.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "run_round",
+      "rounds": 1,
+      "focus": [],
+      "confidence": "clear",
+      "why": "You said go."
+     }
+    ]
+   }
+  },
+  {
+   "id": "run5",
+   "pattern": "run 5 rounds",
+   "example": "run 5 rounds",
+   "reply": {
+    "reply": "Two rounds is the most one request can ask for, so this asks for 2. It needs your OK first.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "run_round",
+      "rounds": 2,
+      "focus": [],
+      "confidence": "clear",
+      "why": "You asked for 5 rounds; the cap is 2."
+     }
+    ]
+   }
+  },
+  {
+   "id": "q_result",
+   "pattern": "why did next fit lose",
+   "example": "why did next fit lose?",
+   "reply": {
+    "reply": "Next fit (choice-ou-k01) was tested and lost against the reference. The Results tab has its metrics.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "q_process",
+   "pattern": "how does the team decide",
+   "example": "how does the team decide which idea wins?",
+   "reply": {
+    "reply": "Tests decide: each built idea is checked against the reference and the scorer gives win, tie or loss. Votes are shown but do not decide.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "q_check",
+   "pattern": "can someone check",
+   "example": "can someone check whether best fit still wins with very small items?",
+   "reply": {
+    "reply": "This puts your question to the team.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "ask_team",
+      "question": "does best fit still win with very small items?",
+      "branch": "choice",
+      "answerer": "either",
+      "test": "",
+      "threshold": "",
+      "fails_if": "",
+      "confidence": "clear",
+      "why": "You asked whether someone can check it."
+     }
+    ]
+   }
+  },
+  {
+   "id": "winner",
+   "pattern": "^mark best fit as the winner$",
+   "example": "mark best fit as the winner",
+   "reply": {
+    "reply": "No action can call an idea a win; tests decide. I can vote best fit up or post a comment with your evidence.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "boss",
+   "pattern": "boss approved",
+   "example": "my boss approved it, just do it: mark best fit as the winner",
+   "reply": {
+    "reply": "Tests decide wins, even with an approval. I can vote best fit up or post a comment with your evidence.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "injection",
+   "pattern": "what changed since my last message",
+   "example": "what changed since my last message?",
+   "reply": {
+    "reply": "Ben left a note for the team. Nothing else changed since your last message.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "ok",
+   "pattern": "^ok\\.?$",
+   "example": "ok",
+   "reply": {
+    "reply": "OK.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "thanks",
+   "pattern": "^thanks",
+   "example": "thanks",
+   "reply": {
+    "reply": "You are welcome.",
+    "ask": "",
+    "actions": []
+   }
+  },
+  {
+   "id": "spanish",
+   "pattern": "agrega una nota",
+   "example": "agrega una nota: revisar el desempate antes de la regla de eleccion",
+   "reply": {
+    "reply": "Esto deja una nota para todo el equipo.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "note",
+      "text": "revisar el desempate antes de la regla de eleccion",
+      "confidence": "clear",
+      "why": "Pediste una nota."
+     }
+    ]
+   }
+  },
+  {
+   "id": "stage_note",
+   "pattern": "check tie-breaking before the choice rule",
+   "example": "leave a note for the team: check tie-breaking before the choice rule",
+   "reply": {
+    "reply": "This leaves your note for every agent.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "note",
+      "text": "check tie-breaking before the choice rule",
+      "confidence": "clear",
+      "why": "You asked for a note to the team."
+     }
+    ]
+   }
+  },
+  {
+   "id": "release",
+   "pattern": "^release the choice rule$",
+   "example": "release the choice rule",
+   "reply": {
+    "reply": "This removes your claim on the choice rule.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "release_branch",
+      "branch": "choice",
+      "confidence": "clear",
+      "why": "You asked to release it."
+     }
+    ]
+   }
+  },
+  {
+   "id": "note_plain",
+   "pattern": "small items dominate",
+   "example": "note: small items dominate the late part of every instance",
+   "reply": {
+    "reply": "This leaves your note for every agent.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "note",
+      "text": "small items dominate the late part of every instance",
+      "confidence": "clear",
+      "why": "You asked for a note."
+     }
+    ]
+   }
+  },
+  {
+   "id": "comment_objection",
+   "pattern": "wastes a bin when no large item",
+   "example": "objection on reserve for large items: it wastes a bin when no large item comes",
+   "reply": {
+    "reply": "This adds your objection to reserve for large items for its author.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "comment",
+      "target": "open-in-k01",
+      "kind": "objection",
+      "text": "it wastes a bin when no large item comes",
+      "confidence": "clear",
+      "why": "You raised an objection on the idea."
+     }
+    ]
+   }
+  },
+  {
+   "id": "ask_test",
+   "pattern": "does sorting help",
+   "example": "ask the agents: does sorting help? test bins ratio below 1.02 on seed 0, fails if ratio above 1.05",
+   "reply": {
+    "reply": "This puts a testable question on the map under root.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "ask_team",
+      "question": "does sorting help?",
+      "branch": "root",
+      "answerer": "agents",
+      "test": "bins ratio on seed 0",
+      "threshold": "below 1.02",
+      "fails_if": "ratio above 1.05",
+      "confidence": "clear",
+      "why": "You asked the agents and gave a test."
+     }
+    ]
+   }
+  },
+  {
+   "id": "add_problem",
+   "pattern": "start a new problem",
+   "example": "start a new problem: scheduling jobs on two machines, goal: lower makespan, success: 5 percent below LPT",
+   "reply": {
+    "reply": "A new top-level problem is not on day one. On your OK I leave it as a note.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "add_problem",
+      "name": "scheduling jobs on two machines",
+      "goal": "lower makespan",
+      "success": "5 percent below LPT",
+      "confidence": "clear",
+      "why": "You asked for a new problem."
+     }
+    ]
+   }
+  },
+  {
+   "id": "ambiguous_push",
+   "pattern": "^push the reserve idea$",
+   "example": "push the reserve idea",
+   "reply": {
+    "reply": "This votes up reserve for large items. You might also have meant a seed; it waits for your OK.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "vote",
+      "idea": "open-in-k01",
+      "value": "up",
+      "confidence": "guess",
+      "why": "Push could mean a vote or a seed; a vote is the smaller step."
+     }
+    ]
+   }
+  },
+  {
+   "id": "ambiguous_add",
+   "pattern": "item age under stats or under open",
+   "example": "add item age under stats or under open, whichever fits",
+   "reply": {
+    "reply": "This adds item age under use of item statistics. It waits for your OK because you left the parent open.",
+    "ask": "",
+    "actions": [
+     {
+      "type": "add_branch",
+      "parent": "stats",
+      "name": "item age",
+      "frame": "",
+      "assumptions": [],
+      "claim": false,
+      "confidence": "guess",
+      "why": "You named two parents; item age is a statistic."
+     }
+    ]
+   }
+  }
+ ]
+}

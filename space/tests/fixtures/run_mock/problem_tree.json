@@ -1,0 +1,555 @@
+{
+ "nodes": [
+  {
+   "id": "root",
+   "name": "use fewer bins on the benchmark instances",
+   "parent": null,
+   "frame": "Nothing is solved yet. A rule must place each arriving item, once and for good, into an open bin or a new bin; it is judged by the bins used relative to the total size, averaged over seeded instances.",
+   "assumptions": [
+    "items must be placed the moment they arrive",
+    "a placed item never moves",
+    "the rule sees only the current item and the current bin fills"
+   ],
+   "boundary": "everything",
+   "directions": [
+    "upward"
+   ],
+   "refines": "root",
+   "idea_assumptions": [
+    {
+     "from": "root-in-k03",
+     "text": "the gate is applied after attention",
+     "round": 2,
+     "kind": "silent"
+    }
+   ],
+   "stats": {
+    "upward": {
+     "sketches": 8,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 1
+   },
+   "proposals": [
+    {
+     "id": "u3d885a4738",
+     "proposal": "judge by loss on rare tokens, not mean loss (footprint)",
+     "reframing": "the mean over all tokens hides the tail; model the tail separately.",
+     "new_measure": "validation loss on the 10 percent rarest tokens, from the same held-out file.",
+     "why": "mean loss is dominated by frequent tokens, so tail gains are invisible.",
+     "cost": "a token-frequency table and one extra pass of the eval.",
+     "round": 1,
+     "call_id": "c4fde346a32"
+    },
+    {
+     "id": "uc07e36625b",
+     "proposal": "judge by loss after a fixed wall-clock budget (footprint)",
+     "reframing": "fixed time instead of fixed tokens.",
+     "new_measure": "validation loss at 10 minutes of training on the reference GPU.",
+     "why": "a fixed token budget cannot see a faster step.",
+     "cost": "a timed training harness and repeated runs to control timing noise.",
+     "round": 1,
+     "call_id": "c4fde346a32"
+    },
+    {
+     "id": "u624a0b9fbb",
+     "proposal": "judge by loss on rare tokens, not mean loss (canvas)",
+     "reframing": "the mean over all tokens hides the tail; model the tail separately.",
+     "new_measure": "validation loss on the 10 percent rarest tokens, from the same held-out file.",
+     "why": "mean loss is dominated by frequent tokens, so tail gains are invisible.",
+     "cost": "a token-frequency table and one extra pass of the eval.",
+     "round": 1,
+     "call_id": "c22d5608572"
+    },
+    {
+     "id": "u92753a997a",
+     "proposal": "judge by loss after a fixed wall-clock budget (canvas)",
+     "reframing": "fixed time instead of fixed tokens.",
+     "new_measure": "validation loss at 10 minutes of training on the reference GPU.",
+     "why": "a fixed token budget cannot see a faster step.",
+     "cost": "a timed training harness and repeated runs to control timing noise.",
+     "round": 1,
+     "call_id": "c22d5608572"
+    },
+    {
+     "id": "u8c65bbbc1c",
+     "proposal": "judge by loss on rare tokens, not mean loss (notebook)",
+     "reframing": "the mean over all tokens hides the tail; model the tail separately.",
+     "new_measure": "validation loss on the 10 percent rarest tokens, from the same held-out file.",
+     "why": "mean loss is dominated by frequent tokens, so tail gains are invisible.",
+     "cost": "a token-frequency table and one extra pass of the eval.",
+     "round": 2,
+     "call_id": "c33040fdbdb"
+    },
+    {
+     "id": "uace8001a09",
+     "proposal": "judge by loss after a fixed wall-clock budget (notebook)",
+     "reframing": "fixed time instead of fixed tokens.",
+     "new_measure": "validation loss at 10 minutes of training on the reference GPU.",
+     "why": "a fixed token budget cannot see a faster step.",
+     "cost": "a timed training harness and repeated runs to control timing noise.",
+     "round": 2,
+     "call_id": "c33040fdbdb"
+    },
+    {
+     "id": "u5c76ac739f",
+     "proposal": "judge by loss on rare tokens, not mean loss (pliers)",
+     "reframing": "the mean over all tokens hides the tail; model the tail separately.",
+     "new_measure": "validation loss on the 10 percent rarest tokens, from the same held-out file.",
+     "why": "mean loss is dominated by frequent tokens, so tail gains are invisible.",
+     "cost": "a token-frequency table and one extra pass of the eval.",
+     "round": 2,
+     "call_id": "c9813499d61"
+    },
+    {
+     "id": "ud2cdb13d52",
+     "proposal": "judge by loss after a fixed wall-clock budget (pliers)",
+     "reframing": "fixed time instead of fixed tokens.",
+     "new_measure": "validation loss at 10 minutes of training on the reference GPU.",
+     "why": "a fixed token budget cannot see a faster step.",
+     "cost": "a timed training harness and repeated runs to control timing noise.",
+     "round": 2,
+     "call_id": "c9813499d61"
+    }
+   ],
+   "depth": 0,
+   "path": []
+  },
+  {
+   "id": "choice",
+   "name": "choice rule",
+   "parent": "root",
+   "frame": "Which of the open bins with room the item goes to. No rule is chosen yet.",
+   "assumptions": [
+    "the first bin with room is as good as any other",
+    "bins are scanned in opening order",
+    "the choice looks only at whether the item fits, not at the room left after it"
+   ],
+   "boundary": "the whole file (choose_bin (the selection among bins that fit))",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "refines": "choice",
+   "idea_assumptions": [
+    {
+     "from": "choice-in-k01",
+     "text": "the gate is applied after attention",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 38,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 38,
+     "clusters": 9,
+     "implemented": 3,
+     "checked": 2
+    },
+    "n_idea_assumptions": 1
+   },
+   "depth": 1,
+   "path": [
+    "choice rule"
+   ]
+  },
+  {
+   "id": "state",
+   "name": "bin state kept",
+   "parent": "root",
+   "frame": "What the rule remembers between calls, beyond the bin fills it is given. Nothing is chosen yet.",
+   "assumptions": [
+    "a fill level is all that matters about a bin",
+    "nothing needs remembering between items",
+    "all open bins are equally available"
+   ],
+   "boundary": "the whole file (choose_bin, new module-level state and helper functions)",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "refines": "state",
+   "idea_assumptions": [
+    {
+     "from": "state-in-k01",
+     "text": "the gate is applied after attention",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 47,
+     "clusters": 9,
+     "implemented": 1,
+     "checked": 1
+    },
+    "outward": {
+     "sketches": 38,
+     "clusters": 9,
+     "implemented": 1,
+     "checked": 1
+    },
+    "n_idea_assumptions": 1
+   },
+   "depth": 1,
+   "path": [
+    "bin state kept"
+   ]
+  },
+  {
+   "id": "open",
+   "name": "when to open a bin",
+   "parent": "root",
+   "frame": "When the rule opens a new bin instead of using one with room. Nothing is chosen yet.",
+   "assumptions": [
+    "opening a bin is always worse than using one with room",
+    "the decision to open depends only on fit",
+    "an item never gets a bin of its own on purpose"
+   ],
+   "boundary": "the whole file (choose_bin (the condition for returning -1))",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "refines": "open",
+   "idea_assumptions": [
+    {
+     "from": "open-in-k01",
+     "text": "the gate is applied after attention",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 47,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 38,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 1
+   },
+   "depth": 1,
+   "path": [
+    "when to open a bin"
+   ]
+  },
+  {
+   "id": "stats",
+   "name": "use of item statistics",
+   "parent": "root",
+   "frame": "Whether the rule uses the sizes of the items seen so far. Nothing is chosen yet.",
+   "assumptions": [
+    "the size distribution is unknown and stays unknown",
+    "past items say nothing about future items",
+    "large and small items need no different treatment"
+   ],
+   "boundary": "the whole file (choose_bin, new module-level counters of item sizes, helper functions)",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "refines": "stats",
+   "idea_assumptions": [
+    {
+     "from": "stats-in-k01",
+     "text": "the gate is applied after attention",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 56,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 29,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 1
+   },
+   "depth": 1,
+   "path": [
+    "use of item statistics"
+   ]
+  },
+  {
+   "id": "ties",
+   "name": "tie-breaking",
+   "parent": "root",
+   "frame": "How the rule decides between bins that serve equally well. Nothing is chosen yet.",
+   "assumptions": [
+    "ties are rare enough not to matter",
+    "opening order is a fair tie-breaker",
+    "near-equal fits are treated as different"
+   ],
+   "boundary": "the whole file (choose_bin (the ordering among candidate bins))",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "refines": "ties",
+   "idea_assumptions": [
+    {
+     "from": "ties-in-k02",
+     "text": "the gate is applied after attention",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 47,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 38,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 1
+   },
+   "depth": 1,
+   "path": [
+    "tie-breaking"
+   ]
+  },
+  {
+   "id": "recipe",
+   "name": "the whole rule (cross-part changes)",
+   "parent": "root",
+   "frame": "Rules that decide the choice, the opening and the state together, as one design.",
+   "assumptions": [
+    "each part can be improved on its own",
+    "the parts interact only through the bin fills",
+    "the best rule is a sum of the best parts"
+   ],
+   "boundary": "choose_bin and any helper functions or module-level state in the file",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "refines": "recipe",
+   "idea_assumptions": [
+    {
+     "from": "recipe-in-k01",
+     "text": "the gate is applied after attention",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 38,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 47,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 1
+   },
+   "depth": 1,
+   "path": [
+    "the whole rule (cross-part changes)"
+   ]
+  },
+  {
+   "id": "offtree",
+   "name": "off the map (whole problem, no part assigned)",
+   "parent": "root",
+   "frame": "The whole packing heuristic, read without the problem map.",
+   "assumptions": [],
+   "boundary": "choose_bin and any helper functions or module-level state in the file",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [
+    {
+     "from": "offtree-in-k04",
+     "text": "the gate is applied after attention",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "refines": "new",
+   "stats": {
+    "inward": {
+     "sketches": 112,
+     "clusters": 9,
+     "implemented": 4,
+     "checked": 2
+    },
+    "outward": {
+     "sketches": 98,
+     "clusters": 9,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 1
+   },
+   "depth": 1,
+   "path": [
+    "off the map (whole problem, no part assigned)"
+   ]
+  },
+  {
+   "id": "q_n44a9d66",
+   "name": "why did worst fit fail?",
+   "parent": "choice",
+   "frame": "the quick score is 1.172047 against the baseline's 1.081456 on the same instances (gap +0.0906, negative is better; z 9.88; allowed 0.0367)",
+   "assumptions": [],
+   "boundary": "the whole file (choose_bin (the selection among bins that fit))",
+   "directions": [
+    "inward"
+   ],
+   "origin": "failure",
+   "kind": "question",
+   "from": [
+    "n44a9d66bbb"
+   ],
+   "test": {
+    "metric": "learn_gap",
+    "rung": 2,
+    "op": "<=",
+    "what": "the quick score (rung 2)"
+   },
+   "threshold": 0.0367,
+   "fails_if": "learn_gap above 0.0367 at rung 2, or the run fails at rung 2 again (the failed idea read 0.090591)",
+   "enterable": true,
+   "idea_assumptions": [],
+   "refines": "new",
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   },
+   "depth": 2,
+   "path": [
+    "choice rule",
+    "why did worst fit fail?"
+   ]
+  }
+ ],
+ "tree": {
+  "id": "root",
+  "name": "use fewer bins on the benchmark instances",
+  "kind": "root",
+  "children": [
+   {
+    "id": "choice",
+    "name": "choice rule",
+    "kind": "part",
+    "children": [
+     {
+      "id": "q_n44a9d66",
+      "name": "why did worst fit fail?",
+      "kind": "question",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "state",
+    "name": "bin state kept",
+    "kind": "part",
+    "children": []
+   },
+   {
+    "id": "open",
+    "name": "when to open a bin",
+    "kind": "part",
+    "children": []
+   },
+   {
+    "id": "stats",
+    "name": "use of item statistics",
+    "kind": "part",
+    "children": []
+   },
+   {
+    "id": "ties",
+    "name": "tie-breaking",
+    "kind": "part",
+    "children": []
+   },
+   {
+    "id": "recipe",
+    "name": "the whole rule (cross-part changes)",
+    "kind": "part",
+    "children": []
+   },
+   {
+    "id": "offtree",
+    "name": "off the map (whole problem, no part assigned)",
+    "kind": "part",
+    "children": []
+   }
+  ]
+ },
+ "inward_share": 0.6,
+ "off_tree_share": 0.35,
+ "origins": {
+  "tree": {
+   "contexts": 50,
+   "sketches": 529,
+   "clusters": 117,
+   "built": 5,
+   "checked": 4,
+   "wins": 0,
+   "clusters_per_context": 2.34,
+   "wins_per_context": 0.0,
+   "slot_share": 0.6,
+   "context_share": 0.602
+  },
+  "off": {
+   "contexts": 33,
+   "sketches": 210,
+   "clusters": 18,
+   "built": 4,
+   "checked": 2,
+   "wins": 0,
+   "clusters_per_context": 0.545,
+   "wins_per_context": 0.0,
+   "slot_share": 0.4,
+   "context_share": 0.398
+  }
+ },
+ "lens": "parts",
+ "lens_design": "fixed",
+ "stats": {
+  "n_idea_assumptions": 8
+ }
+}
