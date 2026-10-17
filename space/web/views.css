@@ -1,0 +1,209 @@
+/* space/web/views.css: the tree and cluster views (docs/MULTIPLAYER_DESIGN.md section 10).
+   Colours come from tokens.css only (var(--...)); this file holds no raw colour.
+   Owner hues: .hue-a, .hue-b, .hue-c, .hue-team set --hue on the element. */
+
+.hue-a { --hue: var(--owner-a); }
+.hue-b { --hue: var(--owner-b); }
+.hue-c { --hue: var(--owner-c); }
+.hue-team { --hue: var(--owner-team); }
+
+/* ---------- tree ---------- */
+
+.tree { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg-app); font-family: var(--font-ui); }
+.tree__icons { position: absolute; width: 0; height: 0; }
+.tree__viewport { position: absolute; inset: 0; overflow: hidden; outline: none; cursor: grab; touch-action: none; }
+.tree__viewport:focus-visible { box-shadow: inset 0 0 0 2px var(--line-strong); }
+.tree__viewport:active { cursor: grabbing; }
+.tree__world { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.tree__edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.tree__cards { position: absolute; left: 0; top: 0; }
+.tree__hud { position: absolute; inset: 0; pointer-events: none; }
+.tree__empty { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--text-2); font-size: 13px; }
+.tree__hud.is-empty .tree__empty { display: block; }
+
+.edge { fill: none; stroke: var(--line); stroke-width: 1.5px; transition: stroke var(--t-hover), opacity var(--t-hover); }
+.edge.is-path { stroke: var(--line-strong); stroke-width: 2px; }
+.edge.is-retiring { opacity: 0; transition: opacity var(--t-exit); }
+.tree__world.has-hover .edge:not(.is-path) { opacity: 0.35; }
+
+.card {
+  position: absolute; left: 0; top: 0; width: 210px; height: 48px; box-sizing: border-box;
+  display: flex; align-items: stretch; border-radius: 8px; overflow: visible; cursor: pointer;
+  background: var(--bg-card); border: 1px solid var(--line-subtle); color: var(--text-1);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--bg-app) 60%, transparent);
+  transition: opacity var(--t-enter), scale var(--t-enter), border-color var(--t-hover), box-shadow var(--t-hover), background var(--t-hover);
+  will-change: transform;
+}
+@starting-style { .card { opacity: 0; scale: 0.6; } }
+.card.is-retiring { opacity: 0; scale: 0.8; transition: opacity var(--t-exit), scale var(--t-exit); pointer-events: none; }
+.card:hover, .card.is-path { border-color: var(--line-strong); background: var(--bg-hover); }
+.card.is-linked { border-color: var(--hue); }
+.card.is-selected { border-color: var(--line-strong); box-shadow: 0 0 0 2px color-mix(in oklab, var(--text-2) 40%, transparent); }
+.card.is-focus { box-shadow: 0 0 0 2px var(--solid-hover); }
+.tree__world.has-hover .card:not(.is-path):not(.is-linked) { opacity: 0.45; }
+
+.card__stripe { flex: 0 0 3px; border-radius: 8px 0 0 8px; background: var(--hue, var(--line)); }
+.card--map .card__stripe { background: var(--line); }
+.card__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 4px 8px 4px 7px; gap: 2px; }
+.card__head { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.card__glyph { flex: 0 0 auto; display: inline-flex; color: var(--solid-hover); }
+.card__glyph .ico { width: 11px; height: 11px; }
+.card__name {
+  flex: 1 1 auto; min-width: 0; font-size: 12px; line-height: 13px; font-weight: 500; letter-spacing: 0.01em;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-height: 26px;
+}
+.card__dot { flex: 0 0 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--solid); }
+.card--pending .card__dot, .card--queued .card__dot { background: var(--warn); }
+.card--applied .card__dot { background: var(--ok); }
+.card--dropped .card__dot { background: var(--bad); }
+.card--question .card__dot { background: var(--serious); }
+.card--win .card__dot { background: var(--ok); }
+.card__row { display: flex; align-items: center; gap: 4px; min-width: 0; height: 14px; }
+.card__chips { display: flex; gap: 3px; min-width: 0; overflow: hidden; flex: 1 1 auto; }
+.chip {
+  display: inline-flex; align-items: center; gap: 3px; height: 14px; padding: 0 5px; border-radius: 7px;
+  font-size: 10px; line-height: 14px; color: var(--text-2); background: var(--bg-active); white-space: nowrap;
+  transition: background var(--t-hover), color var(--t-hover); transform-origin: 50% 100%;
+}
+.chip .ico { width: 10px; height: 10px; }
+.chip__text { overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+.chip--check { color: var(--ok); }
+.chip--clock { color: var(--warn); }
+.chip--x { color: var(--bad); }
+.chip--flag { color: var(--serious); }
+.chip--trophy { color: var(--ok); }
+.chip--lock { color: var(--hue); }
+.chip--dot { color: var(--hue); padding: 0 2px; }
+.chip--more { padding: 0 4px; }
+.card__counts { display: flex; gap: 4px; flex: 0 0 auto; }
+.count { font-family: var(--font-mono); font-size: 9.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+/* the four human states, 4.7 */
+.card--pending { border-style: dashed; opacity: 0.6; }
+.card--queued { border-style: dashed; border-color: color-mix(in oklab, var(--hue) 70%, var(--line)); }
+.card--applied { border-style: solid; border-color: color-mix(in oklab, var(--hue) 55%, var(--line)); }
+.card--dropped { border-color: var(--bad); opacity: 0.7; }
+.card--question { border-color: color-mix(in oklab, var(--serious) 50%, var(--line)); }
+.card--win { border-color: color-mix(in oklab, var(--ok) 55%, var(--line)); }
+.card--disputed .card__name { text-decoration: underline dotted var(--serious); text-underline-offset: 2px; }
+.card--skipped {
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in oklab, var(--line) 45%, transparent) 6px 8px);
+}
+.card--lowered { opacity: 0.55; }
+.card--deep { height: 40px; width: 190px; }
+.card--deep .card__name { -webkit-line-clamp: 1; }
+
+/* rings: a claim or a person's focus, 6.6 states 11 and 12 */
+.card__ring { position: absolute; inset: -4px; border-radius: 11px; border: 2px solid var(--hue); pointer-events: none; }
+.card__ring--focus { border-style: dashed; }
+.card__tag {
+  position: absolute; right: 6px; top: -9px; padding: 0 5px; height: 14px; line-height: 14px; border-radius: 7px;
+  font-size: 10px; font-weight: 500; color: var(--text-1); background: var(--hue); white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis;
+}
+.card__fold {
+  position: absolute; right: -14px; top: 50%; transform: translateY(-50%); width: 26px; height: 18px; padding: 0;
+  border-radius: 9px; border: 1px solid var(--line); background: var(--bg-panel); color: var(--text-2);
+  font: 500 10px var(--font-mono); cursor: pointer; pointer-events: auto;
+}
+.card__fold:hover { background: var(--bg-hover); color: var(--text-1); }
+
+/* change halo, 2 s in the actor's hue; only the latest three in a burst */
+.card.is-halo {
+  box-shadow: 0 0 0 2px var(--actor), 0 0 24px 2px color-mix(in oklab, var(--actor) 55%, transparent);
+  animation: card-halo 2s ease-out forwards;
+}
+@keyframes card-halo { to { box-shadow: 0 0 0 0 transparent, 0 0 0 0 transparent; } }
+.card--unseen::after {
+  content: ''; position: absolute; left: -3px; top: -3px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--hue, var(--warn)); box-shadow: 0 0 0 2px var(--bg-app);
+}
+
+/* ---------- clusters ---------- */
+
+.clusters { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg-app); font-family: var(--font-ui); }
+.clusters__svg { display: block; width: 100%; height: 100%; outline: none; cursor: grab; touch-action: none; }
+.clusters__svg:active { cursor: grabbing; }
+.clusters__hud { position: absolute; inset: 0; pointer-events: none; }
+.clusters__empty { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--text-2); font-size: 13px; }
+.clusters__hud.is-empty .clusters__empty { display: block; }
+.clusters__colorby {
+  position: absolute; right: 10px; top: 8px; display: inline-flex; align-items: center; gap: 6px; pointer-events: auto;
+  font-size: 11px; color: var(--text-2);
+}
+.clusters__colorby select {
+  font: inherit; color: var(--text-1); background: var(--bg-panel); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px;
+}
+
+.island-glow__in { stop-color: var(--bg-panel); stop-opacity: 0.9; }
+.island-glow__out { stop-color: var(--bg-panel); stop-opacity: 0; }
+.island__disc { pointer-events: none; }
+.island__label { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--text-2); pointer-events: none; }
+.island__tail { cursor: pointer; }
+.island__tail-ring { fill: var(--bg-card); stroke: var(--line); stroke-dasharray: 3 3; transition: stroke var(--t-hover); }
+.island__tail:hover .island__tail-ring, .island__tail.is-open .island__tail-ring { stroke: var(--line-strong); }
+.island__tail-text { font: 500 10px var(--font-mono); fill: var(--text-2); pointer-events: none; }
+
+.bubble { cursor: pointer; transition: opacity var(--t-enter); }
+.bubble.is-arriving { opacity: 0; }
+.bubble.is-retiring { opacity: 0; transition: opacity var(--t-exit); pointer-events: none; }
+.bubble.is-cold { opacity: 0.35; }
+.bubble.is-dim { opacity: 0.55; }
+.bubble.is-dim-soft { opacity: 0.8; }
+.bubble__halo { fill: var(--hue); opacity: 0; transition: opacity var(--t-hover); pointer-events: none; }
+.bubble.is-hot .bubble__halo, .bubble.is-selected-by-me .bubble__halo { opacity: 0.12; }
+.bubble.is-winner .bubble__halo { opacity: 0.22; fill: var(--ok); }
+.bubble__body {
+  fill: var(--bg-card); stroke: var(--line-strong); stroke-width: 1.5px;
+  transition: fill var(--t-hover), stroke var(--t-hover);
+}
+.bubble.is-hot .bubble__body { fill: var(--bg-hover); }
+.bubble.prior-new .bubble__body { stroke-dasharray: none; }
+.bubble.prior-known .bubble__body { stroke-dasharray: 6 4; }
+.bubble.prior-failed .bubble__body { stroke-dasharray: 2 3; }
+.bubble.prior-unknown .bubble__body { stroke: var(--line); }
+.bubble__ring { fill: none; stroke: var(--text-2); stroke-width: 1.5px; opacity: 0; transition: opacity var(--t-hover), stroke var(--t-hover); pointer-events: none; }
+.bubble.is-selected .bubble__ring { opacity: 0.6; }
+.bubble.is-winner .bubble__ring { opacity: 1; stroke: var(--ok); stroke-width: 2.5px; }
+.rim { stroke: none; fill: var(--hue); }
+.dot { fill: var(--solid); transform-box: fill-box; transform-origin: center; }
+.bubble.is-hot .dot { fill: var(--solid-hover); }
+.vote { stroke-width: 1.5px; }
+.vote--up { fill: var(--hue); stroke: var(--hue); }
+.vote--down { fill: var(--bg-card); stroke: var(--hue); }
+.bubble__label { font-size: 11px; fill: var(--text-2); opacity: 0; transition: opacity var(--t-hover); pointer-events: none; paint-order: stroke; stroke: var(--bg-app); stroke-width: 3px; }
+.bubble.is-labelled .bubble__label { opacity: 1; }
+.bubble.is-hot .bubble__label { fill: var(--text-1); }
+.bubble__badge { display: none; pointer-events: none; }
+.bubble__badge-bg { fill: var(--ok); }
+.bubble__badge-text { font: 600 10px var(--font-ui); fill: var(--bg-app); letter-spacing: 0.03em; }
+.ripple { fill: none; stroke: var(--ok); stroke-width: 2px; pointer-events: none; transform-box: fill-box; transform-origin: center; }
+
+/* colour-by: the fill of the body follows the switch */
+.clusters.color-by-owner .bubble__body { fill: color-mix(in oklab, var(--hue) 22%, var(--bg-card)); }
+.clusters.color-by-part .bubble__body { fill: color-mix(in oklab, var(--owner-team) var(--part-mix, 40%), var(--bg-card)); }
+.clusters.color-by-prior .bubble.prior-new .bubble__body { fill: color-mix(in oklab, var(--ok) 20%, var(--bg-card)); }
+.clusters.color-by-prior .bubble.prior-known .bubble__body { fill: color-mix(in oklab, var(--warn) 18%, var(--bg-card)); }
+.clusters.color-by-prior .bubble.prior-failed .bubble__body { fill: color-mix(in oklab, var(--bad) 20%, var(--bg-card)); }
+.clusters.color-by-card .bubble.card-formal .bubble__body { fill: color-mix(in oklab, var(--owner-a) 20%, var(--bg-card)); }
+.clusters.color-by-card .bubble.card-research .bubble__body { fill: color-mix(in oklab, var(--owner-c) 20%, var(--bg-card)); }
+.clusters.color-by-card .bubble.card-mechanism .bubble__body { fill: color-mix(in oklab, var(--owner-b) 20%, var(--bg-card)); }
+.clusters.color-by-status .bubble.status-built .bubble__body { fill: color-mix(in oklab, var(--warn) 18%, var(--bg-card)); }
+.clusters.color-by-status .bubble.status-win .bubble__body, .clusters.color-by-status .bubble.status-preferred .bubble__body { fill: color-mix(in oklab, var(--ok) 25%, var(--bg-card)); }
+.clusters.color-by-status .bubble.status-tie .bubble__body, .clusters.color-by-status .bubble.status-split .bubble__body { fill: color-mix(in oklab, var(--solid) 30%, var(--bg-card)); }
+.clusters.color-by-status .bubble.status-loss .bubble__body, .clusters.color-by-status .bubble.status-not_preferred .bubble__body { fill: color-mix(in oklab, var(--serious) 18%, var(--bg-card)); }
+.clusters.color-by-status .bubble.status-failed_check .bubble__body { fill: color-mix(in oklab, var(--bad) 22%, var(--bg-card)); }
+
+/* projector: larger type inside the same card box, so cards never overlap on the 250 x 56 layout grid
+   and the edges (tree.js CARD_W, CARD_H) still meet the card sides */
+.stage .card:not(.card--deep) .card__name { font-size: 15px; line-height: 17px; max-height: 17px; -webkit-line-clamp: 1; }
+.stage .card:not(.card--deep) .card__row { height: 16px; }
+.stage .card:not(.card--deep) .chip { font-size: 12px; height: 16px; line-height: 16px; }
+.stage .bubble__label { font-size: 14px; }
+.stage .island__label { font-size: 15px; }
+
+/* reduced motion: colour changes only */
+@media (prefers-reduced-motion: reduce) {
+  .card, .edge, .bubble, .chip { transition: none; }
+  .card.is-halo { animation: none; box-shadow: 0 0 0 2px var(--actor); }
+  @starting-style { .card { opacity: 1; scale: 1; } }
+}
