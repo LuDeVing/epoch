@@ -211,3 +211,13 @@ def test_report_briefs_skip_analogy_files(tmp_path):
     (run / "state.json").write_text(json.dumps({"decisions": []}), encoding="utf-8")
     assert set(report.collect(run)["briefs"]) == {"mix"}
     assert research.is_part_brief("x/k__abc.json") and not research.is_part_brief("x/preread__abc.json")
+
+
+def test_memory_delta_entry_on_the_header_line_is_kept():
+    """A curator reply that puts the first bullet on the header line ("TRIED: - x | 1.234 | ...") lost that entry."""
+    from nano.memory import Memory
+    d = Memory.propose_delta("p", "**TRIED:** - wider mlp | 1.234 | no gain | n0123456789\nCUES: none\n"
+                                  "USED: m1a2b3c\nFACTS:\n- measured | lr diverged | n0123456789\n")
+    assert [(e["section"], e["text"]) for e in d["entries"]] == [
+        ("TRIED", "wider mlp | 1.234 | no gain | n0123456789"), ("FACTS", "lr diverged | n0123456789")]
+    assert d["used"] == ["m1a2b3c"]
