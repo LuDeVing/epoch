@@ -483,6 +483,8 @@ class NanoLoop:
         self.space = None                       # a LoopSpace when the loop pushes and pulls the space itself
         self._merged_control: dict = {}         # the control the last boundary pulled (read by the pick and the panel)
         self._peer_digests: dict = {}           # (role, node) -> digest text, rendered at the boundary
+        self.people_findings: list = []         # control key findings: people's data and findings, newest first
+        self._findings_seen: set = set()        # seqs already written into the parts' memory
         self.step = False                       # --step: wait for a Go at every boundary
         self.poll_s = 10.0                      # --control-poll-seconds: the pause loop's poll interval
         self.peer_digest_ideation = False       # --peer-digest-ideation: idea agents read the digest too (A/B)
@@ -1259,6 +1261,9 @@ class NanoLoop:
             if self.space and self.peer_digest_ideation:
                 d = self.space.digest_for("idea", node["id"])
                 prompt += d + "\n\n" if d else ""
+            if self.space:                               # people's findings on this part: evidence, '' when none
+                fb = getattr(self.space, "findings_block", lambda _n: "")(node["id"])
+                prompt += fb + "\n\n" if fb else ""
             up = direction == "upward"                  # a proposal for a new verifier, not a sketch: own format, no sketch addenda
             if self.staged_sketch and not up:
                 prompt += ideate.STAGED_ADDENDUM
@@ -1735,6 +1740,35 @@ class NanoLoop:
 
     # ------------------------------------------------------------ control file and resume
     # ------------------------------------------------------------ per-part persistent memory (nano/memory.py)
+    def _apply_findings(self, findings: list, round_no: int) -> None:
+        """The control key findings (people's data and findings from the space): kept for the prompt blocks, and each
+        new one written once into its part's memory under FACTS FROM PEOPLE with source person (nothing deleted)."""
+        if not findings:
+            return
+        self.people_findings = [dict(f) for f in findings if isinstance(f, dict)]
+        for f in self.people_findings:
+            seq = f.get("seq")
+            if seq in self._findings_seen:
+                continue
+            self._findings_seen.add(seq)
+            part = str(f.get("part") or "root")
+            vals = ", ".join(f"{k}={v}" for k, v in (f.get("values") or {}).items() if isinstance(v, (int, float)))
+            body = " ".join(str(f.get("text") or "").split())[:400]
+            text = (f"{f.get('title')}: {body} (by {f.get('by')}, source {f.get('source') or 'own work'}"
+                    + (f", {vals}" if vals else "") + f", e{seq})").replace("|", "/")
+            try:
+                mem = self.memory()
+                with MEM._LOCK:
+                    data = mem.load(part)
+                    data["clock"] = int(data.get("clock", 0)) + 1
+                    data["sections"].setdefault("FACTS FROM PEOPLE", []).append(
+                        {"id": f"p{seq}", "date": MEM._today(), "run": f"{self.run_id[:40]} r{round_no}", "source": "person",
+                         "text": text, "used": 0})
+                    mem.save(part, data)
+            except Exception as e:  # noqa: BLE001
+                print(f"[nano] WARNING finding e{seq} not written to memory ({str(e)[:120]})", flush=True)
+            self.decisions.append({"round": round_no, "step": "finding", "seq": seq, "part": part, "by": f.get("by"), "ts": now_ts()})
+
     def memory(self) -> MEM.Memory:
         """<lab>/memory/<profile>/ (the profile's `memory_dir` overrides it); mock runs keep theirs under
         memory/_mock so a dry run never feeds a real one."""
@@ -2021,6 +2055,7 @@ class NanoLoop:
             self.skip_nodes = set(ctl.get("skip_nodes", []) or [])
             self.exclude_clusters = set(ctl.get("exclude_clusters", []) or [])
             self._add_human_nodes(ctl.get("add_nodes") or [], round_no)
+            self._apply_findings(ctl.get("findings") or [], round_no)
             if self.space:
                 self.space.applied(refs, round_no, name)
             if ctl.get("stop_after_stage") or (self.stop_after and name == self.stop_after):
@@ -2068,6 +2103,8 @@ class NanoLoop:
         self.spent_aux = int(st.get("spent_aux", 0))
         self.spent_by_stage = {str(k): int(v) for k, v in (st.get("spent_by_stage") or {}).items()}
         self.commitments_hash = st.get("commitments_hash", "") or ""
+        self.people_findings = [f for f in (st.get("people_findings") or []) if isinstance(f, dict)]
+        self._findings_seen = {f.get("seq") for f in self.people_findings}
         self.interrogated = set()
         if (rd / "reference.json").exists():          # Mode 2/3: the reference and its measured profile survive a resume
             try:
@@ -2314,6 +2351,9 @@ class NanoLoop:
         network call, and '' with no space or nothing new. Under prompt_style v2 the people's comments on the idea
         (block M4) join the critic's and the interrogation's slot."""
         d = self._peer_digests.get((role, node), "")
+        if self.space:
+            fb = getattr(self.space, "findings_block", lambda _n: "")(node)
+            d = "\n\n".join(x for x in (d, fb) if x)
         if self.space and idea and role in ("critic", "interrogation"):
             c = PS.pick("", PS.comments_block_v2(self.space.comments_on(idea)))
             d = "\n\n".join(x for x in (c, d) if x)
@@ -4293,6 +4333,8 @@ class NanoLoop:
             st["completed_rounds"] = max(int(st.get("completed_rounds", 0)), self.completed_rounds)
             if self.commitments_hash:
                 st["commitments_hash"] = self.commitments_hash
+            if self.people_findings:
+                st["people_findings"] = list(self.people_findings)
             if stage is not None:
                 st["stage"] = stage
             tmp = p.with_name("state.json.tmp")

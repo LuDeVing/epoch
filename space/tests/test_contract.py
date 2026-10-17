@@ -40,7 +40,7 @@ def test_export_shape():
 
 
 def test_kinds_day_one():
-    assert len(C.KINDS) == 37
+    assert len(C.KINDS) == 38
     assert C.DAY_ONE == tuple(C.KINDS)
     assert C.SERVER_ONLY == {"space_opened", "claim_granted", "claim_released", "claim_expired", "claim_taken_over"}
     for name in ("GUARDED", "IDEA_SKIPS", "GLOBAL_KINDS", "NO_DIGEST", "HUMAN_KINDS", "TEAM_KINDS"):

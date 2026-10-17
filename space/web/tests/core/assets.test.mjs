@@ -62,7 +62,7 @@ test('the UI modules import under Node without a DOM, and app.js parses', async 
     assert.ok(Object.keys(m).length > 0, f);
   }
   const rail = await import(pathToFileURL(join(WEB, 'rail.js')).href);
-  assert.deepEqual(rail.TABS.map((t) => t[1]), ['Feed', 'Arguments', 'Results', 'Memory', 'My agent']);
+  assert.deepEqual(rail.TABS.map((t) => t[1]), ['Feed', 'Arguments', 'Results', 'Findings', 'Memory', 'My agent']);
   const chat = await import(pathToFileURL(join(WEB, 'chat.js')).href);
   assert.deepEqual(chat.SLASH_HINTS.map((h) => h[0]), ['branch', 'vote', 'claim', 'release', 'dispute', 'ask', 'skip', 'unskip',
     'veto', 'unveto', 'choose', 'note', 'reply', 'seed', 'pause', 'resume', 'go']);

@@ -404,6 +404,7 @@ SLASH_CASES = [
     ("/pause", "run_paused"),
     ("/resume", "run_resumed"),
     ("/go", "run_step"),
+    ("/finding choice: first fit on sorted input | sorted input used 4 percent fewer bins on 20 instances", "finding_posted"),
 ]
 
 

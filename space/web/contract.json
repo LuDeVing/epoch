@@ -19,6 +19,7 @@
  "human_kinds": [
   "chat_posted",
   "fact_disputed",
+  "finding_posted",
   "intent_decided",
   "node_added",
   "node_edited",
@@ -167,6 +168,18 @@
     "fact",
     "reason",
     "tag"
+   ],
+   "tier": 0
+  },
+  "finding_posted": {
+   "by": [
+    "person",
+    "delegate"
+   ],
+   "control_key": "findings",
+   "data": [
+    "title",
+    "text"
    ],
    "tier": 0
   },

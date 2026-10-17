@@ -10,12 +10,12 @@ const run = (log, R = makeReducer(trivialLayout)) => log.reduce((s, e) => R.redu
 const upTo = (seq) => LOG.filter((e) => e.seq <= seq);
 const seqOf = (pred) => LOG.find(pred).seq;
 
-test('the fixture has 300 events with seq 1..300 and covers every day-one kind of the contract', () => {
-  assert.equal(LOG.length, 300);
+test('the fixture has 301 events with seq 1..301 and covers every day-one kind of the contract', () => {
+  assert.equal(LOG.length, 301);
   LOG.forEach((e, i) => assert.equal(e.seq, i + 1));
   const { json, src } = loadContract();
   const kinds = Object.keys(json.kinds);
-  assert.equal(kinds.length, 37, `37 day-one kinds in ${src}`);
+  assert.equal(kinds.length, 38, `38 kinds in ${src}`);
   const seen = new Set(LOG.map((e) => e.kind));
   assert.deepEqual(kinds.filter((k) => !seen.has(k)), [], 'every kind appears in the fixture');
   assert.deepEqual([...seen].filter((k) => !kinds.includes(k)), [], 'no kind outside the contract');
@@ -24,7 +24,7 @@ test('the fixture has 300 events with seq 1..300 and covers every day-one kind o
 
 test('reduce gives the expected counts', () => {
   const s = run(LOG);
-  assert.equal(s.head, 300);
+  assert.equal(s.head, 301);
   // nodes: root, six planned parts, Ana's item_order
   assert.equal(s.nodes.size, 8);
   assert.equal(s.nodes.get('item_order').status, 'applied');
@@ -141,7 +141,7 @@ test('the layout passes through the injected functions', () => {
 
 test('feed texts equal the contract sentences', () => {
   const { kinds, src } = pythonKinds();
-  assert.equal(Object.keys(kinds).length, 37, `parsed 37 kinds from ${src}`);
+  assert.equal(Object.keys(kinds).length, 38, `parsed 38 kinds from ${src}`);
   for (const [k, v] of Object.entries(kinds)) assert.equal(SENTENCES[k], v.sentence, `sentence of ${k} (from ${src})`);
   assert.deepEqual(Object.keys(SENTENCES).sort(), Object.keys(kinds).sort());
   const s = run(LOG);

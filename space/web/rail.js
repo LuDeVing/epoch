@@ -8,8 +8,9 @@ import { chipText, groupFeed, whoText, WINNER_WORD } from './reduce.mjs';
 import { hueOf } from './presence.js';
 import { MemoryTab } from './memory.js';
 import { ChatTab } from './chat.js';
+import { FindingsTab } from './findings.js';
 
-export const TABS = [['feed', 'Feed'], ['args', 'Arguments'], ['results', 'Results'], ['memory', 'Memory'], ['agent', 'My agent']];
+export const TABS = [['feed', 'Feed'], ['args', 'Arguments'], ['results', 'Results'], ['findings', 'Findings'], ['memory', 'Memory'], ['agent', 'My agent']];
 const FEED_CAP = 200;
 const cap = (s) => (s ? String(s)[0].toUpperCase() + String(s).slice(1) : '');
 const STATUS_ICON = { pending: 'clock', queued: 'clock', applied: 'check', rejected: 'x', not_in_top3: 'x', overwritten: 'x', withdrawn: 'x' };
@@ -173,6 +174,7 @@ function Rail({ api }) {
     ${tab === 'feed' ? html`<${FeedTab} view=${view} api=${api} />` : null}
     ${tab === 'args' ? html`<${ArgsTab} view=${view} />` : null}
     ${tab === 'results' ? html`<${ResultsTab} view=${view} />` : null}
+    ${tab === 'findings' ? html`<${FindingsTab} view=${view} api=${api} />` : null}
     ${tab === 'memory' ? html`<${MemoryTab} view=${view} api=${api} />` : null}
     ${tab === 'agent' ? html`<${ChatTab} view=${view} api=${api} />` : null}`;
 }

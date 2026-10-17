@@ -36,6 +36,7 @@ export const SENTENCES = {
   vote_cast: 'voted {value} on "{label}"',
   fact_disputed: 'disputed a fact on "{label}": "{fact}". Reason: "{reason}" ({tag}). It stays on the map, marked',
   note_posted: 'noted: "{text}"',
+  finding_posted: 'added a finding "{label}": "{text}"',
   seed_added: 'seeded part "{label}": "{text}"',
   run_paused: 'paused the run',
   run_resumed: 'resumed the run',
@@ -67,7 +68,7 @@ export const NOT_IN_FEED = new Set(['chat_posted', 'agent_said', 'intent_propose
 // Kinds whose author is a person or a delegate and that the loop folds at a boundary (they carry a status chip).
 export const CONTROL_KINDS = new Set(['node_added', 'node_skipped', 'node_unskipped', 'question_vetoed',
   'question_unvetoed', 'question_chosen', 'opinion_given', 'fact_disputed', 'note_posted', 'seed_added',
-  'run_paused', 'run_resumed', 'run_step']);
+  'run_paused', 'run_resumed', 'run_step', 'finding_posted']);
 export const PICK_KINDS = new Set(['question_vetoed', 'question_unvetoed', 'question_chosen']);
 const HUES = ['a', 'b', 'c'];
 const POSITIVE = new Set(['win', 'preferred']);
@@ -225,6 +226,7 @@ export function makeReducer({ layoutTree, layoutClusters, anchorFor, contract } 
       people: new Map(), nodes: new Map(), clusters: new Map(), chains: new Map(), results: [],
       questions: { preview: null, picked: null, vetoes: new Map(), chosen: null },
       feed: [], chat: new Map(), intents: new Map(), digests: [], memory: new Map(),
+      findings: [],              // people's data and findings, in seq order (the Findings tab groups them per part)
       presence: { clients: [], claims: [] },
       layout, match: { prev: new Map(), counter: 0 },
       // bookkeeping beyond section 6.4 (read only by this module, the rail and the tests)
@@ -545,6 +547,13 @@ export function makeReducer({ layoutTree, layoutClusters, anchorFor, contract } 
         { by: ctx.owner, reason: d.reason ?? null, tag: d.tag ?? null, seq: ctx.seq, fact: d.fact ?? null }], halo: halo(ctx) }));
     },
     note_posted() {},
+    finding_posted(s, ev, ctx) {
+      const d = ev.data || {};
+      const row = { seq: ctx.seq, by: ctx.owner, node: d.part || null, title: d.title || '', text: d.text || '', kind: d.kind || 'note',
+        source: d.source || 'own work', values: d.values && typeof d.values === 'object' ? d.values : {}, replaces: d.replaces ?? null,
+        replacedBy: null, pending: ctx.pending, ts: ev.ts || null };
+      s.findings = s.findings.map((f) => (row.replaces != null && f.seq === row.replaces ? { ...f, replacedBy: row.seq } : f)).concat([row]);
+    },
     seed_added(s, ev, ctx) { const d = ev.data || {}; if (d.node) mapOf(s, ctx, 'seedOwners').set(d.node, ctx.owner); },
     run_paused(s, ev, ctx) { if (!s.run.pausedBy.includes(ctx.owner)) s.run = { ...s.run, pausedBy: [...s.run.pausedBy, ctx.owner] }; },
     run_resumed(s, ev, ctx) { s.run = { ...s.run, pausedBy: s.run.pausedBy.filter((p) => p !== ctx.owner) }; },
@@ -712,6 +721,7 @@ export function makeReducer({ layoutTree, layoutClusters, anchorFor, contract } 
           label = d.text || (pv && pv.text) || d.question; break;
         }
         case 'opinion_given': label = d.target; break;
+        case 'finding_posted': label = d.title; break;
         case 'vote_cast': label = clusterName(clusterKeyFor(s, d.node, d.idea, null)) || d.idea; break;
         default: label = null;
       }

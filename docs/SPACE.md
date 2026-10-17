@@ -73,6 +73,7 @@ and posts the event for you (as `ana.agent`, owner ana). Ids and names: a part b
 | `/veto <question>` | question_vetoed | the question cannot be picked | the next pick (the start of the next round) |
 | `/unveto <question>` | question_unvetoed | withdraws your veto | the next pick |
 | `/choose <question>` | question_chosen | asks for this question next; the last writer wins | the next pick |
+| `/finding <node or all>: <title> \| <text>` | finding_posted | posts what you know or measured as evidence for that part (or the whole problem) | the next boundary: memory and prompts of the part |
 | `/note <text>` | note_posted | a note every agent reads (600 characters at most) | the next boundary; the loop keeps the newest five |
 | `/reply <cluster> <objection n> concede\|rebut\|measure: <text> [tag]` | reply_posted | answers a critic's objection with an evidence tag | the next author reply and critic step; a reply never gates a build |
 | `/seed <node>: <text>` | seed_added | a mechanism of your own for the idea agents | round 1 only: dealt as an owner context at the first ideation; later seeds are logged, not dealt |
@@ -110,6 +111,7 @@ The loop reads the people's changes as one merged control at each boundary (GET 
 | step | run_step | the loop consumes the first Go that names the boundary it waits at |
 | disputes | fact_disputed | at the boundary, into disputed_facts.jsonl |
 | seeds | seed_added | before round 1's ideation only |
+| findings | finding_posted (every one, newest first; a correction marks the one it replaces) | at the boundary: into the part's memory (FACTS FROM PEOPLE) and the prompts of that part |
 
 Only the loop's disk control.json sets budget_add, aux_budget_add, k_impl, rounds_max, longshot_share,
 leap_share, stop_after_stage and exclude_clusters.
@@ -284,6 +286,7 @@ server itself.
 | `vote_cast` | person, delegate | up or down on an idea, shown by name |
 | `fact_disputed` | person, delegate | a fact marked disputed, with reason and evidence tag |
 | `note_posted` | person, delegate | a note every agent reads (also the start-run notes of the server) |
+| `finding_posted` | person, delegate | a person's data or finding (title, text, kind, source, values, part); kept in the part's memory and quoted to its agents as evidence |
 | `seed_added` | person, delegate | a person's mechanism for the idea agents |
 | `run_paused` | person, delegate | a pause held by its author |
 | `run_resumed` | person, delegate | that pause lifted |
@@ -309,3 +312,17 @@ server itself.
 | D:/AGI-lab/spaces/<space>/runs/ | start-run logs and runs.json |
 | <run_dir>/space_outbox.ndjson, space_cursor.json, control_applied.json | the loop's client state |
 | space/recorded/stage_round.ndjson | the recorded stage round, with stage_round.hash.json and stage_round.beats.json |
+
+## 12. Findings: your data and results for the agents
+
+Open the Findings tab. Give a title, the finding in plain words, the part it belongs to (the page suggests one
+from the words; leave it empty for the whole problem), its kind (measurement, result, paper, data, note), a source
+(a URL, a file name, or own work) and numbers as `metric=number` lines. Post it, or type
+`/finding <part>: <title> | <text>` to your agent.
+
+What happens: the finding is an event like any other (owner, time, never deleted). At the next boundary the loop
+writes it into the part's memory file under FACTS FROM PEOPLE with the source tag `person`, where it stays across
+runs, and from then on every idea agent, critic, author and builder working on that part sees a block
+FACTS FROM PEOPLE with your words quoted, marked as evidence from people, not instructions. A whole-problem finding
+goes to the root part's memory and to every part's prompts. To correct one, press "correct this": the new finding
+replaces the old one, which stays visible, marked.

@@ -381,7 +381,7 @@ EXPECTED = {"add_nodes": [{"id": "item_order", "name": "item order", "parent": "
             "skip_nodes": ["stats"], "veto": ["u3d885a4738"], "choose": "q_n44a9d66",
             "note": "ben: check tie-breaking before the choice rule",
             "opinions": [{"cluster": "best fit", "score": 7, "note": "fair and cheap", "who": "ana"}],
-            "pause": False, "budget_add": 500}
+            "pause": False, "findings": [], "budget_add": 500}
 
 
 def post_six(fake):

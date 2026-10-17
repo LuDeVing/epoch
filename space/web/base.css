@@ -156,3 +156,14 @@ body.stage .chat__form, body.stage .switch { display: none; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 @media (max-width: 900px) { #panes { grid-template-columns: 1fr; grid-auto-rows: minmax(240px, 1fr); overflow: auto; } body { overflow: auto; } }
+
+/* Findings tab (people's data and findings) */
+.finding-form input, .finding-form textarea, .finding-form select { width: 100%; box-sizing: border-box; margin: 4px 0; font: inherit; }
+.finding-form__row { display: flex; gap: 8px; }
+.finding-form__row > * { flex: 1; min-width: 0; }
+.finding-filter { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; }
+.findings__list { list-style: none; margin: 0; padding: 0; }
+.finding { padding: 6px 0; border-top: 1px solid var(--line); }
+.finding__head { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.finding__text { white-space: pre-wrap; margin: 4px 0; }
+.finding--replaced { opacity: 0.55; }

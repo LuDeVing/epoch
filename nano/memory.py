@@ -26,9 +26,9 @@ import re
 import threading
 from pathlib import Path
 
-SECTIONS = ("FACTS", "TRIED", "PRIORS", "CUES", "OPEN QUESTIONS", "FAILED FRAMINGS")
+SECTIONS = ("FACTS", "TRIED", "PRIORS", "CUES", "OPEN QUESTIONS", "FAILED FRAMINGS", "FACTS FROM PEOPLE")
 ARCHIVE = "ARCHIVE"
-SOURCES = ("script", "measured", "web", "belief")
+SOURCES = ("script", "measured", "web", "belief", "person")   # person: a finding a person posted in the space
 
 BLOCK_HEAD = ("WHAT THIS TEAM ALREADY KNOWS ABOUT THIS PART (evidence, not rules; "
               "dispute it if the facts say otherwise):")
@@ -149,7 +149,7 @@ class Memory:
         entries = [(s, e) for s in SECTIONS for e in data["sections"][s]]
         if not entries:
             return ""
-        value = {"belief": 0, "web": 1, "measured": 2, "script": 2}
+        value = {"belief": 0, "web": 1, "person": 1, "measured": 2, "script": 2}
         guard = {"FAILED FRAMINGS": 1}                    # the dead-end map is the anti-fixation guard: drop it last
         order = sorted(entries, key=lambda se: (guard.get(se[0], 0), value.get(se[1]["source"], 0), se[1]["used"], se[1]["date"]))
         keep = list(entries)

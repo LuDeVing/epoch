@@ -90,6 +90,7 @@ def merge(events, *, loop="team.loop", claims=(), since=0, file_ctl=None) -> dic
     holders_live: dict[str, str] = {}                # node -> holder, from the live claims then the claim events
     claim_refs: list[int] = []
     steps, disputes, seeds, dropped, refs = [], [], [], [], []
+    findings: list[dict] = []                        # rule 13: every finding_posted, state like skip_nodes
 
     for c in claims or ():
         if isinstance(c, dict):
@@ -134,6 +135,12 @@ def merge(events, *, loop="team.loop", claims=(), since=0, file_ctl=None) -> dic
             chooses.append({"seq": seq, "by": _owner(ev), "question": q})
         elif kind == "note_posted":
             notes.append({"seq": seq, "by": _owner(ev), "text": str(d.get("text") or "")})
+        elif kind == "finding_posted":
+            findings.append({"seq": seq, "by": _owner(ev), "ts": ev.get("ts"), "part": d.get("part") or None,
+                             "title": str(d.get("title") or "")[:120], "text": str(d.get("text") or "")[:4000],
+                             "kind": str(d.get("kind") or "note"), "source": str(d.get("source") or "own work")[:200],
+                             "values": d.get("values") if isinstance(d.get("values"), dict) else {},
+                             "replaces": d.get("replaces") if isinstance(d.get("replaces"), int) else None})
         elif kind == "opinion_given":
             target = str(d.get("target") or "")
             if not target:
@@ -187,6 +194,7 @@ def merge(events, *, loop="team.loop", claims=(), since=0, file_ctl=None) -> dic
         "opinions": ops,
         "note": "\n".join(note_lines)[:NOTE_CAP],
         "pause": bool(holders),
+        "findings": _findings_out(findings),
     }
     assert tuple(server) == CONTROL_KEYS
     control = {k: v for k, v in file_ctl.items() if k in FILE_ONLY_KEYS} if isinstance(file_ctl, dict) else {}
@@ -194,6 +202,15 @@ def merge(events, *, loop="team.loop", claims=(), since=0, file_ctl=None) -> dic
     overwrote = [{"seq": c["seq"], "by": c["by"]} for c in chooses[:-1] if chosen and c["by"] != chosen["by"]]
     return {"control": control, "refs": sorted(set(refs) | set(claim_refs)), "steps": steps, "holders": holders,
             "disputes": disputes, "seeds": seeds, "overwrote": {"choose": overwrote}, "dropped": dropped}
+
+
+def _findings_out(findings: list[dict]) -> list[dict]:
+    """Newest first; a finding named by a later replaces is marked replaced_by, and both stay (nothing is deleted)."""
+    by_seq = {f["seq"]: dict(f, replaced_by=None) for f in findings}
+    for f in findings:
+        if f["replaces"] in by_seq:
+            by_seq[f["replaces"]]["replaced_by"] = f["seq"]
+    return [by_seq[f["seq"]] for f in reversed(findings)]
 
 
 def consume_step(merged: dict, round_no, stage) -> dict | None:

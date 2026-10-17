@@ -3,7 +3,7 @@
 // run (state.memory). The file is re-read when the part changes or when this run adds to it.
 import { html, useState, useEffect } from './vendor/standalone.module.js';
 
-export const SECTIONS = ['FACTS', 'TRIED', 'PRIORS', 'CUES', 'OPEN QUESTIONS', 'FAILED FRAMINGS'];
+export const SECTIONS = ['FACTS', 'TRIED', 'PRIORS', 'CUES', 'OPEN QUESTIONS', 'FAILED FRAMINGS', 'FACTS FROM PEOPLE'];
 
 export function memoryUrl(base, part, key) {
   return `${base}/api/memory?part=${encodeURIComponent(part)}${key ? `&key=${encodeURIComponent(key)}` : ''}`;

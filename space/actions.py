@@ -52,7 +52,8 @@ MAX_ACTIONS = 3
 # The kinds a person-agent may post. Never a result, a status, a pick or a server kind.
 OUT_KINDS = frozenset({"node_added", "node_skipped", "node_unskipped", "seed_added", "vote_cast", "reply_posted",
                        "note_posted", "fact_disputed", "question_vetoed", "question_unvetoed", "question_chosen",
-                       "run_paused", "run_resumed", "run_step", "agent_said", "intent_proposed", "digest_taken"})
+                       "run_paused", "run_resumed", "run_step", "agent_said", "intent_proposed", "digest_taken",
+                       "finding_posted"})
 assert OUT_KINDS <= set(C.KINDS)
 NAME_CAP, FRAME_CAP, ASSUMPTION_CAP, ASSUMPTIONS_KEPT, REASON_CAP = 60, 400, 160, 5, 600
 DUP_RATIO = 0.85
@@ -603,6 +604,7 @@ SLASH_HELP = {
     "veto": "/veto <question id or Q1..Q3>", "unveto": "/unveto <question id or Q1..Q3>", "choose": "/choose <question id or Q1..Q3>",
     "note": "/note <text>", "reply": "/reply <cluster key> <objection n> concede|rebut|measure: <text> [tag]",
     "seed": "/seed <node>: <text>", "pause": "/pause [reason]", "resume": "/resume [reason]", "go": "/go",
+    "finding": "/finding <node or all>: <title> | <text>",
 }
 assert set(SLASH_HELP) == set(C.SLASH)
 TAGS = ("measured", "script", "web", "belief")
@@ -619,6 +621,7 @@ SLASH_RX = {
     "seed": re.compile(r"^(?P<node>[^:]+?)\s*:\s*(?P<text>.+?)\s*$", re.S),
     "pause": re.compile(r"^(?P<reason>.*?)\s*$", re.S), "resume": re.compile(r"^(?P<reason>.*?)\s*$", re.S),
     "go": re.compile(r"^\s*$"),
+    "finding": re.compile(r"^(?P<node>[^:]+?)\s*:\s*(?P<title>[^|]+?)\s*(?:\|\s*(?P<text>.+?))?\s*$", re.S),
 }
 
 
@@ -713,6 +716,18 @@ def parse_slash(text, view):
         if cmd == "pause":
             return [ev], f"Queued: pause. The run holds at {at} until you resume."
         return [ev], "Queued: resume. Your pause is lifted."
+    if cmd == "finding":
+        part = None
+        if a["node"].strip().lower() not in ("all", "whole", "whole problem", "problem"):
+            part = view.node(a["node"])
+            if not part:
+                raise Dropped(f'finding: no part "{clean_text(a["node"], 40)}" in the space (use "all" for the whole problem)')
+        title = clean_text(a["title"], 120)
+        text = clean_text(a.get("text") or a["title"], 4000)
+        data = {"title": title, "text": text, "kind": "note", "source": "own work", "part": part, "values": {}}
+        ev = _ev("finding_posted", f"node:{part}" if part else "run:main", title, data)
+        where = view.node_name(part) if part and hasattr(view, "node_name") else (part or "the whole problem")
+        return [ev], f"Posted your finding on {where}. The team reads it at {at} and keeps it in the part's memory."
     if cmd == "go":
         ops = run_step_ops(view, 1)
         d = ops[0]["data"]
