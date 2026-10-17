@@ -573,7 +573,7 @@ def test_one_stage_entered_gives_one_digest_taken(space, tmp_path):
     assert d["role"] == "person" and d["text"] == space.digest_text and d["chars"] == len(space.digest_text) and d["n"] == 2
     assert taken[0]["round"] == 1 and taken[0]["stage"] == "planned" and taken[0]["cause"] == s
     lines = space.agent_events("agent_said", kind="digest")
-    assert len(lines) == 1 and lines[0]["data"]["text"].startswith("At planned r1: 2 changes")
+    assert len(lines) == 1 and lines[0]["data"]["text"].startswith("At planned r1: 1 change from teammates")   # one line, n=2
     assert space.digest_queries[-1]["agent"] == "ana.agent" and space.digest_queries[-1]["role"] == "person"
     assert json.loads((tmp_path / "agents" / "ana.json").read_text())["digest_cursor"] >= s
 
@@ -664,3 +664,81 @@ def test_process_starts_and_stops_cleanly_with_the_mock_model(space, tmp_path):
     assert not [e for e in space.agent_events("agent_said") if e["data"]["kind"] in ("error", "canned")]
     assert (tmp_path / "agents" / "ana.json").exists()
     assert not (tmp_path / "lab" / "spaces").exists()                  # --state-dir keeps the lab root clean
+
+
+# ---------------------------------------------------------------- review fixes (P6 review)
+def test_server_down_at_start_does_not_replay_old_chats(space, tmp_path):
+    old = space.chat("/note an old message")                       # in the log before the agent starts
+    space.r_snapshot = lambda q, b, h: (503, {"error": "down"})
+    space.r_events = lambda q, b, h: (503, {"error": "down"})
+    agent, _ = make_agent(space, tmp_path)
+    try:
+        time.sleep(0.4)
+        del space.r_snapshot, space.r_events                        # the server comes up
+        time.sleep(2.5)
+        new = space.chat("/note a new message")
+        assert space.wait_for(lambda e: e["kind"] == "note_posted" and e["cause"] == new, 4)
+    finally:
+        agent.stop()
+    assert [e for e in space.events if e.get("cause") == old] == []
+
+
+def test_a_queued_message_keeps_its_own_clock(space, tmp_path):
+    agent, counter = make_agent(space, tmp_path, Counter(delay_s=3.0), timings={"waiting_s": 0.5, "canned_s": 1.5})
+    try:
+        first = space.chat("ok")
+        second = space.chat("thanks")
+        t1 = space.times[second - 1]
+        w = space.wait_for(lambda e: e["kind"] == "agent_said" and e["cause"] == second and e["data"]["kind"] == "waiting", 3)
+        assert w and space.t_of(w) - t1 < 1.2
+        c = space.wait_for(lambda e: e["kind"] == "agent_said" and e["cause"] == second and e["data"]["kind"] == "canned", 3)
+        assert c and space.t_of(c) - t1 < 2.2
+        assert space.wait_for(lambda e: e["kind"] == "agent_said" and e["cause"] == first and e["data"]["kind"] == "late", 5)
+        time.sleep(0.3)
+    finally:
+        agent.stop()
+    assert counter.calls == 1                                      # the canned queued message skipped its model call
+
+
+class _Res:
+    def __init__(self, text="", stop="end_turn", error=None):
+        self.text, self.stop_reason, self.error = text, stop, error
+
+
+def test_a_failed_retry_applies_nothing_from_the_first_reply(tmp_path):
+    a = G.Agent("ana", "http://127.0.0.1:9", state_dir=tmp_path, install_mock=False, log=lambda m: None)
+    first = json.dumps({"reply": "x", "ask": "", "actions": [
+        {"type": "note", "text": "keep", "confidence": "clear", "why": ""},
+        {"type": "vote", "idea": "k1", "value": "sideways", "confidence": "clear", "why": ""}]})
+    for second in (_Res(stop="max_tokens", text=first), _Res(error="TimeoutError: timed out")):
+        replies = iter([_Res(text=first), second])
+        a.call_model = lambda prompt: next(replies)
+        res = a.think("p")
+        assert res["calls"] == 2 and res["out"] is None, res
+
+
+def test_save_state_from_many_threads_never_fails(tmp_path):
+    logs = []
+    a = G.Agent("ana", "http://127.0.0.1:9", state_dir=tmp_path, install_mock=False, log=logs.append)
+    ts = [threading.Thread(target=lambda: [a.save_state() for _ in range(30)]) for _ in range(6)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    assert logs == [] and json.loads((tmp_path / "ana.json").read_text())["cursor"] is None
+
+
+def test_slash_tags_are_whole_words_and_a_fact_text_finds_its_id():
+    view = A.SpaceView(SNAP, "ana")
+    ops, _ = A.parse_slash("/dispute choice: bins are scanned in opening order | see the transcript", view)
+    d = ops[0]["data"]
+    assert d["tag"] == "belief" and d["reason"] == "see the transcript"
+    assert ops[0]["subject"] == "fact:choice:2"
+    ops, _ = A.parse_slash("/reply open-in-k01 2 rebut: it is caught in a cobweb", view)
+    assert ops[0]["data"]["source"] == "belief" and ops[0]["data"]["text"] == "it is caught in a cobweb"
+    ops, _ = A.parse_slash("/dispute choice: some line not on the map | wrong web", view)
+    assert ops[0]["data"]["tag"] == "web" and ops[0]["subject"] == "node:choice"
+
+
+def test_space_view_never_invents_the_problem():
+    snap = json.loads(json.dumps(SNAP))
+    snap.pop("problem", None)
+    assert "binpack" not in A.render_space(A.SpaceView(snap, "ana")).splitlines()[0]

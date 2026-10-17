@@ -183,6 +183,8 @@ class Agent:
         self.threads = []
         self.run = {}
         self.last_snap = {}
+        self.need_head = False                # True until a fresh agent has seen the server's head once
+        self.save_lock = threading.Lock()
         self.state = {"cursor": None, "digest_cursor": 0, "epoch": None, "actions": [], "open_intent": None,
                       "intent_queue": [], "claims": {}, "my_choice": None, "last_chat_seq": 0}
         self._load_state()
@@ -197,6 +199,10 @@ class Agent:
             pass
 
     def save_state(self):
+        with self.save_lock:              # threads share one tmp file: one writer at a time
+            self._save_state()
+
+    def _save_state(self):
         with self.lock:
             body = json.dumps(self.state, indent=1)
         try:
@@ -320,9 +326,12 @@ class Agent:
         if head is None:
             try:
                 st, d = self.http.call("GET", "/api/events?since=0&limit=1&wait=0")
-                head = d.get("head", 0) if st == 200 else 0
+                head = d.get("head") if st == 200 else None
             except (OSError, ValueError):
-                head = 0
+                head = None
+        if head is None:                  # server not up yet: keep the saved cursor; else the first poll sets the head
+            self.need_head = self.state.get("cursor") is None
+            return
         with self.lock:
             self.state.update(cursor=int(head or 0), epoch=snap.get("epoch"), digest_cursor=0)
         self.save_state()
@@ -340,6 +349,12 @@ class Agent:
                 self.stop_event.wait(1.0)
                 continue
             epoch, head = d.get("epoch"), int(d.get("head") or 0)
+            if self.need_head:
+                self.need_head = False
+                with self.lock:
+                    self.state.update(cursor=head, epoch=epoch, digest_cursor=0)
+                self.save_state()
+                continue
             if (self.state.get("epoch") and epoch and epoch != self.state["epoch"]) or head < since:
                 self.log(f"new epoch or head behind the cursor ({head} < {since}): starting again at the head")
                 with self.lock:
@@ -486,7 +501,7 @@ class Agent:
         res = self.call_model(prompt)
         calls, out, errs = 1, None, []
         for attempt in (0, 1):
-            stop = res.stop_reason
+            stop, out = res.stop_reason, None
             if res.error:
                 errs = [f"model error: {res.error[:200]}"]
             elif stop in ("max_tokens", "refusal"):
@@ -551,15 +566,12 @@ class Agent:
         self.apply_reply(out, job.chat_seq, canned=False)
 
     def _tick_job(self):
-        job = self.job
-        if job is None:
-            # a queued job's clock runs too: its person waits as long
-            try:
-                job = self.jobs.queue[0]
-            except IndexError:
-                return
-            if job is None:
-                return
+        # a queued job's clock runs too: its person waits as long
+        for job in [self.job] + list(self.jobs.queue):
+            if job is not None:
+                self._tick_one(job)
+
+    def _tick_one(self, job):
         el = self.clock() - job.t0
         post_wait = post_canned = post_error = False
         with job.lock:
@@ -812,8 +824,10 @@ class Agent:
         to_seq = int(d.get("to_seq") or ev.get("seq") or since)
         n = int(d.get("n") or 0) if text else 0
         bullets = [ln[2:] for ln in text.splitlines() if ln.startswith("- ")]
+        more = re.search(r"\((\d+) more changes are in the log\.\)", text)
+        k = len(bullets) + (int(more.group(1)) if more else 0)     # n counts every event in the window, not changes
         if text:
-            summary = f"At {stage} r{rnd}: {n} change{'s' if n != 1 else ''} from teammates. First: {A.clean_text(bullets[0] if bullets else '', 140)}"
+            summary = f"At {stage} r{rnd}: {k} change{'s' if k != 1 else ''} from teammates. First: {A.clean_text(bullets[0] if bullets else '', 140)}"
         else:
             summary = f"At {stage} r{rnd}: nothing new from teammates."
         self.say("digest", summary, cause=ev.get("seq"))

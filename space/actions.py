@@ -322,7 +322,7 @@ def render_space(view, open_intent=None, held=()):
     """The <space> block: fixed order, fixed columns, under 6000 characters. Never obvious, obvious_match,
     private, spend or a model name: only the listed fields are read."""
     me, run = view.me, view.run
-    problem = clean_text(view.snap.get("problem") or run.get("problem") or "binpack", 40)
+    problem = clean_text(view.snap.get("problem") or run.get("problem") or "-", 40)
     head = (f"problem: {problem} | round {run.get('round') or 1} | stage: {run.get('stage') or 'not started'}"
             f"{' (waiting for Go)' if run.get('waiting') else ''} | you: {me}")
     lines = [head, "TREE (id | name | made by | held by | state)"]
@@ -610,12 +610,12 @@ SLASH_RX = {
     "branch": re.compile(r'^(?P<parent>\S+)\s+"(?P<name>[^"]+)"\s*:?\s*(?P<frame>.*?)\s*(?P<claim>--claim)?\s*$', re.S),
     "vote": re.compile(r"^(?P<value>up|down)\s+(?P<idea>.+?)\s*$", re.I),
     "claim": re.compile(r"^(?P<node>\S.*?)\s*$"), "release": re.compile(r"^(?P<node>\S.*?)\s*$"),
-    "dispute": re.compile(r"^(?P<node>[^:]+?)\s*:\s*(?P<fact>.+?)\s*\|\s*(?P<reason>.+?)\s*(?:\[?(?P<tag>measured|script|web|belief)\]?)?\s*$", re.S | re.I),
+    "dispute": re.compile(r"^(?P<node>[^:]+?)\s*:\s*(?P<fact>.+?)\s*\|\s*(?P<reason>.+?)\s*(?:\[?\b(?P<tag>measured|script|web|belief)\]?)?\s*$", re.S | re.I),
     "ask": re.compile(r"^(?P<node>[^:]+?)\s*:\s*(?P<rest>.+?)\s*$", re.S),
     "skip": re.compile(r"^(?P<node>\S.*?)\s*$"), "unskip": re.compile(r"^(?P<node>\S.*?)\s*$"),
     "veto": re.compile(r"^(?P<q>\S+)\s*$"), "unveto": re.compile(r"^(?P<q>\S+)\s*$"), "choose": re.compile(r"^(?P<q>\S+)\s*$"),
     "note": re.compile(r"^(?P<text>\S.*?)\s*$", re.S),
-    "reply": re.compile(r"^(?P<idea>\S+)\s+(?P<n>\d+)\s+(?P<kind>concede|rebut|measure)\s*:\s*(?P<text>.+?)\s*(?:\[?(?P<tag>measured|script|web|belief)\]?)?\s*$", re.S | re.I),
+    "reply": re.compile(r"^(?P<idea>\S+)\s+(?P<n>\d+)\s+(?P<kind>concede|rebut|measure)\s*:\s*(?P<text>.+?)\s*(?:\[?\b(?P<tag>measured|script|web|belief)\]?)?\s*$", re.S | re.I),
     "seed": re.compile(r"^(?P<node>[^:]+?)\s*:\s*(?P<text>.+?)\s*$", re.S),
     "pause": re.compile(r"^(?P<reason>.*?)\s*$", re.S), "resume": re.compile(r"^(?P<reason>.*?)\s*$", re.S),
     "go": re.compile(r"^\s*$"),
@@ -657,11 +657,12 @@ def parse_slash(text, view):
     if cmd == "dispute":
         nid = _node_or_drop(view, a["node"], "dispute")
         fact = clean_text(a["fact"], 300)
-        fid = view.fact(fact)
-        if fid:                                   # an id like choice:1 names the fact text
+        fid = view.fact(fact) or next((k for k, f in view.facts.items()        # an id like choice:1, or the text
+                                       if f["node"] == nid and _norm(f["text"]) == _norm(fact)), None)
+        if fid:
             fact = clean_text(view.facts[fid]["text"], 300)
         tag = (a.get("tag") or "belief").lower()
-        ev = _ev("fact_disputed", f"fact:{fid or nid}", view.name_of(nid),
+        ev = _ev("fact_disputed", f"fact:{fid}" if fid else f"node:{nid}", view.name_of(nid),
                  {"node": nid, "fact": fact, "reason": clean_text(a["reason"], REASON_CAP), "tag": tag, "ref": ""})
         return [ev], f'Disputed on {view.name_of(nid)}: "{fact[:80]}" ({tag}). It stays on the map, marked. The team reads it at {at}.'
     if cmd == "ask":
