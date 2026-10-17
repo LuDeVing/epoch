@@ -532,9 +532,57 @@ def find_part(nodes: list[dict], text: str) -> str | None:
     return None
 
 
-def add_failure_question(nodes: list[dict], parent_id: str, cand_id: str, idea_name: str, reason: str) -> dict | None:
+# The metric each rung of the ladder reads, for the test a failure question enters with (docs/TEAM_GAPS_SPEC.md, C).
+# Rungs 0 and 1 are pass/fail: the test is reaching the next rung. Rung 2 reads the quick gap (or the cost ratio),
+# rung 3 the full gap; a gap is negative when better, so the threshold is an upper bound.
+_RUNG_TESTS = {0: ("rung_reached", "the static and boundary rule (rung 0)"), 1: ("rung_reached", "the build (rung 1)"),
+               2: ("learn_gap", "the quick score (rung 2)"), 3: ("long_gap", "the full score (rung 3)")}
+
+
+def failure_test(feedback: dict | None, metrics: dict | None = None) -> dict | None:
+    """The test, threshold and failure condition a failure question enters with, derived from the failed
+    candidate's feedback (its rung and reason) and metrics. None when nothing can be derived (no rung)."""
+    fb = feedback or {}
+    m = metrics or {}
+    try:
+        rung = int(fb.get("rung"))
+    except (TypeError, ValueError):
+        return None
+    if rung not in _RUNG_TESTS:
+        return None
+    reason = " ".join(str(fb.get("reason") or "").split())[:200]
+    metric, what = _RUNG_TESTS[rung]
+    if rung in (0, 1):
+        thr = rung + 1
+        return {"test": {"metric": metric, "rung": rung, "op": ">=", "what": what},
+                "threshold": thr,
+                "fails_if": f"the next idea built for this question fails {what} again" + (f" ({reason})" if reason else "")}
+    if rung == 2 and re.search(r"\bcost is\b", reason):
+        cap = re.search(r"at most ([0-9.]+)x", reason)
+        thr = float(cap.group(1).rstrip(".")) if cap else 1.0
+        return {"test": {"metric": "cost_ratio", "rung": 2, "op": "<=", "what": "the cost ratio at the quick score (rung 2)"},
+                "threshold": thr, "fails_if": f"cost_ratio above {thr:g} at rung 2"}
+    if rung == 2 and m.get("learn_gap") is None and m.get("learn_z") is not None:
+        metric = "learn_z"
+    allowed = re.search(r"allowed ([-+0-9.eE]+)", reason)
+    try:
+        thr = float(allowed.group(1).rstrip(".")) if allowed else 0.0
+    except ValueError:
+        thr = 0.0
+    seen = m.get(metric)
+    return {"test": {"metric": metric, "rung": rung, "op": "<=", "what": what},
+            "threshold": thr,
+            "fails_if": f"{metric} above {thr:g} at rung {rung}, or the run fails at rung {rung} again"
+                        + (f" (the failed idea read {seen})" if seen is not None else "")}
+
+
+def add_failure_question(nodes: list[dict], parent_id: str, cand_id: str, idea_name: str, reason: str,
+                         feedback: dict | None = None, metrics: dict | None = None) -> dict | None:
     """A failed check with a reason becomes a child question under the node the idea worked on
-    (docs/mapper/03, 'a failure spawns a child question'). None for a duplicate name or id, or no reason."""
+    (docs/mapper/03, 'a failure spawns a child question'). None for a duplicate name or id, or no reason.
+    The question carries `test` (metric and rung that would answer it), `threshold` and `fails_if`, derived from
+    the failed candidate's feedback and metrics (failure_test); when none can be derived it is `enterable: False`
+    and the question chooser (nano/pick.py) never picks it."""
     par = _by_id(nodes).get(parent_id)
     if par is None or not str(reason or "").strip():
         return None
@@ -545,6 +593,12 @@ def add_failure_question(nodes: list[dict], parent_id: str, cand_id: str, idea_n
     node = {"id": nid, "name": name, "parent": parent_id, "frame": " ".join(str(reason).split())[:400],
             "assumptions": [], "boundary": par.get("boundary", ""), "directions": ["inward"],
             "origin": "failure", "kind": "question", "from": [cand_id]}
+    ft = failure_test(feedback if feedback is not None else {}, metrics)
+    if ft:
+        node.update(ft)
+        node["enterable"] = True
+    else:
+        node.update({"test": None, "threshold": None, "fails_if": "", "enterable": False})
     nodes.append(node)
     return node
 
