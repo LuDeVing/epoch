@@ -15,7 +15,16 @@ Arms:
 
     HTSA_LAB_ROOT=D:/AGI-lab python -m harness.noveltybench gen --arm plain --model haiku --out D:/AGI-lab/results/nb/haiku-plain
     python -m harness.noveltybench judge --out D:/AGI-lab/results/nb/haiku-plain
-    python -m harness.noveltybench summary D:/AGI-lab/results/nb/*
+    python -m harness.noveltybench summary D:/AGI-lab/results/nb/* [--method haiku-method] [--md OUT.md]
+
+Evidence (research_notes/team_gaps/05_evidence.md): `summary` also reports the interquartile mean (IQM) per arm and,
+for each baseline arm, a paired bootstrap 95% interval (10,000 resamples over prompts, seed 0) of the mean difference
+method minus baseline on distinct and on utility, with per-prompt win/loss/tie counts.
+    python -m harness.noveltybench rejudge --out D:/AGI-lab/results/nb/haiku-method --judge-model sonnet --limit 20 --seed 0 --suffix sonnet
+        re-partitions and re-scores a seeded sample of prompts with another judge into scores.<suffix>.jsonl (the
+        existing scores.jsonl is never touched; judge logs go to judge_calls_<suffix>/).
+    python -m harness.noveltybench agreement A/scores.jsonl A/scores.sonnet.jsonl
+        on the prompts both files share: Spearman rank correlation of utility, and agreement of distinct counts.
 """
 from __future__ import annotations
 
@@ -143,8 +152,8 @@ def gen_one(row, arm, model, out, effort):
             "model": model, "gen_tokens": tok, **extra}
 
 
-def judge_one(row, judge_model, out, seed=0):
-    log_dir = out / "judge_calls" / row["id"]
+def judge_one(row, judge_model, out, seed=0, log_name="judge_calls"):
+    log_dir = out / log_name / row["id"]
     log_dir.mkdir(parents=True, exist_ok=True)
     gens = row["generations"]
     n = len(gens)
@@ -226,24 +235,177 @@ def run_rows(fn, rows, path, workers):
         list(ex.map(work, todo))
 
 
-def summary(dirs):
-    lines = ["| arm | prompts | mean distinct (of 10) | mean utility | generation tokens per prompt |", "|---|---|---|---|---|"]
+def load_scores(path) -> list[dict]:
+    """One row per prompt id (the first row written for it is kept)."""
+    rows = [json.loads(l) for l in Path(path).read_text(encoding="utf-8").splitlines() if l.strip()]
+    first: dict = {}
+    for r in rows:
+        first.setdefault(r["id"], r)
+    return list(first.values())
+
+
+def iqm(xs) -> float:
+    """Interquartile mean (Agarwal et al. 2021): the mean of the middle 50%, cutting int(0.25 n) values from each
+    end, as scipy.stats.trim_mean(x, 0.25) does."""
+    x = np.sort(np.asarray(list(xs), dtype=float))
+    if x.size == 0:
+        return float("nan")
+    k = int(0.25 * x.size)
+    return float(x[k: x.size - k].mean())
+
+
+def paired_bootstrap(a, b, n_boot: int = 10_000, seed: int = 0, level: float = 0.95) -> dict:
+    """Mean of a - b over paired items and its percentile bootstrap interval (items resampled with replacement)."""
+    d = np.asarray(a, dtype=float) - np.asarray(b, dtype=float)
+    if d.size == 0:
+        return {"n": 0, "mean": float("nan"), "lo": float("nan"), "hi": float("nan")}
+    rng = np.random.default_rng(seed)
+    means = d[rng.integers(0, d.size, size=(n_boot, d.size))].mean(axis=1)
+    q = (1 - level) / 2
+    return {"n": int(d.size), "mean": float(d.mean()), "lo": float(np.quantile(means, q)),
+            "hi": float(np.quantile(means, 1 - q))}
+
+
+def win_loss_tie(a, b, tol: float = 1e-9) -> tuple[int, int, int]:
+    d = np.asarray(a, dtype=float) - np.asarray(b, dtype=float)
+    return int((d > tol).sum()), int((d < -tol).sum()), int((np.abs(d) <= tol).sum())
+
+
+def paired(rows_a: list[dict], rows_b: list[dict], key: str) -> tuple[list[float], list[float]]:
+    """Values of `key` on the prompt ids both arms have, in the order of rows_a."""
+    by_b = {r["id"]: r for r in rows_b}
+    both = [r for r in rows_a if r["id"] in by_b]
+    return [float(r[key]) for r in both], [float(by_b[r["id"]][key]) for r in both]
+
+
+def compare(method_rows: list[dict], base_rows: list[dict], n_boot: int = 10_000, seed: int = 0) -> dict:
+    """Method minus baseline on distinct and utility: paired bootstrap interval and win/loss/tie per prompt."""
+    out = {}
+    for key in ("distinct", "utility"):
+        a, b = paired(method_rows, base_rows, key)
+        out[key] = {**paired_bootstrap(a, b, n_boot, seed), "wlt": win_loss_tie(a, b)}
+    return out
+
+
+def summary(dirs, method: str | None = None, n_boot: int = 10_000, seed: int = 0):
+    arms = {}
     for d in dirs:
         p = Path(d) / "scores.jsonl"
-        if not p.exists():
-            continue
-        rows = list({r["id"]: r for r in reversed([json.loads(l) for l in p.read_text(encoding="utf-8").splitlines()
-                                                     if l.strip()])}.values())   # one row per prompt (first kept)
-        lines.append(f"| {Path(d).name} | {len(rows)} | {np.mean([r['distinct'] for r in rows]):.2f} | "
-                     f"{np.mean([r['utility'] for r in rows]):.2f} | {np.mean([r['gen_tokens'] for r in rows]):,.0f} |")
+        if p.exists():
+            arms[Path(d).name] = load_scores(p)
+    lines = ["| arm | prompts | mean distinct (of 10) | IQM distinct | mean utility | IQM utility | generation tokens per prompt |",
+             "|---|---|---|---|---|---|---|"]
+    for name, rows in arms.items():
+        dist, util = [r["distinct"] for r in rows], [r["utility"] for r in rows]
+        lines.append(f"| {name} | {len(rows)} | {np.mean(dist):.2f} | {iqm(dist):.2f} | {np.mean(util):.2f} | "
+                     f"{iqm(util):.2f} | {np.mean([r.get('gen_tokens', 0) for r in rows]):,.0f} |")
+    if method is None:
+        method = next((n for n in arms if n.endswith("method")), None) or (list(arms)[-1] if arms else None)
+    if method in arms and len(arms) > 1:
+        lines += ["", f"{method} minus each baseline, paired over prompts: mean difference and bootstrap 95% interval "
+                      f"({n_boot:,} resamples over prompts, seed {seed}). W/L/T = prompts where {method} is higher / "
+                      "lower / equal.",
+                  "", "| baseline | paired prompts | distinct diff [95% CI] | distinct W/L/T | utility diff [95% CI] | utility W/L/T |",
+                  "|---|---|---|---|---|---|"]
+        for name, rows in arms.items():
+            if name == method:
+                continue
+            c = compare(arms[method], rows, n_boot, seed)
+            dd, uu = c["distinct"], c["utility"]
+            lines.append(f"| {name} | {dd['n']} | {dd['mean']:+.2f} [{dd['lo']:+.2f}, {dd['hi']:+.2f}] | "
+                         f"{'/'.join(map(str, dd['wlt']))} | {uu['mean']:+.2f} [{uu['lo']:+.2f}, {uu['hi']:+.2f}] | "
+                         f"{'/'.join(map(str, uu['wlt']))} |")
     lines += ["", "NoveltyBench curated split, k=10, official v1.1 judge prompts and utility (patience 0.8); judges: Opus "
-              "for partition and score via the Claude CLI (official partition judge is gpt-5.6-luna)."]
+              "for partition and score via the Claude CLI (official partition judge is gpt-5.6-luna). IQM = mean of the "
+              "middle 50% of prompts. The intervals cover prompt sampling only, not judge error (see rejudge and "
+              "agreement)."]
     return "\n".join(lines)
+
+
+def rejudge_path(out, suffix: str) -> Path:
+    """Where `rejudge` writes: scores.<suffix>.jsonl next to scores.jsonl, never scores.jsonl itself."""
+    suffix = re.sub(r"[^A-Za-z0-9_-]", "_", str(suffix or "").strip())
+    if not suffix:
+        raise ValueError("rejudge needs a non-empty suffix")
+    return Path(out) / f"scores.{suffix}.jsonl"
+
+
+def rejudge_sample(rows: list[dict], limit: int, seed: int = 0) -> list[dict]:
+    """A seeded sample of `limit` prompts, drawn from the sorted ids so it does not depend on file order; kept in
+    file order."""
+    ids = sorted({r["id"] for r in rows})
+    pick = set(random.Random(seed).sample(ids, min(limit, len(ids))))
+    return [r for r in rows if r["id"] in pick]
+
+
+def rejudge(out, judge_model: str, limit: int, seed: int, suffix: str, workers: int = 2, judge=None) -> Path:
+    """Re-partition and re-score a seeded sample of prompts with another judge into scores.<suffix>.jsonl. Reads
+    generations.jsonl; scores.jsonl and judge_calls/ are left as they are (logs go to judge_calls_<suffix>/)."""
+    out = Path(out)
+    dest = rejudge_path(out, suffix)
+    tag = dest.name[len("scores."):-len(".jsonl")]
+    gens = load_scores(out / "generations.jsonl")
+    rows = rejudge_sample(gens, limit, seed)
+    judge = judge or judge_one
+    run_rows(lambda r: judge(r, judge_model, out, seed=seed, log_name=f"judge_calls_{tag}"), rows, dest, min(workers, 2))
+    return dest
+
+
+def _ranks(x) -> np.ndarray:
+    """Average ranks (tied values share the mean rank), 1-based."""
+    x = np.asarray(x, dtype=float)
+    order = np.argsort(x, kind="mergesort")
+    xs = x[order]
+    r = np.empty(x.size, dtype=float)
+    i = 0
+    while i < x.size:
+        j = i
+        while j + 1 < x.size and xs[j + 1] == xs[i]:
+            j += 1
+        r[order[i: j + 1]] = (i + j) / 2 + 1
+        i = j + 1
+    return r
+
+
+def spearman(a, b) -> float:
+    """Spearman rank correlation (Pearson on average ranks); nan when either side is constant."""
+    ra, rb = _ranks(a), _ranks(b)
+    if ra.size < 2 or ra.std() == 0 or rb.std() == 0:
+        return float("nan")
+    return float(np.corrcoef(ra, rb)[0, 1])
+
+
+def agreement(path_a, path_b) -> dict:
+    """Two score files on the same prompts: rank correlation of utility, agreement of distinct counts."""
+    a, b = load_scores(path_a), load_scores(path_b)
+    ua, ub = paired(a, b, "utility")
+    da, db = paired(a, b, "distinct")
+    n = len(ua)
+    nan = float("nan")
+    dd = np.asarray(da) - np.asarray(db)
+    return {"a": str(path_a), "b": str(path_b), "n": n,
+            "utility_spearman": spearman(ua, ub) if n else nan,
+            "utility_mean_a": float(np.mean(ua)) if n else nan, "utility_mean_b": float(np.mean(ub)) if n else nan,
+            "distinct_exact": float(np.mean(dd == 0)) if n else nan,
+            "distinct_within1": float(np.mean(np.abs(dd) <= 1)) if n else nan,
+            "distinct_mean_abs_diff": float(np.mean(np.abs(dd))) if n else nan,
+            "distinct_spearman": spearman(da, db) if n else nan,
+            "distinct_mean_a": float(np.mean(da)) if n else nan, "distinct_mean_b": float(np.mean(db)) if n else nan}
+
+
+def agreement_text(r: dict) -> str:
+    return "\n".join([
+        f"Judge agreement on {r['n']} shared prompts. A = {r['a']}; B = {r['b']}",
+        f"utility: Spearman rank correlation {r['utility_spearman']:.3f}; mean A {r['utility_mean_a']:.2f}, "
+        f"mean B {r['utility_mean_b']:.2f}",
+        f"distinct: same count on {r['distinct_exact']:.0%} of prompts, within 1 on {r['distinct_within1']:.0%}; "
+        f"mean absolute difference {r['distinct_mean_abs_diff']:.2f}; Spearman {r['distinct_spearman']:.3f}; "
+        f"mean A {r['distinct_mean_a']:.2f}, mean B {r['distinct_mean_b']:.2f}"])
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["gen", "judge", "summary"])
+    ap.add_argument("cmd", choices=["gen", "judge", "summary", "rejudge", "agreement"])
     ap.add_argument("dirs", nargs="*")
     ap.add_argument("--arm", choices=["plain", "incontext", "method"])
     ap.add_argument("--model", default="haiku")
@@ -252,9 +414,27 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--limit", type=int, default=100)
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--method", default=None, help="summary: the method arm's folder name (default: the one ending in 'method')")
+    ap.add_argument("--md", default=None, help="summary: also write the tables to this file")
+    ap.add_argument("--seed", type=int, default=0, help="summary: bootstrap seed; rejudge: sample and shuffle seed")
+    ap.add_argument("--n-boot", type=int, default=10_000)
+    ap.add_argument("--suffix", default=None, help="rejudge: writes scores.<suffix>.jsonl (default: the judge model)")
     a = ap.parse_args()
     if a.cmd == "summary":
-        print(summary(a.dirs))
+        text = summary(a.dirs, a.method, a.n_boot, a.seed)
+        print(text)
+        if a.md:
+            Path(a.md).write_text(text + "\n", encoding="utf-8")
+        return
+    if a.cmd == "agreement":
+        if len(a.dirs) != 2:
+            ap.error("agreement takes two score files")
+        print(agreement_text(agreement(*a.dirs)))
+        return
+    if a.cmd == "rejudge":
+        if not a.out:
+            ap.error("rejudge needs --out")
+        print(f"[nb] rejudged into {rejudge(a.out, a.judge_model, a.limit, a.seed, a.suffix or a.judge_model, a.workers)}")
         return
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
