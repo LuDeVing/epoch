@@ -45,7 +45,7 @@ def test_replan_carries_promoted_and_human_nodes(monkeypatch):
     lp._write_tree()                                            # the promoted node counts one implemented candidate
     pt = json.loads((lp.run_dir / "problem_tree.json").read_text(encoding="utf-8"))
     st = next(n for n in pt["nodes"] if n["id"] == win["id"])["stats"]
-    assert sum(v["implemented"] for v in st.values()) == 1
+    assert sum(v["implemented"] for v in st.values() if isinstance(v, dict)) == 1   # stats also holds n_idea_assumptions (int)
 
     _patch_planner(monkeypatch, lp, _planner_reply())
     lp.replan_tree(2)
