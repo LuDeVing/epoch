@@ -70,7 +70,9 @@ def profiles() -> list[dict]:
             m = _GOAL_RE.search(p.read_text(encoding="utf-8", errors="replace"))
         except OSError:
             m = None
-        out.append({"name": p.stem, "goal_short": m.group(1) if m else "", "note": PROFILE_NOTES.get(p.stem, "")})
+        out.append({"name": p.stem, "goal_short": m.group(1) if m else "", "note": PROFILE_NOTES.get(p.stem, ""),
+                    "custom": p.stem.startswith("custom_")})
+    out.sort(key=lambda r: (r["custom"], r["name"]))
     return out
 
 
@@ -239,6 +241,48 @@ def lab_root() -> Path:
     return _labroot.lab_root()
 
 
+def live_of(run_dir) -> dict | None:
+    """The loop's live.json: phase, note, spent, spent_aux, how many calls are in flight, and how old it is."""
+    if not run_dir:
+        return None
+    try:
+        d = json.loads(open(os.path.join(run_dir, "live.json"), encoding="utf-8").read())
+    except (OSError, ValueError):
+        return None
+    if not isinstance(d, dict):
+        return None
+    inflight = d.get("inflight") if isinstance(d.get("inflight"), list) else []
+    age = None
+    try:
+        age = max(0, int(time.time() - float(d.get("ts") or 0))) if d.get("ts") else None
+    except (TypeError, ValueError):
+        age = None
+    return {"phase": d.get("phase"), "note": d.get("note"), "spent": d.get("spent"), "spent_aux": d.get("spent_aux"),
+            "inflight": len(inflight), "roles": sorted({str(c.get("role")) for c in inflight if isinstance(c, dict)}),
+            "age_s": age}
+
+
+def elapsed_s(started, finished=None) -> int | None:
+    try:
+        t0 = time.mktime(time.strptime(str(started)[:19], "%Y-%m-%dT%H:%M:%S"))
+        t1 = time.mktime(time.strptime(str(finished)[:19], "%Y-%m-%dT%H:%M:%S")) if finished else time.time()
+        return max(0, int(t1 - t0))
+    except (TypeError, ValueError):
+        return None
+
+
+def error_line(tail_lines, stopped=False) -> str:
+    """The line of the log that says why a run failed, or a plain sentence."""
+    if stopped:
+        return "stopped by a person"
+    lines = [str(x) for x in (tail_lines or []) if str(x).strip()]
+    for line in reversed(lines):
+        low = line.lower()
+        if any(k in low for k in ("error", "traceback", "exception", "quota", "rate limit", "budget", "killed", "refused")):
+            return line.strip()[:300]
+    return (lines[-1].strip()[:300] if lines else "the run ended without a report")
+
+
 def _now() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%S")
 
@@ -289,7 +333,13 @@ class Launcher:
             pass
 
     # ---- start
-    def start(self, preset, profile, mode="mock", confirm=False) -> dict:
+    def start(self, preset, profile, mode="mock", confirm=False, problem=None) -> dict:
+        if isinstance(problem, dict) and str(problem.get("goal") or problem.get("title") or "").strip():
+            from nano.profiles._custom import write_profile
+            try:
+                profile = write_profile({k: str(problem.get(k) or "")[:6000] for k in ("title", "goal", "success", "known", "fixed", "parts", "field")})
+            except OSError as e:
+                raise Reject(500, "profile_not_written", detail=str(e)[:200])
         est = estimate(preset, profile)
         if mode not in MODES:
             raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
@@ -363,6 +413,22 @@ class Launcher:
         self._post("run_finished", rec, "Run %s %s%s." % (
             batch, state, " (exit code unknown)" if rc is None else " (exit code %s)" % rc))
 
+    def report(self, batch) -> dict:
+        """The run's REPORT.md as text, with its path."""
+        with self.lock:
+            rec = next((r for r in self._load() if r["batch"] == batch), None)
+        if rec is None:
+            raise Reject(404, "no_run", batch=batch)
+        rd = rec.get("run_dir") or self._run_dir(batch)
+        path = os.path.join(rd, "REPORT.md") if rd else None
+        if not path or not os.path.exists(path):
+            raise Reject(404, "no_report", batch=batch)
+        try:
+            text = open(path, encoding="utf-8", errors="replace").read()
+        except OSError as e:
+            raise Reject(500, "unreadable", detail=str(e)[:200])
+        return {"batch": batch, "path": path, "text": text[:400_000]}
+
     @staticmethod
     def _run_dir(batch: str) -> str | None:
         try:
@@ -390,6 +456,10 @@ class Launcher:
         v = dict(rec, alive=alive, state=self._state(rec, alive), tail=tail(rec.get("log")))
         if not v.get("run_dir"):
             v["run_dir"] = self._run_dir(rec["batch"])
+        v["live"] = live_of(v.get("run_dir"))
+        v["report"] = bool(v.get("run_dir")) and os.path.exists(os.path.join(v["run_dir"], "REPORT.md"))
+        v["elapsed_s"] = elapsed_s(rec.get("started"), rec.get("finished"))
+        v["error"] = None if alive or rec.get("rc") == 0 else error_line(v.get("tail"), rec.get("stopped"))
         return v
 
     # ---- status and stop
@@ -469,10 +539,13 @@ def register(httpd) -> Launcher:
     def start_route(b, q):
         b = body_of(b)
         return la.start(b.get("preset", "small"), b.get("profile") or DEFAULT_PROFILE, b.get("mode", "mock"),
-                        b.get("confirm") is True)
+                        b.get("confirm") is True, b.get("problem") if isinstance(b.get("problem"), dict) else None)
 
     def status_route(b, q):
         return la.status()
+
+    def report_route(b, q):
+        return la.report(str(_one(q, "batch") or ""))
 
     def stop_route(b, q):
         return la.stop(str(body_of(b).get("batch") or ""))
@@ -482,7 +555,7 @@ def register(httpd) -> Launcher:
         routes = httpd.routes = {}
     routes.update({("GET", "/api/run/profiles"): profiles_route, ("GET", "/api/run/estimate"): estimate_route,
                    ("POST", "/api/run/start"): start_route, ("GET", "/api/run/status"): status_route,
-                   ("POST", "/api/run/stop"): stop_route})
+                   ("POST", "/api/run/stop"): stop_route, ("GET", "/api/run/report"): report_route})
     return la
 
 

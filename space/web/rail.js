@@ -143,13 +143,51 @@ function Rungs({ rung }) {
   return html`<span class="rungs" title=${`rung ${n} of 4`}>${[1, 2, 3, 4].map((i) => html`<i class=${i <= n ? 'rung rung--on' : 'rung'}></i>`)}</span>`;
 }
 
+const GOOD = new Set(['win', 'preferred']);
+function bestOf(results) {
+  const good = results.filter((r) => GOOD.has(r.status));
+  if (!good.length) return null;
+  const score = (r) => { const m = r.metrics || {}; const k = Object.keys(m).find((x) => typeof m[x] === 'number'); return k ? m[k] : null; };
+  return good.slice().sort((a, b) => (b.seq || 0) - (a.seq || 0))[0] || null;
+}
+export function summaryMarkdown(view) {
+  const L = [];
+  L.push(`# ${view.spaceId || 'HTSA space'}: results`, '');
+  L.push(`Round ${view.run.round || 0}, stage ${view.run.stage || 'not started'}. ${view.results.length} candidates built, ${view.findings.length} findings shared.`, '');
+  const best = bestOf(view.results);
+  if (best) { L.push('## Best so far', '', `${best.name || best.cand}: ${best.status}${best.reason ? `. ${best.reason}` : ''}`, ''); }
+  L.push('## Results', '', '| candidate | part | status | metrics | reason |', '|---|---|---|---|---|');
+  for (const r of view.results) {
+    const part = view.nodes.get(r.node) ? view.nodes.get(r.node).name : (r.node || '');
+    const m = Object.entries(r.metrics || {}).filter(([, v]) => typeof v === 'number').map(([k, v]) => `${k} ${Math.round(v * 1000) / 1000}`).join(', ');
+    L.push(`| ${r.name || r.cand} | ${part} | ${r.status} | ${m} | ${(r.reason || '').replace(/\|/g, '/')} |`);
+  }
+  L.push('', '## The map', '');
+  for (const n of view.nodes.values()) L.push(`- ${n.name}${n.frame ? `: ${n.frame}` : ''}`);
+  if (view.findings.length) { L.push('', '## Findings from people', ''); for (const f of view.findings) L.push(`- ${f.by}: ${f.title}${f.text && f.text !== f.title ? ` . ${f.text}` : ''}${f.file ? ` (file ${f.file.name})` : ''}`); }
+  return L.join('\n');
+}
+
 function ResultsTab({ view }) {
   const list = useAutoAnimate();
   const winner = (view.winnerWord && view.winnerWord[view.run.mode]) || WINNER_WORD[view.run.mode] || 'won';
   const rows = view.results.slice().reverse();
   const metrics = (m) => Object.entries(m || {}).filter(([, v]) => typeof v === 'number').slice(0, 3)
     .map(([k, v]) => `${k} ${Math.round(v * 100) / 100}`).join(', ');
+  const best = bestOf(view.results);
+  const exportMd = () => {
+    const blob = new Blob([summaryMarkdown(view)], { type: 'text/markdown' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${view.spaceId || 'space'}-results.md`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
   return html`<div class="tab-body">
+    <div class="best card">
+      <div class="card__head">Best so far <button class="btn btn--small" style="float:right" onClick=${exportMd} title="download a markdown summary of the map, the results and the findings">Export</button></div>
+      ${best ? html`<div class="best__name">${best.name || best.cand}</div>
+        <div class="muted">${best.status} on ${view.nodes.get(best.node) ? view.nodes.get(best.node).name : best.node || 'the whole problem'}${metrics(best.metrics) ? ` . ${metrics(best.metrics)}` : ''}${best.rung != null ? ` . rung ${best.rung}` : ''}</div>
+        ${best.reason ? html`<div class="best__why">${best.reason}</div>` : null}`
+        : html`<div class="muted">${rows.length ? 'No candidate has beaten the reference yet.' : 'Nothing built yet. The first results land at built, round 1.'}</div>`}
+    </div>
     ${!rows.length ? html`<div class="muted">No builds yet.</div>` : null}
     <ul class="results" ref=${list}>${rows.map((r) => {
       const grey = ['loss', 'not_preferred', 'failed_check', 'not_built'].includes(r.status);

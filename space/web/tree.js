@@ -100,7 +100,7 @@ export function mountTree(el, store, bus, opts = {}) {
   const cardsDiv = h('div', 'tree__cards', world);
   const hud = h('div', 'tree__hud', el);
   const empty = h('div', 'tree__empty', hud);
-  empty.textContent = 'No parts yet. The map appears at planned, round 1.';
+  empty.innerHTML = '<span class="empty--idle">No research yet. Press Start a research, or Go when a run waits.</span><span class="empty--running"><span class="spark"></span> Planning your problem: reading it, splitting it into parts. The map appears in a minute or two.</span>';
 
   // --- state ---
   const cards = new Map();           // id -> {id, x, y, vx, vy, tx, ty, el, edge, parent, depth, state, fresh}

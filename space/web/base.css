@@ -5,7 +5,7 @@
   src: url("vendor/jetbrains-mono-latin.woff2") format("woff2"); }
 
 :root { --scale: 1; --fs: calc(13px * var(--scale)); --fs-small: calc(11.5px * var(--scale)); --gap: 8px; }
-body.stage { --scale: 1.3; }
+body.stage { --scale: 1.55; --text-2: #c9ccd2; --line-subtle: #43484e; }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body { background: var(--bg-app); color: var(--text-1); font: var(--fs)/1.45 var(--font-ui); overflow: hidden; }
@@ -238,3 +238,19 @@ body.is-resizing-y { cursor: row-resize; user-select: none; }
 .findings__list { list-style: none; margin: 0; padding: 0; }
 .findings__empty { padding: 14px 4px; }
 .tag--warn { color: var(--warn); border-color: var(--warn); }
+
+/* empty panes follow the run (start.js sets body[data-run]) */
+.empty--running { display: none; }
+body[data-run="running"] .empty--idle { display: none; }
+body[data-run="running"] .empty--running { display: inline; }
+/* your own problem (start.js) */
+.start-problem { display: grid; gap: 6px; margin: 6px 0; }
+.start-problem__input { width: 100%; box-sizing: border-box; background: var(--bg-app); color: var(--text-1); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
+.start-problem__input:focus { outline: none; border-color: var(--owner-a); }
+.start-error--run { background: color-mix(in oklab, var(--bad) 18%, var(--bg-panel)); border: 1px solid var(--bad); border-radius: 8px; padding: 6px 10px; max-width: 520px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.start-note { max-width: 520px; text-align: right; font-size: var(--fs-small); }
+.start-report { margin-top: 4px; display: flex; gap: 6px; justify-content: flex-end; }
+.start-report__text { max-height: 50vh; max-width: 640px; overflow: auto; white-space: pre-wrap; background: var(--bg-panel); border: 1px solid var(--line-strong); border-radius: 8px; padding: 8px 10px; }
+/* best so far (rail.js) */
+.best__name { font-weight: 700; font-size: 15px; margin: 4px 0 2px; }
+.best__why { margin-top: 4px; white-space: pre-wrap; }

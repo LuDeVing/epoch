@@ -72,7 +72,7 @@ export function mountClusters(el, store, bus, opts = {}) {
   const fxG = h('g', 'clusters__fx', world);
   const hud = hh('div', 'clusters__hud', el);
   const empty = hh('div', 'clusters__empty', hud);
-  empty.textContent = 'No ideas yet. Islands form at clustered, round 1.';
+  empty.innerHTML = '<span class="empty--idle">Ideas appear here once a research runs.</span><span class="empty--running"><span class="spark"></span> The inventors are at work; islands form when the ideas are clustered.</span>';
   const colorWrap = hh('label', 'clusters__colorby', hud);
   const colorLabel = hh('span', null, colorWrap);
   colorLabel.textContent = 'colour by';

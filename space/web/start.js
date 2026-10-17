@@ -35,11 +35,17 @@ export function chipOf(run) {
   const state = run.alive ? 'running' : (run.state || (run.rc === 0 ? 'finished' : 'failed'));
   const what = `${run.preset || ''} ${run.mode || ''}`.trim();
   let text;
-  if (state === 'running') text = `Running: ${what}`;
-  else if (state === 'finished') text = `Finished: ${what}`;
-  else if (state === 'stopped') text = `Stopped: ${what}`;
-  else text = `Failed: ${what}${run.rc == null ? '' : ` (exit ${run.rc})`}`;
-  return { state, cls: `run-chip run-chip--${state}`, text };
+  const mins = run.elapsed_s != null ? `${Math.max(1, Math.round(run.elapsed_s / 60))} min` : '';
+  const live = run.live || null;
+  const spent = live && live.spent ? `${fmtTokens(live.spent)} tokens` : '';
+  if (state === 'running') {
+    const phase = live && live.phase ? String(live.phase).replace(/^round (\d+): /, 'r$1 ') : 'starting';
+    const busy = live && live.inflight ? `${live.inflight} call${live.inflight === 1 ? '' : 's'} out` : '';
+    text = ['Running', phase, spent, busy, mins].filter(Boolean).join(' . ');
+  } else if (state === 'finished') text = ['Finished', what, spent, mins].filter(Boolean).join(' . ');
+  else if (state === 'stopped') text = ['Stopped', what, spent, mins].filter(Boolean).join(' . ');
+  else text = ['Failed', what, run.rc == null ? '' : `exit ${run.rc}`, mins].filter(Boolean).join(' . ');
+  return { state, cls: `run-chip run-chip--${state}`, text, note: live && live.note ? String(live.note) : '' };
 }
 
 // ---- the mount ------------------------------------------------------------------------------------------------------
@@ -51,7 +57,8 @@ export function mountStart(el, api = {}) {
   const S = {
     open: false, loaded: false, profiles: [], presets: {}, order: ['small', 'medium', 'big'],
     profile: '', preset: 'small', mode: 'real', confirming: false, busy: false, error: '',
-    runs: [], showLog: false,
+    runs: [], showLog: false, showReport: false, report: null,
+    problem: { title: '', goal: '', success: '', known: '', fixed: '', parts: '', field: '' },
   };
   let timer = null, lastCheck = 0;
 
@@ -107,7 +114,9 @@ export function mountStart(el, api = {}) {
     if (S.busy) return;
     if (S.mode === 'real' && !S.confirming) { S.confirming = true; draw(); return; }
     S.busy = true; S.error = ''; draw();
-    const res = await postJson('/api/run/start', { preset: S.preset, profile: S.profile, mode: S.mode, confirm: S.mode === 'real' && S.confirming })
+    const custom = S.profile === '__custom__';
+    if (custom && !S.problem.goal.trim() && !S.problem.title.trim()) { S.error = 'Describe the problem first.'; S.busy = false; draw(); return; }
+    const res = await postJson('/api/run/start', { preset: S.preset, profile: custom ? '' : S.profile, mode: S.mode, confirm: S.mode === 'real' && S.confirming, problem: custom ? S.problem : undefined })
       .catch(() => ({ ok: false, body: { error: 'server offline' } }));
     S.busy = false;
     if (res.ok) {
@@ -150,6 +159,26 @@ export function mountStart(el, api = {}) {
     </span>`;
   }
 
+  async function loadReport(run) {
+    try { S.report = await getJson(`/api/run/report?batch=${encodeURIComponent(run.batch)}`); S.showReport = true; }
+    catch (e) { S.error = `No report yet: ${e.message}`; }
+    draw();
+  }
+
+  function Status({ run }) {
+    if (!run) return null;
+    const c = chipOf(run);
+    const failed = c && c.state === 'failed';
+    return html`${failed ? html`<div class="start-error start-error--run" role="alert">
+        <strong>The run stopped.</strong> ${run.error || 'No reason was logged.'}
+        <button class="btn btn--small" onClick=${() => { S.showLog = !S.showLog; draw(); }}>${S.showLog ? 'Hide log' : 'Show log'}</button>
+      </div>` : null}
+      ${c && c.state === 'running' && c.note ? html`<div class="muted start-note">${c.note}</div>` : null}
+      ${run.report ? html`<div class="start-report"><button class="btn btn--small" onClick=${() => (S.showReport ? (S.showReport = false, draw()) : loadReport(run))}>${S.showReport ? 'Hide report' : 'Read the report'}</button>
+        ${S.showReport && S.report ? html`<a class="btn btn--small" download=${`${run.batch}-REPORT.md`} href=${`data:text/markdown;charset=utf-8,${encodeURIComponent(S.report.text)}`}>Download</a>` : null}</div>` : null}
+      ${S.showReport && S.report ? html`<pre class="start-log__text start-report__text">${S.report.text}</pre>` : null}`;
+  }
+
   function Log({ run }) {
     if (!run || !S.showLog) return null;
     const lines = run.tail || [];
@@ -169,10 +198,22 @@ export function mountStart(el, api = {}) {
       <div class="start-panel__title">Start a research</div>
       ${!S.loaded && !S.error ? html`<div class="muted">Loading...</div>` : null}
       ${S.loaded ? html`
-        <label class="start-field"><span class="start-field__name">Profile</span>
+        <label class="start-field"><span class="start-field__name">Problem</span>
           <select value=${S.profile} onChange=${(e) => { S.profile = e.target.value; S.confirming = false; draw(); }}>
-            ${S.profiles.map((p) => html`<option value=${p.name}>${p.name}</option>`)}
+            <option value="__custom__">Describe your own problem...</option>
+            ${S.profiles.filter((p) => !p.custom).map((p) => html`<option value=${p.name}>${p.name}</option>`)}
+            ${S.profiles.some((p) => p.custom) ? html`<optgroup label="Problems you described before">${S.profiles.filter((p) => p.custom).map((p) => html`<option value=${p.name}>${p.goal_short ? p.goal_short.slice(0, 70) : p.name}</option>`)}</optgroup>` : null}
           </select></label>
+        ${S.profile === '__custom__' ? html`<div class="start-problem">
+          <input class="start-problem__input" placeholder="Title: what is this about, in a few words" value=${S.problem.title} onInput=${(e) => { S.problem.title = e.target.value; }} maxlength="120" />
+          <textarea class="start-problem__input" rows="3" placeholder="The goal: what you want to find out or improve, and the situation. Required." value=${S.problem.goal} onInput=${(e) => { S.problem.goal = e.target.value; }}></textarea>
+          <textarea class="start-problem__input" rows="2" placeholder="What a good answer looks like, one line each (becomes what the judges score). Optional." value=${S.problem.success} onInput=${(e) => { S.problem.success = e.target.value; }}></textarea>
+          <textarea class="start-problem__input" rows="2" placeholder="What is known: facts, numbers, results, one per line. Optional; files go to the Findings tab." value=${S.problem.known} onInput=${(e) => { S.problem.known = e.target.value; }}></textarea>
+          <textarea class="start-problem__input" rows="2" placeholder="What must stay fixed: rules, limits, things that cannot change. Optional." value=${S.problem.fixed} onInput=${(e) => { S.problem.fixed = e.target.value; }}></textarea>
+          <input class="start-problem__input" placeholder="Parts, comma separated, if you already see them. Optional; the mapper draws them otherwise." value=${S.problem.parts} onInput=${(e) => { S.problem.parts = e.target.value; }} />
+          <input class="start-problem__input" placeholder="Field, like clinic operations or compiler design. Optional." value=${S.problem.field} onInput=${(e) => { S.problem.field = e.target.value; }} maxlength="80" />
+          <div class="muted start-hint">No scorer exists for a described problem, so a blind panel of judges ranks the proposals on your "good answer" lines. People's opinions count at a bounded weight.</div>
+        </div>` : null}
         ${prof && (prof.goal_short || prof.note) ? html`<div class="muted start-hint">${prof.goal_short}${prof.note ? html`<span class="start-warn"> Note: ${prof.note}.</span>` : null}</div>` : null}
         <fieldset class="start-sizes"><legend class="start-field__name">Size</legend>
           ${S.order.filter((k) => S.presets[k]).map((k) => html`<label class=${`start-size${S.preset === k ? ' start-size--on' : ''}`}>
@@ -188,7 +229,7 @@ export function mountStart(el, api = {}) {
         </div>
         ${S.confirming ? html`<div class="start-confirm" role="alert">
             <div>${words}</div>
-            <div>Start this real run on ${S.profile}?</div>
+            <div>Start this real run on ${S.profile === '__custom__' ? (S.problem.title || 'your problem') : S.profile}?</div>
             <div class="start-actions">
               <button class="btn btn--primary" disabled=${S.busy} onClick=${start}>Yes, start the real run</button>
               <button class="btn" onClick=${() => { S.confirming = false; draw(); }}>Back</button>
@@ -210,10 +251,16 @@ export function mountStart(el, api = {}) {
         ${canStart ? html`<button class=${`btn btn--start${S.open ? ' btn--on' : ''}`} aria-expanded=${S.open} onClick=${toggle}>Start a research</button>` : null}
       </div>
       ${S.open && canStart ? html`<${Panel} />` : null}
+      ${!S.open ? html`<${Status} run=${run} />` : null}
       ${!S.open ? html`<${Log} run=${run} />` : null}`;
   }
 
-  function draw() { render(html`<${Root} />`, el); }
+  function draw() {
+    render(html`<${Root} />`, el);
+    const run = latest();
+    const c = chipOf(run);
+    if (typeof document !== 'undefined') document.body.dataset.run = c && c.state === 'running' ? 'running' : (c ? c.state : '');
+  }
 
   if (typeof api.subscribe === 'function') {
     api.subscribe(() => { if (!alive() && Date.now() - lastCheck > IDLE_CHECK_MS) refresh(); });

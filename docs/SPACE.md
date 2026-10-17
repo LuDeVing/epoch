@@ -255,6 +255,7 @@ the stage recording and prints each beat as it lands.
 | POST /api/run/start | the page | start a run |
 | GET /api/run/status | the page | every run and its state |
 | POST /api/run/stop | the page | stop a run |
+| `GET /api/run/report` | `?batch=`: the run's REPORT.md as text, once the run wrote it |
 | `POST /api/upload` | raw file body with X-Space-Filename: stores a shared file under the space's files folder and returns its id, kind and readable excerpt |
 | `GET /api/files/<id>` | serves a shared file back |
 | `GET /api/people` | who is in the space, whether each person's agent runs, their join links |
