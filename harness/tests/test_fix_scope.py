@@ -123,11 +123,12 @@ def test_plan_tree_falls_back_when_repair_fails(tmp_path):
     plan(fake, 1)
     assert [c for c, _ in prompts] == ["plan", "plan_repair"]
     assert [n["id"] for n in fake.tree] == [n["id"] for n in tree.DEFAULT_TREE]  # the existing fallback
-    steps = [d["step"] for d in fake.decisions]
-    assert steps == ["plan_repair", "plan"] and fake.decisions[1]["fallback"] == "default tree"
+    decs = [d for d in fake.decisions if d["step"] != "preread"]      # the preread off/not-affordable note is logged first
+    steps = [d["step"] for d in decs]
+    assert steps == ["plan_repair", "plan"] and decs[1]["fallback"] == "default tree"
 
 
 def test_plan_tree_no_repair_when_scope_resolves(tmp_path):
     plan, fake, prompts = _fake_loop(tmp_path, [WITH_REFINES])
     plan(fake, 1)
-    assert [c for c, _ in prompts] == ["plan"] and fake.decisions == []
+    assert [c for c, _ in prompts] == ["plan"] and [d for d in fake.decisions if d["step"] != "preread"] == []
