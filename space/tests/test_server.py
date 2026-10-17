@@ -857,7 +857,9 @@ def test_space_imports_only_the_standard_library():
                 names = [n.module or ""]
             else:
                 continue
-            bad += ["%s: %s" % ("/".join(rel), m) for m in names if m.split(".")[0] not in allowed]
+            # The person-agent makes its one model call through harness.llm (design 16, P6).
+            ok = allowed | ({"harness"} if rel == ("agent.py",) else set())
+            bad += ["%s: %s" % ("/".join(rel), m) for m in names if m.split(".")[0] not in ok]
     assert not bad, bad
 
 
