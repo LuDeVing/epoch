@@ -183,14 +183,14 @@ function SpaceCard({ s, me, act }) {
       ${s.open_to_all ? html`<span class="tag">open room</span>` : null}${s.lan ? html`<span class="tag">network</span>` : null}</div>
     <div class="card__meta">
       ${n ? html`<span class="members">${s.members.slice(0, 5).map((m) => html`<${Bubble} name=${m} small />`)}</span><span>${n} member${n === 1 ? '' : 's'}</span>` : html`<span>everyone signed in</span>`}
-      <span>.</span><span>${s.alive ? `running on port ${s.port}` : 'stopped'}</span>
+      <span>.</span><span>${s.alive ? `running on port ${s.port}` : 'asleep'}</span>
       ${s.updated ? html`<span>.</span><span>${ago(s.updated)}</span>` : null}
     </div>
     <div class="card__actions">
       ${s.alive ? html`<a class="btn btn--primary grow" href=${open} target="_blank" rel="noopener">Open</a>
         <a class="btn" href=${`${s.url}/?stage=1`} target="_blank" rel="noopener" title="big read-only view for a projector">Projector</a>
-        <button class="btn btn--ghost btn--danger" onClick=${() => act('stop', s)} title="stop the server; nothing is lost">Stop</button>`
-        : html`<button class="btn btn--primary grow" onClick=${() => act('start', s)}>Start</button>`}
+        <button class="btn btn--ghost btn--danger" onClick=${() => act('stop', s)} title="put the space to sleep; nothing is lost">Sleep</button>`
+        : html`<button class="btn btn--primary grow" disabled=${s.waking} onClick=${() => act('open', s)}>${s.waking ? 'Waking up...' : 'Open'}</button>`}
     </div>
   </div>`;
 }
@@ -209,8 +209,16 @@ function HubPage() {
   useEffect(() => { refresh(); }, []);
   useEffect(() => { if (!me) return undefined; const t = setInterval(refresh, 5000); return () => clearInterval(t); }, [me]);
   const act = async (what, s) => {
-    try { await api(`/api/spaces/${what}`, { name: s.name }); say(what === 'stop' ? `${s.name} stopped` : `${s.name} started`); await refresh(); }
-    catch (ex) { say(ex.message); }
+    try {
+      if (what === 'open') {                       // a sleeping space wakes up, then opens as you
+        setData((d) => ({ ...d, spaces: d.spaces.map((x) => (x.name === s.name ? { ...x, waking: true } : x)) }));
+        const r = await api('/api/spaces/start', { name: s.name });
+        await refresh();
+        if (r.alive) window.open(r.join.replace('{name}', me), '_blank'); else say(`${s.name} did not answer yet; try again in a moment`);
+        return;
+      }
+      await api(`/api/spaces/${what}`, { name: s.name }); say(what === 'stop' ? `${s.name} is asleep` : `${s.name} started`); await refresh();
+    } catch (ex) { say(ex.message); await refresh(); }
   };
   if (me === undefined) return html`<div class="login"><div class="muted">...</div></div>`;
   const mine = data.spaces.filter((s) => !s.open_to_all);
