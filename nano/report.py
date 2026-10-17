@@ -396,12 +396,24 @@ def compare(runs: list[Path]) -> str:
 
 def write(run: Path) -> dict:
     d = collect(run)
+    # keys the loop adds after this (memory, dialogue, premortem, fetched_facts, questions, mode, reference, proposals)
+    # survive a later rewrite, e.g. batch_verify's after the overnight verdicts
+    prev = _json(run / "report.json", {})
+    if isinstance(prev, dict):
+        d = {**{k: v for k, v in prev.items() if k not in d}, **d}
     (run / "report.json").write_text(json.dumps(d, indent=1), encoding="utf-8")
     (run / "REPORT.md").write_text(markdown(d), encoding="utf-8")
     return d
 
 
 def main() -> int:
+    import sys
+    for stream in (sys.stdout, sys.stderr):        # hypotheses hold arrows and other non-ASCII; a cp1252 console raises
+        try:
+            if (getattr(stream, "encoding", "") or "").lower().replace("-", "") != "utf8":
+                stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:  # noqa: BLE001
+            pass
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", default=None)
     ap.add_argument("--runs", nargs="*", default=None)

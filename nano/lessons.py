@@ -69,6 +69,13 @@ def pitfall_key(reason: str, violations: list[str] | None = None) -> str | None:
     return None
 
 
+def is_gap_failure(fb: dict | None) -> bool:
+    """The checker's record says the build ran but lost the score gap to the baseline (or reference): the LLM
+    checker's rung-3 "at step N the loss is X against the baseline's Y (gap ...)" and the script checker's rung-2
+    "the quick score is X against the baseline's Y ... (gap ...)". Read from the reason, not the rung number."""
+    return bool(re.search(r"against the baseline's .*\(gap [+-]?\d", str((fb or {}).get("reason", ""))))
+
+
 def failure_card(fb: dict | None) -> str:
     """A failed build's record as a short card for the repairing agent: which check, why, where, the cause tag.
     Replaces the raw JSON dump (research_notes/thinking_parts/06_reasoning.md item 6, 01_representation.md R8)."""
@@ -77,7 +84,8 @@ def failure_card(fb: dict | None) -> str:
         return ("RECORD: passed the first checks (a near miss or better from the ambitious lane)"
                 + (f"; matched-step gap z {fb.get('learn_z')}" if fb.get("learn_z") is not None else "") + ".")
     names = {0: "boundary", 1: "build", 2: "timing and memory", 3: "learning", 4: "long comparison"}
-    lines = [f"CHECK FAILED: rung {fb.get('rung')} ({names.get(fb.get('rung'), '?')})",
+    gap = is_gap_failure(fb)                     # the script checker reports the learning gap at rung 2
+    lines = [f"CHECK FAILED: rung {fb.get('rung')} ({'learning' if gap else names.get(fb.get('rung'), '?')})",
              f"WHY: {str(fb.get('reason', ''))[:400]}"]
     where = list(fb.get("violations") or [])[:4]
     stderr = str(fb.get("stderr") or "").strip().splitlines()
@@ -86,7 +94,7 @@ def failure_card(fb: dict | None) -> str:
     if where:
         lines.append("WHERE: " + " | ".join(w[:160] for w in where))
     cause = pitfall_key(fb.get("reason", ""), fb.get("violations"))
-    lines.append("CAUSE TAG: " + (cause or ("learning failure" if fb.get("rung") == 3 else "unknown")))
+    lines.append("CAUSE TAG: " + (cause or ("learning failure" if fb.get("rung") == 3 or gap else "unknown")))
     return "\n".join(lines)
 
 

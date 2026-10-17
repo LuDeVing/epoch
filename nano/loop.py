@@ -1953,6 +1953,16 @@ class NanoLoop:
         pt = json.loads((rd / "problem_tree.json").read_text(encoding="utf-8")) if (rd / "problem_tree.json").exists() else {}
         if pt.get("nodes"):
             self.tree = [tree.migrate_node({k: v for k, v in n.items() if k != "stats"}) for n in pt["nodes"]]
+        if isinstance(pt.get("off_tree_share"), (int, float)):   # the share moves with yield: keep the moved value
+            self.off_tree_share = float(pt["off_tree_share"])
+        for attr, fname in (("source_yield", "source_yield.json"), ("discovery", "discovery.json"),
+                            ("seed_yield", "seed_yield.json")):   # per-round records rewritten whole: reload them
+            try:
+                rows = json.loads((rd / fname).read_text(encoding="utf-8")).get("rounds") if (rd / fname).exists() else None
+            except Exception:  # noqa: BLE001
+                rows = None
+            if isinstance(rows, list):
+                setattr(self, attr, rows)
         for p in (rd / "research").glob("*.json") if (rd / "research").exists() else []:
             d = json.loads(p.read_text(encoding="utf-8"))
             if p.stem.endswith("_analogy"):
@@ -2033,6 +2043,20 @@ class NanoLoop:
                                          "reason": (v.get("feedback_record") or {}).get("reason", ""),
                                          "learn_gap": v["details"].get("metrics", {}).get("learn_gap")})
         self.history.sort(key=lambda h: (h.get("round", 0), h.get("cand_id", "")))
+        # what lives only in memory and changes a candidate's place: tuning prunes (no long run, no pool, no
+        # composite) and the hedge lane (long run despite a fail); verify.jsonl alone would undo both
+        tj = rd / "tuning.json"
+        try:
+            tuning = json.loads(tj.read_text(encoding="utf-8")) if tj.exists() else {}
+        except Exception:  # noqa: BLE001
+            tuning = {}
+        for row in tuning.get("knobs") or []:
+            v = self.vres.get(row.get("id"))
+            if v and v.get("status") == "checked" and not row.get("kept"):
+                v["status"] = "tune_pruned"
+        ids = {c.id for c in self.cands}
+        self.hedged |= {d["cand"] for d in self.decisions if d.get("step") == "hedge" and d.get("cand") in ids}
+        self._resume_stage = dict(st.get("stage") or {})
         self.decisions.append({"step": "resume", "completed_rounds": self.completed_rounds, "cands": len(self.cands),
                                "sketches": len(self.sketches), "unverified": [c.id for c in self.cands if c.id not in self.vres],
                                "ts": now_ts()})
@@ -2282,7 +2306,25 @@ class NanoLoop:
              "aim": self.aim, "scope": sorted(self.only_nodes), **({"profile": self.pf.name} if self.pf.name != "llm" else {}),
              "digest": (hashlib.sha1(self.digest_text.encode()).hexdigest()[:12] if self.digest_text else None),
              "ts": now_ts()}
-        write_json(self.run_dir / "commitments.json", c)
+        cp = self.run_dir / "commitments.json"
+        if self.resume and cp.exists():              # a resume keeps the record made before any idea existed
+            try:
+                old = json.loads(cp.read_text(encoding="utf-8"))
+            except Exception:  # noqa: BLE001
+                old = None
+            same = isinstance(old, dict) and ({k: v for k, v in old.items() if k != "ts"}
+                                              == json.loads(json.dumps({k: v for k, v in c.items() if k != "ts"}, default=str)))
+            if same:
+                c = old
+                h_old = hashlib.sha1(json.dumps(c, sort_keys=True, default=str).encode()).hexdigest()[:12]
+                if self.commitments_hash and h_old != self.commitments_hash:
+                    self.decisions.append({"step": "commitments", "note": "commitments.json does not match the hash in "
+                                           "state.json (edited after the first write)", "previous_hash": self.commitments_hash,
+                                           "file_hash": h_old, "ts": now_ts()})
+            else:
+                self.decisions.append({"step": "commitments", "note": "settings differ from the first attempt's; "
+                                       "commitments.json rewritten on resume", "previous_hash": self.commitments_hash, "ts": now_ts()})
+        write_json(cp, c)
         h = hashlib.sha1(json.dumps(c, sort_keys=True, default=str).encode()).hexdigest()[:12]
         self.commitments_hash = h                  # kept in memory: every later state write carries it
         try:
@@ -2945,6 +2987,7 @@ class NanoLoop:
         self.decisions.append({"step": "reference", **entry})
         print(f"[nano] reference {entry['action']}: {entry['from'] or '-'} -> {cand.id} | {reason}", flush=True)
         self._relabel_all(rec, cand.id, round_no)
+        self.reference["metrics"] = dict(rec.get("metrics") or {})   # the copy after relabelling (scores filled)
         write_json(self.run_dir / "reference.json", {"reference": self.reference, "log": self.reference_log,
                                                     "profile": {k: v for k, v in prof.items() if k not in ("errors",)}})
         if prev is not None and self.retest_on_reference_change:
@@ -3118,6 +3161,7 @@ class NanoLoop:
             if sug:
                 self.select_weights = sug["weights"]
                 self.decisions.append({"step": "weights_from_ledger", "n_rows": sug["n"], "weights": sug["weights"]})
+        pending: list[Candidate] = []
         if self.resume:
             pending = [c for c in self.cands if c.id not in self.vres]   # built before the interruption, never verified
             for c in pending:
@@ -3161,6 +3205,12 @@ class NanoLoop:
                                                              "n_sketches": len(self.sketches)})
             self._write_tree()
             self._stage(rnd, "clustered")                 # after the scores, so a test stop shows the ranking
+            rs = getattr(self, "_resume_stage", None) or {}
+            built_already = bool(self.resume and rs.get("round") == rnd and rs.get("step") == "built")
+            if built_already:                             # the interrupted round's builds are on disk (verified above)
+                chosen = []
+                self.decisions.append({"round": rnd, "step": "resume", "skipped": "interrogation and builds (the stage "
+                                       "'built' was reached before the interruption)", "ts": now_ts()})
             if self.do_deepen and chosen:
                 # ---- interrogate many top ideas, generation by generation: offshoots of one generation are
                 # the candidates of the next; every generation re-clusters and re-selects the build slots
@@ -3202,25 +3252,25 @@ class NanoLoop:
                     self._write_tree()
             ranked_pool = sorted([c for c in self.clusters if c["cluster_id"] not in done], key=lambda c: -(c.get("score") or 0.0))
             chosen = self._novelty_filter(chosen, ranked_pool)
-            for c in self.clusters:
+            for c in self.clusters if not built_already else []:
                 c["selected"] = any(c["cluster_id"] == k["cluster_id"] for k in chosen)
             write_json(self.run_dir / "idea_clusters.json", {"round": rnd, "clusters": self.clusters,
                                                              "n_sketches": len(self.sketches)})
             self._stage(rnd, "deepened")
             # ---- implementation specs: one file per selected cluster, plus revisions of near misses
             specs: list = []
-            for parent, fb in revise_queue[:2]:
+            for parent, fb in revise_queue[:2] if not built_already else []:
                 # the move follows the failure: build and boundary failures get fixed, resource failures get
                 # narrowed to a smaller part, a learning failure gets fixed
-                rung = (fb or {}).get("rung", 1)
-                specs.append(("revise", "specialize" if rung == 2 else "fix", "", parent, fb))
-            revise_queue = revise_queue[2:]
+                rung = (fb or {}).get("rung", 1)       # a gap (learning) failure is fixed at any checker's rung
+                specs.append(("revise", "specialize" if rung == 2 and not _gap_failure(fb) else "fix", "", parent, fb))
+            revise_queue = revise_queue[2:] if not built_already else revise_queue
             for parent, fb, op in self.family_queue[: self.family_variants]:    # variants of near misses from the lane
                 specs.append(("revise", op, "", parent, fb))
             self.family_queue = self.family_queue[self.family_variants:]
             for c in chosen:
                 specs.append(("implement", c["cluster_id"], "", None, None))
-            if self.program_search:
+            if self.program_search and not built_already:
                 for i in range(self.program_k):
                     specs.append(("program", self.program_search, str(i), None, None))
             self._live(f"round {rnd}: implementing", f"{len(chosen)} ideas from {len(self.clusters)} clusters, {len(specs) - len(chosen)} revisions/programs")
@@ -3253,6 +3303,10 @@ class NanoLoop:
                 if rec["status"] != "checked":
                     for child, crec in self._immediate_fix(c, rnd):
                         (checked if crec["status"] == "checked" else failed).append(child)
+            for c in pending if built_already else []:   # this round's builds, verified at the resume
+                if c.round == rnd and c.id in self.vres:
+                    self._resolve_objections(c, self.vres[c.id])
+                    (checked if self.vres[c.id]["status"] == "checked" else failed).append(c)
             for comp, crec in self.compose_round(rnd):
                 (checked if crec["status"] == "checked" else failed).append(comp)
             self._spawn_fail_questions(rnd, failed)            # every verify record of this round is final here
@@ -3267,7 +3321,8 @@ class NanoLoop:
                            (self.vres[c.id].get("feedback") or {}).get("rung") in (0, 1)],
                           key=lambda c: (-(1 if c.lineage_id in lineage_ok else 0), -self.vres[c.id]["rung_reached"],
                                          children.get(c.id, 0)))   # productive lineages, closest misses, few children first
-            revise_queue = [(c, self.vres[c.id]["feedback"]) for c in near] + revise_queue
+            near_ids = {c.id for c in near}             # a resumed build may already wait in the queue
+            revise_queue = [(c, self.vres[c.id]["feedback"]) for c in near] + [q for q in revise_queue if q[0].id not in near_ids]
             self._write_tree()
             self._curate_memory(rnd)                         # per-part memory: propose, check against artefacts, append
             self.decisions.append({"round": rnd, "step": "cycle", "spawned": [s[0] for s in specs],
@@ -3380,7 +3435,7 @@ class NanoLoop:
         rng = random.Random(f"hedge:{self.rep}:{round_no}")
         for c in failed:
             fb = self.vres[c.id].get("feedback") or {}
-            if fb.get("rung") == 3 and str(fb.get("reason", "")).startswith("at step") and rng.random() < self.hedge_share:
+            if _gap_failure(fb) and rng.random() < self.hedge_share:
                 self.hedged.add(c.id)
                 rec = self.vres[c.id]
                 (self.run_dir / "pool" / f"{c.id}.py").write_text(c.program or "", encoding="utf-8")
@@ -3501,8 +3556,11 @@ class NanoLoop:
         else:
             rows = []
             p = self.run_dir / "dialogue.jsonl"
-            if p.exists():
-                rows = [json.loads(l) for l in p.read_text(encoding="utf-8").splitlines() if l.strip()]
+            for l in p.read_text(encoding="utf-8").splitlines() if p.exists() else []:
+                try:                                     # a line cut by a crash is skipped, not fatal
+                    rows.append(json.loads(l))
+                except ValueError:
+                    pass
             measured = [o for v in self.vres.values() for o in ((v.get("metrics") or {}).get("objections") or [])]
             d["dialogue"] = deepen.dialogue_summary(rows, measured)
         rj.write_text(json.dumps(d, indent=1), encoding="utf-8")
@@ -3893,10 +3951,11 @@ class NanoLoop:
         controls_report = json.loads((self.run_dir / "controls.json").read_text(encoding="utf-8")) if (self.run_dir / "controls.json").exists() else {}
         answer = {"status": "pool", "arm": self.arm, "baseline_version": self.baseline_version,
                   "lens": self.lens, "lens_design": self.lens_design,
-                  "n_candidates": len([c for c in self.cands if not c.card.startswith("control")]), "n_checked": len(pool),
+                  "n_candidates": len([c for c in self.cands if not c.card.startswith("control")]), "n_checked": sum(1 for c in pool if self.vres.get(c.id, {}).get("status") == "checked"),
                   "controls": controls_report, "discovery": self.discovery, "retired_cards": sorted(self.retired_cards),
                   "lanes": {lane: {"built": sum(1 for c in self.cands if c.extra.get("lane", "main") == lane and not c.card.startswith("control")),
-                                   "checked": sum(1 for c in pool if c.extra.get("lane", "main") == lane)}
+                                   "checked": sum(1 for c in pool if c.extra.get("lane", "main") == lane
+                                                  and self.vres.get(c.id, {}).get("status") == "checked")}
                             for lane in sorted({c.extra.get("lane", "main") for c in self.cands})},
                   "origins": self._origin_stats(), "off_tree_share": self.off_tree_share, "source_yield": self.source_yield,
                   "promoted_branches": [n["id"] for n in (self.tree or []) if n.get("origin") == "offtree"],
@@ -3925,13 +3984,7 @@ class NanoLoop:
             answer["proposals"] = self._ranked_proposals()
         write_json(self.run_dir / "answer.json", answer)
         self._write_state()
-        try:
-            from nano import report
-            report.write(self.run_dir)
-            if self.mode != "baseline":
-                self._report_modes(answer)
-            self._report_dialogue()
-            self._report_premortem()
+        def _fetched() -> None:
             rj = self.run_dir / "report.json"           # fetch on demand: requests, answers, re-prompts
             try:
                 d_ = json.loads(rj.read_text(encoding="utf-8")) if rj.exists() else {}
@@ -3940,16 +3993,27 @@ class NanoLoop:
             d_["fetched_facts"] = self._fetched_facts_report()
             rj.write_text(json.dumps(d_, indent=1), encoding="utf-8")
 
-            self._report_memory()
-            self._report_questions()
+        def _write_report() -> None:
+            from nano import report
+            report.write(self.run_dir)
+        # each section on its own: one failing section must not skip the rest, nor the lessons update
+        steps = [("report", _write_report)] + ([("modes", lambda: self._report_modes(answer))] if self.mode != "baseline" else [])
+        steps += [("dialogue", self._report_dialogue), ("premortem", self._report_premortem), ("fetched_facts", _fetched),
+                  ("memory", self._report_memory), ("questions", self._report_questions)]
+        failed = False
+        for name, fn in steps:
             try:
-                from nano import lessons as LS
-                if self.backend != "mock":                       # mock runs teach nothing
-                    LS.update_from_run(self.run_dir, config.MEMORY_DIR / "lessons.jsonl", self.baseline_version)
+                fn()
             except Exception as e:  # noqa: BLE001
-                print(f"[nano] lessons not updated: {e}", flush=True)
+                failed = True
+                self.decisions.append({"step": "report", "section": name, "error": str(e)[:200]})
+        try:
+            from nano import lessons as LS
+            if self.backend != "mock":                       # mock runs teach nothing
+                LS.update_from_run(self.run_dir, config.MEMORY_DIR / "lessons.jsonl", self.baseline_version)
         except Exception as e:  # noqa: BLE001
-            self.decisions.append({"step": "report", "error": str(e)[:200]})
+            print(f"[nano] lessons not updated: {e}", flush=True)
+        if failed:
             self._write_state()
         self._live("done", f"{len(pool)} checked candidates in pool/")
         return answer
@@ -4059,6 +4123,12 @@ class NanoLoop:
 
 
 DEFAULT_LENS = "parts"
+
+
+def _gap_failure(fb: dict | None) -> bool:
+    """A learning (score gap) failure at any checker's rung: nano/lessons.py is_gap_failure."""
+    from nano import lessons as LS
+    return LS.is_gap_failure(fb)
 
 
 def _created() -> dict:
