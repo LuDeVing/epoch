@@ -566,6 +566,7 @@ class NanoLoop:
         return self.PROGRAM_FAMILIES[i % len(self.PROGRAM_FAMILIES)]
 
     IDEA_CARDS = ("seeded", "low_prior", "transform", "formal", "docs")
+    UPWARD_CONTEXTS = 2      # upward contexts at the root per round (keep_upward keeps one under a test cap)
 
     def sketch_prompt(self, card: str, seed: str, operator: str) -> str:
         if card == "seeded":
@@ -590,16 +591,21 @@ class NanoLoop:
         nodes = None
         if self.plan_with_model:
             goal = (self.run_dir / "problem.md").read_text(encoding="utf-8")
-            r = self._call(tree.planner_prompt(goal, self.baseline_src, self.lens, self.diagnostics_text), "encode", 2500,
-                           {"card": "plan", "note": "decomposing the problem into parts"})   # the strong model: the map decides what the search can see
-            self._ledger("plan", "none", "", r.call_id, r.usage, round_no, "encode")
-            nodes = tree.parse_planner(r.text or "")
+            p = tree.planner_prompt(goal, self.baseline_src, self.lens, self.diagnostics_text)
+            if self._afford("research", len(p) // 4 + 2500, "planner"):   # refused: the default map, as for unusable output
+                r = self._call(p, "encode", 2500,
+                               {"card": "plan", "note": "decomposing the problem into parts"})   # the strong model: the map decides what the search can see
+                self._ledger("plan", "none", "", r.call_id, r.usage, round_no, "encode")
+                nodes = tree.parse_planner(r.text or "")
         import copy
         self.tree = nodes or copy.deepcopy(tree.DEFAULT_TREE)
         unresolved = sorted(o for o in (self.only_nodes or ()) if nodes and not tree.resolve_scope({o}, nodes))
+        rp = tree.repair_prompt(unresolved, nodes) if unresolved else ""
+        if unresolved and not self._afford("research", len(rp) // 4 + 2500, "planner repair"):
+            unresolved = []                              # no repair call: the scope check below falls back to the default map
         if unresolved:
             # repair before falling back: one re-ask that names the unmapped default parts and asks only for "refines"
-            r = self._call(tree.repair_prompt(unresolved, nodes), "encode", 2500,
+            r = self._call(rp, "encode", 2500,
                            {"card": "plan_repair", "note": "mapping the planned parts onto the default parts"})
             self._ledger("plan_repair", "none", "", r.call_id, r.usage, round_no, "encode")
             fixed = tree.parse_planner(r.text or "") or []
@@ -681,7 +687,9 @@ class NanoLoop:
             self.decisions.append({"round": round_no, "step": "off_tree_share", "from": before, "to": self.off_tree_share, "by": key})
 
     def _promote_off_wins(self, round_no: int) -> None:
-        """Rule 4: an off-map idea that passed its checks with a gain becomes a branch of the map."""
+        """Rule 4: an off-map idea that passed its checks with a gain becomes a branch of the map. Also puts last
+        round's disputed facts on their nodes, so this round's prompts mark them (_apply_disputes)."""
+        self._apply_disputes(round_no)
         for c in self.cands:
             if (c.extra or {}).get("node") != tree.OFF_TREE_NODE["id"] or c.id in self.promoted:
                 continue
@@ -940,8 +948,36 @@ class NanoLoop:
                 out.setdefault(" ".join(i.group(1).split())[:120], last)
         return out
 
+    def _disputed_rows(self, before_round: int) -> list[dict]:
+        """Rows of disputed_facts.jsonl written in rounds before `before_round`."""
+        p = self.run_dir / "disputed_facts.jsonl"
+        rows = []
+        for line in p.read_text(encoding="utf-8").splitlines() if p.exists() else []:
+            try:
+                r = json.loads(line)
+            except Exception:  # noqa: BLE001
+                continue
+            if isinstance(r, dict) and int(r.get("round") or 0) < before_round and str(r.get("text", "")).strip():
+                rows.append(r)
+        return rows
+
+    def _apply_disputes(self, round_no: int) -> None:
+        """Earlier rounds' disputed facts go on the node they name ("disputed" list), once per sketch, so the
+        node prompt marks them "disputed, re-measure before relying on it" (tree.node_prompt) and a re-plan
+        sees them. Read from disputed_facts.jsonl, so a resumed run gets them too. Nothing re-measures yet."""
+        by_id = {n["id"]: n for n in self.tree or []}
+        for r in self._disputed_rows(round_no):
+            n = by_id.get(r.get("node"))
+            if n is None or n["id"] in ("root", tree.OFF_TREE_ID):
+                continue
+            have = n.setdefault("disputed", [])
+            if not any(d.get("sketch_id") == r.get("sketch_id") for d in have):
+                have.append({"round": r.get("round"), "text": str(r["text"])[:500], "sketch_id": r.get("sketch_id"),
+                             "status": "disputed"})
+
     def _record_doubts(self, sketches: list[dict], text: str, round_no: int) -> None:
-        """Store the DOUBT: line on each doubt sketch and log the disputed fact for the mapper to re-measure."""
+        """Store the DOUBT: line on each doubt sketch and log the disputed fact in disputed_facts.jsonl; from the
+        next round on, the node's prompt marks it and the mapper's re-plan sees it (_apply_disputes)."""
         lines = self._doubt_lines(text)
         rows = []
         for s in sketches:
@@ -982,7 +1018,7 @@ class NanoLoop:
             if node["id"] == tree.OFF_TREE_NODE["id"] or self._skipped(node["id"]):
                 continue
             for direction in node["directions"]:
-                n_here = (2 if direction == "upward" else dealt.get((node["id"], direction), 0))
+                n_here = (self.UPWARD_CONTEXTS if direction == "upward" else dealt.get((node["id"], direction), 0))
                 for i in range(n_here):
                     card = self.IDEA_CARDS[(len(specs) + i) % len(self.IDEA_CARDS)]
                     if card == "transform":          # the node's own assumptions are the transform material
@@ -1157,6 +1193,16 @@ class NanoLoop:
         with ThreadPoolExecutor(max_workers=min(6, max(1, len(specs)))) as ex:
             batches = list(ex.map(_one, specs))
         new = [s for b in batches for s in b]
+        # the contexts that ran: a context refused by _afford or whose reply parsed to nothing is not counted, the
+        # same count _origin_stats and a resume (_select_with_lanes) make, distinct calls with sketches per node
+        dealt_ctx = self.contexts_by_node.get(round_no) or {}
+        ran = dict(Counter(n for n, _ in {(s.get("node"), s.get("call_id")) for s in new
+                                          if s.get("direction") != "upward" and s.get("call_id") and s.get("node")}))
+        self.contexts_by_node[round_no] = ran
+        if ran != dealt_ctx:
+            self.decisions.append({"round": round_no, "step": "contexts_ran", "dealt": sum(dealt_ctx.values()),
+                                   "ran": sum(ran.values()), "short": {k: v - ran.get(k, 0) for k, v in dealt_ctx.items()
+                                                                        if v > ran.get(k, 0)}})
         upward = [s for s in new if s.get("direction") == "upward"]
         if upward:                                   # proposals for a new verifier; logged, not implemented
             append_jsonl(self.run_dir / "proposals_upward.jsonl", upward)
@@ -1248,9 +1294,11 @@ class NanoLoop:
             ctx = dict(Counter(n for n, _ in calls))
             if ctx:
                 self.contexts_by_node[self.round_now] = ctx
+        short_log: list = []
         main = tree.split_select(by_node, k - k_long, self.inward_share, done, self.sketches, self._select, self.new_share,
                                  counts=dict(built), order_seed=f"{self.run_id}:build:{len(self.cands)}",
-                                 weights=dict(ctx) or None)
+                                 weights=dict(ctx) or None, log=short_log)
+        self.decisions += [{"round": self.round_now, "for": "build", **d} for d in short_log]
         for c in main:
             c["lane"] = "main"
         if k_long <= 0:
@@ -2880,9 +2928,11 @@ class NanoLoop:
                     if gen > 0:                         # later generations: only ideas born in the interrogation
                         skip |= {c["cluster_id"] for c in self.clusters if "deepen" not in c["cards"]}
                     asked = Counter(n.get("node") for n in self.deepen_nodes if n.get("parent") is None)
+                    short_log = []
                     targets = tree.split_select(by_node, top, self.inward_share, skip, self.sketches,
                                                 self._select, self.new_share, counts=dict(asked),
-                                                order_seed=f"{self.run_id}:deepen:{rnd}:{gen}")
+                                                order_seed=f"{self.run_id}:deepen:{rnd}:{gen}", log=short_log)
+                    self.decisions += [{"round": rnd, "for": "deepen", **d} for d in short_log]
                     chosen_ids = {c["cluster_id"] for c in chosen}
                     for c in self.clusters:             # the wide pick is not the build selection
                         c["selected"] = c["cluster_id"] in chosen_ids
@@ -3185,20 +3235,34 @@ class NanoLoop:
         Carry-over rule (docs/TEAM_OF_RESEARCHERS.md, "a map, not a fence", rule 4): a re-plan redraws the map
         but never deletes what the run or people put on it. After the planner's list is parsed, every old node
         that must survive is carried over: promoted off-map wins (origin "offtree"), branches people added
-        (origin "human", control.json add_nodes) and any part with implemented candidates (the "implemented"
-        count of _write_tree). A carried node the new list matches (same id; the new node `refines` it, or both
-        refine the same id; same name; or a name head only that carried node has) is merged: it keeps its id,
-        origin and other fields (assumptions_added, idea_assumptions, priority, ...) and takes the planner's
-        newer frame text. An unmatched carried node is appended unchanged. A re-plan may lower a carried node's
-        priority once a priority mechanism exists (none does yet), never drop it. Other old nodes may be
-        dropped. The off-map pseudo-node is re-added by _ensure_off_node. Logged as step "replan_carry"."""
+        (origin "human", control.json add_nodes), any part with implemented candidates (the "implemented"
+        count of _write_tree), failure questions and sub-parts. A carried node the new list matches (same id;
+        the new node `refines` the same real default part, never the literal "new"; same name; or a name head
+        only that carried node has) is merged: it keeps its id, origin and other fields (idea_assumptions,
+        disputed, ...) and takes the planner's newer frame text; the planner's sub-parts follow it to its id.
+        An unmatched carried node is appended; unless it is a win, a people's branch or has builds, it gets
+        priority "low" (one context per direction, tree.deal_contexts), never dropped. A carried node's missing
+        parent comes along at low priority too. Other old parts may be dropped. Ids stay unique. The off-map
+        pseudo-node is re-added by _ensure_off_node. Logged as step "replan_carry". The planner sees the facts
+        the team disputed, and the call goes through _afford (refused: the map is kept)."""
+
+        self._apply_disputes(round_no)
         goal = (self.run_dir / "problem.md").read_text(encoding="utf-8")
         extra = self.history_text()
         objections = [o["text"] for n in self.deepen_nodes for o in (n.get("objections") or [])][:20]
         if objections:
             extra += "\n\nOBJECTIONS RAISED AGAINST IDEAS SO FAR:\n" + "\n".join(f"- {o}" for o in objections)
-        r = self._call(tree.planner_prompt(goal + "\n\n" + extra, self.baseline_src, self.lens, self.diagnostics_text), "encode", 2500,
-                       {"card": "replan", "note": f"re-planning the map for round {round_no}"})
+        names = {n["id"]: n.get("name", n["id"]) for n in self.tree or []}
+        disputed = self._disputed_rows(round_no)[-20:]
+        if disputed:
+            extra += (f"\n\nFACTS OF THE MAP THE TEAM DISPUTED ({tree.DISPUTED_MARK}):\n"
+                      + "\n".join(f"- [{names.get(d.get('node'), d.get('node'))}] {' '.join(str(d['text']).split())[:300]}"
+                                  for d in disputed))
+        p = tree.planner_prompt(goal + "\n\n" + extra, self.baseline_src, self.lens, self.diagnostics_text)
+        if not self._afford("research", len(p) // 4 + 2500, "replan"):
+            self.decisions.append({"round": round_no, "step": "replan", "result": "not affordable; map kept", "ts": now_ts()})
+            return
+        r = self._call(p, "encode", 2500, {"card": "replan", "note": f"re-planning the map for round {round_no}"})
         self._ledger("replan", "none", "", r.call_id, r.usage, round_no, "encode")
         nodes = tree.parse_planner(r.text or "")
         if not nodes:
@@ -3206,13 +3270,24 @@ class NanoLoop:
             return
         old_by_name = {n["name"].lower(): n for n in (self.tree or [])}
         old_by_id = {n["id"]: n for n in (self.tree or [])}
+        renamed, taken = {}, set()                       # planner id -> old id; each old id is taken once
         for n in nodes:
             prev = old_by_id.get(n["id"]) or old_by_name.get(n["name"].lower())
-            if prev:
+            if prev and prev["id"] not in taken and (prev["id"] == n["id"] or prev["id"] not in {m["id"] for m in nodes}):
+                if prev["id"] != n["id"]:
+                    renamed[n["id"]] = prev["id"]
                 n["id"] = prev["id"]
-                # what tested ideas assumed travels with the part by id; the new design assumptions stay as planned
+                # what tested ideas assumed (and disputed facts) travel with the part by id; the new design
+                # assumptions stay as planned
                 n["idea_assumptions"] = list(tree.idea_assumptions(prev))
+                if prev.get("disputed"):
+                    n["disputed"] = list(prev["disputed"])
+            taken.add(n["id"])
+        for n in nodes:                                  # sub-parts follow their renamed parent
+            if n.get("parent") in renamed:
+                n["parent"] = renamed[n["parent"]]
         nodes = self._replan_carry(self.tree or [], nodes, round_no)
+
         self.tree = nodes
         self._ensure_off_node()
         self.decisions.append({"round": round_no, "step": "replan", "parts": [n["id"] for n in nodes], "ts": now_ts()})
@@ -3229,20 +3304,41 @@ class NanoLoop:
         def head(n) -> str:
             return tree._plain(n.get("name", "")).split(":")[0].strip()
 
+        part_ids = {d["id"] for d in tree.default_parts()}
+
+        def real_ref(n) -> str:                          # a refines that names a real default part, else ""
+            r = str(n.get("refines") or "")
+            return r if r in part_ids else ""
+
+        # nothing the run or people put on the map is deleted: wins, people's branches, parts with builds, failure
+        # questions and sub-parts (built or not) all survive; an unmatched one stays at lower priority
+        sub = {n["id"] for n in old if n["id"] not in ("root", tree.OFF_TREE_ID) and tree.depth(old, n["id"]) >= 2}
         must = [n for n in old if n["id"] not in ("root", tree.OFF_TREE_ID)
-                and (n.get("origin") in (tree.OFF_TREE_ID, "human") or implemented(n) > 0)]
+                and (n.get("origin") in (tree.OFF_TREE_ID, "human", "failure") or tree.kind(n) == "question"
+                     or implemented(n) > 0 or n["id"] in sub)]
         heads = Counter(head(n) for n in must)
-        kept, merged, claimed = [], [], set()
+        kept, merged, lowered, claimed, renamed, carried = [], [], [], set(), {}, set()
         for o in must:
-            def same(n, o=o) -> bool:
-                if n["id"] == o["id"] or (n.get("refines") and n["refines"] in (o["id"], o.get("refines"))):
-                    return True
+            def same(n, o=o) -> int:                     # 0: no match; else the rank of the match (lower is better)
+                if n["id"] == o["id"]:
+                    return 1
+                ref = real_ref(n)
+                if ref and ref in (o["id"], real_ref(o)):  # "new" is no shared target
+                    return 2
                 if tree._plain(n.get("name", "")) == tree._plain(o.get("name", "")):
-                    return True
-                return bool(head(o)) and heads[head(o)] == 1 and head(n) == head(o)
-            hit = next((n for n in new if id(n) not in claimed and n["id"] not in ("root", tree.OFF_TREE_ID) and same(n)), None)
+                    return 3
+                return 4 if (bool(head(o)) and heads[head(o)] == 1 and head(n) == head(o)) else 0
+            pool = [] if tree.kind(o) == "question" else \
+                [(same(n), i, n) for i, n in enumerate(new) if id(n) not in claimed and n["id"] not in ("root", tree.OFF_TREE_ID)]
+            pool = [x for x in pool if x[0]]
+            hit = min(pool, key=lambda x: (x[0], x[1]))[2] if pool else None
             if hit is None:
-                new.append(copy.deepcopy(o))
+                c = copy.deepcopy(o)
+                if not (o.get("origin") in (tree.OFF_TREE_ID, "human") or implemented(o) > 0):
+                    c["priority"] = "low"                # kept, not drawn by this map: lower priority, never dropped
+                    lowered.append(o["id"])
+                new.append(c)
+                carried.add(id(c))
                 kept.append(o["id"])
                 continue
             claimed.add(id(hit))
@@ -3251,12 +3347,48 @@ class NanoLoop:
                 if k not in hit or k in ("id", "origin", "parent"):
                     hit[k] = copy.deepcopy(v)
             hit["frame"] = frame
+            hit.pop("priority", None)                    # drawn again by the planner: normal priority
+            if planner_id != o["id"]:
+                renamed[planner_id] = o["id"]
+            carried.add(id(hit))
             merged.append({"id": o["id"], "planner_id": planner_id, "origin": o.get("origin", "tree")})
+        for n in new:                                    # the planner's sub-parts follow a merged parent's id
+            if id(n) not in carried and n.get("parent") in renamed:
+                n["parent"] = renamed[n["parent"]]
+        # one node per id: carried and merged nodes keep theirs, a planner node that clashes gets a suffix
+        seen = {n["id"] for n in new if id(n) in carried}
+        for n in new:
+            if id(n) in carried:
+                continue
+            if n["id"] in seen:
+                k = 2
+                while f"{n['id'][:13]}_{k}" in seen:
+                    k += 1
+                n["id"] = f"{n['id'][:13]}_{k}"
+            seen.add(n["id"])
+        # a carried node whose parent the new map lacks: the parent comes along too (lower priority), up the chain
+        old_by_id = {n["id"]: n for n in old}
+        while True:
+            ids = {n["id"] for n in new}
+            miss = [n for n in new if n.get("parent") and n["parent"] not in ids and n["parent"] in old_by_id]
+            if not miss:
+                break
+            for pid in dict.fromkeys(n["parent"] for n in miss):
+                c = copy.deepcopy(old_by_id[pid])
+                if pid != "root" and not (c.get("origin") in (tree.OFF_TREE_ID, "human") or implemented(c) > 0):
+                    c["priority"] = "low"
+                    lowered.append(pid)
+                new.append(c)
+                kept.append(pid)
         new_ids = {n["id"] for n in new}
+        for n in new:
+            if n.get("parent") and n["parent"] not in new_ids:
+                n["parent"] = "root"
         dropped = [n["id"] for n in old if n["id"] not in new_ids and n["id"] != tree.OFF_TREE_ID]
         self.decisions.append({"round": round_no, "step": "replan_carry", "kept": kept, "merged": merged,
-                               "dropped": dropped, "ts": now_ts()})
+                               "lowered": lowered, "dropped": dropped, "ts": now_ts()})
         return new
+
 
     def _immediate_fix(self, cand: Candidate, round_no: int) -> list[tuple[Candidate, dict]]:
         """A rung 0 or rung 1 failure is a one-call fix: do it now, in this round, once."""

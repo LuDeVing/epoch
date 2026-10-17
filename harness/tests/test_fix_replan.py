@@ -13,7 +13,7 @@ def _loop():
 
 
 def _planner_reply(n_parts: int = 5, extra: list[dict] | None = None) -> str:
-    arr = [{"id": f"p{i}", "name": f"Fresh part {i}", "frame": f"frame {i}", "assumptions": ["a", "b", "c"],
+    arr = [{"id": f"p{i}", "name": f"Fresh part {i}", "refines": "new", "frame": f"frame {i}", "assumptions": ["a", "b", "c"],
             "boundary": "everything"} for i in range(n_parts)]
     return json.dumps(arr + (extra or []))
 
@@ -62,30 +62,22 @@ def test_replan_carries_promoted_and_human_nodes(monkeypatch):
 
 
 def test_replan_merges_duplicate_of_carried_node(monkeypatch):
+    """The merge-by-refines path with the real parser (G9): a built default part and a planner node that refines it
+    under another name and id become one node with the old id; the planner's sub-part follows it."""
     lp = _loop()
-    win = _seed_tree(lp)
-    dup = {"id": "newwin", "name": "Other wording", "refines": win["id"], "frame": "the planner's newer frame",
+    _seed_tree(lp)
+    lp.cands.append(Candidate(id="cand0002", text="built under mix", card="implement", operator="x", seed="", perm=0,
+                              round=1, call_id="c0", extra={"node": "mix", "direction": "inward"}))
+    dup = {"id": "attn_new", "name": "Other wording", "refines": "mix", "frame": "the planner's newer frame",
            "assumptions": ["z"], "boundary": "everything"}
-    _patch_planner(monkeypatch, lp, _planner_reply(extra=[dup]))
-    monkeypatch.setattr("nano.tree.parse_planner", _parse_keep_refines)
+    kid = {"id": "attn_kid", "name": "a sub-part", "refines": "new", "parent": "attn_new", "frame": "f",
+           "assumptions": ["k"], "boundary": "everything"}
+    _patch_planner(monkeypatch, lp, _planner_reply(extra=[dup, kid]))
     lp.replan_tree(2)
     ids = [n["id"] for n in lp.tree]
-    assert "newwin" not in ids and ids.count(win["id"]) == 1
-    node = next(n for n in lp.tree if n["id"] == win["id"])
-    assert node["origin"] == "offtree" and node["frame"] == "the planner's newer frame"
+    assert "attn_new" not in ids and ids.count("mix") == 1 and len(ids) == len(set(ids))
+    node = next(n for n in lp.tree if n["id"] == "mix")
+    assert node["frame"] == "the planner's newer frame"
+    assert next(n for n in lp.tree if n["id"] == "attn_kid")["parent"] == "mix"
     carry = [d for d in lp.decisions if d["step"] == "replan_carry"][-1]
-    assert {"id": win["id"], "planner_id": "newwin", "origin": "offtree"} in carry["merged"]
-
-
-from nano import tree as _tree  # noqa: E402
-_ORIG_PARSE = _tree.parse_planner
-
-
-def _parse_keep_refines(text):
-    """parse_planner as is, plus the `refines` field a planner may give (the parser does not keep it today)."""
-    nodes = _ORIG_PARSE(text)
-    ref = {str(n["id"]).lower(): n["refines"] for n in json.loads(text) if n.get("refines")}
-    for n in nodes:
-        if n["id"] in ref:
-            n["refines"] = ref[n["id"]]
-    return nodes
+    assert {"id": "mix", "planner_id": "attn_new", "origin": "tree"} in carry["merged"]

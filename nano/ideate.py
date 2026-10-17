@@ -284,6 +284,7 @@ BREAKS: <leaps only: the rule of the {v:recipe} this idea drops or flips, as one
 KEEPS: <leaps only: the conventional core left intact, so the change stays {v:viable} and comparable>
 P_SUCCESS: <leaps only: your own chance that it {v:win_short}, a number at most 0.2>
 KILL: <leaps only: the number at {v:first_check} that discards it>
+REMOVES: <outward direction only: the assumption this sketch removes or inverts, in the words of the assumption list when there is one; an outward sketch without this line is dropped>
 
 Separate sketches with a blank line. Vary the part of the system each sketch touches."""
 
@@ -303,7 +304,8 @@ YOUR LEAP OPERATOR FOR THIS CONTEXT ({op_name}): {op_text}
 
 _ANALOGY_ADDENDUM = """The analogues above come from other fields. For EACH sketch, transfer the STRUCTURE of one analogue, not its
 vocabulary: add a line MAPPING: <their X -> our Y; their mechanism -> this concrete change in the {v:artifact_short}>. A sketch
-without a mapping does not count. Prefer analogues whose field is far from {v:field}.
+without a mapping does not count. Draw on both near and far analogues: at least one sketch from a field close to
+{v:field} and at least one from a field far from it. A farther field is not better on its own.
 
 """
 
@@ -342,7 +344,7 @@ Add a line ADAPTATION: <the move you applied and why it fits this scale>. A sket
 
 _EXCLUSION_ADDENDUM = """These idea families are ALREADY COVERED this run (do not propose them or their variants):
 {names}
-Propose ideas outside these categories, wild and unconventional ones included, as long as each has a mechanism and a test.
+Propose ideas outside these categories, each with a mechanism and a test.
 
 """
 
@@ -402,7 +404,17 @@ def mapping_ok(mapping: str) -> bool:
     return mapping.count("->") >= 2 and "break" in mapping.lower()
 
 
+def removes_ok(removes: str) -> bool:
+    """A REMOVES: line that names something (not empty, not "none", "n/a" or a dash)."""
+    t = " ".join(str(removes or "").lower().split()).strip(" .-<>\"'")
+    return len(t) >= 3 and t not in ("none", "n/a", "na", "nothing", "no assumption")
+
+
+
 def parse_sketches(text: str, *, card: str, operator: str, seed: str, call_id: str, idgen) -> list[dict]:
+    """Sketches in SKETCH_FORMAT. `operator` is the direction. An outward sketch (not an interrogation offshoot,
+    card "deepen", which has its own format) must name the assumption it removes in REMOVES:, or it is dropped,
+    as an analogy sketch without a typed MAPPING is."""
     out = []
     score_name = _as_text(vword("score_name")).lower()
     text = strip_private_passes(text)
@@ -410,13 +422,15 @@ def parse_sketches(text: str, *, card: str, operator: str, seed: str, call_id: s
     for b in blocks:
         f = {}
         for key in ("IDEA", "MECHANISM", "PREDICTION", "TEST", "SOURCE", "MAPPING", "TARGET", "SCOPE", "ADAPTATION", "PART",
-                    "KIND", "BREAKS", "KEEPS", "P_SUCCESS", "KILL", "SLOT"):
+                    "KIND", "BREAKS", "KEEPS", "P_SUCCESS", "KILL", "SLOT", "REMOVES"):
             m = re.search(rf"{key}:\s*(.+?)(?=\n[A-Z_]+:|\Z)", b, flags=re.S)
             if m:
                 f[key.lower()] = " ".join(m.group(1).split())
         if "idea" in f and "mechanism" in f:
             if card == "analogy" and not mapping_ok(f.get("mapping", "")):
                 continue                                    # a decorative analogy: no typed mapping, no sketch
+            if operator == "outward" and card != "deepen" and not removes_ok(f.get("removes", "")):
+                continue                                    # an outward sketch that names no removed assumption
             out.append({"id": idgen(), "idea": f["idea"][:120], "mechanism": f["mechanism"][:600],
                         "prediction": f.get("prediction", "")[:300], "test": f.get("test", "")[:300],
                         "source": f.get("source", "own")[:300], "mapping": f.get("mapping", "")[:600],
@@ -424,6 +438,7 @@ def parse_sketches(text: str, *, card: str, operator: str, seed: str, call_id: s
                         "part": f.get("part", "")[:60], "slot": f.get("slot", "").split()[0].lower()[:12] if f.get("slot") else "",
                         "kind": _kind(f.get("kind", "")), "breaks": f.get("breaks", "")[:300], "keeps": f.get("keeps", "")[:200],
                         "p_success": _prob(f.get("p_success", "")), "kill": f.get("kill", "")[:200],
+                        "removes": f.get("removes", "")[:300],
                         "metric_blind": bool(f.get("scope")) and score_name not in f.get("scope", "").lower(),
                         "card": card, "operator": operator, "seed": seed, "call_id": call_id})
     return out
