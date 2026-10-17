@@ -14,7 +14,6 @@ Selection switches (environment, recorded as "select" in state.json and runs.jso
 HTSA_SELECT=vote groups the candidates that cleared the bar (_clears) by test answer and takes
 the largest group, shortest program on ties (research_notes/thinking_modes/00_SYNTHESIS.md step
 4); probe candidates join only after their own verify.run clears the bar (free checks only).
-HTSA_SELECT_AUG=1 groups by behaviour on rotated and flipped copies of the ARC test input.
 
 A live run holds run.lock (pid, run_instance) in its folder until answer.json is written; a
 second launch of the same run_id refuses to move a folder whose lock names a live process.
@@ -28,6 +27,7 @@ harness.think.<sub> still resolves. Top-level imports stay limited to config and
 from __future__ import annotations
 
 import argparse
+import contextvars
 import hashlib
 import importlib
 import inspect
@@ -132,6 +132,7 @@ class State:
     frontier: Any = None                             # flags.frontier (P1, I4)
     all_cands: list = field(default_factory=list)    # kept generator candidates, all rounds
     parents: dict = field(default_factory=dict)      # cand id -> (Candidate, VerifyResult)
+    cluster_members: dict = field(default_factory=dict)  # dedup key -> member cand ids, all rounds
     verify_tokens: int = 0
     verify_attempts: int = 0
     decisions: list = field(default_factory=list)
@@ -283,11 +284,15 @@ def _pid_alive(pid: int) -> bool:
 
 def _lock_live(run_dir: Path, run_id: str) -> bool:
     """Whether run.lock names a live owner: this process with the run id in flight, or another
-    live process."""
-    lock = read_json(run_dir / LOCK_NAME, default=None)
-    if not isinstance(lock, dict):
+    live process. A half-written or unparsable lock is stale (logged; the caller overwrites it)."""
+    try:
+        lock = read_json(run_dir / LOCK_NAME, default=None)
+        pid = int(lock.get("pid") or 0) if isinstance(lock, dict) else None
+    except (ValueError, TypeError, OSError) as e:      # JSONDecodeError is a ValueError
+        _log(f"unreadable {LOCK_NAME} in {run_dir.name} treated as stale: {type(e).__name__}: {e}")
         return False
-    pid = int(lock.get("pid") or 0)
+    if pid is None:
+        return False
     if pid == os.getpid():
         return run_id in _LIVE
     return _pid_alive(pid)
@@ -510,7 +515,8 @@ def _spawn(ctx: Ctx, st: State, specs: list) -> list[tuple[Any, Any, str | None]
         st.used_tuples.add((s.card, s.operator, s.seed, s.perm))
     out = []
     with ThreadPoolExecutor(max_workers=max(1, min(6, len(specs)))) as ex:
-        futs = [(s, ex.submit(_run_one, ctx, st, s)) for s in specs]
+        futs = [(s, ex.submit(contextvars.copy_context().run, _run_one, ctx, st, s))   # run flags
+                for s in specs]
         for s, f in futs:
             try:
                 out.append((s, f.result(), None))
@@ -609,6 +615,10 @@ def _dedup(ctx: Ctx, st: State, C: list[Candidate]) -> tuple[list[Candidate], fl
     if rows:
         append_jsonl(ctx.run_dir / "clusters.jsonl", [{**r, "round": r.get("round", st.round)}
                                                       for r in rows])
+    for r in rows:                # the vote weighs a verified answer by its cluster size
+        if r.get("key") is not None:
+            mem = st.cluster_members.setdefault(r["key"], [])
+            mem.extend(i for i in r.get("members") or [] if i not in mem)
     return kept, dup_rate
 
 
@@ -1148,7 +1158,22 @@ def _vote_verified(ctx: Ctx, st: State):
                 return ex.aug_key(ex.run_program(c.program, variants)) if c.program else None
             except Exception:  # noqa: BLE001
                 return None
-    return _m("dedup").vote(pool, lambda c: c.pred, lambda c: len(c.program or ""), aug_of)
+    # dedup dropped same-grid candidates before verification; they are the same answer, so a
+    # cluster counts all its members (self-consistency), once, on its first pool candidate
+    dd, counted = _m("dedup"), set()
+    weight = {}
+    for c in pool:
+        key = None
+        if c.origin != "probe" and st.cluster_members and hasattr(dd, "dedup_key"):
+            key = dd.dedup_key(c, ctx.benchmark)
+        members = st.cluster_members.get(key) if key is not None else None
+        if not members:
+            weight[c.id] = 1
+        else:
+            weight[c.id] = 0 if key in counted else max(1, len(members))
+            counted.add(key)
+    return _kwcall(dd.vote, pool, lambda c: c.pred, lambda c: len(c.program or ""), aug_of,
+                   weight_of=lambda c: weight.get(c.id, 1))
 
 
 def _final(ctx: Ctx, st: State, cause: str) -> Answer:
@@ -1249,11 +1274,15 @@ def think(item: dict, *, m: int, replicate: int, backend: str, batch: str, flags
     flags = _merge(config.FLAGS, flags, "flags")
     params = _merge(config.PARAMS, params, "params")
     params.update({k: _fraction(params[k]) for k in THRESHOLDS if k in params})
-    ctx = _context(item, m, replicate, backend, batch, flags, params, arm)
+    token = config.use_flags(flags)                # one effective flag dict for the whole run
     try:
-        return _run(ctx, item, replicate)
+        ctx = _context(item, m, replicate, backend, batch, flags, params, arm)
+        try:
+            return _run(ctx, item, replicate)
+        finally:
+            _release(ctx.run_id, ctx.run_dir)      # answer.json is written; the run is no longer live
     finally:
-        _release(ctx.run_id, ctx.run_dir)          # answer.json is written; the run is no longer live
+        config.reset_flags(token)
 
 
 def _run(ctx: Ctx, item: dict, replicate: int) -> Answer:
@@ -1304,8 +1333,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--force", action="store_true", help="remove an existing run folder first")
     a = ap.parse_args(argv)
     item = importlib.import_module(f"{_PKG}.data").get_item(a.benchmark, a.item)
-    run_dir = Path(config.RUNS_DIR) / make_run_id(a.batch, a.benchmark, item["id"], a.arm, a.replicate)
+    run_id = make_run_id(a.batch, a.benchmark, item["id"], a.arm, a.replicate)
+    run_dir = Path(config.RUNS_DIR) / run_id
     if a.force and run_dir.exists():
+        if _lock_live(run_dir, run_id):        # the same check _make_run_dir makes
+            raise SystemExit(f"--force refused: {run_dir} is live ({LOCK_NAME}); not deleted")
         shutil.rmtree(run_dir)
     ans = think(item, m=a.m, replicate=a.replicate, backend=a.backend, batch=a.batch,
                 flags=_kv(a.flag), params=_kv(a.param), arm=a.arm)

@@ -435,7 +435,7 @@ def call(prompt: str, *, role: str, tools: list[str] | None = None, call_id: str
         rec = res.to_dict()
         rec["meta"] = meta
         rec["prompt_chars"] = len(prompt)
-        rec["flags"] = {k: config.FLAGS.get(k) for k in config.ENV_FLAGS}
+        rec["flags"] = {k: config.flags().get(k) for k in config.ENV_FLAGS}   # the run's effective flags
         rec["raw"] = {k: v for k, v in raw.items() if k in RAW_KEYS}
         p = log_dir / f"{call_id}.json"
         write_json(p, rec)
@@ -445,10 +445,12 @@ def call(prompt: str, *, role: str, tools: list[str] | None = None, call_id: str
 
 def call_many(specs: list[dict], max_workers: int = 6) -> list[CallResult]:
     """Run several independent calls concurrently. Each spec is kwargs for call() plus 'prompt'."""
+    import contextvars
     from concurrent.futures import ThreadPoolExecutor
     def _one(spec: dict) -> CallResult:
         spec = dict(spec)
         prompt = spec.pop("prompt")
         return call(prompt, **spec)
-    with ThreadPoolExecutor(max_workers=max_workers) as ex:
-        return list(ex.map(_one, specs))
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:   # each worker sees the run's flags
+        futs = [ex.submit(contextvars.copy_context().run, _one, s) for s in specs]
+        return [f.result() for f in futs]

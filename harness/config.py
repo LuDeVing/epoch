@@ -6,6 +6,7 @@ Nothing here reads benchmark keys or run files.
 """
 from __future__ import annotations
 
+import contextvars
 import os
 import sys
 from pathlib import Path
@@ -157,6 +158,26 @@ FLAGS = {
 }
 # The flags above that come from the environment; llm.call copies them into every call record.
 ENV_FLAGS = ("raw_view", "experimental_think_aloud_self_check")
+
+# The effective flags of the run in progress: think() sets FLAGS merged with its --flag overrides
+# here, so encode.raw_view() and the call-record flag copy read what the run really uses. A
+# context variable keeps concurrent runs (bench threads) apart; think's worker pools and
+# llm.call_many copy the context into their threads. Outside a run, flags() is FLAGS.
+_RUN_FLAGS: contextvars.ContextVar = contextvars.ContextVar("htsa_run_flags", default=None)
+
+
+def flags() -> dict:
+    """The effective flag dict: the current run's merged flags, else FLAGS."""
+    return _RUN_FLAGS.get() or FLAGS
+
+
+def use_flags(merged: dict):
+    """Set the effective flags for this context; returns the token for reset_flags."""
+    return _RUN_FLAGS.set(merged)
+
+
+def reset_flags(token) -> None:
+    _RUN_FLAGS.reset(token)
 
 # ---------------------------------------------------------------- control parameters (section 5)
 PARAMS = {

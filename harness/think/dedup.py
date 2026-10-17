@@ -129,11 +129,14 @@ def drop(new: list[Candidate], prior: list[Candidate], benchmark: str,
     return kept, rows
 
 
-def vote(items: list, pred_of, length_of, aug_of=None):
+def vote(items: list, pred_of, length_of, aug_of=None, weight_of=None):
     """Selection among verified ARC programs (00_IDEAS.md item 16): group by test answer; the largest
     group wins. Only when groups tie on size, aug_of(item) -> hashable or None (outputs on rotated and
     mirrored copies of the test input; None when the program crashes there) breaks the tie: the group
     with the largest sub-group of identical augmented outputs wins. Then the shortest program.
+    weight_of(item) -> int (default 1) is how many candidates an item stands for: think passes the
+    dedup cluster size, since same-grid candidates dropped before verification are the same answer.
+    A group's size is the sum of its weights.
     Returns (chosen item, size of its group, number of distinct answers); (None, 0, 0) if empty."""
     groups: dict[str, list] = {}
     for x in items:
@@ -142,8 +145,9 @@ def vote(items: list, pred_of, length_of, aug_of=None):
             groups.setdefault(json.dumps(p, separators=(",", ":")), []).append(x)
     if not groups:
         return None, 0, 0
-    top = max(len(g) for g in groups.values())
-    tied = [g for g in groups.values() if len(g) == top]
+    size = (lambda g: len(g)) if weight_of is None else (lambda g: sum(int(weight_of(x) or 0) for x in g))
+    top = max(size(g) for g in groups.values())
+    tied = [g for g in groups.values() if size(g) == top]
 
     def support(g) -> int:
         if aug_of is None or len(tied) == 1:
@@ -152,4 +156,4 @@ def vote(items: list, pred_of, length_of, aug_of=None):
         return max(c.values(), default=0)
 
     best = max(tied, key=lambda g: (support(g), -min(length_of(x) for x in g)))
-    return min(best, key=length_of), len(best), len(groups)
+    return min(best, key=length_of), size(best), len(groups)
