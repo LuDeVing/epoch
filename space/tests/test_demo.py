@@ -311,3 +311,60 @@ def test_rehearse_exits_0_within_5_minutes_with_every_row(tmp_path, lab):
     assert set(doc["rows"]) == set(D.ROW_NAMES) and all(v["ok"] for v in doc["rows"].values())
     for name in D.ROW_NAMES:
         assert re.search(r"^%s\s+ok\b" % name, r.stdout, re.M), name
+
+
+# ---------------------------------------------------------------- review fixes
+def test_descendants_skip_a_process_that_is_older_than_its_parent():
+    """Windows keeps a dead parent's pid in th32ParentProcessID and reuses pids, so an unrelated program can look
+    like our child. A child never starts before its parent; the rehearsal must not count it, nor taskkill it."""
+    table = [(10, 1, "python.exe"), (11, 10, "node.exe"), (12, 10, "hoi4.exe"), (13, 12, "game_helper.exe")]
+    started = {1: 100, 10: 200, 11: 300, 12: 50, 13: 60}
+    assert D.descendants(1, table, started.get) == [(10, "python.exe"), (11, "node.exe")]
+    assert [p for p, _ in D.descendants(1, table)] == [10, 11, 12, 13]      # no start times: the old walk
+
+
+def test_process_start_reads_this_process():
+    if os.name != "nt":
+        assert D.process_start(os.getpid()) is None
+        return
+    me = D.process_start(os.getpid())
+    assert isinstance(me, int) and me > 0
+    child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(5)"])
+    try:
+        assert D.process_start(child.pid) >= me
+        assert child.pid in [p for p, _ in D.descendants(os.getpid())]
+    finally:
+        child.kill()
+        child.wait()
+
+
+def test_the_replay_hotkey_ignores_a_restart_drill_on_stage(recorded):
+    """Pressing k on stage writes claim_expired restart; that must not make r seek to the recorded drill at 3:30."""
+    beats = D.find_beats(recorded)
+    by = {b["beat"]: b["seq"] for b in beats}
+    upto = [e for e in recorded if e["seq"] <= by["go_planned_1"]]
+    drill = {"seq": upto[-1]["seq"] + 1, "kind": "claim_expired", "by": "server", "by_kind": "system",
+             "owner": "server", "subject": "node:item_order", "data": {"owner_was": "ana.agent", "reason": "restart"}}
+    assert D.current_beat_seq(upto + [drill], beats) == by["go_planned_1"]
+
+
+def test_the_go_key_posts_nothing_during_a_replay(srv):
+    api = D.Api(srv.url)
+    loop = {"kind": "stage_entered", "subject": "run:main", "data": {"round": 1, "stage": "planned", "waiting": True,
+                                                                      "step_mode": True}}
+    assert api.call("POST", "/api/events", loop, actor="team.loop", kind="system")[0] == 200
+    lines = []
+    st = D.Stage(port=srv.port, browsers=False, say=lines.append)
+    st.api = api
+    st.replaying = True
+    assert st.key("g") is True
+    assert [e["kind"] for e in api.all_events()].count("run_step") == 0
+    assert any("replay" in x.lower() for x in lines)
+
+
+def test_a_second_stage_in_the_same_minute_gets_its_own_space(lab):
+    first = D.fresh_space_name("stage")
+    assert re.fullmatch(r"stage-\d{4}", first)
+    (lab / "spaces" / first).mkdir(parents=True)
+    second = D.fresh_space_name("stage")
+    assert second != first and second.startswith("stage-") and not (lab / "spaces" / second).exists()

@@ -23,7 +23,8 @@ free (GlobalMemoryStatusEx); the recorded log and its hash file exist and the lo
 `node --test space/web/tests/replay` passes. It prints the netsh line that opens the port for `--lan`.
 
 `--stage` refuses to start under 3 GB free or with port 8766 taken. Then it starts, in this order, with one log per
-process in `D:\AGI-lab\spaces\stage-<HHMM>\logs\`:
+process in `D:\AGI-lab\spaces\stage-<HHMM>\logs\` (`stage-<HHMMSS>` when a stage already started in that
+minute, so a restart never reopens the last log):
 
 1. the server: `python -m space.server --db D:/AGI-lab/spaces/stage-<HHMM>/space.db --memory-dir D:/AGI-lab/memory/_mock/binpack_nobase`
 2. the two person-agents: `python -m space.agent --me ana --model mock ...` and `--me ben` (with `--live-agents`:

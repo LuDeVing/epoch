@@ -151,6 +151,19 @@ def child_env(mock_backend: bool = True) -> dict:
     return env
 
 
+def fresh_space_name(prefix: str) -> str:
+    """<prefix>-HHMM (section 13.1), or <prefix>-HHMMSS when that space folder already exists, so a stage restarted
+    in the same minute never opens the last one's log or reuses its loop batch."""
+    spaces = Path(lab_root()) / "spaces"
+    name = f"{prefix}-{time.strftime('%H%M')}"
+    if (spaces / name).exists():
+        name = f"{prefix}-{time.strftime('%H%M%S')}"
+        while (spaces / name).exists():
+            time.sleep(0.5)
+            name = f"{prefix}-{time.strftime('%H%M%S')}"
+    return name
+
+
 # ---------------------------------------------------------------- the stage command lines (section 13.1, exactly)
 def server_argv(name: str, port: int = C.PORT, lab: str | None = None, py: str | None = None) -> list[str]:
     lab = lab or lab_root()
@@ -259,20 +272,60 @@ def process_table() -> list[tuple[int, int, str]]:
     return out
 
 
-def descendants(pid: int, table=None) -> list[tuple[int, str]]:
-    """Every process under pid (children, grandchildren, ...) as (pid, exe)."""
-    table = process_table() if table is None else table
+def process_start(pid: int) -> int | None:
+    """When a process started (FILETIME ticks, from GetProcessTimes), or None when it cannot be read or off Windows."""
+    if os.name != "nt":
+        return None
+    import ctypes
+    from ctypes import wintypes
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    k32.OpenProcess.restype = wintypes.HANDLE
+    k32.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
+    k32.GetProcessTimes.argtypes = (wintypes.HANDLE,) + (ctypes.POINTER(wintypes.FILETIME),) * 4
+    k32.CloseHandle.argtypes = (wintypes.HANDLE,)
+    h = k32.OpenProcess(0x1000, False, int(pid))                 # PROCESS_QUERY_LIMITED_INFORMATION
+    if not h:
+        return None
+    try:
+        t = [wintypes.FILETIME() for _ in range(4)]
+        if not k32.GetProcessTimes(h, *(ctypes.byref(x) for x in t)):
+            return None
+        return (t[0].dwHighDateTime << 32) | t[0].dwLowDateTime
+    finally:
+        k32.CloseHandle(h)
+
+
+def descendants(pid: int, table=None, started=None) -> list[tuple[int, str]]:
+    """Every process under pid (children, grandchildren, ...) as (pid, exe).
+
+    Windows keeps a dead parent's pid as th32ParentProcessID and reuses pids, so an unrelated program can name our pid
+    as its parent. A child never starts before its parent: with `started` (pid -> start time; the live table uses
+    process_start) such a process is left out, so it is neither reported nor killed."""
+    if table is None:
+        table = process_table()
+        started = process_start if started is None else started
     kids: dict[int, list[tuple[int, str]]] = {}
     for p, pp, exe in table:
         if p != pp:
             kids.setdefault(pp, []).append((p, exe))
+    times: dict[int, int | None] = {}
+
+    def when(p):
+        if p not in times:
+            times[p] = started(p)
+        return times[p]
+
     out, seen, todo = [], {pid}, [pid]
     while todo:
-        for p, exe in kids.get(todo.pop(), []):
-            if p not in seen:
-                seen.add(p)
-                out.append((p, exe))
-                todo.append(p)
+        parent = todo.pop()
+        for p, exe in kids.get(parent, []):
+            if p in seen:
+                continue
+            if started is not None and when(parent) is not None and (when(p) is None or when(p) < when(parent)):
+                continue
+            seen.add(p)
+            out.append((p, exe))
+            todo.append(p)
     return out
 
 
@@ -876,6 +929,8 @@ def current_beat_seq(live_events, recorded_beats) -> int:
     live = {b["beat"]: b["seq"] for b in find_beats(live_events) if b["seq"]}
     seq = 0
     for b in recorded_beats:
+        if b["beat"] in OPTIONAL_BEATS:                   # a k press on stage is not the recorded 3:30 drill
+            continue
         if b["beat"] in live and b.get("seq"):
             seq = b["seq"]
     return seq
@@ -1079,6 +1134,7 @@ class Rehearsal:
         self.procs.stop("server")
         if self.api.up():
             raise Abort("the server still answers after the kill")
+        self.outbox_seen = self.outbox_lines()
         started = False
         for _ in range(20):
             p = self.procs.start("server", self.server_cmd)
@@ -1105,12 +1161,19 @@ class Rehearsal:
         self.rows["drill_restart"] = (ok, f"head {head_before} -> {fresh_seqs[-1] if fresh_seqs else 0}, "
                                           f"contiguous {contiguous}, reader gaps {len(self.reader.gaps)} dups {self.reader.dups}, "
                                           f"epochs {len(self.reader.epochs)}, claim_expired restart "
-                                          f"{'e%d' % exp['seq'] if exp else 'none'}, outboxes flushed {flushed}")
+                                          f"{'e%d' % exp['seq'] if exp else 'none'}, outboxes flushed {flushed} "
+                                          f"({self.outbox_seen} line(s) were pending)")
         self.log("drill: " + self.rows["drill_restart"][1])
 
+    def outbox_lines(self) -> int:
+        return sum(_count_lines(self.agent_dir / f"{me}.outbox.ndjson") for me in PEOPLE)
+
     def wait_outboxes(self, timeout: float) -> bool:
+        """True once both agents' outboxes are empty. The agents post only in answer to events, so while the server is
+        down they usually queue nothing; the drill's detail says how many lines were pending (outbox_seen)."""
         end = time.monotonic() + timeout
         while True:
+            self.outbox_seen = max(getattr(self, "outbox_seen", 0), self.outbox_lines())
             left = [me for me in PEOPLE if _nonempty(self.agent_dir / f"{me}.outbox.ndjson")]
             if not left:
                 return True
@@ -1250,10 +1313,14 @@ def _agent_ready(path: Path) -> bool:
 
 
 def _nonempty(path: Path) -> bool:
+    return _count_lines(path) > 0
+
+
+def _count_lines(path: Path) -> int:
     try:
-        return any(line.strip() for line in path.read_text(encoding="utf-8").splitlines())
+        return sum(1 for line in path.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip())
     except OSError:
-        return False
+        return 0
 
 
 # ---------------------------------------------------------------- --replay
@@ -1334,8 +1401,7 @@ class Stage:
         if not port_free(self.port):
             self.say(f"stage refused: 127.0.0.1:{self.port} is in use")
             return 4
-        hhmm = time.strftime("%H%M")
-        self.name = f"stage-{hhmm}"
+        self.name = fresh_space_name("stage")
         self.space_dir = Path(lab_root()) / "spaces" / self.name
         self.procs = Procs(self.space_dir / "logs", child_env(mock_backend=True))
         atexit.register(self.procs.stop_all)
@@ -1364,6 +1430,9 @@ class Stage:
         if k == "q":
             return False
         if k == "g":
+            if self.replaying:
+                self.say("Go: the replay runs on its own; there is no loop to release")
+                return True
             try:
                 r = go_now(self.api)
             except (OSError, ValueError) as e:
