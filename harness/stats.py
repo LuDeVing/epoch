@@ -7,15 +7,19 @@ beta_a, beta_b}]}. `load_views(batch)` returns {"batch", "strategy_stats": <that
 "calibration": <calibration.json or None>}, the shape think/allocate.stats_rows reads.
 No LLM writes any view (MEM-16, CTL-07).
 
-Split choice: TRAIN_SPLITS = ("train",). Section 6 says strategy stats come from train rows
-only and held-out items never enter memory (MSR-11); dev-tune is reserved for calibration and
-parameters. data.py has no "train" split at P0, so P0 views are empty unless a caller passes
-splits=("train", "dev-tune") explicitly; the splits used are recorded in the view.
+Split choice: TRAIN_SPLITS = data.TRAIN_SPLITS = ("train", "dev-tune"). Section 6 says strategy
+stats come from train rows only and held-out items never enter memory (MSR-11). data.py has no
+"train" split at P0, so dev-tune (the tuning split) stands in; dev-ablate and test never build a
+view. The splits used are recorded in the view, and think refuses a snapshot whose splits
+include the item's split (Pr11). Reached from a real batch by `python -m harness.stats <batch>`
+(section 7 step 1) or by think on first use of flags.snapshot (HTSA_SNAPSHOT for a bench run).
 
 Counting per cell: outcome rows are rows with a non-null status other than "card_error" (one
-per verification); pass = status "verified"; fail = any other status (fail, checked,
-unverified); n = pass + fail; call rows (no status) are one per model call and are grouped by
-their spawn key (run_id, round, card, operator, seed, perm, round_type) into card runs;
+per verification); pass = status "verified"; fail = status "fail" only. "unverified" and
+"checked" rows rest on no script check, so they update no statistics (EVL-10); n = pass + fail.
+Call rows (no status) are one per model call and are grouped by
+their spawn key (run_id, round, card, operator, seed, perm, round_type, parent_id) into card runs
+(parent_id keeps two revise children of one round apart);
 n_calls = card runs; mean_tokens = mean tokens.total_tokens per card run (the est_cost input;
 all rows when the cell has no call rows); mean_verify_tokens = mean over outcome rows. Only the
 latest run_instance of each run_id counts (ledger.current_rows). Verification rows carry the candidate's round_type (think.py), so a cell
@@ -26,15 +30,17 @@ views/<batch>/history/strategy_stats.<hash>.json before the new one replaces it 
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
+import threading
 from pathlib import Path
 
 from . import config, ledger
+from .data import TRAIN_SPLITS
 from .schemas import now_ts
 
-TRAIN_SPLITS = ("train",)
 VIEW_NAME = "strategy_stats.json"
 
 
@@ -63,13 +69,13 @@ def _cell_stats(group: list[dict]) -> dict:
     outcomes = [r for r in group if r.get("status") not in (None, "card_error")]
     calls = [r for r in group if r.get("status") in (None, "card_error")]
     n_pass = sum(1 for r in outcomes if r.get("status") == "verified")
-    n_fail = len(outcomes) - n_pass
+    n_fail = sum(1 for r in outcomes if r.get("status") == "fail")    # EVL-10: true failures only
     # one ledger row per model call; a card run (one spawn) may span several calls, so the
     # est_cost input is the mean over card runs = call rows grouped by their spawn key
     runs: dict[tuple, int] = {}
     for r in calls:
         k = (r.get("run_id"), r.get("round"), r.get("card"), r.get("operator"), r.get("seed"),
-             r.get("perm"), r.get("round_type"))
+             r.get("perm"), r.get("round_type"), r.get("parent_id"))
         runs[k] = runs.get(k, 0) + _tokens(r)
     mean_tokens = _mean(list(runs.values())) if runs else _mean([_tokens(r) for r in group])
     return {"pass": n_pass, "fail": n_fail, "n": n_pass + n_fail, "n_calls": len(runs) or len(calls),
@@ -147,3 +153,38 @@ def cell(views: dict | None, cls: str, card: str, round_type: str) -> dict | Non
         if (r.get("cls"), r.get("card"), r.get("round_type")) == (cls, card, round_type):
             return r
     return None
+
+
+_BUILD_LOCK = threading.Lock()
+
+
+def ensure_views(batch: str | None, splits: tuple[str, ...] = TRAIN_SPLITS) -> dict | None:
+    """load_views(batch), building the view first when it does not exist yet and the ledger
+    holds rows of that batch in `splits` (section 7 step 1 on first use). An existing view is
+    never rebuilt here, so a snapshot stays frozen once written; rebuild it with the CLI."""
+    if not batch:
+        return None
+    with _BUILD_LOCK:
+        if not view_path(batch).exists():
+            if not any(r.get("split") in splits for r in ledger.rows(batch=batch)):
+                return None
+            rebuild(batch, splits)
+    return load_views(batch)
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI: python -m harness.stats <batch> [--splits train,dev-tune] (section 7 step 1)."""
+    ap = argparse.ArgumentParser(prog="python -m harness.stats", description=main.__doc__)
+    ap.add_argument("batch")
+    ap.add_argument("--splits", default=",".join(TRAIN_SPLITS))
+    a = ap.parse_args(argv)
+    splits = tuple(s.strip() for s in a.splits.split(",") if s.strip())
+    p = rebuild(a.batch, splits)
+    v = _read(p) or {}
+    print(json.dumps({"view": str(p), "splits": list(splits), "n_rows": v.get("n_rows"),
+                      "cells": len(v.get("rows") or []), "content_hash": v.get("content_hash")}))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

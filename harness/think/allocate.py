@@ -4,13 +4,28 @@
 GEN-17, CTL-07, CTL-11, CTL-14).
 
 Round 1 = seeded + memory-blind (a uniformly random applicable card, random operator) + every
-applicable P0 directed card (low_prior, transform; formal on formalizable benchmarks). Directed
-cards are ordered round-robin until every cell has N_min train rows in strategy_stats; then by
-Thompson sampling on Beta(pass+1, fail+1) / mean_tokens with a 10 percent exploration floor.
+applicable P0 directed card (low_prior, transform; formal on formalizable benchmarks). GEN-17
+runs every directed card every round, so memory never removes one. Memory decides (a) the order
+of the directed cards, which decides what a tight budget cuts (think._within_budget), and (b)
+the card of the respawn slot rounds 2+ add (section 5: max_spawns_per_round = n0 + 3 = 2 revise
+children + 1 respawn; `respawn`).
+
+Posterior per card (CTL-07, MEM-05): the (class, card, round_type) cell of the frozen
+strategy_stats view when it has N_min rows; below that, back-off to the pooled cell over every
+class for that card and round type; when the pooled cell is short too for any card, cold-start
+round-robin. Score = p ~ Beta(pass+1, fail+1) divided by est_cost (the cell's mean tokens per
+card run, class cell first). Exploration floor (CTL-07: 10% of the budget spread uniformly over
+cards): each allocated slot is, with probability exploration_floor, a uniformly random card
+instead of the Thompson pick. With two or more slots the posterior mode is guaranteed one.
+
+RNG: keyed f"{item_id}:{ARM}:{replicate}:{purpose}" (README Determinism), so items of one class
+get independent draws while the statistics stay pooled per class; cls stands in only when a
+caller passes no item_id.
 Spec order returned by initial(): [seeded, memory_blind, directed...] (MEMORY_BLIND_INDEX).
 """
 from __future__ import annotations
 
+import hashlib
 import math
 import random
 
@@ -53,9 +68,16 @@ def spec_tuple(spec: CardSpec) -> tuple:
     return (spec.card, spec.operator, spec.seed, spec.perm)
 
 
-def _rng(cls: str, replicate: int, purpose: str) -> random.Random:
-    # The allocator is not given item_id (README signature), so the class key stands in for it.
-    return random.Random(f"{cls}:{ARM}:{replicate}:{purpose}")
+def _rng(key: str, replicate: int, purpose: str) -> random.Random:
+    """README Determinism: key is the item id (the class only when no item id is given)."""
+    return random.Random(f"{key}:{ARM}:{replicate}:{purpose}")
+
+
+def _offset(item_id: str | None) -> int:
+    """Stable per-item rotation offset for round-robin (0 without an item id)."""
+    if not item_id:
+        return 0
+    return int(hashlib.sha256(str(item_id).encode("utf-8")).hexdigest()[:8], 16)
 
 
 def _seeds() -> list[str]:
@@ -104,37 +126,108 @@ def _cell(rows: list[dict], cls: str, card: str, round_type: str) -> dict | None
     return None
 
 
+def _weight(r: dict) -> int:
+    """Card runs behind a cell's mean_tokens (n_calls), else its outcome count."""
+    return max(1, int(r.get("n_calls") or r.get("n") or 0))
+
+
+def _pooled(rows: list[dict], card: str, round_type: str) -> dict | None:
+    """The cell pooled over every class for one card and round type (MEM-05 back-off)."""
+    sel = [r for r in rows if r.get("card") == card and r.get("round_type", round_type) == round_type]
+    if not sel:
+        return None
+    tok = [r for r in sel if r.get("mean_tokens")]
+    w = sum(_weight(r) for r in tok)
+    return {"cls": "*", "card": card, "round_type": round_type,
+            "pass": sum(r["pass"] for r in sel), "fail": sum(r["fail"] for r in sel),
+            "n": sum(r["n"] for r in sel),
+            "mean_tokens": (sum(float(r["mean_tokens"]) * _weight(r) for r in tok) / w) if w else 0.0}
+
+
+def posterior_cells(cards: list[str], cls: str, views: dict | None,
+                    round_type: str = "first") -> dict[str, dict] | None:
+    """Per card the class cell when it has N_min rows, else the pooled cell over every class
+    (MEM-05); None (cold start, round-robin) when any card is short in both."""
+    rows = stats_rows(views)
+    if not rows or not cards:
+        return None
+    n_min, out = config.PARAMS["N_min"], {}
+    for c in cards:
+        cell = _cell(rows, cls, c, round_type)
+        if not cell or cell["n"] < n_min:
+            cell = _pooled(rows, c, round_type)
+        if not cell or cell["n"] < n_min:
+            return None
+        out[c] = cell
+    return out
+
+
+def _costs(cards, views, benchmark, cls, round_type) -> dict[str, float]:
+    return {c: float(est_cost(CardSpec(card=c), views, benchmark, cls=cls, round_type=round_type))
+            for c in cards}
+
+
+def _draw(cell: dict, cost: float, rng: random.Random) -> float:
+    return rng.betavariate(cell["pass"] + 1, cell["fail"] + 1) / max(1.0, float(cost or 1.0))
+
+
 # ---------------------------------------------------------------- ordering
-def order_round_robin(cards: list[str], replicate: int, round_no: int) -> list[str]:
-    """Rotate the directed cards so the leading card changes with replicate and round."""
+def order_round_robin(cards: list[str], replicate: int, round_no: int,
+                      item_id: str | None = None) -> list[str]:
+    """Rotate the cards so the leading card changes with item, replicate and round."""
     if not cards:
         return []
-    k = (replicate + round_no) % len(cards)
+    k = (replicate + round_no + _offset(item_id)) % len(cards)
     return cards[k:] + cards[:k]
 
 
-def order_thompson(cards: list[str], cells: dict[str, dict], rng: random.Random) -> list[str]:
-    """Sort by p ~ Beta(pass+1, fail+1) divided by mean_tokens; with probability
-    exploration_floor the order is a uniform shuffle instead (section 5 Card allocation)."""
-    if rng.random() < config.PARAMS["exploration_floor"]:
-        out = list(cards)
-        rng.shuffle(out)
-        return out
-    score = {}
-    for c in cards:
-        cell = cells[c]
-        p = rng.betavariate(cell["pass"] + 1, cell["fail"] + 1)
-        score[c] = p / max(1.0, float(cell.get("mean_tokens") or 1.0))
-    return sorted(cards, key=lambda c: -score[c])
+def order_thompson(cards: list[str], cells: dict[str, dict], rng: random.Random,
+                   costs: dict[str, float] | None = None) -> list[str]:
+    """One draw p ~ Beta(pass+1, fail+1) per card, scored p / est_cost (cell mean_tokens when no
+    costs are given). Each position in turn is, with probability exploration_floor, a uniform
+    pick among the cards left, else the best-scoring card left (section 5 Card allocation)."""
+    costs = costs or {c: float(cells[c].get("mean_tokens") or 1.0) for c in cards}
+    score = {c: _draw(cells[c], costs[c], rng) for c in cards}
+    left, out = sorted(cards, key=lambda c: -score[c]), []
+    while left:
+        pick = rng.choice(left) if rng.random() < config.PARAMS["exploration_floor"] else left[0]
+        out.append(pick)
+        left.remove(pick)
+    return out
 
 
-def order_directed(cards, cls, views, replicate, round_no, round_type="first") -> list[str]:
-    """Thompson once every cell has >= N_min rows, else round-robin."""
-    rows = stats_rows(views)
-    cells = {c: _cell(rows, cls, c, round_type) for c in cards}
-    if rows and all(v and v["n"] >= config.PARAMS["N_min"] for v in cells.values()):
-        return order_thompson(cards, cells, _rng(cls, replicate, f"thompson:{round_no}"))
-    return order_round_robin(cards, replicate, round_no)
+def pick_cards(cards: list[str], cells: dict[str, dict], rng: random.Random, n: int,
+               costs: dict[str, float] | None = None) -> list[str]:
+    """n allocated slots, cards may repeat: each slot is a uniform card with probability
+    exploration_floor (the CTL-07 floor), else the Thompson pick (fresh draws per slot). With
+    n >= 2 the posterior mode (highest mean pass per token) is guaranteed one slot (MEM-05)."""
+    if not cards or n <= 0:
+        return []
+    costs = costs or {c: float(cells[c].get("mean_tokens") or 1.0) for c in cards}
+    out = []
+    for _ in range(n):
+        if rng.random() < config.PARAMS["exploration_floor"]:
+            out.append(rng.choice(cards))
+            continue
+        score = {c: _draw(cells[c], costs[c], rng) for c in cards}
+        out.append(max(cards, key=lambda c: score[c]))
+    mean = {c: (cells[c]["pass"] + 1) / (cells[c]["pass"] + cells[c]["fail"] + 2)
+            / max(1.0, costs[c]) for c in cards}
+    mode = max(cards, key=lambda c: mean[c])
+    if n >= 2 and mode not in out:
+        out[-1] = mode
+    return out
+
+
+def order_directed(cards, cls, views, replicate, round_no, round_type="first", *,
+                   benchmark: str = "", item_id: str | None = None) -> list[str]:
+    """Thompson once every card has a posterior cell (class cell, or pooled back-off) with
+    N_min rows, else round-robin."""
+    cells = posterior_cells(cards, cls, views, round_type)
+    if cells is None:
+        return order_round_robin(cards, replicate, round_no, item_id)
+    rng = _rng(item_id or cls, replicate, f"thompson:{round_no}")
+    return order_thompson(cards, cells, rng, _costs(cards, views, benchmark, cls, round_type))
 
 
 # ---------------------------------------------------------------- spec builders
@@ -145,24 +238,26 @@ def _spec(card: str, rng: random.Random, seeds: list[str], perm: int = 0) -> Car
 
 
 def initial(benchmark: str, cls: str, views: dict | None, n0: int, replicate: int,
-            round_no: int) -> list[CardSpec]:
+            round_no: int, item_id: str | None = None) -> list[CardSpec]:
     """Round-1 specs: seeded, memory-blind, then every applicable directed card (GEN-17).
     n0 above the base adds seeded specs with new seeds; below it, seeded + 2 directed are kept."""
-    rng, seeds = _rng(cls, replicate, f"initial:{round_no}"), _seeds()
+    rng, seeds = _rng(item_id or cls, replicate, f"initial:{round_no}"), _seeds()
     seeded = _spec("seeded", rng, seeds, perm=1)
     mb_card = rng.choice(applicable_cards(benchmark))                 # memory-blind: uniform card
-    directed = [_spec(c, rng, seeds) for c in order_directed(directed_cards(benchmark), cls, views,
-                                                              replicate, round_no)]
+    directed = [_spec(c, rng, seeds) for c in order_directed(
+        directed_cards(benchmark), cls, views, replicate, round_no, benchmark=benchmark,
+        item_id=item_id)]
     # the memory-blind spec is drawn from the tuples the seeded and directed specs do not use,
     # so round 1 never spawns the same (card, operator, seed, perm) twice
     taken = {spec_tuple(s) for s in [seeded] + directed}
-    drawn = fresh_tuples(benchmark, cls, taken, [], replicate, round_no, 1, cards=[mb_card])
+    drawn = fresh_tuples(benchmark, cls, taken, [], replicate, round_no, 1, cards=[mb_card],
+                         item_id=item_id)
     blind = drawn[0] if drawn else _spec(mb_card, rng, seeds, perm=0)
     full = [seeded, blind] + directed
     if n0 >= len(full):
         used = {spec_tuple(s) for s in full}
         extra = fresh_tuples(benchmark, cls, used, [], replicate, round_no, n0 - len(full),
-                             cards=["seeded"])
+                             cards=["seeded"], item_id=item_id)
         return full + extra
     required = [seeded] + directed[:2]
     rest = [blind] + directed[2:]
@@ -176,16 +271,18 @@ def _candidate_tuples(card: str, seeds: list[str]) -> list[tuple]:
 
 
 def fresh_tuples(benchmark: str, cls: str, used: set, variants: list, replicate: int,
-                 round_no: int, n: int, cards: list[str] | None = None) -> list[CardSpec]:
+                 round_no: int, n: int, cards: list[str] | None = None,
+                 item_id: str | None = None) -> list[CardSpec]:
     """n specs whose (card, operator, seed, perm) tuple is unused, spread round-robin across
-    cards; each gets variants[i % len] as s.variant (base views when empty) (CTL-11, CTL-14)."""
-    rng, seeds = _rng(cls, replicate, f"fresh:{round_no}"), _seeds()
+    cards; each gets variants[i % len] as s.variant (base views when empty) (CTL-11, CTL-14).
+    Never re-uses a tuple: when the pools run out, fewer than n specs come back."""
+    rng, seeds = _rng(item_id or cls, replicate, f"fresh:{round_no}"), _seeds()
     pools = {}
     for c in cards or applicable_cards(benchmark):
         pool = [t for t in _candidate_tuples(c, seeds) if t not in used]
         rng.shuffle(pool)
         pools[c] = pool
-    order = order_round_robin(list(pools), replicate, round_no)
+    order = order_round_robin(list(pools), replicate, round_no, item_id)
     out, taken = [], set(used)
     while len(out) < n and any(pools.values()):
         for c in order:
@@ -197,6 +294,33 @@ def fresh_tuples(benchmark: str, cls: str, used: set, variants: list, replicate:
             taken.add(t)
             v = variants[len(out) % len(variants)] if variants else None
             out.append(CardSpec(card=t[0], operator=t[1], seed=t[2], perm=t[3], variant=v))
+    return out
+
+
+def respawn(benchmark: str, cls: str, views: dict | None, used: set, variants: list,
+            replicate: int, round_no: int, n: int = 1, *, item_id: str | None = None,
+            round_type: str = "first") -> list[CardSpec]:
+    """The allocated respawn slot(s) of rounds 2+ (section 5 max_spawns_per_round: 1 respawn).
+    Cards come from pick_cards over the applicable cards (posterior cells with the pooled
+    back-off, floor, mode slot), or round-robin at cold start; each slot gets an unused tuple of
+    its card and falls to the next card in round-robin order when that card's pool is empty."""
+    cards = applicable_cards(benchmark)
+    rr = order_round_robin(cards, replicate, round_no, item_id)
+    cells = posterior_cells(cards, cls, views, round_type)
+    if cells is None:
+        picks = [rr[i % len(rr)] for i in range(n)]
+    else:
+        rng = _rng(item_id or cls, replicate, f"respawn:{round_no}")
+        picks = pick_cards(cards, cells, rng, n, _costs(cards, views, benchmark, cls, round_type))
+    out, taken = [], set(used)
+    for card in picks:
+        for c in [card] + [x for x in rr if x != card]:
+            got = fresh_tuples(benchmark, cls, taken, variants, replicate, round_no, 1, cards=[c],
+                               item_id=item_id)
+            if got:
+                out.append(got[0])
+                taken.add(spec_tuple(got[0]))
+                break
     return out
 
 
@@ -225,20 +349,29 @@ def revise_specs(parents: list[tuple[Candidate, VerifyResult]], replicate: int) 
 
 
 # ---------------------------------------------------------------- cost estimators
-def _cell_mean_tokens(views: dict | None, card: str, round_type: str) -> float | None:
+def _cell_mean_tokens(views: dict | None, card: str, round_type: str,
+                      cls: str | None = None) -> float | None:
+    """Mean tokens per card run of the class cell; pooled over classes (weighted by card runs)
+    when the class has no row or no cls is given."""
     rows = [r for r in stats_rows(views) if r.get("card") == card
             and r.get("round_type", round_type) == round_type and r.get("mean_tokens")]
-    n = sum(max(1, r["n"]) for r in rows)
-    if not rows or n == 0:
+    own = [r for r in rows if cls is not None and r.get("cls") == cls]
+    rows = own or rows
+    if not rows:
         return None
-    return sum(float(r["mean_tokens"]) * max(1, r["n"]) for r in rows) / n
+    w = sum(_weight(r) for r in rows)
+    return sum(float(r["mean_tokens"]) * _weight(r) for r in rows) / w
 
 
-def est_cost(spec: CardSpec, views: dict | None, benchmark: str) -> int:
-    """Cell mean tokens per card call from strategy_stats, else cold start: per step the role
-    max_tokens + routed-input estimate + CLI overhead (section 4 Spend accounting)."""
-    round_type = "revise" if spec.card == "revise" else "first"
-    mean = _cell_mean_tokens(views, spec.card, round_type)
+def est_cost(spec: CardSpec, views: dict | None, benchmark: str, cls: str | None = None,
+             round_type: str | None = None) -> int:
+    """Cell mean tokens per card run from strategy_stats (the class cell, else pooled; a
+    post_reset spec without post_reset rows uses the first-round cell), else cold start: per
+    step the role max_tokens + routed-input estimate + CLI overhead (section 4 Spend accounting)."""
+    round_type = round_type or ("revise" if spec.card == "revise" else "first")
+    mean = _cell_mean_tokens(views, spec.card, round_type, cls)
+    if mean is None and round_type == "post_reset":
+        mean = _cell_mean_tokens(views, spec.card, "first", cls)
     if mean is not None:
         return int(math.ceil(mean))
     role = "program" if benchmark == "arc" else "generate"

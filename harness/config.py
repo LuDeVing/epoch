@@ -126,7 +126,9 @@ FLAGS = {
     "verify_order": "top_conf",          # I4, P1: top_conf | top_conf_plus_explore
     "harvest_unspoken": "off",           # I5: off | capture (P1) | merge (P2)
     "seed_type": "concept",              # SOC-02: concept | doc_pack (P1)
-    "snapshot": None,                    # memory views batch id; None = empty memory
+    # memory views batch id; None = empty memory. HTSA_SNAPSHOT sets it for a bench batch; think
+    # builds the view from that batch's train-split ledger rows on first use (stats.rebuild).
+    "snapshot": os.environ.get("HTSA_SNAPSHOT") or None,
     "signature": False,                  # REP-01, P1
     "p_raw_validated": False,            # EVL-08 entry gate
     "llm_falsifier_validated": False,    # EVL-02
@@ -135,6 +137,10 @@ FLAGS = {
     "early_stop": True,                  # CTL-05 (pre-gate flag 2)
     "reset_on_stagnation": True,         # CTL-11 (pre-gate flag 1)
     "judge_when_verify_free": False,     # pilot-2: judge cost 114k/219k on ARC while steering nothing
+    # EVL-08 / Pr17: share of items (hashed on item id and replicate) whose candidates are judged
+    # for calibration only when the check is a free script. p_raw is logged to judgments.jsonl and
+    # the ledger (calibration_only), never steers the run and is not charged to B. 0 = off.
+    "judge_calibration_sample": 0.0,
 }
 
 # ---------------------------------------------------------------- control parameters (section 5)
@@ -148,9 +154,11 @@ PARAMS = {
     "hi": 0.8,                   # surprise threshold on c
     "R_stale": 2, "d_max": 0.5,  # stagnation rules
     "k_pop": 5, "theta_admit": 0.6,
-    "T": 0.67,                   # identity-map acceptance: 2 of 3 probe agreement (placeholder)
+    # Thresholds are exact fractions; think compares them with a 1e-9 tolerance and also accepts
+    # "a/b" strings (CLI --param T=2/3). 0.67 would exclude 2 of 3 (2/3 = 0.6667 < 0.67).
+    "T": 2 / 3,                  # identity-map acceptance: 2 of 3 probe agreement (placeholder)
     "T_checked": 0.9,            # inactive until llm_falsifier_validated
-    "optout": 0.67,              # opt-out level for an unverified best guess (placeholder)
+    "optout": 2 / 3,             # opt-out level for an unverified best guess (placeholder)
     "eps": 0.01,                 # minimum partial-score gain that counts as progress
     "n_probe": 3,                # agreement probe calls, once per item
     "N_min": 20,                 # ledger rows per cell before Thompson allocation

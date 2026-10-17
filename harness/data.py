@@ -30,6 +30,11 @@ BT_N = 120
 ARC_MAX_CELLS = 600
 SPLITS = (("dev-tune", 0.4), ("dev-ablate", 0.3), ("test", 0.3))
 SPLIT_NAMES = tuple(s for s, _ in SPLITS)
+# Splits whose ledger rows may build memory views (stats.rebuild). ARCHITECTURE section 8 names a
+# train split that writes views only; P0 has none, so dev-tune (the tuning split) stands in.
+# dev-ablate and test are held out: they never build views (MSR-11), and think refuses a
+# snapshot whose splits include the item's own split (Pr11).
+TRAIN_SPLITS = ("train", "dev-tune")
 
 
 # ---------------------------------------------------------------- paths (read config at call time)
