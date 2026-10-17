@@ -23,7 +23,13 @@ entry below and apply to later batches only.
 - Best-of-N arms stop at the scaffold's realized spend on the same item and replicate (MSR-02);
   without a scaffold run they stop at B. Stop rule: the first call always runs; further calls are
   spawned while realized spend plus the mean call cost so far stays within the budget; hard cap
-  N <= 4 x m.
+  N <= 4 x m. Calls run in parallel batches of at most fit - 1 calls (fit = mean calls that fit
+  in the remaining budget, at most 6), so one mean call of room stays in reserve and the last
+  call runs alone; overshoot is recorded per run.
+- Plain runs that fail after spending tokens (for example the 8000 output-token cap) are plain
+  failures: scored wrong, never retried, and included in the cost median; their count is
+  reported (budget.json n_failed, summary.md). Cost rows of another split or model are not
+  pooled into B. B = max(m x cot_median, HTSA_MIN_B); the floor is recorded in budget.json.
 - Driver estimators checked before each spawn and verification (section 5, implemented in
   `harness/think/allocate.py`): est_cost = the strategy_stats cell mean tokens per call of that
   card and round type, cold start = steps x (role max_tokens + routed-input estimate + CLI
@@ -52,6 +58,8 @@ entry below and apply to later batches only.
 - Keep items with plain accuracy between 20% and 80% across replicates; substitute BRAINTEASER
   reconstruction variants or fresh paraphrases and ARC-AGI-2 public eval items where the pilot
   shows ceiling or floor. Report chance level and the plain noise floor (replicate SD).
+  `score.headroom_filter` applies this; with fewer than 3 replicates summary.md says
+  "headroom filter not applied, replicates=N" instead of passing every item.
 - Power calculation: TBD from the pilot (paired design, item-cluster bootstrap; target
   detectable difference TBD points at 80% power, one-sided alpha 0.05).
 
@@ -67,7 +75,8 @@ entry below and apply to later batches only.
 | instruction-only, ladder L1, pressure wrapper | Stage 2 arms (section 8) | TBD, built in section 9 step 2-4 |
 
 - Primary null: the stronger of bestofn_verify and seeded_bestofn, chosen per benchmark on
-  dev-tune before the comparison batch.
+  dev-tune before the comparison batch (`score --null-from <dev-tune batch>`; without it the
+  choice is made in the batch itself and summary.md marks it as not preregistered).
 - Every prompt is built from `strip_key(item)`; keys are read only by `harness/score.py`.
 
 ## 6. Replicates and seeds
@@ -91,12 +100,24 @@ entry below and apply to later batches only.
 
 - Gate (Stage 3 go/no-go, test split, used once): scaffold vs the primary null at m = 20,
   one-sided superiority, lower 95% CI bound > 0 points. Equivalence claims require TOST within
-  3 points (placeholder margin).
+  3 points (placeholder margin). Implementation (score.py, summary.md "Primary comparison"):
+  the one-sided 95% lower bound is the 5th percentile of the item-cluster bootstrap of the
+  paired difference; TOST at alpha 0.05 per side holds when the 90% interval (5th to 95th
+  percentile) lies inside (-3, +3) points. Pairs are the items both arms completed (counts
+  reported); null runs not matched to the scaffold's spend are left out and counted.
 - Keep/drop (pre-gate, dev-ablate, 1x cost, R_max fixed, 3 replicates): a card or flag stays only
   if leave-one-out gives P(helps) > 0.95 under a Beta(1,1) prior on discordant item pairs, helps =
   ground-truth solve rate per item at matched cost vs the full stack minus the flag; accumulated
   only across batches sharing one memory and calibration snapshot; number of batches fixed in
   advance (TBD); pairs stay only if they beat each component (MSR-12, MSR-18).
+  Implementation: an arm named `<base>-minus-<flag>` is the leave-one-out arm; per item the
+  replicate-averaged solve rates are compared, b = items where the full stack is higher, c =
+  the reverse, P(helps) = P(theta > 0.5) with theta ~ Beta(1 + b, 1 + c)
+  (`score.keep_drop`; `score.keep_drop_pooled` sums b and c across the fixed batches).
+- Judge validation (/bench step 4): `score.judge_validation` reports AUROC, Brier and
+  adaptive-bin ECE of judge p_raw against the key on dev-tune runs with item-cluster CIs, and
+  marks the batch as blocking when the judge's pick does not beat a random pick among the
+  judged candidates. The self-preference and length-invariance probes are not built yet.
 - Fidelity to the brain is never a reason.
 
 ## 9. Ablation schedule (P0 rows of ARCHITECTURE section 8; post-gate and P1 rows live there)
@@ -134,3 +155,8 @@ entry below and apply to later batches only.
 ## Changelog
 
 - 2026-10-10: first draft (bench owner).
+- 2026-10-17: fix pass. Best-of-N sizing follows the s2 mean-cost rule again (the code had
+  sized by the largest call); parallel batches keep one mean call in reserve. Plain failures
+  that spent tokens enter the cost median. Primary comparison, TOST, keep/drop, headroom
+  filter and judge validation are implemented in score.py as written in s4, s5, s7, s8.
+  Applies to later batches; earlier batches were sized by the largest call.

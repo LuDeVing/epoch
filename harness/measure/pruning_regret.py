@@ -6,7 +6,10 @@ keyed items only, never fed back into any run. Keys are reached only through
 harness.score.cand_correct; this module never reads an item's key field itself.
 
 Per run (default arm "scaffold"):
-  pool      = cands rows of the run folder, probe candidates excluded
+  pool      = every cands row of the run folder, probe candidates included (n_probe counts
+              them). One definition across the harness: score.py coverage uses the same pool,
+              and the driver's vote can return a probe program, so a probe candidate is a
+              candidate that could have been returned.
   covered   = some pool candidate is key-correct
   returned  = the answer's candidate (answer.json cand_id, else the answer value) is key-correct
   pruned    = covered and not returned
@@ -23,7 +26,9 @@ first-round candidates. conf comes from state.json cycle rows ("conf": {cand_id:
 falling back to the ledger agreement of the run's rows (identity calibration at P0).
 
 Rates are per item (replicates averaged within item), then averaged over items, with a
-95% item bootstrap CI. Output: results/<batch>/pruning_regret.json.
+95% item-cluster bootstrap CI (ARCHITECTURE section 8): clusters are item groups (BRAINTEASER
+puzzle groups; an ARC task is its own cluster), resampled with replacement, the rate of a
+resample being the mean over the items it contains. Output: results/<batch>/pruning_regret.json.
 CLI: python -m harness.measure.pruning_regret --batch <name> [--arm scaffold]
 """
 from __future__ import annotations
@@ -160,13 +165,15 @@ def late_winner(final_id: str | None, pool: list[dict], conf: dict) -> bool | No
 def analyse_run(row: dict, item: dict, correct_fn: Callable, batch: str) -> dict:
     """One run's coverage, pruning causes and late-winner flag (section 8, Pruning regret)."""
     run_dir = Path(config.RUNS_DIR) / row["run_id"]
-    pool = [c for c in graph.load_cands(run_dir) if not _is_probe(c)]
+    pool = list(graph.load_cands(run_dir))           # probe candidates included (module docstring)
     by_id = {c["id"]: c for c in pool}
     correct = {c["id"] for c in pool if correct_fn(item, c)}
     ans = _answer(row, run_dir)
     ret = _returned_correct(ans, by_id, correct, item, correct_fn)
     rec = {"run_id": row["run_id"], "benchmark": row["benchmark"], "item_id": row["item_id"],
-           "n_pool": len(pool), "n_correct": len(correct), "covered": bool(correct),
+           "group": str(item.get("group") or row["item_id"]),
+           "n_pool": len(pool), "n_probe": sum(1 for c in pool if _is_probe(c)),
+           "n_correct": len(correct), "covered": bool(correct),
            "returned_correct": ret, "pruned": bool(correct) and not ret}
     cycles = state_cycles(run_dir)
     if rec["pruned"]:
@@ -182,26 +189,39 @@ def analyse_run(row: dict, item: dict, correct_fn: Callable, batch: str) -> dict
 
 
 # ---------------------------------------------------------------- aggregation
-def bootstrap_ci(values: list[float], n: int = 2000, seed: int = 0) -> list[float] | None:
-    """95% percentile CI of the mean over items (item bootstrap)."""
+def bootstrap_ci(values: list[float], n: int = 2000, seed: int = 0,
+                 clusters: list | None = None) -> list[float] | None:
+    """95% percentile CI of the mean over items, resampling clusters of items (each item its
+    own cluster when clusters is None); a resample's value is the mean over its items."""
     if not values:
         return None
     v = np.asarray(values, dtype=float)
-    rng = np.random.default_rng(seed)
-    means = v[rng.integers(0, len(v), size=(n, len(v)))].mean(axis=1)
+    keys = list(clusters) if clusters is not None else list(range(v.size))
+    uniq = {k: i for i, k in enumerate(dict.fromkeys(keys))}
+    cid = np.array([uniq[k] for k in keys])
+    k = len(uniq)
+    sums = np.bincount(cid, weights=v, minlength=k)
+    counts = np.bincount(cid, minlength=k).astype(float)
+    draws = np.random.default_rng(seed).integers(0, k, size=(n, k))
+    means = sums[draws].sum(axis=1) / counts[draws].sum(axis=1)
     return [round(float(np.percentile(means, 2.5)), 4), round(float(np.percentile(means, 97.5)), 4)]
 
 
 def item_rate(recs: list[dict], fn: Callable[[dict], float | None], n_boot: int) -> dict:
-    """Per-item mean of fn over runs (None skipped), then mean over items with a CI."""
+    """Per-item mean of fn over runs (None skipped), then mean over items with an item-cluster
+    CI (clusters = item groups)."""
     per_item: dict[str, list[float]] = {}
+    group: dict[str, str] = {}
     for r in recs:
         x = fn(r)
         if x is not None:
             per_item.setdefault(r["item_id"], []).append(float(x))
-    vals = [sum(xs) / len(xs) for xs in per_item.values()]
+            group[r["item_id"]] = r.get("group") or r["item_id"]
+    ids = list(per_item)
+    vals = [sum(per_item[i]) / len(per_item[i]) for i in ids]
     return {"rate": round(sum(vals) / len(vals), 4) if vals else None,
-            "ci95": bootstrap_ci(vals, n=n_boot), "n_items": len(vals)}
+            "ci95": bootstrap_ci(vals, n=n_boot, clusters=[group[i] for i in ids]),
+            "n_items": len(vals), "n_clusters": len(set(group[i] for i in ids))}
 
 
 def _cause(key: str):

@@ -162,19 +162,27 @@ def judge_one(row, judge_model, out, seed=0, log_name="judge_calls"):
     shown = [gens[i] for i in order]
     user = "\n\n".join([f"<prompt>\n{row['prompt']}\n</prompt>"] + [f'<response index="{i}">\n{r}\n</response>'
                                                                     for i, r in enumerate(shown)])
-    groups, tok, g = None, 0, []
+    groups, tok, g, parsed = None, 0, [], False
     for attempt in range(3):
         r = llm.call(JUDGE_SYSTEM + "\n\n" + user + '\n\nReply with JSON only: {"groups": [[indices], ...]}, '
                      "every index from 0 to " + str(n - 1) + " exactly once.", role="judge", model=judge_model,
                      call_id=f"partition_{attempt}", log_dir=log_dir, effort="high")
         tok += int(r.usage.total_tokens)
         try:
-            g = parse_json(r.text)["groups"]
+            cand = parse_json(r.text)["groups"]
+            if not isinstance(cand, list) or not all(isinstance(x, list) for x in cand):
+                raise ValueError("groups is not a list of lists")
+            g, parsed = cand, True                                    # the last partition that parsed
             if sorted(i for x in g for i in x) == list(range(n)):
                 groups = g
                 break
         except Exception:  # noqa: BLE001
             continue
+    if groups is None and not parsed:
+        # no partition parsed at all (e.g. the judge answered in prose): unscored, never all singletons
+        return {**row, "unscored": True, "unscored_reason": "partition judge returned no parseable groups",
+                "partition": None, "distinct": None, "generation_scores": None, "partition_scores": None,
+                "utility": None, "judge_tokens": tok, "judge_model": judge_model}
     if groups is None:                                                # official lenient fold
         seen = set()
         groups = [[i for i in x if 0 <= i < n and not (i in seen or seen.add(i))] for x in (g if isinstance(g, list) else [])]
@@ -229,7 +237,9 @@ def run_rows(fn, rows, path, workers):
             with path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(out) + "\n")
             done.add(r["id"])
-            msg = f"distinct {out['distinct']} utility {out['utility']:.2f}" if "utility" in out else f"tokens {out['gen_tokens']:,}"
+            msg = ("UNSCORED (" + out.get("unscored_reason", "") + ")" if out.get("unscored") else
+                   f"distinct {out['distinct']} utility {out['utility']:.2f}" if "utility" in out else
+                   f"tokens {out['gen_tokens']:,}")
             print(f"[nb] {len(done)}/{len(rows)} {r['id']} {msg}", flush=True)
     with ThreadPoolExecutor(max_workers=workers) as ex:
         list(ex.map(work, todo))
@@ -272,9 +282,10 @@ def win_loss_tie(a, b, tol: float = 1e-9) -> tuple[int, int, int]:
 
 
 def paired(rows_a: list[dict], rows_b: list[dict], key: str) -> tuple[list[float], list[float]]:
-    """Values of `key` on the prompt ids both arms have, in the order of rows_a."""
-    by_b = {r["id"]: r for r in rows_b}
-    both = [r for r in rows_a if r["id"] in by_b]
+    """Values of `key` on the prompt ids both arms have scored, in the order of rows_a (unscored rows, whose value
+    is None, are left out of the pairing)."""
+    by_b = {r["id"]: r for r in rows_b if r.get(key) is not None}
+    both = [r for r in rows_a if r["id"] in by_b and r.get(key) is not None]
     return [float(r[key]) for r in both], [float(by_b[r["id"]][key]) for r in both]
 
 
@@ -293,12 +304,17 @@ def summary(dirs, method: str | None = None, n_boot: int = 10_000, seed: int = 0
         p = Path(d) / "scores.jsonl"
         if p.exists():
             arms[Path(d).name] = load_scores(p)
-    lines = ["| arm | prompts | mean distinct (of 10) | IQM distinct | mean utility | IQM utility | generation tokens per prompt |",
-             "|---|---|---|---|---|---|---|"]
+    lines = ["| arm | prompts scored | unscored | mean distinct (of 10) | IQM distinct | mean utility | IQM utility | "
+             "generation tokens per prompt |",
+             "|---|---|---|---|---|---|---|---|"]
+    gen_tok = {}
     for name, rows in arms.items():
-        dist, util = [r["distinct"] for r in rows], [r["utility"] for r in rows]
-        lines.append(f"| {name} | {len(rows)} | {np.mean(dist):.2f} | {iqm(dist):.2f} | {np.mean(util):.2f} | "
-                     f"{iqm(util):.2f} | {np.mean([r.get('gen_tokens', 0) for r in rows]):,.0f} |")
+        ok = [r for r in rows if not r.get("unscored") and r.get("distinct") is not None]
+        dist, util = [r["distinct"] for r in ok], [r["utility"] for r in ok]
+        gen_tok[name] = float(np.mean([r.get("gen_tokens", 0) for r in rows])) if rows else float("nan")
+        mean = (lambda xs: f"{np.mean(xs):.2f}" if xs else "-")
+        lines.append(f"| {name} | {len(ok)} | {len(rows) - len(ok)} | {mean(dist)} | {iqm(dist):.2f} | {mean(util)} | "
+                     f"{iqm(util):.2f} | {gen_tok[name]:,.0f} |")
     if method is None:
         method = next((n for n in arms if n.endswith("method")), None) or (list(arms)[-1] if arms else None)
     if method in arms and len(arms) > 1:
@@ -315,11 +331,29 @@ def summary(dirs, method: str | None = None, n_boot: int = 10_000, seed: int = 0
             lines.append(f"| {name} | {dd['n']} | {dd['mean']:+.2f} [{dd['lo']:+.2f}, {dd['hi']:+.2f}] | "
                          f"{'/'.join(map(str, dd['wlt']))} | {uu['mean']:+.2f} [{uu['lo']:+.2f}, {uu['hi']:+.2f}] | "
                          f"{'/'.join(map(str, uu['wlt']))} |")
+    lines += ["", matched_tokens_note(gen_tok, method)]
     lines += ["", "NoveltyBench curated split, k=10, official v1.1 judge prompts and utility (patience 0.8); judges: Opus "
               "for partition and score via the Claude CLI (official partition judge is gpt-5.6-luna). IQM = mean of the "
               "middle 50% of prompts. The intervals cover prompt sampling only, not judge error (see rejudge and "
-              "agreement)."]
+              "agreement). Unscored = the partition judge returned no parseable groups on all three tries; those prompts "
+              "are left out of the means and of the pairing, never scored as ten distinct singletons.",
+              "", "Temperature: the official protocol samples at temperature 1.0; the Claude CLI path used here sets no "
+              "temperature (the CLI default applies), so sampling settings differ from the official runs."]
     return "\n".join(lines)
+
+
+def matched_tokens_note(gen_tok: dict, method: str | None) -> str:
+    """States whether the arms ran at matched generation tokens: method tokens over each baseline's."""
+    if not method or method not in gen_tok or len(gen_tok) < 2:
+        return "Generation tokens per prompt are listed per arm; no method arm to compare."
+    ratios = {name: gen_tok[method] / t - 1 for name, t in gen_tok.items() if name != method and t}
+    parts = [f"{name} {r:+.0%}" for name, r in ratios.items()]
+    if ratios and all(abs(r) <= 0.05 for r in ratios.values()):
+        return (f"Generation tokens per prompt are within 5% across arms ({method} relative to each baseline: "
+                f"{', '.join(parts)}); no token cap enforced the match.")
+    return ("Arms were NOT run at matched generation tokens (each arm makes 10 answers its own way; no token cap "
+            f"equalises them). {method} generation tokens relative to each baseline: {', '.join(parts)}. Differences "
+            "are not token-matched comparisons.")
 
 
 def rejudge_path(out, suffix: str) -> Path:

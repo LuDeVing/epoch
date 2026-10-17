@@ -38,14 +38,19 @@ Run everything as a package from the project root: `python -m harness.<module> .
   logs `max_tokens` and `over_cap`.
 - Cost unit: `Usage.total_tokens` = input + cache_read + cache_creation + output. B = m x median
   plain-CoT tokens per item on dev (per benchmark, per backend; successful plain calls only).
-  Best-of-N arms stop at the scaffold's realized spend per item (sized by the largest call seen,
-  one call at a time near the budget; `overshoot` recorded per run). When the scaffold arm is
+  Best-of-N arms stop at the scaffold's realized spend per item (plan.md section 2: sized by the
+  mean call cost, one mean call kept in reserve per parallel batch, the last call alone;
+  `overshoot` recorded per run). When the scaffold arm is
   requested and an (item, replicate) has no successful scaffold run, the best-of-N run is
   skipped and logged to `errors.jsonl`, never run at B silently. In the driver, every spend
   (spawn, judge, verify) is estimated and checked against B before the call; a judge round
   that does not fit is skipped (`judge_skipped` in the decision row).
-- Keys: `item["test_output"]` (ARC) and `item["label"]` (BT) are read ONLY by `score.py`. Every
-  prompt, view and run file is built from `strip_key(item)`. Tests assert this.
+- Keys: `item["test_output"]` (ARC) and `item["label"]` (BT) are read in the bench pipeline only
+  by `score.py`; the standalone scorers `portfolio_arc.py`, `portfolio_v2.py`,
+  `portfolio_offline.py`, `arc_think.py` (after every model call of the item) and `lite_bt.py`
+  (keeps the key in its result row, never in a prompt) read them too, and `data.py` builds them.
+  Every prompt, view and run file is built from `strip_key(item)`. Tests assert this:
+  `tests/test_fix_bench.py` scans every harness module and fails on any other reader.
 - Private roles (`config.PRIVATE_ROLES`, the defaults call): their call record, sandbox and
   reply live under `runs/<id>/private/calls/`, never beside the generator calls (Pr5). Tests
   grep every run file outside `private/` for the defaults reply. `problem.md` carries no item id.
