@@ -315,7 +315,8 @@ class NanoLoop:
         self.interrogated: set[str] = set()     # sketch ids whose cluster was interrogated (persists across rounds)
         self.arm = "scaffold"                   # scaffold | plain | climb (control arms, same ladder and budget)
         self.n_builds = 12                      # builds for the control arms
-        self.lens = "parts"                     # how the planner draws the map (tree.LENSES)
+        self.lens = DEFAULT_LENS                # how the planner draws the map (tree.LENSES); a factor apart from the replicate
+        self.lens_design = "fixed"              # fixed = same lens every replicate; by_replicate = --lens-by-replicate
         self.immediate_fix = True               # one same-round fix for rung 0/1 failures
         self.baseline_version = nano_version.baseline_version()
         self.working_src = self.baseline_src    # what direct-build cards see (climb arm advances it)
@@ -600,7 +601,8 @@ class NanoLoop:
                        for d in n["directions"]}
             stats.append({**n, "stats": per_dir})
         write_json(self.run_dir / "problem_tree.json", {"nodes": stats, "inward_share": self.inward_share,
-                                                         "off_tree_share": self.off_tree_share, "origins": self._origin_stats()})
+                                                         "off_tree_share": self.off_tree_share, "origins": self._origin_stats(),
+                                                         "lens": self.lens, "lens_design": self.lens_design})
 
     def _skipped(self, node_id) -> bool:
         """A part the owner excluded (control.json skip_nodes) or outside the --only-nodes scope. The scope is
@@ -1457,6 +1459,7 @@ class NanoLoop:
              "models": {"model": self.model, "cheap": self.cheap_model, "research": self.research_model}, "web_mode": self.web_mode,
              "budget": self.B, "aux_budget": self.aux_budget, "stage_shares": self.stage_shares, "tune": {"on": self.tune, "knobs": self.tune_knobs or "default", "top": self.tune_top},
              "anomaly_seeds": self.anomaly_seeds, "sham_share": self.sham_share, "controls": self.controls, "lens": self.lens,
+             "lens_design": self.lens_design,
              "aim": self.aim, "scope": sorted(self.only_nodes), **({"profile": self.pf.name} if self.pf.name != "llm" else {}),
              "digest": (hashlib.sha1(self.digest_text.encode()).hexdigest()[:12] if self.digest_text else None),
              "ts": now_ts()}
@@ -2106,7 +2109,7 @@ class NanoLoop:
             write_json(self.run_dir / "state.json", {"run_id": self.run_id, "item_id": spec_id(), "benchmark": "nano",
                        "arm": self.arm, "backend": self.backend, "model": self.model or config.DEFAULT_MODEL,
                        "B": self.B, "aux_budget": self.aux_budget, "rounds": self.rounds, "lens": self.lens,
-                       "baseline_version": self.baseline_version, "decisions": []})
+                       "lens_design": self.lens_design, "baseline_version": self.baseline_version, "decisions": []})
         self._write_commitments()
         if self.resume:
             self.load_state()
@@ -2606,6 +2609,7 @@ class NanoLoop:
             g["unsourced_dropped"] += n.get("dropped_unsourced", 0)
         controls_report = json.loads((self.run_dir / "controls.json").read_text(encoding="utf-8")) if (self.run_dir / "controls.json").exists() else {}
         answer = {"status": "pool", "arm": self.arm, "baseline_version": self.baseline_version,
+                  "lens": self.lens, "lens_design": self.lens_design,
                   "n_candidates": len([c for c in self.cands if not c.card.startswith("control")]), "n_checked": len(pool),
                   "controls": controls_report, "discovery": self.discovery, "retired_cards": sorted(self.retired_cards),
                   "lanes": {lane: {"built": sum(1 for c in self.cands if c.extra.get("lane", "main") == lane and not c.card.startswith("control")),
@@ -2735,6 +2739,25 @@ class NanoLoop:
         write_json(self.run_dir / "state.json", st)
 
 
+DEFAULT_LENS = "parts"
+
+
+def choose_lens(lens_arg: str | None, replicate: int, by_replicate: bool, lenses) -> tuple[str, str, str]:
+    """The map lens and the design it belongs to. The lens is a factor apart from the replicate: by default every
+    replicate uses DEFAULT_LENS (or --lens), so replicates differ only in seed. --lens-by-replicate opts into the
+    old pairing (lens = LENSES[replicate % n]) for deliberate lens experiments; analysis then groups by lens.
+    Returns (lens, lens_design, note); note is non-empty when the asked lens was missing and a fallback was used."""
+    names = list(lenses or {})
+    design = "by_replicate" if by_replicate else "fixed"
+    if by_replicate and names:
+        want = names[replicate % len(names)]
+    else:
+        want = lens_arg or DEFAULT_LENS
+    if want in names or not names:
+        return want, design, ""
+    return names[0], design, f"lens {want!r} not in the profile's lenses {names}; using the first, {names[0]!r}"
+
+
 def select_profile(argv: list[str] | None = None) -> PF.Profile:
     """--profile NAME (default: env HTSA_PROFILE, else "llm"), applied before anything else reads the profile."""
     import os
@@ -2781,7 +2804,11 @@ def main() -> int:
     ap.add_argument("--no-contradictions", action="store_true", help="skip the measured trade-off contexts in later rounds")
     ap.add_argument("--arm", default="scaffold", choices=["scaffold", "plain", "climb"], help="control arms: plain = best-of-N direct builds; climb = sequential keep-or-discard")
     ap.add_argument("--n-builds", type=int, default=12, help="builds for the control arms")
-    ap.add_argument("--lens", default=None, help="how the planner draws the map: " + ", ".join(tree.LENSES) + " (default rotates by replicate)")
+    ap.add_argument("--lens", default=None, help="how the planner draws the map: " + ", ".join(tree.LENSES)
+                    + f" (default {DEFAULT_LENS} for every replicate: the lens is a separate factor from the replicate)")
+    ap.add_argument("--lens-by-replicate", action="store_true",
+                    help="lens experiment: replicate r uses LENSES[r %% n] (recorded as lens_design by_replicate); "
+                         "without it lens_design is fixed")
     ap.add_argument("--no-immediate-fix", action="store_true", help="do not fix rung 0/1 failures in the same round")
     ap.add_argument("--no-analogy", action="store_true", help="skip the cross-field analogy research and card")
     ap.add_argument("--no-diagnostics", action="store_true", help="skip the instrumented baseline run and the diagnosis card")
@@ -2832,6 +2859,8 @@ def main() -> int:
     ap.add_argument("--deepen-top", type=int, default=12, help="ideas interrogated per generation (top-ranked, round-robin across parts)")
     ap.add_argument("--deepen-generations", type=int, default=1, help="extra generations: ideas born in the interrogation get interrogated too")
     a = ap.parse_args()
+    if a.lens and a.lens_by_replicate:
+        ap.error("--lens and --lens-by-replicate exclude each other")
     loop = NanoLoop(a.batch, a.replicate, a.backend or config.default_backend(), a.budget, a.rounds,
                     a.smoke_seconds, a.model)
     loop.per_node, loop.k_impl, loop.inward_share = a.per_node, a.implement, a.inward_share
@@ -2872,7 +2901,10 @@ def main() -> int:
     loop.weights_from_ledger, loop.hedge_share, loop.fidelity = a.weights_from_ledger, a.hedge_share, not a.no_fidelity
     loop.program_search, loop.program_k = a.program_search, a.program_k
     loop.adapt_card, loop.contradiction_cards = not a.no_adapt, not a.no_contradictions
-    loop.lens = a.lens or list(tree.LENSES)[a.replicate % len(tree.LENSES)]
+    loop.lens, loop.lens_design, lens_note = choose_lens(a.lens, a.replicate, a.lens_by_replicate, tree.LENSES)
+    if lens_note:
+        print(f"[nano] {lens_note}", flush=True)
+        loop.decisions.append({"step": "lens", "decision": "fallback", "lens": loop.lens, "reason": lens_note})
     loop.retest_on_reference_change = a.retest_on_reference_change
     if a.dashboard:
         from nano import dashboard
