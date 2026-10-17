@@ -135,8 +135,20 @@ def _mock_profiles(prompt: str, role: str, meta: dict, name: str) -> str | None:
 
 
 def mock_upward(meta: dict) -> str:
-    """An upward context's reply in tree.UPWARD_FORMAT: two proposals for a new verifier."""
+    """An upward context's reply in tree.UPWARD_FORMAT: two proposals for a new verifier (about packing on the
+    bin-packing profile, so a question preview there reads as bin-packing text)."""
     tag = str(meta.get("seed", ""))[:24] or "x"
+    if PF.current().name == "binpack_nobase":
+        return ("PROPOSAL: judge by the worst instance, not the mean ratio (" + tag + ")\n"
+                "REFRAMING: the mean ratio hides the instances where a rule packs badly; score the worst one.\n"
+                "NEW MEASURE: the largest bins-over-lower-bound ratio over the full instances.\n"
+                "WHY: a rule can win on the mean and still waste many bins on one hard instance.\n"
+                "COST: the same instances and scorer; one more number per run.\n\n"
+                "PROPOSAL: judge by bins per second under a fixed time budget (" + tag + ")\n"
+                "REFRAMING: fixed rule time instead of unlimited time per item.\n"
+                "NEW MEASURE: bins over the lower bound after 50 ms of rule time per 1000 items.\n"
+                "WHY: a slow rule can look good when time is free; a time budget shows the trade-off.\n"
+                "COST: a timed harness and repeated runs to control timing noise.")
     return ("PROPOSAL: judge by loss on rare tokens, not mean loss (" + tag + ")\n"
             "REFRAMING: the mean over all tokens hides the tail; model the tail separately.\n"
             "NEW MEASURE: validation loss on the 10 percent rarest tokens, from the same held-out file.\n"

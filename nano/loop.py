@@ -43,6 +43,7 @@ from nano import novelty as NV                                      # noqa: E402
 from nano import controls as CT                                     # noqa: E402
 from nano import memory as MEM                                      # noqa: E402
 from nano import seeds as SEEDS                                     # noqa: E402
+from nano import prompt_style as PS                                 # noqa: E402
 
 
 class StopRun(Exception):
@@ -478,6 +479,15 @@ class NanoLoop:
         self.memory_stats = {"parts": set(), "entries_added": 0, "entries_rejected": 0}
         self._cluster_cache: dict[tuple, list[dict]] = {}   # (node, direction, frozenset(sketch ids)) -> groups
         self._tag_cache: dict[tuple, tuple] = {}             # (node, frozenset(members)) -> (prior, match, source)
+        # the shared space (nano/space.py; docs/MULTIPLAYER_DESIGN.md section 7): off unless --space URL
+        self.space = None                       # a LoopSpace when the loop pushes and pulls the space itself
+        self._merged_control: dict = {}         # the control the last boundary pulled (read by the pick and the panel)
+        self._peer_digests: dict = {}           # (role, node) -> digest text, rendered at the boundary
+        self.step = False                       # --step: wait for a Go at every boundary
+        self.poll_s = 10.0                      # --control-poll-seconds: the pause loop's poll interval
+        self.peer_digest_ideation = False       # --peer-digest-ideation: idea agents read the digest too (A/B)
+        self.dialogue_rows: list[dict] = []     # the dialogue.jsonl rows, kept in memory for the space mirror
+        self._control_restore: list = []        # control values applied before a --resume (control_applied.json)
 
     # ------------------------------------------------------------ web research per part
     def _researchable(self, node: dict) -> bool:
@@ -846,11 +856,14 @@ class NanoLoop:
                                 round_no=round_no)
         res = PK.pick([PK.score(q, stats) for q in cands], round_no, explore_every=self.explore_every)
         ctl = {}
-        try:
-            p = self.run_dir / "control.json"
-            ctl = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
-        except Exception:  # noqa: BLE001
-            ctl = {}
+        if self.space:                           # the control pulled at the last boundary (a veto before the Go acts here)
+            ctl = dict(self._merged_control)
+        else:
+            try:
+                p = self.run_dir / "control.json"
+                ctl = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+            except Exception:  # noqa: BLE001
+                ctl = {}
         v = PK.apply_veto(res["top3"], ctl)
         chosen = v["chosen"]
         rec = {"round": round_no, "top3": res["top3"], "explore": res["explore"], "n_candidates": res["n_candidates"],
@@ -1097,6 +1110,7 @@ class NanoLoop:
                 self.research_round(round_no)
             else:
                 self.inject_ledger([n for n in self.tree if n["id"] != "root"])
+            self._stage(round_no, "planned")             # the map exists: people may add parts before any context is dealt
         if round_no > 1:                             # last round's results are in: move the off-map share, promote winners
             self._promote_off_wins(round_no)
             self._shift_off_share(round_no)
@@ -1203,6 +1217,8 @@ class NanoLoop:
             off = node["id"] == tree.OFF_TREE_NODE["id"]
             prompt = (tree.off_tree_prompt(card, self.tree, common, self.diagnostics_text, direction) if off
                       else tree.node_prompt(node, direction, common, self.tree))
+            if not off and PS.style() == "v2":           # block M2: who disputed a fact of this part, and why
+                prompt = PS.swap_disputed_block(prompt, node, self.space.dispute_index() if self.space else None)
             mem_state = self._memory_state(spec)
             if mem_state == "block":
                 prompt += self.memory().block(self._part_of(node["id"]))
@@ -1240,6 +1256,9 @@ class NanoLoop:
                     prompt += ideate.EXCLUSION_ADDENDUM.format(names="\n".join(f"- {n}" for n in names))
             if round_no > 1 and self.history:
                 prompt += self.history_text() + "\n\n"
+            if self.space and self.peer_digest_ideation:
+                d = self.space.digest_for("idea", node["id"])
+                prompt += d + "\n\n" if d else ""
             up = direction == "upward"                  # a proposal for a new verifier, not a sketch: own format, no sketch addenda
             if self.staged_sketch and not up:
                 prompt += ideate.STAGED_ADDENDUM
@@ -1581,6 +1600,7 @@ class NanoLoop:
             rb = self.briefs.get(cl.get("node"))
             research_txt = research.brief_text(rb) if rb else ""
             hist = self.history_text()
+            hist += ("\n\n" + d) if (d := self._peer("interrogation", cl.get("node"), idea=cl.get("cluster_id"))) else ""
             if self.diagnostics_text and parent is None:
                 hist = ("HOW THE BASELINE BEHAVES (measured):\n" + self.diagnostics_text
                         + (("\n\nANOMALIES (replicated on several seeds):\n" + self.anomaly_text) if self.anomaly_text else "")
@@ -1658,7 +1678,8 @@ class NanoLoop:
                         break
                     pr = self._call(deepen.premortem_prompt(brief, node.get("name", ""), constraints, self.baseline_src, known_pack,
                                                             chain=chain_txt, failed=failed if pack_name == "ledger" else None,
-                                                            findings=findings if pack_name != "script-only" else ""),
+                                                            findings=findings if pack_name != "script-only" else "",
+                                                            peer=self._peer("critic", cl.get("node"), idea=cl.get("cluster_id"))),
                                     "generate", 2500, {"card": "premortem", "operator": cl["cluster_id"], "seed": pack_name,
                                                        "note": f"pre-mortem ({pack_name}) of '{cl['name']}'", "node": cl.get("node")})
                     self._ledger("premortem", cl["cluster_id"], pack_name, pr.call_id, pr.usage, round_no, "generate")
@@ -1701,8 +1722,13 @@ class NanoLoop:
                 if not frontier:
                     return
 
+        def _chain_and_tick(cl: dict) -> None:
+            _chain(cl)
+            if self.space:
+                self.space.tick()
+
         with ThreadPoolExecutor(max_workers=min(6, max(1, len(chosen)))) as ex:
-            list(ex.map(_chain, chosen))
+            list(ex.map(_chain_and_tick, chosen))
         self.decisions.append({"round": round_no, "step": "deepen", "gen": gen, "chains": len(chosen),
                                "nodes": len(self.deepen_nodes), "offshoots": len(new_sketches), "ts": now_ts()})
         return len(new_sketches)
@@ -1935,7 +1961,30 @@ class NanoLoop:
         if name == "verified":
             self.completed_rounds = max(self.completed_rounds, round_no)
         self._write_state(stage={"round": round_no, "step": name, "ts": now_ts()})
+        if self.space:
+            self.space.push_stage(round_no, name)
         p = self.run_dir / "control.json"
+
+        def _apply_key(key, value) -> None:
+            if key == "budget_add":
+                self.B += int(value)
+            elif key == "aux_budget_add":
+                self.aux_budget += int(value)
+            elif key == "k_impl":
+                self.k_impl = max(1, int(value))
+            elif key == "rounds_max":
+                self.rounds = max(1, int(value))
+            elif key == "longshot_share":
+                self.longshot_share = max(0.0, min(0.6, float(value)))
+            elif key == "leap_share":
+                self.leap_share = max(0.0, min(1.0, float(value)))
+
+        for key, value in self._control_restore:      # applied before a --resume (control_applied.json): once, not twice
+            try:
+                _apply_key(key, json.loads(value) if isinstance(value, str) else value)
+            except (TypeError, ValueError):
+                pass
+        self._control_restore = []
         while True:
             ctl = {}
             if p.exists():
@@ -1952,6 +2001,9 @@ class NanoLoop:
                     self.decisions.append({"round": round_no, "step": "control", "warning": msg, "ts": now_ts()})
                     append_jsonl(self.run_dir / "control_log.jsonl", {"ts": now_ts(), "round": round_no, "stage": name,
                                                                       "warning": msg})
+            refs = None
+            if self.space:                             # the merged control (step mode: waits for the Go of this boundary)
+                ctl, refs, _step = self.space.pull(ctl, round_no, name)
             h = hashlib.sha1(json.dumps(ctl, sort_keys=True).encode()).hexdigest()[:10] if ctl else ""
             if h != self._control_hash:
                 self._control_hash = h
@@ -1961,18 +2013,7 @@ class NanoLoop:
                 if key in ctl and (key, str(ctl[key])) not in self._control_applied:
                     self._control_applied.add((key, str(ctl[key])))
                     try:
-                        if key == "budget_add":
-                            self.B += int(ctl[key])
-                        elif key == "aux_budget_add":
-                            self.aux_budget += int(ctl[key])
-                        elif key == "k_impl":
-                            self.k_impl = max(1, int(ctl[key]))
-                        elif key == "rounds_max":
-                            self.rounds = max(1, int(ctl[key]))
-                        elif key == "longshot_share":
-                            self.longshot_share = max(0.0, min(0.6, float(ctl[key])))
-                        elif key == "leap_share":
-                            self.leap_share = max(0.0, min(1.0, float(ctl[key])))
+                        _apply_key(key, ctl[key])
                         self.decisions.append({"round": round_no, "step": "control", "set": key, "value": ctl[key], "ts": now_ts()})
                     except (TypeError, ValueError):
                         pass
@@ -1980,12 +2021,14 @@ class NanoLoop:
             self.skip_nodes = set(ctl.get("skip_nodes", []) or [])
             self.exclude_clusters = set(ctl.get("exclude_clusters", []) or [])
             self._add_human_nodes(ctl.get("add_nodes") or [], round_no)
+            if self.space:
+                self.space.applied(refs, round_no, name)
             if ctl.get("stop_after_stage") or (self.stop_after and name == self.stop_after):
                 raise StopRun(name)
             if not ctl.get("pause"):
                 return
             self._live(note=f"paused by control.json after '{name}' (set pause to false to continue)")
-            time.sleep(10)
+            time.sleep(self.poll_s)
 
     def _add_human_nodes(self, specs, round_no: int) -> None:
         """control.json "add_nodes": branches people add, in the tree's node schema. Each goes on the map once,
@@ -2141,6 +2184,16 @@ class NanoLoop:
                 v["status"] = "tune_pruned"
         ids = {c.id for c in self.cands}
         self.hedged |= {d["cand"] for d in self.decisions if d.get("step") == "hedge" and d.get("cand") in ids}
+        ca = rd / "control_applied.json"
+        if ca.exists():                                # --space: a budget_add applied before the resume is not applied twice
+            try:
+                d = json.loads(ca.read_text(encoding="utf-8"))
+                pairs = [tuple(x) for x in d.get("applied") or [] if isinstance(x, list) and len(x) == 2]
+                self._control_applied |= set(pairs)
+                self._control_restore = pairs
+                self.human_nodes_seen |= set(d.get("human_nodes_seen") or [])
+            except Exception as e:  # noqa: BLE001
+                print(f"[nano] WARNING control_applied.json unreadable on resume ({str(e)[:120]})", flush=True)
         self._resume_stage = dict(st.get("stage") or {})
         self.decisions.append({"step": "resume", "completed_rounds": self.completed_rounds, "cands": len(self.cands),
                                "sketches": len(self.sketches), "unverified": [c.id for c in self.cands if c.id not in self.vres],
@@ -2251,8 +2304,38 @@ class NanoLoop:
                          + (f" (learn gap {h['learn_gap']:+.3f}, z {h.get('learn_z')})" if h.get("learn_gap") is not None else "")
                          + (f" [prediction check: {h['prediction']}]" if h.get("prediction") else ""))
         if self.control_note:
-            lines.append(f"NOTE FROM THE OWNER: {self.control_note}")
+            lines.append(PS.pick(f"NOTE FROM THE OWNER: {self.control_note}",
+                                 PS.notes_block_v2((self.space.notes if self.space else None)
+                                                   or [{"name": "owner", "time": "", "text": self.control_note}])))
         return "\n".join(lines)
+
+    def _peer(self, role: str, node, idea: str | None = None) -> str:
+        """The peer digest for a prompt slot (docs/MULTIPLAYER_DESIGN.md section 6.11), cached at the boundary: never a
+        network call, and '' with no space or nothing new. Under prompt_style v2 the people's comments on the idea
+        (block M4) join the critic's and the interrogation's slot."""
+        d = self._peer_digests.get((role, node), "")
+        if self.space and idea and role in ("critic", "interrogation"):
+            c = PS.pick("", PS.comments_block_v2(self.space.comments_on(idea)))
+            d = "\n\n".join(x for x in (c, d) if x)
+        return d
+
+    def _author_peer(self, cl: dict, n_objections: int) -> str:
+        """The author's slot: a person's objection on this idea joins the list as OBJECTION i (from name), then the digest."""
+        lines = []
+        if self.space:
+            for k, o in enumerate(self.space.objections_from_people(cl.get("cluster_id")), 1):
+                lines.append(PS.PERSON_OBJECTION_LINE.format(i=n_objections + k, name=o.get("name") or "a person",
+                                                             text=" ".join(str(o.get("text", "")).split())[:400]))
+        return "\n\n".join(x for x in ("\n".join(lines), self._peer("author", cl.get("node"))) if x)
+
+    def _builder_slot(self, node, idea) -> str:
+        """The builder's digest (and, under v2, block M5: changes that touch this idea), ending in a blank line; ''
+        with no space or nothing new, so the build prompt is byte-identical to today."""
+        d = self._peer("builder", node)
+        if self.space:
+            ch = PS.pick("", PS.changes_block_v2(self.space.disputes_on(node), self.space.comments_on(idea) if idea else []))
+            d = "\n\n".join(x for x in (ch, d) if x)
+        return d + "\n\n" if d else ""
 
     def _call(self, prompt: str, role: str, max_tokens: int, meta: dict, model: str | None = None,
               tools: list[str] | None = None, max_turns: int | None = None, timeout: int | None = None) -> llm.CallResult:
@@ -2389,6 +2472,7 @@ class NanoLoop:
              "anomaly_seeds": self.anomaly_seeds, "sham_share": self.sham_share, "controls": self.controls, "lens": self.lens,
              "lens_design": self.lens_design,
              "aim": self.aim, "scope": sorted(self.only_nodes), **({"profile": self.pf.name} if self.pf.name != "llm" else {}),
+             **({"prompt_style": PS.style()} if PS.style() != "v1" else {}),
              "digest": (hashlib.sha1(self.digest_text.encode()).hexdigest()[:12] if self.digest_text else None),
              "ts": now_ts()}
         cp = self.run_dir / "commitments.json"
@@ -2655,16 +2739,19 @@ class NanoLoop:
                         + "Write exactly this idea as a complete proposal with all five sections (CLAIM, FROM THE FACTS TO "
                           "THE IDEA, FROM THE IDEA TO THE RESULT, WEAK POINTS, PROPOSED TEST). Cite at least one known "
                           "fact by its id. Do not write code.\n\n"
-                        + ideate.implement_brief(cl, self.sketches, self.knowledge_for(cl)) + "\n\n" + output_format())
+                        + ideate.implement_brief(cl, self.sketches, self.knowledge_for(cl)) + "\n\n"
+                        + self._builder_slot(cl.get("node"), cl.get("cluster_id")) + output_format())
             if self.mode == "check_only":
                 return (self._common(self.baseline_src, False) + scope
                         + "Implement exactly this idea. There is no baseline to modify: write the COMPLETE file that "
                           f"implements the interface ({self.pf.v('artifact_file', 'the file')}), every line, from the "
                           "skeleton above.\n\n"
-                        + ideate.implement_brief(cl, self.sketches, self.knowledge_for(cl)) + "\n\n" + output_format())
+                        + ideate.implement_brief(cl, self.sketches, self.knowledge_for(cl)) + "\n\n"
+                        + self._builder_slot(cl.get("node"), cl.get("cluster_id")) + output_format())
             return (self._common(self.baseline_src, False) + scope
                     + f"Implement exactly this idea as a complete modified {_artifact_word()}:\n\n"
-                    + ideate.implement_brief(cl, self.sketches, self.knowledge_for(cl)) + "\n\n" + output_format())
+                    + ideate.implement_brief(cl, self.sketches, self.knowledge_for(cl)) + "\n\n"
+                    + self._builder_slot(cl.get("node"), cl.get("cluster_id")) + output_format())
         if card == "program":       # arm: evolve one named function with continuous fitness (program-space search)
             sym = operator
             prev = []
@@ -2702,6 +2789,7 @@ class NanoLoop:
                     + ("It passed the first checks, a near miss or better from the ambitious lane.\n" if near
                        else "It failed verification. The record:\n")
                     + card + "\n\n" + (know + "\n\n" if know else "")
+                    + self._builder_slot(parent.extra.get("node"), None)
                     + f"Apply the operator '{operator}': fix = repair the failure while keeping the idea; "
                       f"specialize = keep the idea but apply it to a smaller part of the {self.pf.v('system', 'system')}; "
                       "recurse = take the idea one step further; "
@@ -3023,10 +3111,13 @@ class NanoLoop:
 
     def _opinions_for(self, cand: Candidate) -> list[dict]:
         """People's opinions on this candidate from control.json["opinions"] (by candidate id, cluster id or name)."""
-        try:
-            ctl = json.loads((self.run_dir / "control.json").read_text(encoding="utf-8"))
-        except Exception:  # noqa: BLE001
-            return []
+        if self.space:
+            ctl = dict(self._merged_control)
+        else:
+            try:
+                ctl = json.loads((self.run_dir / "control.json").read_text(encoding="utf-8"))
+            except Exception:  # noqa: BLE001
+                return []
         keys = {cand.id, str(cand.operator), str((cand.extra or {}).get("cluster") or "")} - {""}
         return [o for o in (ctl.get("opinions") or []) if isinstance(o, dict)
                 and (str(o.get("candidate", "")) in keys or str(o.get("cluster", "")) in keys)]
@@ -3371,6 +3462,8 @@ class NanoLoop:
             for c in chosen:
                 self.implemented.update(c["members"])
             kept = self.dedup(new, rnd)
+            if self.space:
+                self.space.pending_cands = list(kept)
             self._stage(rnd, "built")
             if rnd == 1 and self.controls and self.mode == "baseline":   # controls and tuning edit a baseline
                 self.run_controls(rnd)
@@ -3382,6 +3475,8 @@ class NanoLoop:
             for c in kept:                                  # free verification: every candidate, serial (one GPU)
                 rec = self.verify(c, rnd)
                 self._resolve_objections(c, rec)
+                if self.space:
+                    self.space.tick()
                 (checked if rec["status"] == "checked" else failed).append(c)
                 print(f"[nano] r{rnd} {c.card:9s} {c.id} -> {rec['status']} rung {rec['rung_reached']} "
                       f"| {c.extra.get('change','')[:70]}", flush=True)
@@ -3597,7 +3692,7 @@ class NanoLoop:
 
         def ask_author(indices: list[int]) -> str | None:
             step["n"] += 1
-            p = deepen.reply_prompt(brief, chain, objs, indices)
+            p = deepen.reply_prompt(brief, chain, objs, indices, peer=self._author_peer(cl, len(objs)))
             if not self._afford("interrogation", len(p) // 4 + 1500, "reply round"):
                 return None
             r = self._call(p, "generate", 1500, {"card": "dialogue_reply", "operator": cl["cluster_id"], "seed": str(step["n"]),
@@ -3626,6 +3721,7 @@ class NanoLoop:
                 for row in out["rows"]:
                     f.write(json.dumps({"idea": cl["cluster_id"], "round": round_no, **row,
                                         "revised_idea": out["revised"] if row["reply"] == "concede" else ""}) + "\n")
+                    self.dialogue_rows.append({"idea": cl["cluster_id"], "round": round_no, "node": cl.get("node"), **row})
             self.decisions.append({"round": round_no, "step": "dialogue", "idea": cl["cluster_id"], "exchanges": out["exchanges"],
                                    "stop": out["stop"], "ts": now_ts()})
 
@@ -3710,6 +3806,9 @@ class NanoLoop:
             extra += (f"\n\nFACTS OF THE MAP THE TEAM DISPUTED ({tree.DISPUTED_MARK}):\n"
                       + "\n".join(f"- [{names.get(d.get('node'), d.get('node'))}] {' '.join(str(d['text']).split())[:300]}"
                                   for d in disputed))
+        parts = PS.pick("", PS.parts_block_v2([n for n in self.tree or [] if n.get("origin") == "human"]))
+        extra += ("\n\n" + parts) if parts else ""
+        extra += ("\n\n" + d) if (d := self._peer("planner", None)) else ""
         p = tree.planner_prompt(goal + "\n\n" + extra, self.baseline_src, self.lens, self.diagnostics_text)
         if not self._afford("research", len(p) // 4 + 2500, "replan"):
             self.decisions.append({"round": round_no, "step": "replan", "result": "not affordable; map kept", "ts": now_ts()})
@@ -4356,8 +4455,19 @@ def main() -> int:
     ap.add_argument("--max-compose", type=int, default=3, help="mechanical composites per round (0 = off)")
     ap.add_argument("--diag-steps", type=int, default=100)
     ap.add_argument("--resume", action="store_true", help="continue a run folder of the same batch/replicate from its last completed stage")
-    ap.add_argument("--stop-after", default=None, choices=["ideated", "clustered", "deepened", "built", "verified"],
+    ap.add_argument("--stop-after", default=None, choices=["planned", "ideated", "clustered", "deepened", "built", "verified"],
                     help="test mode: stop cleanly after this stage of round 1")
+    ap.add_argument("--space", default="", help="shared space URL (http://127.0.0.1:8766): push every stage, pull the "
+                    "people's control at every boundary (docs/MULTIPLAYER_DESIGN.md section 7); off by default")
+    ap.add_argument("--me", default="team.loop", help="the loop's actor id in the space")
+    ap.add_argument("--step", action="store_true", help="with --space: wait for a Go (run_step) at every stage boundary")
+    ap.add_argument("--control-poll-seconds", type=float, default=10.0,
+                    help="poll interval of the pause loop and of the step-mode wait (seconds)")
+    ap.add_argument("--peer-digest-ideation", action="store_true",
+                    help="A/B: idea agents read the peer digest too (default off: ideas are generated independently)")
+    ap.add_argument("--prompt-style", default=None, choices=["v1", "v2"],
+                    help="prompt texts: v1 (default, byte-identical) or v2 (the shared-space blocks); env HTSA_PROMPT_STYLE")
+    ap.add_argument("--adopt-space", action="store_true", help="stretch: adopt the map of a running space (not built)")
     ap.add_argument("--max-sketch-calls", type=int, default=0, help="test mode: at most this many idea agents per round")
     ap.add_argument("--no-tune", action="store_true", help="skip the scripted single-knob tuning sweep at round 1")
     ap.add_argument("--no-effort", action="store_true", help="do not set reasoning effort per role (CLI backend)")
@@ -4410,6 +4520,13 @@ def main() -> int:
     a = ap.parse_args()
     if a.lens and a.lens_by_replicate:
         ap.error("--lens and --lens-by-replicate exclude each other")
+    if a.adopt_space:
+        print("[nano] --adopt-space: not built (docs/MULTIPLAYER_DESIGN.md section 7.6)", flush=True)
+        return 2
+    if a.step and not a.space:
+        ap.error("--step needs --space")
+    PS.reset()                                     # a new run: the style is fixed once, here
+    PS.set_style(a.prompt_style)
     loop = NanoLoop(a.batch, a.replicate, a.backend or config.default_backend(), a.budget, a.rounds,
                     a.smoke_seconds, a.model, arm=a.arm)
     loop.judge_model = a.judge_model
@@ -4463,6 +4580,10 @@ def main() -> int:
         loop.decisions.append({"step": "lens", "decision": "fallback", "lens": loop.lens, "reason": lens_note})
     loop.retest_on_reference_change = a.retest_on_reference_change
     loop.use_memory = not a.no_memory
+    loop.poll_s, loop.step, loop.peer_digest_ideation = max(0.05, a.control_poll_seconds), a.step, a.peer_digest_ideation
+    if a.space:
+        from nano.space import LoopSpace
+        loop.space = LoopSpace(loop, a.space, a.me, step=a.step, poll_s=loop.poll_s)
     if a.dashboard:
         from nano import dashboard
         threading.Thread(target=dashboard.serve, args=(loop.run_dir, a.port, True), daemon=True).start()
