@@ -14,6 +14,7 @@ import { mountInspector } from './inspect.js';
 import { mountPeople } from './people.js';
 import { mountSplitters, mountStripResizer } from './splitters.js';
 import { accounts, useAccount } from './accounts.js';
+import { STAGE_DONE, GO_NEXT, STAGE_RUNNING, stripRefs, LEGEND } from './words.mjs';
 
 const BEAT_MS = 5000, GO_LOCK_MS = 2000, OFFLINE_AFTER_MS = 10000, FOCUS_MIN_MS = 250;
 
@@ -262,10 +263,11 @@ document.addEventListener('mousedown', (e) => { if (!e.target.closest || !e.targ
 function goState() {
   const run = current ? current.run : null;
   const down = net.status !== 'live';
-  if (down) return { label: 'server offline', disabled: true };
-  if (!run || !run.waiting || !run.lastBoundary) return { label: 'Go', disabled: true };
-  if (Date.now() < goLockUntil) return { label: 'Go', disabled: true };
-  return { label: 'Go', disabled: !flags.me || flags.stage };
+  if (down) return { label: 'server offline', disabled: true, hidden: true };
+  if (!run || !run.waiting || !run.lastBoundary) return { label: 'Go', disabled: true, hidden: true };
+  const next = GO_NEXT[run.stage] || 'continue';
+  if (Date.now() < goLockUntil) return { label: `Go: ${next}`, disabled: true };
+  return { label: `Go: ${next}`, disabled: !flags.me || flags.stage, title: `The team waits here so people can steer. Go releases it to ${next}.` };
 }
 async function pressGo() {
   const b = current && current.run.lastBoundary;
@@ -284,29 +286,26 @@ function connText() {
   return 'Connecting';
 }
 function runText(run) {
-  if (!run.stage) return 'not started';
-  const paused = run.pausedBy.length ? `paused by ${run.pausedBy.map((p) => whoText({ cls: 'person', owner: p })).join(' and ')}` : '';
-  if (run.waiting) return `Paused: waits for Go (${run.stage} r${run.round})${paused ? `, ${paused}` : ''}`;
-  return `Running: ${run.stage} r${run.round}${paused ? `, ${paused}` : ''}`;
+  if (!run.stage) return 'No research running';
+  const paused = run.pausedBy.length ? `, paused by ${run.pausedBy.map((p) => whoText({ cls: 'person', owner: p })).join(' and ')}` : '';
+  if (run.waiting) return `Round ${run.round}: ${STAGE_DONE[run.stage] || run.stage}. Waiting for Go${paused}`;
+  return `Round ${run.round}: ${STAGE_RUNNING[run.stage] || run.stage}${paused}`;
 }
 function Topbar({ v }) {
   const run = v.run;
   const g = goState();
   const space = v.spaceId || net.spaceId || 'space';
+  const others = [...v.people.keys()].filter((p) => p !== flags.me);
   return html`<div class="topbar__line">
-      <span class="brand">HTSA space</span><span class="dot-sep">.</span><span>${space}</span>
-      <span class="dot-sep">.</span><span>round ${run.round || 0}</span>
-      <span class="dot-sep">.</span><span>${run.stage ? `${run.waiting ? 'paused at' : 'at'} ${run.stage}` : 'not started'}</span>
-      <span class="dot-sep">.</span><span class=${`conn conn--${net.status}`} title="connection">${connText()}</span>
-      <span class="dot-sep">.</span><span class="mono hash-chip" title=${`layout hash (${layoutName} layout); every window shows the same`}>layout ${v.layout.hash}</span>
-      ${flags.me ? html`<span class="me">you are ${whoText({ cls: 'person', owner: flags.me })}</span>` : null}
+      <span class="brand" title=${`layout ${v.layout.hash} (${layoutName}); every window showing this log draws the same`}>HTSA</span><span class="dot-sep">.</span><span class="space-name">${space}</span>
+      <span class="dot-sep">.</span><span class=${`runstate${run.waiting ? ' runstate--waiting' : ''}`} title=${run.stage ? `stage ${run.stage}, event #${v.head}` : ''}>${runText(run)}</span>
+      ${!g.hidden ? html`<button class="btn btn--primary btn--go" disabled=${g.disabled} title=${g.title || ''} onClick=${pressGo}>${g.label}</button>` : null}
+      <span class=${`conn conn--${net.status}`} title=${`connection: ${connText()}`}>${net.status === 'live' ? '' : connText()}</span>
     </div>
     <div class="topbar__line">
       <${PresenceChips} view=${v} nowMs=${serverNow()} following=${following} onFollow=${(who) => setFollow(following === who ? '' : who)} />
-      <span class=${`runstate${run.waiting ? ' runstate--waiting' : ''}`}>${runText(run)}</span>
-      <button class="btn btn--primary btn--go" disabled=${g.disabled} onClick=${pressGo}>${g.label}</button>
-      <button class=${`btn${following ? ' btn--on' : ''}`} onClick=${() => setFollow(following ? '' : (flags.follow || [...v.people.keys()].find((p) => p !== flags.me) || ''))}>
-        ${following ? 'Stop following' : 'Follow'}</button>
+      ${others.length || following ? html`<button class=${`btn btn--small${following ? ' btn--on' : ''}`} title="See what another person is looking at; your view follows theirs until you click or scroll"
+        onClick=${() => setFollow(following ? '' : (flags.follow || others[0] || ''))}>${following ? `Stop following ${whoText({ cls: 'person', owner: following.replace(/\.agent$/, '') })}` : `Follow ${whoText({ cls: 'person', owner: others[0] })}`}</button>` : null}
     </div>`;
 }
 function Strip({ v }) {
@@ -315,11 +314,11 @@ function Strip({ v }) {
   const receipt = flags.me ? v.feed.filter((l) => l.owner === flags.me && l.receipt).at(-1) : v.feed.filter((l) => l.receipt).at(-1);
   const agentLines = flags.stage ? [...v.chat.values()].flat().filter((l) => l.from && l.from.endsWith('.agent')).sort((a, b) => a.seq - b.seq).slice(-3) : [];
   const rName = (a) => (a === 'team.loop' ? 'the team' : a.endsWith('.agent') ? `${whoText({ cls: 'person', owner: a.slice(0, -6) })}'s agent` : a);
-  return html`<div class="strip__digest">${latest ? html`<span class="mono">${(latest.text || '').split('\n')[0] || `${latest.n} changes`}</span>
-      <span class="muted"> ... told to ${rName(latest.agent)} at ${latest.stage} r${latest.round} [e${latest.seq}]</span>`
-      : html`<span class="muted">What teammates changed shows here at each stage.</span>`}</div>
-    ${latest && latest.text && latest.text.includes('\n') ? html`<pre class="strip__text">${latest.text.split('\n').slice(1).join('\n')}</pre>` : null}
-    ${receipt && !flags.stage ? html`<div class="muted">Your "${receipt.text}" was told to ${rName(receipt.receipt.agent)} at ${receipt.receipt.stage} r${receipt.receipt.round} [e${receipt.receipt.seq}]</div>` : null}
+  const body = latest && latest.text ? stripRefs(latest.text.split('\n').slice(1).join('\n')).trim() : '';
+  return html`<div class="strip__digest">${latest ? html`<strong>What ${rName(latest.agent)} was told</strong><span class="muted"> before its last step (round ${latest.round}, ${STAGE_DONE[latest.stage] || latest.stage}): ${latest.n} change${latest.n === 1 ? '' : 's'} by teammates</span>`
+      : html`<span class="muted">Before each step, every agent is told what the others changed. That note shows here.</span>`}</div>
+    ${body ? html`<pre class="strip__text">${body}</pre>` : null}
+    ${receipt && !flags.stage ? html`<div class="muted">Your "${receipt.text}" reached ${rName(receipt.receipt.agent)} in round ${receipt.receipt.round}.</div>` : null}
     ${agentLines.map((l) => html`<div class="strip__agent"><span class="spark" aria-hidden="true"></span>${l.from}: ${l.text}</div>`)}`;
 }
 function renderChrome() {
@@ -423,7 +422,7 @@ const viewApi = {
   last: () => (store ? store.last() : 0),
   status: (op) => (store ? store.status(op) : undefined),
   subscribe: (fn) => bus.on('state', fn),
-  me: flags.me, flags, base, bus, post, claim,
+  me: flags.me, flags, base, bus, post, claim, toast,
   following: () => following,
   selected: () => selected,
   setView: (name) => { viewName = name; },
@@ -461,6 +460,26 @@ function fallbackClusters(el) {
   bus.on('state', draw);
   if (current) draw(current);
 }
+function mountLegend(pane, which, title) {
+  if (!pane) return;
+  const btn = document.createElement('button');
+  btn.className = 'pane__help';
+  btn.type = 'button';
+  btn.title = title;
+  btn.textContent = '?';
+  const box = document.createElement('div');
+  box.className = 'legend';
+  box.style.display = 'none';
+  pane.appendChild(btn);
+  pane.appendChild(box);
+  const rows = LEGEND[which] || [];
+  box.innerHTML = `<div class="legend__head"><strong>${title}</strong><button class="btn btn--small" type="button">x</button></div>` +
+    rows.map(([k, v]) => `<div class="legend__row"><span class="legend__k">${k}</span><span class="legend__v">${v}</span></div>`).join('');
+  const toggle = () => { box.style.display = box.style.display === 'none' ? '' : 'none'; };
+  btn.addEventListener('click', toggle);
+  box.querySelector('button').addEventListener('click', toggle);
+}
+
 async function mountViews() {
   const tree = document.getElementById('tree-pane'), clusters = document.getElementById('clusters-pane');
   try { const m = await import('./tree.js'); m.mountTree(tree, viewApi, bus); }
@@ -468,6 +487,7 @@ async function mountViews() {
   try { const m = await import('./clusters.js'); m.mountClusters(clusters, viewApi, bus); }
   catch (e) { console.warn('clusters.js not available, showing a plain list', e); fallbackClusters(clusters); }
   try { mountInspector(tree, clusters, viewApi, bus); } catch (e) { console.warn('inspector not mounted', e); }
+  try { mountLegend(tree, 'tree', 'How to read the map'); mountLegend(clusters, 'clusters', 'How to read the ideas'); } catch (e) { console.warn('legend not mounted', e); }
 }
 
 // ---- main -------------------------------------------------------------------------------------------------------------

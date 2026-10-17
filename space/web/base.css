@@ -254,3 +254,36 @@ body[data-run="running"] .empty--running { display: inline; }
 /* best so far (rail.js) */
 .best__name { font-weight: 700; font-size: 15px; margin: 4px 0 2px; }
 .best__why { margin-top: 4px; white-space: pre-wrap; }
+
+/* plain-word top bar, bubbles, legends, empty steps, done banner */
+.space-name { font-weight: 600; }
+.conn:empty { display: none; }
+.who { display: inline-flex; align-items: center; gap: 5px; margin-right: 10px; }
+.who__name { font-size: var(--fs-small); color: var(--text-2); }
+.bubble { width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; border: 2px solid transparent; cursor: pointer; user-select: none; }
+.bubble--sm { width: 24px; height: 24px; font-size: 10px; }
+.bubble.hue-a { background: var(--owner-a); } .bubble.hue-b { background: var(--owner-b); } .bubble.hue-c { background: var(--owner-c); }
+.bubble--away { opacity: .45; }
+.bubble--followed { border-color: var(--text-1); }
+.agentdot { font: var(--fs-small) var(--font-ui); color: var(--text-2); background: var(--bg-card); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px 1px 6px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.agentdot.state--thinking .spark, .agentdot.state--acting .spark { background: var(--ok); }
+.agentdot.state--error .spark { background: var(--bad); }
+.agentdot.state--waiting .spark, .agentdot.state--finished .spark { background: var(--solid); }
+.pane__help { position: absolute; top: 4px; right: 10px; z-index: 3; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg-card); color: var(--text-2); cursor: pointer; font: 12px var(--font-ui); }
+.pane__help:hover { color: var(--text-1); border-color: var(--line-strong); }
+#clusters-pane .pane__help { right: 10px; top: 32px; }
+.legend { position: absolute; top: 32px; right: 10px; z-index: 7; width: 300px; background: var(--bg-panel); border: 1px solid var(--line-strong); border-radius: 10px; padding: 8px 10px; box-shadow: 0 10px 30px rgba(0,0,0,.5); font-size: 12px; }
+#clusters-pane .legend { top: 60px; }
+.legend__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.legend__row { display: grid; grid-template-columns: 120px 1fr; gap: 8px; padding: 3px 0; border-top: 1px solid var(--line-subtle); }
+.legend__k { color: var(--text-1); }
+.legend__v { color: var(--text-2); }
+.empty__steps { display: grid; gap: 8px; text-align: left; max-width: 360px; }
+.empty__steps b { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--line); text-align: center; line-height: 20px; margin-right: 8px; color: var(--text-1); font-size: 11px; }
+.empty__steps em { font-style: normal; color: var(--text-1); }
+.start-done { background: color-mix(in oklab, var(--ok) 16%, var(--bg-panel)); border: 1px solid var(--ok); border-radius: 8px; padding: 6px 10px; max-width: 520px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.qhelp { font-size: var(--fs-small); margin-bottom: 4px; }
+.tabs .tab { padding: 6px 8px; }
+.feed__line.hue-team .feed__who { color: var(--text-2); }
+.feed__line--agent { border-left: 2px solid var(--line); }
+.strip__digest strong { font-weight: 600; }

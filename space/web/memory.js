@@ -2,6 +2,7 @@
 // GET /api/memory?part= (sections, source tag, date, run, round, ARCHIVE) next to the memory_added lines of this
 // run (state.memory). The file is re-read when the part changes or when this run adds to it.
 import { html, useState, useEffect } from './vendor/standalone.module.js';
+import { MEMORY_HEADINGS } from './words.mjs';
 
 export const SECTIONS = ['FACTS', 'TRIED', 'PRIORS', 'CUES', 'OPEN QUESTIONS', 'FAILED FRAMINGS', 'FACTS FROM PEOPLE'];
 
@@ -42,6 +43,7 @@ export function MemoryTab({ view, api }) {
     return () => { live = false; };
   }, [part, added.length]);
   return html`<div class="tab-body memory">
+    <div class="caption">What the team has learned about each part, kept across runs: facts, what was tried, what to expect, dead ends, and what people shared. Every entry names its evidence. Read only.</div>
     <label class="muted">Part <select value=${part} onChange=${(e) => setPart(e.target.value)}>
       ${parts.map((n) => html`<option value=${n.id}>${n.name}</option>`)}</select></label>
     <span class="tag">read only</span>
@@ -54,9 +56,9 @@ export function MemoryTab({ view, api }) {
       <div class="card__head">${file.part}.md${file.clock != null ? html` <span class="muted">clock ${file.clock}</span>` : null}</div>
       ${SECTIONS.map((sec) => {
         const rows = (file.sections && file.sections[sec]) || [];
-        return html`<div class="mem__sec"><div class="mem__title">${sec} <span class="muted">${rows.length}</span></div>
+        return html`<div class="mem__sec"><div class="mem__title">${MEMORY_HEADINGS[sec] || sec} <span class="muted">${rows.length}</span></div>
           ${rows.length ? html`<ul class="mems">${rows.map((e) => html`<${Entry} e=${e} />`)}</ul>` : null}</div>`; })}
-      <button class="btn btn--small" onClick=${() => setShowArchive(!showArchive)}>ARCHIVE (${(file.archive || []).length})</button>
+      <button class="btn btn--small" onClick=${() => setShowArchive(!showArchive)}>Archive (${(file.archive || []).length})</button>
       ${showArchive ? html`<ul class="mems mems--archive">${(file.archive || []).map((e) => html`<${Entry} e=${e} />`)}</ul>` : null}
     </div>` : null}
   </div>`;

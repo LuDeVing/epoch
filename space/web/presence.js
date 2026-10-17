@@ -45,17 +45,17 @@ export function presenceRows(view, nowMs) {
 export function PresenceChips({ view, nowMs, following, onFollow }) {
   const rows = presenceRows(view, nowMs);
   if (!rows.length) return html`<span class="muted">nobody has joined yet</span>`;
+  const AGENT_WORD = { thinking: 'thinking', acting: 'acting', waiting: 'waiting', finished: 'idle', error: 'in trouble', canned: 'answering from a script' };
   return html`<span class="chips">${rows.map((r) => html`
-    <button class=${`chip chip--person hue-${r.hue}${r.online ? '' : ' chip--away'}${following === r.name ? ' chip--followed' : ''}`}
-      title=${`${cap(r.name)}${r.online ? '' : ' (away)'}${r.heardS != null ? `, last heard ${r.heardS} s ago` : ''}${r.cursor != null ? `, seen up to #${r.cursor}` : ''}. Click to follow.`}
-      onClick=${() => onFollow && onFollow(r.name)}>${cap(r.name)}</button>
-    ${r.agent ? html`
-    <button class=${`chip chip--agent hue-${r.hue} state--${AGENT_STATES.includes(r.agent.state) ? r.agent.state : 'waiting'}`}
-      title=${`${cap(r.name)}'s agent: ${r.agent.state}${r.agent.text ? ` (${r.agent.text})` : ''}`}
-      onClick=${() => onFollow && onFollow(`${r.name}.agent`)}>
-      <span class="spark" aria-hidden="true"></span>${cap(r.name)}'s agent
-      <span class="chip__meta">${r.agent.state}${r.agent.heardS != null ? ` . last heard ${r.agent.heardS} s ago` : ''}${r.agent.cursor != null ? ` . seen up to #${r.agent.cursor}` : ''}</span>
-    </button>` : null}`)}</span>`;
+    <span class="who">
+      <button class=${`bubble bubble--sm hue-${r.hue}${r.online ? '' : ' bubble--away'}${following === r.name ? ' bubble--followed' : ''}`}
+        title=${`${cap(r.name)}${r.online ? ', here now' : ', away'}. Click to follow what they look at.`}
+        onClick=${() => onFollow && onFollow(r.name)}>${String(r.name).slice(0, 2).toUpperCase()}</button>
+      <span class="who__name">${cap(r.name)}</span>
+      ${r.agent ? html`<button class=${`agentdot state--${AGENT_STATES.includes(r.agent.state) ? r.agent.state : 'waiting'}`}
+        title=${`${cap(r.name)}'s agent is ${AGENT_WORD[r.agent.state] || r.agent.state}${r.agent.text ? `: ${r.agent.text}` : ''}. Click to follow it.`}
+        onClick=${() => onFollow && onFollow(`${r.name}.agent`)}><span class="spark" aria-hidden="true"></span>agent</button>` : null}
+    </span>`)}</span>`;
 }
 
 // The focus of the person (or agent) being followed, for the follow mode camera.

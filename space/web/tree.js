@@ -100,7 +100,7 @@ export function mountTree(el, store, bus, opts = {}) {
   const cardsDiv = h('div', 'tree__cards', world);
   const hud = h('div', 'tree__hud', el);
   const empty = h('div', 'tree__empty', hud);
-  empty.innerHTML = '<span class="empty--idle">No research yet. Press Start a research, or Go when a run waits.</span><span class="empty--running"><span class="spark"></span> Planning your problem: reading it, splitting it into parts. The map appears in a minute or two.</span>';
+  empty.innerHTML = '<span class="empty--idle"><span class="empty__steps"><span><b>1</b> Press <em>Start a research</em> and describe your problem</span><span><b>2</b> Pick a size and start: the map of the problem appears here</span><span><b>3</b> Invite people from <em>People</em>; everyone steers the same team</span></span></span><span class="empty--running"><span class="spark"></span> Planning your problem: reading it, splitting it into parts. The map appears in a minute or two.</span>';
 
   // --- state ---
   const cards = new Map();           // id -> {id, x, y, vx, vy, tx, ty, el, edge, parent, depth, state, fresh}
@@ -460,12 +460,18 @@ export function mountTree(el, store, bus, opts = {}) {
     // counts per direction
     p.counts.textContent = '';
     const counts = n.counts || {};
-    for (const dir of ['inward', 'outward']) {
-      const k = counts[dir];
-      if (!k || !(k.sketches || k.clusters || k.built || k.checked)) continue;
-      const s = h('span', `count count--${dir}`, p.counts);
-      s.textContent = `${dir === 'inward' ? 'in' : 'out'} ${k.sketches || 0}/${k.clusters || 0}/${k.built || 0}/${k.checked || 0}`;
-      s.setAttribute('title', `${dir}: sketches/clusters/built/checked`);
+    const tot = { sketches: 0, clusters: 0, built: 0, checked: 0 };
+    for (const dir of ['inward', 'outward']) { const k = counts[dir] || {}; for (const key of Object.keys(tot)) tot[key] += k[key] || 0; }
+    if (tot.sketches || tot.clusters || tot.built || tot.checked) {
+      const s = h('span', 'count', p.counts);
+      const bits = [];
+      if (tot.sketches) bits.push(`${tot.sketches} ideas`);
+      if (tot.clusters) bits.push(`${tot.clusters} groups`);
+      if (tot.built) bits.push(`${tot.built} built`);
+      if (tot.checked) bits.push(`${tot.checked} tested`);
+      s.textContent = bits.slice(0, 2).join(' . ');
+      const detail = ['inward', 'outward'].map((dir) => { const k = counts[dir] || {}; return `${dir}: ${k.sketches || 0} ideas, ${k.clusters || 0} groups, ${k.built || 0} built, ${k.checked || 0} tested`; }).join('\n');
+      s.setAttribute('title', detail);
     }
     // ring (claim or focus)
     if (st.ring) {

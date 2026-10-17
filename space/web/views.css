@@ -137,7 +137,7 @@
 .island-glow__in { stop-color: var(--bg-panel); stop-opacity: 0.9; }
 .island-glow__out { stop-color: var(--bg-panel); stop-opacity: 0; }
 .island__disc { pointer-events: none; }
-.island__label { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--text-2); pointer-events: none; }
+.island__label { font-size: 15px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--text-2); pointer-events: none; }
 .island__tail { cursor: pointer; }
 .island__tail-ring { fill: var(--bg-card); stroke: var(--line); stroke-dasharray: 3 3; transition: stroke var(--t-hover); }
 .island__tail:hover .island__tail-ring, .island__tail.is-open .island__tail-ring { stroke: var(--line-strong); }
@@ -170,7 +170,7 @@
 .vote { stroke-width: 1.5px; }
 .vote--up { fill: var(--hue); stroke: var(--hue); }
 .vote--down { fill: var(--bg-card); stroke: var(--hue); }
-.bubble__label { font-size: 11px; fill: var(--text-2); opacity: 0; transition: opacity var(--t-hover); pointer-events: none; paint-order: stroke; stroke: var(--bg-app); stroke-width: 3px; }
+.bubble__label { font-size: 12.5px; fill: var(--text-2); opacity: 0; transition: opacity var(--t-hover); pointer-events: none; paint-order: stroke; stroke: var(--bg-app); stroke-width: 3px; }
 .bubble.is-labelled .bubble__label { opacity: 1; }
 .bubble.is-hot .bubble__label { fill: var(--text-1); }
 .bubble__badge { display: none; pointer-events: none; }

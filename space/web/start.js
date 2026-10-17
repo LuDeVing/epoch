@@ -119,7 +119,8 @@ export function mountStart(el, api = {}) {
     S.busy = true; S.error = ''; draw();
     const custom = S.profile === '__custom__';
     if (custom && !S.problem.goal.trim() && !S.problem.title.trim()) { S.error = 'Describe the problem first.'; S.busy = false; draw(); return; }
-    const res = await postJson('/api/run/start', { preset: S.preset, profile: custom ? '' : S.profile, mode: S.mode, confirm: S.mode === 'real' && S.confirming, problem: custom ? S.problem : undefined })
+    const res = await postJson('/api/run/start', { preset: S.preset, profile: custom ? '' : S.profile, mode: S.mode, confirm: S.mode === 'real' && S.confirming, problem: custom ? S.problem : undefined });
+    if (res.ok && typeof api.toast === 'function') api.toast('Research started. The team is planning; the map appears in a minute or two.');
       .catch(() => ({ ok: false, body: { error: 'server offline' } }));
     S.busy = false;
     if (res.ok) {
@@ -172,7 +173,13 @@ export function mountStart(el, api = {}) {
     if (!run) return null;
     const c = chipOf(run);
     const failed = c && c.state === 'failed';
-    return html`${failed ? html`<div class="start-error start-error--run" role="alert">
+    const done = c && c.state === 'finished';
+    const best = done && typeof api.view === 'function' ? (api.view().results || []).filter((r) => r.status === 'win' || r.status === 'preferred').slice(-1)[0] : null;
+    return html`${done ? html`<div class="start-done" role="status">
+        <strong>Done.</strong> ${best ? `Best result: ${best.name || best.cand}${best.reason ? `. ${best.reason}` : ''}` : 'No candidate beat the reference this time.'}
+        ${run.report ? html`<button class="btn btn--small" onClick=${() => loadReport(run)}>Read the report</button>` : null}
+      </div>` : null}
+      ${failed ? html`<div class="start-error start-error--run" role="alert">
         <strong>The run stopped.</strong> ${run.error || 'No reason was logged.'}
         <button class="btn btn--small" onClick=${() => { S.showLog = !S.showLog; draw(); }}>${S.showLog ? 'Hide log' : 'Show log'}</button>
       </div>` : null}

@@ -8,14 +8,14 @@ import { chipText, groupFeed, whoText, WINNER_WORD } from './reduce.mjs';
 import { hueOf } from './presence.js';
 import { MemoryTab } from './memory.js';
 import { ChatTab } from './chat.js';
+import { plainStatus, STATUS_WORDS } from './words.mjs';
 import { FindingsTab } from './findings.js';
 
-export const TABS = [['feed', 'Feed'], ['args', 'Arguments'], ['results', 'Results'], ['findings', 'Findings'], ['memory', 'Memory'], ['agent', 'My agent']];
+export const TABS = [['feed', 'Feed'], ['args', 'Arguments'], ['results', 'Results'], ['findings', 'Findings'], ['memory', 'Memory'], ['agent', 'Agent']];
 const FEED_CAP = 200;
 const cap = (s) => (s ? String(s)[0].toUpperCase() + String(s).slice(1) : '');
 const STATUS_ICON = { pending: 'clock', queued: 'clock', applied: 'check', rejected: 'x', not_in_top3: 'x', overwritten: 'x', withdrawn: 'x' };
-const RESULT_WORD = { win: 'win', tie: 'tie', loss: 'loss', failed_check: 'failed check', not_built: 'not built', preferred: 'preferred',
-  not_preferred: 'not preferred', split: 'split', built: 'built, testing' };
+const RESULT_WORD = STATUS_WORDS;
 const RESULT_ICON = { win: 'trophy', preferred: 'trophy', tie: 'equal', split: 'equal', loss: 'down', not_preferred: 'down',
   failed_check: 'x', not_built: 'x', built: 'clock' };
 
@@ -40,7 +40,7 @@ export function Chip({ item, run }) {
 function receiptText(r) {
   if (!r) return '';
   const who = r.agent === 'team.loop' ? 'the team' : r.agent.endsWith('.agent') ? `${cap(r.agent.slice(0, -6))}'s agent` : r.agent;
-  return `told to ${who} at ${r.stage} r${r.round} [e${r.seq}]`;
+  return `reached ${who} in round ${r.round}`;
 }
 
 function QuestionCard({ view, api }) {
@@ -52,15 +52,16 @@ function QuestionCard({ view, api }) {
   const chosen = qs.chosen;
   const lost = chosen && me && chosen.by !== me && chosen.prev && chosen.prev.by === me && chosen.status !== 'applied';
   return html`<div class="card qcard">
-    <div class="card__head">Next question${pv ? ` (round ${pv.roundNext})` : ''}</div>
-    ${!pv ? html`<div class="muted">The preview shows after the first round is verified.</div>` : html`
+    <div class="card__head">What the team asks next${pv ? ` (round ${pv.roundNext})` : ''}</div>
+    ${!pv ? html`<div class="muted">After the first round is tested, the team proposes its next three questions here. You can veto one or pick one; the team takes your choice at the start of the next round.</div>` : html`
+    <div class="muted qhelp">Veto removes a question from the pick; Choose makes it the next one. Either takes effect when the next round starts.</div>
     <ol class="qlist">${pv.top3.map((t) => {
       const v = vetoOf(t.id);
       const isChosen = chosen && chosen.id === t.id;
       return html`<li class=${`q${v ? ' q--vetoed' : ''}${isChosen ? ' q--chosen' : ''}`}>
-        <span class="q__text">${t.text}</span> <span class="mono muted">${t.id}</span>
-        ${t.requires_human ? html`<span class="tag">needs a person</span>` : null}
-        ${v ? html`<span class=${`tok hue-${hueOf(view, v.by)}`}>veto ${cap(v.by)}</span><${Chip} item=${v} run=${view.run} />` : null}
+        <span class="q__text">${t.text}</span>
+        ${t.requires_human ? html`<span class="tag" title="the team cannot answer this one alone; it needs a person's measurement or decision">needs a person</span>` : null}
+        ${v ? html`<span class=${`tok hue-${hueOf(view, v.by)}`}>vetoed by ${cap(v.by)}</span><${Chip} item=${v} run=${view.run} />` : null}
         ${isChosen ? html`<span class=${`tok hue-${hueOf(view, chosen.by)}`}>chosen by ${cap(chosen.by)}</span><${Chip} item=${chosen} run=${view.run} />` : null}
         ${canAct ? html`<span class="q__actions">
           ${v ? html`<button class="btn btn--small" onClick=${() => api.post('question_unvetoed', { question: t.id, text: t.text }, { subject: `question:${t.id}` })}>Unveto</button>`
@@ -71,7 +72,7 @@ function QuestionCard({ view, api }) {
     ${chosen && pv && !pv.top3.some((t) => t.id === chosen.id) ? html`<div class="q">
       <span class=${`tok hue-${hueOf(view, chosen.by)}`}>chosen by ${cap(chosen.by)}</span> ${chosen.text || chosen.id} <${Chip} item=${chosen} run=${view.run} /></div>` : null}
     ${lost ? html`<div class="state-chip state-chip--overwritten"><i class="icon icon--x" aria-hidden="true"></i>
-      ${cap(chosen.by)}'s choice replaced yours at #${chosen.seq}.
+      ${cap(chosen.by)}'s choice replaced yours.
       <button class="btn btn--small" onClick=${() => api.post('question_chosen', { question: chosen.prev.id, text: chosen.prev.text }, { subject: `question:${chosen.prev.id}` })}>Undo</button></div>` : null}
     ${qs.picked ? html`<div class="muted">Picked in round ${qs.picked.round}: ${(qs.picked.top3.find((t) => t.id === qs.picked.chosen) || {}).text || qs.picked.chosen || 'none'} (${qs.picked.by})</div>` : null}
   </div>`;
@@ -83,8 +84,7 @@ function FeedLine({ it, view, onCause }) {
     <span class="feed__who">${whoText(it)}</span>
     <span class="feed__text">${it.text}${it.count > 1 ? html` <span class="tag">x${it.count}</span>` : null}</span>
     ${it.status ? html`<${Chip} item=${it} run=${view.run} />` : null}
-    <span class="feed__meta mono">${it.seq != null ? `[e${it.seq}]` : ''}
-      ${it.cause != null ? html` <a href="#" class="cause" onClick=${(e) => { e.preventDefault(); onCause(it.cause); }}>because e${it.cause}</a>` : null}</span>
+    <span class="feed__meta">${it.cause != null ? html`<a href="#" class="cause" title="jump to what this answers" onClick=${(e) => { e.preventDefault(); onCause(it.cause); }}>why</a>` : null}</span>
     ${it.receipt ? html`<span class="receipt">${receiptText(it.receipt)}</span>` : null}
   </li>`;
 }
@@ -118,14 +118,14 @@ function ArgsTab({ view }) {
   const chains = [...view.chains.entries()];
   const nameOf = (key) => (view.clusters.get(key) || (view.retired && view.retired.get(key)) || { name: key }).name;
   return html`<div class="tab-body">
-    <div class="caption">A reply never gates a build.</div>
-    ${!chains.length ? html`<div class="muted">No objections yet. They come at the deepened stage.</div>` : null}
+    <div class="caption">The critics attack each idea; its author answers once with a fact, a change or a test. An answer never blocks a build: the tests decide.</div>
+    ${!chains.length ? html`<div class="muted">No arguments yet. They start once the ideas are grouped.</div>` : null}
     <ul class="chains" ref=${list}>${chains.map(([key, entries]) => html`<li key=${key} class="chain">
-      <div class="chain__idea">${nameOf(key)} <span class="mono muted">${key}</span></div>
+      <div class="chain__idea">${nameOf(key)}</div>
       ${entries.map((e) => html`<div class="exchange">
         ${e.objection ? html`<div class="objection">
           <span class=${`tag sev--${e.objection.severity || 'person'}`}>${e.objection.cls}${e.objection.severity ? ` . ${e.objection.severity}` : ''}</span>
-          ${e.objection.text} <span class="mono muted">[e${e.objection.seq}]</span></div>` : null}
+          ${e.objection.text}</div>` : null}
         ${[e.reply, ...(e.more || [])].filter(Boolean).map((r) => {
           const person = r.cls === 'person' || r.cls === 'delegate';
           return html`<div class=${`reply${person ? ` reply--person hue-${hueOf(view, r.owner)}` : ''}`}>

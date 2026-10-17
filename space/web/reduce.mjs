@@ -13,6 +13,8 @@ export const WINNER_WORD = { check_only: 'won', baseline: 'won', no_check: 'pref
 export const QUOTE_CAP = 160;
 
 // kind -> digest sentence (contract.KINDS[kind][4]); null = never in a digest. Section 6.1 verbatim.
+import { PAGE_SENTENCES, plainStatus } from './words.mjs';
+
 export const SENTENCES = {
   space_opened: null,
   node_added: 'added part "{label}" under "{parent}": "{frame}"',
@@ -214,6 +216,7 @@ export function makeReducer({ layoutTree, layoutClusters, anchorFor, contract } 
   if (contract && contract.kinds) {
     for (const [k, v] of Object.entries(contract.kinds)) if (v && typeof v.sentence === 'string') sentences[k] = v.sentence;
   }
+  Object.assign(sentences, PAGE_SENTENCES);                 // people read plain words; the agents keep the contract's
   const stages = (contract && contract.stages) || STAGES;
   const winnerWord = (contract && contract.winner_word) || WINNER_WORD;
 
@@ -732,7 +735,7 @@ export function makeReducer({ layoutTree, layoutClusters, anchorFor, contract } 
     if ('node' in d) vals.node = nodeName(s, d.node);
     if (kind === 'cluster_snapshot') vals.n = (d.clusters || []).length;
     if (kind === 'memory_added') vals.n_added = (d.added || []).length;
-    if (kind === 'test_result') vals.metric = metricText(d);
+    if (kind === 'test_result') { vals.metric = metricText(d); vals.status = plainStatus(d.status); }
     if (kind === 'claim_granted') vals.why = d.purpose ? `: ${d.purpose}` : '';
     if (kind === 'stage_entered') vals.reached = d.waiting ? 'waits for Go at' : 'reached';
     if (kind === 'control_applied') vals.n_refs = (d.refs || []).length;
