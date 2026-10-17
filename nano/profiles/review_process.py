@@ -51,6 +51,8 @@ TREE = [
                      "a published process is easier to game"],
      "boundary": "what teams see, the feedback they get, and the appeal step", "directions": ["inward", "outward"]},
 ]
+for _n in TREE:      # every node says which default part it refines (tree.resolve_scope); here, itself
+    _n["refines"] = _n["id"]
 
 INTERFACE = ("A proposal in markdown with exactly these five sections, in this order: CLAIM, FROM THE FACTS TO THE IDEA, "
              "FROM THE IDEA TO THE RESULT, WEAK POINTS, PROPOSED TEST. It cites at least one known fact by its id "

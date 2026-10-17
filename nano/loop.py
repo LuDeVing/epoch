@@ -517,6 +517,22 @@ class NanoLoop:
             nodes = tree.parse_planner(r.text or "")
         import copy
         self.tree = nodes or copy.deepcopy(tree.DEFAULT_TREE)
+        unresolved = sorted(o for o in (self.only_nodes or ()) if nodes and not tree.resolve_scope({o}, nodes))
+        if unresolved:
+            # repair before falling back: one re-ask that names the unmapped default parts and asks only for "refines"
+            r = self._call(tree.repair_prompt(unresolved, nodes), "encode", 2500,
+                           {"card": "plan_repair", "note": "mapping the planned parts onto the default parts"})
+            self._ledger("plan_repair", "none", "", r.call_id, r.usage, round_no, "encode")
+            fixed = tree.parse_planner(r.text or "") or []
+            by_id = {n["id"]: n.get("refines") for n in fixed}
+            by_name = {n["name"].lower(): n.get("refines") for n in fixed}
+            for n in nodes:
+                ref = by_id.get(n["id"]) or by_name.get(n["name"].lower())
+                if ref and ref != "new" and n["id"] not in ("root", "recipe"):
+                    n["refines"] = ref
+            still = sorted(o for o in self.only_nodes if not tree.resolve_scope({o}, nodes))
+            self.decisions.append({"round": round_no, "step": "plan_repair", "scope_unresolved": unresolved,
+                                   "still_unresolved": still, "repair_parsed": bool(fixed)})
         if self.only_nodes and nodes and not tree.resolve_scope(self.only_nodes, nodes):
             # the planner's names no longer match the requested parts: keep the default map, whose ids are known
             self.decisions.append({"round": round_no, "step": "plan", "scope_unresolved": sorted(self.only_nodes),
@@ -598,7 +614,7 @@ class NanoLoop:
                            "implemented": sum(1 for c in impl if (c.extra or {}).get("direction") == d),
                            "checked": sum(1 for c in checked if (c.extra or {}).get("direction") == d)}
                        for d in n["directions"]}
-            stats.append({**n, "stats": per_dir})
+            stats.append({**n, "refines": n.get("refines", "new"), "stats": per_dir})
         write_json(self.run_dir / "problem_tree.json", {"nodes": stats, "inward_share": self.inward_share,
                                                          "off_tree_share": self.off_tree_share, "origins": self._origin_stats()})
 

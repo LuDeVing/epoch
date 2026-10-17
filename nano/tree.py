@@ -78,16 +78,28 @@ def _plain(name: str) -> str:
     return " ".join(re.sub(r"\(.*?\)", "", str(name or "").lower()).split())
 
 
+def default_parts() -> list[dict]:
+    """The default parts a planned node may refine: the profile tree without the root and the cross-part node."""
+    return [n for n in default_tree() if n["id"] not in ("root", "recipe")]
+
+
 def resolve_scope(only, nodes) -> set[str]:
     """The ids in `nodes` (the planned map) that the part ids in `only` refer to. The planner may rename or
-    split the default parts, but it keeps each default name as the first words of its names, so a default id
-    also resolves through its name ('mix' -> every node named 'Sequence mixing: ...')."""
+    split the default parts; every planned node names the default part it refines in "refines" (planner_prompt
+    asks for it), and that decides. A node without a valid "refines" (missing or "new") falls back to its id
+    and name: the planner is also asked to start each name with the default name and a colon, so a default id
+    resolves through its name ('mix' -> every node named 'Sequence mixing: ...')."""
     only = {str(x).strip().lower() for x in (only or ()) if str(x).strip()}
     if not only:
         return set()
     default_names = {n["id"]: _plain(n["name"]) for n in default_tree()}
     out = set()
     for n in nodes or []:
+        ref = str(n.get("refines") or "").strip().lower()
+        if ref in default_names:                 # explicit mapping onto a default part decides
+            if ref in only:
+                out.add(n["id"])
+            continue
         nid = str(n.get("id", "")).lower()
         nm = _plain(n.get("name", ""))
         head = nm.split(":")[0].strip()
@@ -123,12 +135,33 @@ def planner_prompt(goal: str, source: str, lens: str = "parts", diagnostics: str
     view = ls.get(lens, ls["parts"])
     hint = p.v("planner_hint") or f"boundaries name the functions or sections of the {p.v('artifact', 'artifact')} a part may change"
     return ("Decompose the following problem into parts for a research search. Return ONLY a JSON array of nodes "
-            '{"id", "name", "frame", "assumptions": [3-5 short sentences], "boundary": "<which functions or classes '
+            '{"id", "name", "refines": "<default part id this node refines or splits, or \\"new\\" if it is none of them>", '
+            '"frame", "assumptions": [3-5 short sentences], "boundary": "<which functions or classes '
             f'a change may touch>"}} with 6 to 9 parts. Draw the map through this lens: {view}. '
             "Frames describe the CURRENT design in one or two sentences; assumptions are the design choices a "
-            f"different paradigm could remove; {hint}.\n\nGOAL:\n" + goal
+            f"different paradigm could remove; {hint}.\n\n" + _default_parts_text() + "\n\nGOAL:\n" + goal
             + (f"\n\nHOW THE BASELINE BEHAVES (measured):\n{diagnostics}" if diagnostics else "")
             + "\n\n" + _code_block(source))
+
+
+def _default_parts_text() -> str:
+    """The default parts the planner maps onto, and the rule that keeps a run's --only-nodes scope resolvable."""
+    parts = "\n".join(f"- {n['id']}: {n['name']}" for n in default_parts())
+    return ("DEFAULT PARTS (id: name):\n" + parts + "\nEvery node must say in \"refines\" which default part id it "
+            "refines or splits (several nodes may refine the same part), or \"new\" if it is none of them. A node that "
+            "refines a default part also starts its name with that part's name, then a colon.")
+
+
+def repair_prompt(unresolved, nodes: list[dict]) -> str:
+    """One re-ask when the planned map leaves requested default parts unmapped (loop.plan_tree)."""
+    names = {n["id"]: n["name"] for n in default_parts()}
+    missing = ", ".join(f"{u} ({names[u]})" if u in names else str(u) for u in sorted(unresolved))
+    keep = [{k: n.get(k) for k in ("id", "name", "refines", "frame", "assumptions", "boundary")}
+            for n in nodes or [] if n.get("parent") == "root" and n["id"] != "recipe"]
+    return ("A planner decomposed a problem into the parts below but did not say which default part each one refines. "
+            f"These default parts were not mapped: {missing}. Return the same nodes as ONLY a JSON array, unchanged "
+            'except that every node has "refines" filled: the default part id it refines or splits, or "new" if it is '
+            "none of them.\n\n" + _default_parts_text() + "\n\nNODES:\n" + json.dumps(keep, indent=1))
 
 
 def parse_planner(text: str) -> list[dict] | None:
@@ -140,13 +173,16 @@ def parse_planner(text: str) -> list[dict] | None:
     except Exception:  # noqa: BLE001
         return None
     nodes = []
+    part_ids = {d["id"] for d in default_parts()}
     for n in arr:
         if not isinstance(n, dict) or not all(k in n for k in ("id", "name", "frame", "assumptions")):
             continue
         if not isinstance(n.get("assumptions"), list):
             continue
+        ref = str(n.get("refines") or "").strip().lower()
         nodes.append({"id": re.sub(r"[^a-z0-9_]", "", str(n["id"]).lower())[:16] or f"n{len(nodes)}",
-                      "name": str(n["name"])[:60], "parent": "root", "frame": str(n["frame"])[:400],
+                      "name": str(n["name"])[:60], "parent": "root", "refines": ref if ref in part_ids else "new",
+                      "frame": str(n["frame"])[:400],
                       "assumptions": [str(a)[:160] for a in n["assumptions"]][:5],
                       "boundary": str(n.get("boundary", ""))[:200], "directions": ["inward", "outward"]})
     if len(nodes) < 4:

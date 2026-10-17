@@ -62,6 +62,8 @@ TREE = [
                      "the best rule is a sum of the best parts"],
      "boundary": _BOUNDARY_ALL, "directions": ["inward", "outward"]},
 ]
+for _n in TREE:      # every node says which default part it refines (tree.resolve_scope); here, itself
+    _n["refines"] = _n["id"]
 
 PROFILE = {
     "name": "binpack",
