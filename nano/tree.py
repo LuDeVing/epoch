@@ -8,7 +8,11 @@ construal and decomposition (REP-05, I2). Every idea, however radical, is still 
 same verifier at the same budget; the tree changes where the search looks, never what counts.
 
 Node schema: {"id", "name", "parent", "frame", "assumptions": [...], "boundary": "...",
-              "directions": ["inward", "outward"] or ["upward"]}
+              "directions": ["inward", "outward"] or ["upward"],
+              "idea_assumptions": [{"from", "text", "round", "kind": "silent"|"could_not_build"}]}
+"assumptions" are the part's design choices as the planner or the profile wrote them; they never grow during
+a run. "idea_assumptions" are what tested ideas on the part assumed (interrogation, or a builder's
+could-not-build note); context only, never material for the outward direction or the transform card.
 """
 from __future__ import annotations
 
@@ -200,11 +204,45 @@ MAP_NOTE = ("This map is one reader's notes, not an order: if a fact, an assumpt
             "wrong or incomplete, say so in the sketch and sketch what you think matters instead.")
 
 
+IDEA_ASSUMPTIONS_HEAD = ("WHAT TESTED IDEAS ON THIS PART ASSUMED (not design choices; context only, do not treat as "
+                         "rules to break):")
+IDEA_ASSUMPTIONS_CAP = 8
+
+
+def idea_assumptions(node: dict) -> list[dict]:
+    """What tested ideas on this part assumed. Reads the old "assumptions_added" field of earlier runs too."""
+    if isinstance(node.get("idea_assumptions"), list):
+        return node["idea_assumptions"]
+    out = []
+    for a in node.get("assumptions_added") or []:
+        text = str(a.get("text", "")) if isinstance(a, dict) else str(a)
+        kind = "could_not_build" if text.startswith("could not be built") else "silent"
+        out.append({"from": a.get("from", "") if isinstance(a, dict) else "", "text": text, "round": None, "kind": kind})
+    return out
+
+
+def migrate_node(node: dict) -> dict:
+    """An old node (assumptions_added, idea texts appended to "assumptions") in the new shape, in place: the
+    idea texts move out of "assumptions" into "idea_assumptions"."""
+    if not isinstance(node.get("idea_assumptions"), list):
+        ia = idea_assumptions(node)
+        moved = {x["text"].lower()[:60] for x in ia}
+        node["assumptions"] = [a for a in node.get("assumptions", []) if str(a).lower()[:60] not in moved]
+        node["idea_assumptions"] = ia
+    node.pop("assumptions_added", None)
+    return node
+
+
 def node_prompt(node: dict, direction: str, common: str) -> str:
     assumptions = "\n".join(f"- {a}" for a in node["assumptions"])
     head = direction_text(direction)
+    # what tested ideas assumed: a separate block, newest first, only when there is any (design assumptions above
+    # stay the only material the direction text tells the agent to keep or break)
+    ideas = [str(x.get("text", "")) for x in reversed(node.get("idea_assumptions") or []) if str(x.get("text", "")).strip()]
+    idea_block = ("\n" + IDEA_ASSUMPTIONS_HEAD + "\n" + "\n".join(f"- {t}" for t in ideas[:IDEA_ASSUMPTIONS_CAP]) + "\n"
+                  if ideas else "")
     return (common + f"PART UNDER STUDY: {node['name']}\nCURRENT DESIGN OF THIS PART: {node['frame']}\n"
-            f"CODE THIS PART MAY TOUCH: {node['boundary']}\nASSUMPTIONS OF THIS PART:\n{assumptions}\n\n{head}\n\n"
+            f"CODE THIS PART MAY TOUCH: {node['boundary']}\nASSUMPTIONS OF THIS PART:\n{assumptions}\n{idea_block}\n{head}\n\n"
             + MAP_NOTE + "\n\n")
 
 
