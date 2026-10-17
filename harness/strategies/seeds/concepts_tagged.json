@@ -1,0 +1,635 @@
+{
+ "about": "Seed words for the seeded idea card, tagged by abstract function and by distance band from an ML training recipe: near = engineered control, signal and logistics systems; mid = natural and social sciences; far = everyday objects and nature. Read by nano/seeds.py.",
+ "hints": {
+  "flow": "something that moves things along a path at a rate",
+  "storage": "something that holds things until they are needed",
+  "feedback": "something that adjusts itself from what it senses",
+  "competition": "things that compete for a limited resource",
+  "decay": "something that fades or wears down over time",
+  "symmetry": "something whose parts mirror or balance each other",
+  "routing": "something that sends each item to a different place",
+  "compression": "something that packs more into less space",
+  "memory": "something that keeps a trace of the past",
+  "timing": "something that sets when things happen"
+ },
+ "seeds": [
+  {
+   "word": "river",
+   "function": "flow",
+   "band": "far",
+   "domain": "nature"
+  },
+  {
+   "word": "funnel",
+   "function": "flow",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "pipe",
+   "function": "flow",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "straw",
+   "function": "flow",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "fountain",
+   "function": "flow",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "blood circulation",
+   "function": "flow",
+   "band": "mid",
+   "domain": "biology"
+  },
+  {
+   "word": "traffic jam",
+   "function": "flow",
+   "band": "mid",
+   "domain": "city"
+  },
+  {
+   "word": "glacier",
+   "function": "flow",
+   "band": "mid",
+   "domain": "geology"
+  },
+  {
+   "word": "conveyor belt",
+   "function": "flow",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "sluice gate",
+   "function": "flow",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "jar",
+   "function": "storage",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "barrel",
+   "function": "storage",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "basket",
+   "function": "storage",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "pocket",
+   "function": "storage",
+   "band": "far",
+   "domain": "clothing"
+  },
+  {
+   "word": "shelf",
+   "function": "storage",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "fat cell",
+   "function": "storage",
+   "band": "mid",
+   "domain": "biology"
+  },
+  {
+   "word": "granary",
+   "function": "storage",
+   "band": "mid",
+   "domain": "economics"
+  },
+  {
+   "word": "squirrel's winter cache",
+   "function": "storage",
+   "band": "mid",
+   "domain": "ecology"
+  },
+  {
+   "word": "warehouse",
+   "function": "storage",
+   "band": "near",
+   "domain": "logistics"
+  },
+  {
+   "word": "capacitor",
+   "function": "storage",
+   "band": "near",
+   "domain": "electronics"
+  },
+  {
+   "word": "kettle",
+   "function": "feedback",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "rudder",
+   "function": "feedback",
+   "band": "far",
+   "domain": "boat"
+  },
+  {
+   "word": "sail",
+   "function": "feedback",
+   "band": "far",
+   "domain": "boat"
+  },
+  {
+   "word": "thermometer",
+   "function": "feedback",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "scale",
+   "function": "feedback",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "sweating",
+   "function": "feedback",
+   "band": "mid",
+   "domain": "biology"
+  },
+  {
+   "word": "predator and prey",
+   "function": "feedback",
+   "band": "mid",
+   "domain": "ecology"
+  },
+  {
+   "word": "market price",
+   "function": "feedback",
+   "band": "mid",
+   "domain": "economics"
+  },
+  {
+   "word": "thermostat",
+   "function": "feedback",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "cruise control",
+   "function": "feedback",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "steam engine governor",
+   "function": "feedback",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "musical chairs",
+   "function": "competition",
+   "band": "far",
+   "domain": "game"
+  },
+  {
+   "word": "tug of war",
+   "function": "competition",
+   "band": "far",
+   "domain": "game"
+  },
+  {
+   "word": "nest",
+   "function": "competition",
+   "band": "far",
+   "domain": "nature"
+  },
+  {
+   "word": "garden",
+   "function": "competition",
+   "band": "far",
+   "domain": "nature"
+  },
+  {
+   "word": "dice",
+   "function": "competition",
+   "band": "far",
+   "domain": "game"
+  },
+  {
+   "word": "auction",
+   "function": "competition",
+   "band": "mid",
+   "domain": "economics"
+  },
+  {
+   "word": "forest canopy",
+   "function": "competition",
+   "band": "mid",
+   "domain": "ecology"
+  },
+  {
+   "word": "immune cells",
+   "function": "competition",
+   "band": "mid",
+   "domain": "biology"
+  },
+  {
+   "word": "shared radio channel",
+   "function": "competition",
+   "band": "near",
+   "domain": "telecom"
+  },
+  {
+   "word": "bus arbiter",
+   "function": "competition",
+   "band": "near",
+   "domain": "electronics"
+  },
+  {
+   "word": "candle",
+   "function": "decay",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "leaf",
+   "function": "decay",
+   "band": "far",
+   "domain": "nature"
+  },
+  {
+   "word": "eraser",
+   "function": "decay",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "pebble",
+   "function": "decay",
+   "band": "far",
+   "domain": "nature"
+  },
+  {
+   "word": "balloon",
+   "function": "decay",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "half-life",
+   "function": "decay",
+   "band": "mid",
+   "domain": "physics"
+  },
+  {
+   "word": "forgetting curve",
+   "function": "decay",
+   "band": "mid",
+   "domain": "psychology"
+  },
+  {
+   "word": "compost",
+   "function": "decay",
+   "band": "mid",
+   "domain": "ecology"
+  },
+  {
+   "word": "leaky bucket",
+   "function": "decay",
+   "band": "near",
+   "domain": "networking"
+  },
+  {
+   "word": "signal fading",
+   "function": "decay",
+   "band": "near",
+   "domain": "telecom"
+  },
+  {
+   "word": "kite",
+   "function": "symmetry",
+   "band": "far",
+   "domain": "toy"
+  },
+  {
+   "word": "scissors",
+   "function": "symmetry",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "mirror",
+   "function": "symmetry",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "quilt",
+   "function": "symmetry",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "wheel",
+   "function": "symmetry",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "crystal",
+   "function": "symmetry",
+   "band": "mid",
+   "domain": "physics"
+  },
+  {
+   "word": "starfish",
+   "function": "symmetry",
+   "band": "mid",
+   "domain": "biology"
+  },
+  {
+   "word": "seesaw",
+   "function": "symmetry",
+   "band": "mid",
+   "domain": "physics"
+  },
+  {
+   "word": "differential gear",
+   "function": "symmetry",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "balanced bridge circuit",
+   "function": "symmetry",
+   "band": "near",
+   "domain": "electronics"
+  },
+  {
+   "word": "map",
+   "function": "routing",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "compass",
+   "function": "routing",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "gate",
+   "function": "routing",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "rail",
+   "function": "routing",
+   "band": "far",
+   "domain": "transport"
+  },
+  {
+   "word": "sieve",
+   "function": "routing",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "ant trail",
+   "function": "routing",
+   "band": "mid",
+   "domain": "ecology"
+  },
+  {
+   "word": "river delta",
+   "function": "routing",
+   "band": "mid",
+   "domain": "geology"
+  },
+  {
+   "word": "bee dance",
+   "function": "routing",
+   "band": "mid",
+   "domain": "ecology"
+  },
+  {
+   "word": "postal sorting office",
+   "function": "routing",
+   "band": "near",
+   "domain": "logistics"
+  },
+  {
+   "word": "railway switch yard",
+   "function": "routing",
+   "band": "near",
+   "domain": "transport"
+  },
+  {
+   "word": "telephone exchange",
+   "function": "routing",
+   "band": "near",
+   "domain": "telecom"
+  },
+  {
+   "word": "spring",
+   "function": "compression",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "accordion",
+   "function": "compression",
+   "band": "far",
+   "domain": "music"
+  },
+  {
+   "word": "sponge",
+   "function": "compression",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "suitcase",
+   "function": "compression",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "zipper",
+   "function": "compression",
+   "band": "far",
+   "domain": "clothing"
+  },
+  {
+   "word": "DNA packing",
+   "function": "compression",
+   "band": "mid",
+   "domain": "biology"
+  },
+  {
+   "word": "shorthand",
+   "function": "compression",
+   "band": "mid",
+   "domain": "language"
+  },
+  {
+   "word": "haiku",
+   "function": "compression",
+   "band": "mid",
+   "domain": "language"
+  },
+  {
+   "word": "Morse code",
+   "function": "compression",
+   "band": "near",
+   "domain": "telecom"
+  },
+  {
+   "word": "vacuum packing",
+   "function": "compression",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "notebook",
+   "function": "memory",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "knot",
+   "function": "memory",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "tree rings",
+   "function": "memory",
+   "band": "far",
+   "domain": "nature"
+  },
+  {
+   "word": "footprint",
+   "function": "memory",
+   "band": "far",
+   "domain": "nature"
+  },
+  {
+   "word": "photograph",
+   "function": "memory",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "immune memory",
+   "function": "memory",
+   "band": "mid",
+   "domain": "biology"
+  },
+  {
+   "word": "sediment layers",
+   "function": "memory",
+   "band": "mid",
+   "domain": "geology"
+  },
+  {
+   "word": "habit",
+   "function": "memory",
+   "band": "mid",
+   "domain": "psychology"
+  },
+  {
+   "word": "flight recorder",
+   "function": "memory",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "version history",
+   "function": "memory",
+   "band": "near",
+   "domain": "computing"
+  },
+  {
+   "word": "hourglass",
+   "function": "timing",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "sundial",
+   "function": "timing",
+   "band": "far",
+   "domain": "household"
+  },
+  {
+   "word": "metronome",
+   "function": "timing",
+   "band": "far",
+   "domain": "music"
+  },
+  {
+   "word": "pendulum",
+   "function": "timing",
+   "band": "far",
+   "domain": "physics"
+  },
+  {
+   "word": "drum",
+   "function": "timing",
+   "band": "far",
+   "domain": "music"
+  },
+  {
+   "word": "circadian rhythm",
+   "function": "timing",
+   "band": "mid",
+   "domain": "biology"
+  },
+  {
+   "word": "fireflies flashing together",
+   "function": "timing",
+   "band": "mid",
+   "domain": "ecology"
+  },
+  {
+   "word": "tides",
+   "function": "timing",
+   "band": "mid",
+   "domain": "geology"
+  },
+  {
+   "word": "traffic lights",
+   "function": "timing",
+   "band": "near",
+   "domain": "engineering"
+  },
+  {
+   "word": "train timetable",
+   "function": "timing",
+   "band": "near",
+   "domain": "transport"
+  },
+  {
+   "word": "pacemaker",
+   "function": "timing",
+   "band": "near",
+   "domain": "engineering"
+  }
+ ]
+}
