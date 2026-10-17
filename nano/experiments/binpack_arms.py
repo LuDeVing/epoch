@@ -213,7 +213,8 @@ def _arm_env(lab: Path | None, dry: bool) -> dict:
     return env
 
 
-def run_arms(out: Path, dry: bool, seeds=None, prefix: str | None = None, timeout: float = 3600 * 6) -> dict:
+def run_arms(out: Path, dry: bool, seeds=None, prefix: str | None = None, timeout: float = 3600 * 6,
+             arms=None) -> dict:
     pre = write_prereg(out)
     seeds = list(seeds if seeds is not None else ([0] if dry else pre["seeds"]))
     prefix = prefix or ("mock-binpack-arms" if dry else "binpack-arms")
@@ -223,8 +224,13 @@ def run_arms(out: Path, dry: bool, seeds=None, prefix: str | None = None, timeou
     manifest = {"dry": dry, "lab_root": str(lab), "profile": pre["profile"], "prereg_hash": pre["hash"],
                 "scorer_cap": 9 if dry else pre["scorer_cap_per_arm"], "seeds": seeds, "runs": []}
     (out / "logs").mkdir(exist_ok=True)
+    order = list(arms or ARMS)
+    bad = [a for a in order if a not in ARMS]
+    if bad:
+        raise ValueError(f"unknown arm(s) {bad}; choose from {ARMS}")
+    manifest["arm_order"] = order
     for seed in seeds:
-        for arm in ARMS:
+        for arm in order:
             cmd = arm_commands(arm, seed, prefix, pre, dry)
             log = out / "logs" / f"{arm}_s{seed}.log"
             t0 = time.time()
@@ -510,6 +516,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", default=str(Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab")) / "results" / "binpack_arms"))
     ap.add_argument("--seeds", default="", help="dry/run: comma-separated seeds (default: dry 0, run the pre-registered ones)")
     ap.add_argument("--no-planted", action="store_true", help="report: skip the planted-solution check")
+    ap.add_argument("--arms", default="", help="dry/run: comma-separated arms in the order to run them (default: all, "
+                    "profile_only, full, best_of_n); the arms run one after another, so put the one you need first")
     # bestofn
     ap.add_argument("--profile", default=PROFILE)
     ap.add_argument("--batch", default="binpack-arms-bestofn")
@@ -533,7 +541,8 @@ def main(argv: list[str] | None = None) -> int:
         run_best_of_n(a.profile, a.batch, a.replicate, a.n_max, a.scorer_cap, a.budget,
                       "mock" if a.mock else a.backend, a.model)
     elif a.mode in ("dry", "run"):
-        man = run_arms(out, dry=a.mode == "dry", seeds=seeds)
+        arms = [x.strip() for x in a.arms.split(",") if x.strip()] or None
+        man = run_arms(out, dry=a.mode == "dry", seeds=seeds, arms=arms)
         bad = [r for r in man["runs"] if r["rc"] != 0]
         print(report(out, run_planted=not a.no_planted))
         if bad:
