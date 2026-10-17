@@ -189,7 +189,7 @@ def collect(run: Path) -> dict:
             pred_acc = {"checkable": len(checkable), "within_tolerance": sum(1 for p in checkable if p.get("ok"))}
     return {"run": run.name, "arm": state.get("arm", "scaffold"), "model": state.get("model"), "backend": state.get("backend"),
             "baseline_version": state.get("baseline_version", "v1"), "lens": state.get("lens"),
-            "budget": state.get("B"), "tokens": tokens, "tokens_main": tokens_main, "tokens_aux": tokens - tokens_main,
+            "lens_design": state.get("lens_design"), "budget": state.get("B"), "tokens": tokens, "tokens_main": tokens_main, "tokens_aux": tokens - tokens_main,
             "cost_usd": round(cost, 2), "wall_s": answer.get("wall_s"),
             "calls": sum(by_role.values()), "calls_by_card": dict(by_role),
             "sketches": len(ideas), "sketch_sources": dict(src), "sketches_by_card": dict(by_card),

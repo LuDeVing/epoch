@@ -22,6 +22,9 @@ from nano import profile as PF
 # (nano/profiles/<name>.py, docs/GENERIC_SPEC.md). DEFAULT_TREE, LENSES, INWARD, OUTWARD, UPWARD, INWARD_FREE,
 # OUTWARD_FREE and OFF_TREE_NODE stay readable as module attributes (see __getattr__ at the end), so callers
 # that wrote tree.DEFAULT_TREE keep working and see the profile that is active when they read it.
+# LENSES: ways the planner draws the map. The lens is a factor separate from the replicate: every replicate uses
+# "parts" (or --lens) unless a lens experiment opts in with --lens-by-replicate (lens = LENSES[replicate % n]);
+# state.json, problem_tree.json, answer.json and report.json record "lens" and "lens_design" (fixed | by_replicate).
 
 
 def default_tree() -> list[dict]:
@@ -132,7 +135,7 @@ def _code_block(source: str) -> str:
 def planner_prompt(goal: str, source: str, lens: str = "parts", diagnostics: str = "") -> str:
     p = PF.current()
     ls = p.lenses
-    view = ls.get(lens, ls["parts"])
+    view = ls.get(lens) or ls.get("parts") or next(iter(ls.values()), "")
     hint = p.v("planner_hint") or f"boundaries name the functions or sections of the {p.v('artifact', 'artifact')} a part may change"
     return ("Decompose the following problem into parts for a research search. Return ONLY a JSON array of nodes "
             '{"id", "name", "refines": "<default part id this node refines or splits, or \\"new\\" if it is none of them>", '
