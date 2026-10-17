@@ -75,7 +75,7 @@ def profile_names() -> list[str]:
 
 
 def _preset(preset) -> dict:
-    if preset not in PRESETS:
+    if not isinstance(preset, str) or preset not in PRESETS:          # a list or dict body value is no preset
         raise Reject(422, "bad_preset", preset=preset if isinstance(preset, str) else None, presets=list(PRESET_ORDER))
     return PRESETS[preset]
 
@@ -315,8 +315,11 @@ class Launcher:
             with open(log, "ab") as out:
                 out.write(("$ %s\n" % " ".join(cmd)).encode("utf-8"))
                 out.flush()
-                proc = subprocess.Popen(cmd, cwd=str(REPO), env=env, stdin=subprocess.DEVNULL, stdout=out,
-                                        stderr=subprocess.STDOUT, **kw)
+                try:
+                    proc = subprocess.Popen(cmd, cwd=str(REPO), env=env, stdin=subprocess.DEVNULL, stdout=out,
+                                            stderr=subprocess.STDOUT, **kw)
+                except OSError as e:                    # the server re-raises OSError: answer here, not with silence
+                    raise Reject(500, "spawn_failed", detail=str(e)[:300])
             rec = {"batch": batch, "pid": proc.pid, "created": proc_created(proc.pid), "preset": preset,
                    "profile": profile, "mode": mode, "cmd": cmd, "started": _now(), "log": str(log),
                    "run_dir": None, "rc": None, "finished": None, "stopped": False, "estimate": est}
@@ -398,20 +401,26 @@ class Launcher:
         out.reverse()                                       # newest first
         return {"runs": out, "alive": any(r["alive"] for r in out)}
 
+    def _mark_stopped(self, batch: str, value: bool) -> None:
+        with self.lock:
+            rows = self._load()
+            for r in rows:
+                if r["batch"] == batch and not r.get("finished"):
+                    r["stopped"] = value
+            self._save(rows)
+
     def stop(self, batch) -> dict:
         with self.lock:
             rec = next((r for r in self._load() if r["batch"] == batch), None)
         if rec is None:
             raise Reject(404, "no_run", batch=batch)
         alive = self._alive(rec)
+        if alive:                                           # mark first: the watcher's run_finished must say stopped
+            self._mark_stopped(batch, True)
         killed = kill_tree(rec["pid"]) if alive else False   # never signal a pid that is no longer this run
+        if alive and not killed and self._alive(rec):
+            self._mark_stopped(batch, False)                # the kill failed and the run goes on
         if alive:
-            with self.lock:
-                rows = self._load()
-                for r in rows:
-                    if r["batch"] == batch:
-                        r["stopped"] = True
-                self._save(rows)
             proc = self.procs.get(batch)
             if proc is not None:
                 try:

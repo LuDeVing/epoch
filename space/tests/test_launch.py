@@ -176,6 +176,39 @@ def test_stop_on_a_dead_pid_is_harmless(lab, srv, monkeypatch):
     assert len(fin) == 1 and fin[0]["by"] == "server" and fin[0]["subject"] == "run:old"
 
 
+def test_bad_types_and_a_failed_spawn_answer_cleanly(srv, lab, monkeypatch):
+    for preset in (["small"], {"a": 1}):                      # an unhashable preset is a 422, not a server error
+        st, b = call(srv.port, "POST", "/api/run/start", {"preset": preset, "profile": "binpack_nobase", "mode": "mock"})
+        assert st == 422 and b["error"] == "bad_preset"
+
+    def no_python(*a, **k):
+        raise FileNotFoundError(2, "The system cannot find the file specified")
+    monkeypatch.setattr(LA.subprocess, "Popen", no_python)
+    st, b = call(srv.port, "POST", "/api/run/start", {"preset": "small", "profile": "binpack_nobase", "mode": "mock"})
+    assert st == 500 and b["error"] == "spawn_failed" and "cannot find" in b["detail"]
+    assert not (lab / "spaces" / "demo" / "runs" / "runs.json").exists()
+    st, b = call(srv.port, "GET", "/api/run/status")
+    assert st == 200 and b == {"runs": [], "alive": False}
+
+
+def test_stop_ends_the_run_and_the_finish_mark_says_stopped(srv, lab, monkeypatch):
+    """A sleeper stands in for the loop (no model, no dry run). The watcher must not post 'failed' for a stop."""
+    monkeypatch.setattr(LA, "command", lambda *a, **k: [sys.executable, "-c", "import time; time.sleep(120)"])
+    st, b = call(srv.port, "POST", "/api/run/start", {"preset": "small", "profile": "binpack_nobase", "mode": "mock"})
+    assert st == 200, b
+    batch = b["batch"]
+    st, b = call(srv.port, "POST", "/api/run/stop", {"batch": batch})
+    assert st == 200 and b["was_alive"] is True and b["killed"] is True
+    end, fin = time.monotonic() + 20, []
+    while time.monotonic() < end and not fin:
+        st, ev = call(srv.port, "GET", "/api/events?since=0")
+        fin = [e for e in ev["events"] if e["data"].get("event") == "run_finished"]
+        time.sleep(0.2)
+    assert len(fin) == 1 and fin[0]["data"]["state"] == "stopped", fin
+    st, s = call(srv.port, "GET", "/api/run/status")
+    assert s["alive"] is False and s["runs"][0]["state"] == "stopped"
+
+
 def test_pid_alive_sees_this_process():
     import os
     assert LA.pid_alive(os.getpid()) is True
