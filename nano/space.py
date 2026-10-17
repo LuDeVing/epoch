@@ -32,6 +32,7 @@ from pathlib import Path
 
 ACTOR = "team.loop"
 BATCH = 100                     # events per POST
+POST_CAP = 60000                # bytes per POST body: the server refuses a body over 64 KB with 413 too_big
 SKETCH_BATCH = 50               # items per sketch_batch
 METRIC_KEYS = ("learn_gap", "learn_z", "long_z", "extrap_z", "cost_ratio")
 # the roles whose prompts are built after each boundary: their digest is rendered and their cursor moves there
@@ -51,6 +52,21 @@ def _strip(x):
 
 def _jsonable(x):
     return json.loads(json.dumps(x, default=str))
+
+
+def _chunks(lines: list[str]) -> list[list[str]]:
+    """Group JSON-encoded events into POST batches of at most BATCH events and POST_CAP bytes (at least one each)."""
+    out, cur, size = [], [], len('{"events": []}')
+    for x in lines:
+        n = len(x.encode("utf-8")) + 2
+        if cur and (len(cur) >= BATCH or size + n > POST_CAP):
+            out.append(cur)
+            cur, size = [], len('{"events": []}')
+        cur.append(x)
+        size += n
+    if cur:
+        out.append(cur)
+    return out
 
 
 class SpaceClient:
@@ -123,18 +139,19 @@ class SpaceClient:
         return d if st == 200 else dict(d, status=st)
 
     def send_many(self, evs):
-        """POST in batches of 100; a batch the server did not take waits in the outbox. Returns the events sent."""
-        sent = 0
+        """POST in batches of 100 events and under 60 KB; a batch the server did not take waits in the outbox.
+        Returns the events sent."""
+        sent, done = 0, 0
         with self._lock:
-            for i in range(0, len(evs), BATCH):
-                chunk = evs[i:i + BATCH]
+            for chunk in _chunks([json.dumps(ev) for ev in evs]):
                 try:
-                    st, _ = self._call("POST", "/api/events", {"events": chunk})
+                    st, _ = self._call("POST", "/api/events", {"events": [json.loads(x) for x in chunk]})
                     if st >= 500:
                         raise OSError(f"status {st}")
                     sent += len(chunk)
+                    done += len(chunk)
                 except (OSError, ValueError):
-                    self._to_outbox(evs[i:])
+                    self._to_outbox(evs[done:])
                     break
         return sent
 
@@ -152,15 +169,15 @@ class SpaceClient:
                 return 0
             if not lines:
                 return 0
-            left = []
-            for i in range(0, len(lines), BATCH):
-                chunk = lines[i:i + BATCH]
+            left, done = [], 0
+            for chunk in _chunks(lines):
                 try:
                     st, _ = self._call("POST", "/api/events", {"events": [json.loads(x) for x in chunk]})
                     if st >= 500:
                         left += chunk
+                    done += len(chunk)
                 except (OSError, ValueError):
-                    left += lines[i:]
+                    left += lines[done:]
                     break
             with open(self.outbox, "w", encoding="utf-8") as f:
                 f.write("".join(x + "\n" for x in left))
@@ -341,6 +358,8 @@ class LoopSpace:
                     rnd = getattr(lp, "round_now", None)
                     evs = self._sketches(rnd, None) + self._deepen(rnd, None) + self._cands(rnd, None) + self._tests(rnd, None)
                 self._post(evs)
+                if evs:
+                    self._save_state()                 # a resume must not mirror these objects again
         except Exception as e:  # noqa: BLE001
             self._warn("tick", e)
 

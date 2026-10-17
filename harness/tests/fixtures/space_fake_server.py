@@ -2,7 +2,9 @@
 
 Standard library only: a ThreadingHTTPServer on 127.0.0.1 and a free port. It stores posted events with gap-free
 seq numbers (deduped on (by, op)), stamps by, by_kind and owner from the headers, strips the private keys, refuses a
-second node_added with a used id (409 id_taken), and answers:
+second node_added with a used id (409 id_taken), refuses a POST body over 64 KB (413 too_big, as the real
+server does), checks each envelope with the real server's Space._envelope (422, kept in store.rejected),
+and answers:
     GET  /api/events?since=N&limit=500   {"epoch", "head", "events"}
     GET  /api/control?loop=ID&since=N    {"head", **space.control.merge(...)}
     GET  /api/digest?agent=ID&role=R     {"text", "from_seq", "to_seq", "n"} from space.digest.render_digest
@@ -20,6 +22,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
 PRIVATE = ("obvious", "obvious_match", "private")
+MAX_BODY = 65536                    # the real server refuses a larger POST body with 413 too_big (space/server.py)
 
 
 def _strip(x):
@@ -35,10 +38,12 @@ class Store:
 
     def __init__(self):
         self.events: list[dict] = []
+        self.rejected: list[dict] = []                  # [{kind, by, body}]: envelopes the real server would refuse
         self.ops: dict = {}
         self.lock = threading.Lock()
         self.cond = threading.Condition(self.lock)
         self.posts = 0
+        self.bodies: list[int] = []                     # the size of every POST body, in bytes
 
     def add(self, ev: dict, by: str, by_kind: str) -> tuple[int, dict]:
         with self.lock:
@@ -48,6 +53,13 @@ class Store:
                 return 200, {"seq": self.ops[(by, op)], "dup": True}
             if not isinstance(ev.get("data"), dict) or not ev.get("kind"):
                 return 422, {"error": "bad_envelope"}
+            from space.server import Space                 # the real envelope check: kinds, data keys, subject, stage, ints
+            from space.store import Reject
+            try:
+                Space._envelope(None, ev)
+            except Reject as r:
+                self.rejected.append({"kind": ev.get("kind"), "by": by, "body": r.body})
+                return r.code, r.body
             d = ev["data"]
             if ev["kind"] == "node_added":
                 nid = re.sub(r"[^a-z0-9_]", "", str(d.get("id", "")).lower())[:16]
@@ -112,6 +124,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         n = int(self.headers.get("Content-Length") or 0)
         body = self.rfile.read(n) if n else b""            # the whole body first, then any answer
+        self.server.store.bodies.append(n)
+        if n > MAX_BODY:
+            return self._send(413, {"error": "too_big"})
         try:
             obj = json.loads(body or b"{}")
         except ValueError:

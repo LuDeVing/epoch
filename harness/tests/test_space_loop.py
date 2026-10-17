@@ -157,7 +157,9 @@ def test_dry_run_with_space_step_mode(monkeypatch):
             drv.stop.set()
         wall = time.perf_counter() - t0
         evs = fs.store.snapshot()
+        rejected = list(fs.store.rejected)
     assert wall < 300, f"the run took {wall:.0f} s"
+    assert rejected == [], f"the real server would refuse these loop events: {rejected[:3]}"
     assert "claude" not in procs, "a claude process was started"
     run = next(config.RUNS_DIR.glob("space-t__*"))
     loop_evs = [e for e in evs if e["by"] == "team.loop"]
@@ -368,3 +370,45 @@ def test_v2_disputed_block_names_the_person():
     assert '- first fit is best | disputed by ana: "seed 0" [measured]' in q
     assert "- an agent doubt (disputed, re-measure before relying on it)" in q
     assert q.index("first fit is best") < q.index("an agent doubt")        # newest first, as today
+
+
+# ---------------------------------------------------------------- review fixes
+def test_a_large_push_stays_under_the_servers_body_cap():
+    """The real server refuses a POST body over 64 KB (413 too_big). A boundary with many sketches must still land:
+    every batch stays under the cap and no event is lost."""
+    with FS.FakeSpace() as fs:
+        lp = _loop("space-big")
+        sp = _space(lp, fs.url)
+        lp.tree = [dict(n) for n in PF.current().tree]
+        nodes = [n["id"] for n in lp.tree if n["id"] != "root"]
+        lp.sketches = [{"id": f"s{i:010x}", "idea": ("a long idea about packing " * 10)[:200], "node": nodes[i % len(nodes)],
+                        "direction": ("inward", "outward")[i % 2], "card": "seeded", "kind": "port", "round": 1}
+                       for i in range(1200)]
+        sp.push_stage(1, "ideated")
+        got = sum(e["data"]["count"] for e in fs.events("sketch_batch"))
+        assert got == len(lp.sketches), f"{len(lp.sketches) - got} sketches lost"
+        assert fs.events("stage_entered")
+        assert max(fs.store.bodies) <= FS.MAX_BODY
+        assert sp.client.outbox_count() == 0
+        # the outbox flush keeps under the cap too
+        evs = [sp._ev("note_posted", None, None, {"text": "x" * 1500}) for _ in range(120)]
+        sp.client._to_outbox(evs)
+        assert sp.client.flush_outbox() == 120
+        assert sum(1 for e in fs.store.snapshot() if e["kind"] == "note_posted") == 120
+        assert max(fs.store.bodies) <= FS.MAX_BODY
+
+
+def test_tick_keeps_its_cursors_across_a_restart():
+    """tick() mirrors objects between boundaries; a resume must not post them a second time."""
+    with FS.FakeSpace() as fs:
+        lp = _loop("space-tick")
+        sp = _space(lp, fs.url)
+        lp.sketches = [{"id": f"s{i:010x}", "idea": f"idea {i}", "node": "choice", "direction": "inward", "card": "seeded",
+                        "kind": "port", "round": 1} for i in range(3)]
+        sp.tick()
+        assert len(fs.events("sketch_batch")) == 1
+        back = _loop("space-tick", resume=True)
+        back.sketches = list(lp.sketches)
+        sp2 = _space(back, fs.url)
+        sp2.tick()
+        assert len(fs.events("sketch_batch")) == 1, "a resumed loop posted the same sketches again"
