@@ -79,11 +79,11 @@ def test_presets_map_to_the_exact_commands():
     assert LA.command("big", "binpack_nobase", "mock", "b1", url) == mock("10", "3", "22")
     real = "-m nano.loop --profile llm --batch b2 --implement".split()
     assert LA.command("small", "llm", "real", "b2", url) == [PY] + real + [
-        "2", "--rounds", "1", "--max-sketch-calls", "8", "--budget", "600000", "--space", url]
+        "2", "--rounds", "1", "--max-sketch-calls", "8", "--model", "fable", "--budget", "600000", "--space", url]
     assert LA.command("medium", "llm", "real", "b2", url) == [PY] + real + [
-        "4", "--rounds", "2", "--max-sketch-calls", "16", "--budget", "2000000", "--space", url]
+        "4", "--rounds", "2", "--max-sketch-calls", "16", "--model", "fable", "--budget", "2000000", "--space", url]
     assert LA.command("big", "llm", "real", "b2", url) == [PY] + real + [
-        "10", "--rounds", "3", "--budget", "5000000", "--space", url]          # no sketch cap
+        "10", "--rounds", "3", "--model", "fable", "--budget", "5000000", "--space", url]          # no sketch cap
     assert LA.command("small", "binpack_nobase", "mock", "b1", url, {"implement": 1, "max_sketch_calls": 4}) == mock("1", "1", "4")
     with pytest.raises(S.Reject):
         LA.command("huge", "llm", "mock", "b", url)

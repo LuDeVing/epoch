@@ -42,6 +42,7 @@ PRESETS = {
     "big": {"rounds": 3, "implement": 10, "max_sketch_calls": None, "budget": 5_000_000},
 }
 PRESET_ORDER = ("small", "medium", "big")
+REAL_MODEL = "fable"           # the inventing model of a real run; the loop's own default would be the cheap model
 
 # Measured on past runs: Fable tokens per call kind, minutes per call, calls in parallel.
 SKETCH_TOKENS, CHAIN_TOKENS, BUILD_TOKENS = 65_000, 40_000, 35_000
@@ -118,7 +119,7 @@ def command(preset, profile, mode, batch, space_url, overrides=None) -> list[str
                "--rounds", str(p["rounds"])]
         if p["max_sketch_calls"]:
             cmd += ["--max-sketch-calls", str(p["max_sketch_calls"])]
-        return cmd + ["--budget", str(p["budget"]), "--space", space_url]
+        return cmd + ["--model", REAL_MODEL, "--budget", str(p["budget"]), "--space", space_url]
     raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
 
 
