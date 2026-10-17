@@ -91,7 +91,11 @@ def failure_card(fb: dict | None) -> str:
 
 
 def update_from_run(run_dir: Path, path: Path, baseline_version: str = "v1") -> dict:
-    """Read a finished run's records and merge what they teach into the lessons file. Returns counts."""
+    """Read a finished run's records and merge what they teach into the lessons file. Returns counts.
+
+    Called twice per run: by the loop's _finish (pitfalls; rung5/ does not exist yet) and by nano/batch_verify.py
+    after the overnight verdicts land in rung5/results.json (outcomes). Calling it again is safe: a piece of
+    evidence counts once, so the helpful and harmful counters do not grow on a repeat call."""
     entries = load(path)
     by_id = {e["id"]: e for e in entries}
     cands = [r for f in sorted((run_dir / "cands").glob("*.jsonl")) for r in _jsonl(f)] if (run_dir / "cands").exists() else []
@@ -116,11 +120,12 @@ def update_from_run(run_dir: Path, path: Path, baseline_version: str = "v1") -> 
             by_id[eid] = e
             entries.append(e)
             added += 1
-        if evidence not in e["evidence"]:
-            e["evidence"].append(evidence)
-            touched += 1
         if run not in e["runs"]:
             e["runs"].append(run)
+        if evidence in e["evidence"]:
+            return                              # already counted (a repeat call on the same run)
+        e["evidence"].append(evidence)
+        touched += 1
         if helpful is True:
             e["helpful"] += 1
         elif helpful is False:
@@ -146,18 +151,20 @@ def update_from_run(run_dir: Path, path: Path, baseline_version: str = "v1") -> 
         fixed = any(verify.get(c.get("id"), {}).get("status") == "checked" for c in children.get(r.get("id"), []))
         upsert("pitfall", {"part": part, "version": baseline_version}, f"builders for the part '{part}' have {key}", r["id"],
                helpful=True if fixed else None)
-    # outcomes: the overnight verdict
+    # outcomes: the overnight verdict (batch_verify's results.json names the part "node" and the seed count "n")
     for cid, s in rung5.items():
         st = s.get("status")
         hyp = str(s.get("hypothesis") or "")[:120]
-        if not hyp or str(cid).startswith("control") or str(cid).startswith("tune"):
+        if not hyp or s.get("control") or str(cid).startswith("control") or str(cid).startswith("tune"):
             continue
+        part = s.get("part") or s.get("node") or "any"
+        n_seeds = s.get("n_seeds") if s.get("n_seeds") is not None else s.get("n")
         if st in ("verified", "stackable"):
-            upsert("outcome", {"part": s.get("part") or "any", "version": baseline_version},
+            upsert("outcome", {"part": part, "version": baseline_version},
                    f"helped ({st}, delta {s.get('delta')}): {hyp}", str(cid), helpful=True)
-        elif st == "fail" and (s.get("n_seeds") or 0) >= 3:
-            upsert("outcome", {"part": s.get("part") or "any", "version": baseline_version},
-                   f"did not help over {s.get('n_seeds')} seeds: {hyp}", str(cid), helpful=False)
+        elif st == "fail" and (n_seeds or 0) >= 3:
+            upsert("outcome", {"part": part, "version": baseline_version},
+                   f"did not help over {n_seeds} seeds: {hyp}", str(cid), helpful=False)
     save(path, entries)
     return {"added": added, "touched": touched, "total": len(entries)}
 
