@@ -119,9 +119,9 @@ export function mountStart(el, api = {}) {
     S.busy = true; S.error = ''; draw();
     const custom = S.profile === '__custom__';
     if (custom && !S.problem.goal.trim() && !S.problem.title.trim()) { S.error = 'Describe the problem first.'; S.busy = false; draw(); return; }
-    const res = await postJson('/api/run/start', { preset: S.preset, profile: custom ? '' : S.profile, mode: S.mode, confirm: S.mode === 'real' && S.confirming, problem: custom ? S.problem : undefined });
-    if (res.ok && typeof api.toast === 'function') api.toast('Research started. The team is planning; the map appears in a minute or two.');
+    const res = await postJson('/api/run/start', { preset: S.preset, profile: custom ? '' : S.profile, mode: S.mode, confirm: S.mode === 'real' && S.confirming, problem: custom ? S.problem : undefined })
       .catch(() => ({ ok: false, body: { error: 'server offline' } }));
+    if (res.ok && typeof api.toast === 'function') api.toast('Research started. The team is planning; the map appears in a minute or two.');
     S.busy = false;
     if (res.ok) {
       S.confirming = false; S.open = false; S.showLog = true;
