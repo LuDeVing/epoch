@@ -47,7 +47,9 @@ function Space({ s, refresh }) {
       <span class="muted">${s.alive ? `running on port ${s.port}` : (s.port ? 'stopped' : 'not started here')}${s.lan ? ' . open to the network' : ''}</span>
       ${s.people.length ? html`<span class="muted">people: ${s.people.join(', ')}</span>` : null}
       <span style="flex:1"></span>
-      ${s.alive ? html`<button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/stop', { name: s.name }))}>Stop</button>`
+      ${s.alive ? html`<a class="btn btn--small btn--primary" href=${`${s.url}/`} target="_blank" rel="noopener">View</a>
+        <a class="btn btn--small" href=${`${s.url}/?stage=1`} target="_blank" rel="noopener" title="the big read-only view for a projector">Projector</a>
+        <button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/stop', { name: s.name }))}>Stop</button>`
         : html`<button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/start', { name: s.name }))}>Start</button>`}
     </div>
     ${s.alive ? html`<div class="space__row">
