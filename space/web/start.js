@@ -50,7 +50,7 @@ export function mountStart(el, api = {}) {
   const canStart = !!api.me && !flags.stage;           // the projector never writes; a person joins first
   const S = {
     open: false, loaded: false, profiles: [], presets: {}, order: ['small', 'medium', 'big'],
-    profile: '', preset: 'small', mode: 'mock', confirming: false, busy: false, error: '',
+    profile: '', preset: 'small', mode: 'real', confirming: false, busy: false, error: '',
     runs: [], showLog: false,
   };
   let timer = null, lastCheck = 0;
@@ -183,12 +183,8 @@ export function mountStart(el, api = {}) {
             <span class="mono start-size__est">${estimateLine(S.presets[k].estimate)}</span>
           </label>`)}
         </fieldset>
-        <div class="start-modes" role="group" aria-label="Mock or Real">
-          <button class=${`btn${S.mode === 'mock' ? ' btn--on' : ''}`} aria-pressed=${S.mode === 'mock'}
-            onClick=${() => { S.mode = 'mock'; S.confirming = false; draw(); }}>Mock</button>
-          <button class=${`btn${S.mode === 'real' ? ' btn--on' : ''}`} aria-pressed=${S.mode === 'real'}
-            onClick=${() => { S.mode = 'real'; S.confirming = false; draw(); }}>Real</button>
-          <span class="muted start-hint">${S.mode === 'mock' ? 'No model calls and no spend: the mock loop on this PC.' : 'Calls Fable and spends tokens.'}</span>
+        <div class="start-modes" role="group" aria-label="Spend">
+          <span class="muted start-hint">Runs the real team: ideas on Fable, critics and builders on Opus, research on Sonnet. Spends tokens.</span>
         </div>
         ${S.confirming ? html`<div class="start-confirm" role="alert">
             <div>${words}</div>
@@ -199,7 +195,7 @@ export function mountStart(el, api = {}) {
             </div></div>`
           : html`<div class="start-actions">
               <button class="btn btn--primary" disabled=${S.busy || alive() || !S.profile} onClick=${start}>
-                ${S.busy ? 'Starting...' : S.mode === 'real' ? 'Start (real)...' : 'Start'}</button>
+                ${S.busy ? 'Starting...' : S.confirming ? 'Confirm and start' : 'Start'}</button>
               <button class="btn" onClick=${toggle}>Close</button>
               ${alive() ? html`<span class="muted">A run is going; stop it first.</span>` : null}
             </div>`}` : null}
