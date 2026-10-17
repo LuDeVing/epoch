@@ -39,6 +39,7 @@ from space import contract as C
 ACTOR, ACTOR_KIND = "team.bridge", "system"
 CURSOR_FILE, OUTBOX_FILE, MODE_FILE = "space_bridge_cursor.json", "space_bridge_outbox.ndjson", "space_mode.json"
 POST_BATCH, SKETCH_BATCH = 100, 50
+POST_CAP = 60000                     # bytes per POST body: the server refuses a body over 64 KB with 413 too_big
 METRIC_KEYS = ("learn_gap", "learn_z", "long_z", "extrap_z", "cost_ratio")
 NEVER_KEYS = frozenset(C.PRIVATE_KEYS | {"spent", "spent_aux", "spent_by_stage", "decisions"})
 # human kinds the bridge can carry through control.json (their control key is one the loop reads)
@@ -100,6 +101,21 @@ def _cut(s, n) -> str:
     return s if len(s) <= n else s[: n - 3] + "..."
 
 
+def _chunks(events: list[dict]) -> list[list[dict]]:
+    """Batches of at most POST_BATCH events whose body stays under POST_CAP bytes (one event per batch at least)."""
+    out, cur, size = [], [], len(json.dumps({"events": []}))
+    for e in events:
+        n = len(json.dumps(e)) + 2
+        if cur and (len(cur) >= POST_BATCH or size + n > POST_CAP):
+            out.append(cur)
+            cur, size = [], len(json.dumps({"events": []}))
+        cur.append(e)
+        size += n
+    if cur:
+        out.append(cur)
+    return out
+
+
 def _write_atomic(path: Path, text: str, give_up_s: float = 3.0) -> None:
     tmp = path.with_name(path.name + ".tmp")
     tmp.write_text(text, encoding="utf-8")
@@ -149,13 +165,12 @@ class Client:
             raise
 
     def post(self, events: list[dict]) -> None:
-        for i in range(0, len(events), POST_BATCH):
-            chunk = events[i:i + POST_BATCH]
+        for chunk in _chunks(events):
             try:
                 st, d = self.call("POST", C.ROUTES["post"][1], {"events": chunk})
             except (OSError, ValueError):
                 st, d = 0, {}
-            if st == 0 or st >= 500:
+            if st == 0 or st >= 500 or st == 403:          # down, or a wrong key: keep them for a later flush
                 self._to_outbox(chunk)
                 continue
             if st != 200:
@@ -185,13 +200,12 @@ class Client:
             except ValueError:
                 pass
         sent, left = 0, []
-        for i in range(0, len(evs), POST_BATCH):
-            chunk = evs[i:i + POST_BATCH]
+        for chunk in _chunks(evs):
             try:
                 st, _ = self.call("POST", C.ROUTES["post"][1], {"events": chunk})
             except (OSError, ValueError):
                 st = 0
-            if st == 0 or st >= 500:
+            if st == 0 or st >= 500 or st == 403:
                 left += chunk
             else:
                 sent += len(chunk)
@@ -235,6 +249,7 @@ class Bridge:
         self._out: list = []
         self._ref_log: list = []
         self._mode = None
+        self._mode_sure = False                  # from --mode or the loop's baseline decision; else re-detected
         self._margin = None
         self.state: dict = {}
         self.round_start: dict[int, float] = {}
@@ -374,21 +389,24 @@ class Bridge:
 
     def _context(self) -> None:
         st = self._read_any("state.json")
-        self.state = st if isinstance(st, dict) else {}
+        if isinstance(st, dict):
+            self.state = st                                    # a state.json cut mid-write keeps the last good one
         if self._margin is None:
             com = self._read_any("commitments.json") or {}
             try:
                 self._margin = float(((com.get("win") or {}).get("margin_nats")) or 0.0)
             except (TypeError, ValueError, AttributeError):
                 self._margin = 0.0
-        if self._mode is None:
+        if not self._mode_sure:
             self._mode = self._detect_mode()
 
     def _detect_mode(self) -> str:
         if self.mode_arg in C.STATUS_WORDS:
+            self._mode_sure = True
             return self.mode_arg
         for d in self.state.get("decisions") or []:          # read only: decisions are never mirrored
             if isinstance(d, dict) and d.get("step") == "baseline" and d.get("mode") in C.STATUS_WORDS:
+                self._mode_sure = True
                 return d["mode"]
         if (self.rd / "reference.json").exists():
             for r in self._rows_all("verify.jsonl")[:50]:
@@ -471,7 +489,7 @@ class Bridge:
             now = {"name": n.get("name", ""), "frame": n.get("frame", ""), "priority": n.get("priority"),
                    "parent": n.get("parent")}
             if seen is None:
-                kind = n.get("kind") or ("root" if n.get("parent") is None else "part")
+                kind = n.get("kind") or "part"            # contract 4.3: part, question or win
                 data = {"id": nid, "name": n.get("name", ""), "parent": n.get("parent"),
                         "origin": n.get("origin") or "map", "kind": kind}
                 for k in ("frame", "assumptions", "boundary", "directions", "depth", "test", "threshold", "fails_if"):
@@ -792,12 +810,13 @@ class Bridge:
 
     # ---------------------------------------------------------- pull
 
-    def _fetch_events(self) -> None:
-        """Read the log since the last seq seen (from 0 at every start), keeping only what the pull needs."""
+    def _fetch_events(self) -> bool:
+        """Read the log since the last seq seen (from 0 at every start), keeping only what the pull needs.
+        True when the log was read up to its head."""
         while True:
             st, d = self.client.call("GET", f"{C.ROUTES['events'][1]}?since={self.ev_cursor}&limit=2000")
             if st != 200:
-                return
+                return False
             if self.epoch is not None and d.get("epoch") not in (None, self.epoch):
                 self.ev_cursor, self.human, self.kept, self.applied = 0, {}, [], set()
                 self.epoch = d.get("epoch")
@@ -818,7 +837,7 @@ class Bridge:
                     self.human[s] = e
             head = int(d.get("head") or 0)
             if not evs or self.ev_cursor >= head:
-                return
+                return True
 
     def _render_control(self) -> bool:
         """control.json from the merged control; the file's own run keys stay. True when the file was written."""
@@ -867,13 +886,15 @@ class Bridge:
 
     # ---------------------------------------------------------- passes
 
-    def collect(self, final: bool = False) -> list:
-        """Read every source once; return the new events as (t, round, rank, n, event)."""
+    def collect(self, final: bool = False, control_log: bool = True) -> list:
+        """Read every source once; return the new events as (t, round, rank, n, event). control_log False leaves
+        new control_log.jsonl rows for a later pass (the human queue could not be read)."""
         self._out = []
         self._context()
         if self.timed:
             self._anchors()
-        self._control_log(final)
+        if control_log:
+            self._control_log(final)
         self._tree()
         self._questions()
         self._ideas(final)
@@ -899,13 +920,14 @@ class Bridge:
         """One pass: flush the outbox, pull (events, control.json), push the new run rows, save the cursor."""
         self.client.down = False
         self.client.flush_outbox()
+        queue_ok = not self.pull
         if self.pull:
             try:
-                self._fetch_events()
+                queue_ok = self._fetch_events()
                 self._render_control()
             except (OSError, ValueError):
                 pass
-        out = self.collect(final)
+        out = self.collect(final, control_log=queue_ok)          # a row matched to a stale queue would name nothing
         evs = [x[4] for x in out]
         if evs:
             self.client.post(evs)

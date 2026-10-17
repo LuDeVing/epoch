@@ -32,9 +32,13 @@ R = {name: path for name, (method, path) in C.ROUTES.items()}
 class FakeSpace:
     """Records every POST, numbers events gap-free, dedupes on (by, op), merges control with space.control."""
 
-    def __init__(self, control_route: bool = True):
+    MAX_BODY = 65536                                       # the real server answers 413 too_big above this
+
+    def __init__(self, control_route: bool = True, key: str = ""):
         self.events: list[dict] = []
         self.posts: list[list[dict]] = []
+        self.refused: list[tuple[int, int]] = []               # (status, body bytes) of refused POSTs
+        self.key = key
         self.presence: list[dict] = []
         self.ops: dict[tuple, int] = {}
         self.control_route = control_route
@@ -70,7 +74,14 @@ class FakeSpace:
                 return self._send(404, {"error": "no_route"})
 
             def do_POST(self):
-                body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
+                raw = self.rfile.read(int(self.headers.get("Content-Length") or 0))
+                if fake.key and self.headers.get("X-Space-Key") != fake.key:
+                    fake.refused.append((403, len(raw)))
+                    return self._send(403, {"error": "bad_key"})
+                if len(raw) > FakeSpace.MAX_BODY:
+                    fake.refused.append((413, len(raw)))
+                    return self._send(413, {"error": "too_big"})
+                body = json.loads(raw or b"{}")
                 u = urllib.parse.urlparse(self.path)
                 actor, kind = self.headers.get("X-Space-Actor", ""), self.headers.get("X-Space-Kind", "")
                 if u.path == R["presence"]:
@@ -179,13 +190,16 @@ def test_fixture_round_trip(tmp_path, fake):
     n = b.pass_once()
     evs = fake.posted()
     assert n == len(evs) > 0
+    assert fake.refused == []                              # every body under 64 KB
     assert all(len(p) <= B.POST_BATCH for p in fake.posts)
+    assert all(len(json.dumps({"events": p})) <= B.POST_CAP for p in fake.posts)
     k = kinds(evs)
     # 9 node_added in tree order
     nodes = [e["data"]["id"] for e in evs if e["kind"] == "node_added"]
     assert len(nodes) == 9 and nodes == tree_order(run)
     root = next(e for e in evs if e["kind"] == "node_added")
     assert root["data"]["parent"] is None and root["data"]["origin"] == "map"
+    assert {e["data"]["kind"] for e in evs if e["kind"] == "node_added"} <= {"part", "question", "win"}
     q = next(e for e in evs if e["kind"] == "node_added" and e["data"]["id"] == "q_n44a9d66")
     assert q["data"]["origin"] == "failure" and q["data"]["kind"] == "question" and q["data"]["fails_if"]
     # one cluster_snapshot per (node, direction)
@@ -486,6 +500,75 @@ def test_exit_2_when_the_loop_has_space_mode(tmp_path, fake, capsys):
     assert len(fake.posted("node_added")) == 9
 
 
+def test_control_log_row_waits_while_the_queue_cannot_be_read(tmp_path, fake):
+    run = tmp_path / "run"
+    run.mkdir()
+    seqs = post_six(fake)
+    bridge(run, fake, pull=True).pass_once()
+    ctl = json.loads((run / "control.json").read_text(encoding="utf-8"))
+    with open(run / "control_log.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps({"ts": "2026-10-17T19:50:00", "round": 1, "stage": "ideated", "control": ctl}) + "\n")
+    # a restarted bridge while the space is down: the row must wait, not be matched to an empty queue
+    down = B.Bridge(run, "http://127.0.0.1:%d" % _closed_port(), pull=True, presence=False, timeout=1.0)
+    down.pass_once()
+    box = run / B.OUTBOX_FILE
+    assert "control_applied" not in (box.read_text(encoding="utf-8") if box.exists() else "")
+    bridge(run, fake, pull=True).pass_once()
+    ca = fake.posted("control_applied")
+    assert len(ca) == 1 and ca[0]["data"]["refs"] == seqs
+
+
+def test_mode_is_detected_again_until_the_run_names_it(tmp_path, fake):
+    run = copy_run(tmp_path)
+    hold = tmp_path / "hold"
+    hold.mkdir()
+    for name in ("state.json", "reference.json", "verify.jsonl"):     # a loop that has not reached a boundary yet
+        shutil.move(str(run / name), str(hold / name))
+    b = bridge(run, fake)
+    b.pass_once()
+    for name in ("state.json", "reference.json", "verify.jsonl"):
+        shutil.move(str(hold / name), str(run / name))
+    before = len(fake.posted())
+    b.pass_once()
+    new = fake.posted()[before:]
+    se = next(e for e in new if e["kind"] == "stage_entered")
+    assert se["data"]["mode"] == "check_only"
+    win = next(e for e in new if e["kind"] == "test_result" and e["data"]["cand"] == "nbcd037208c")
+    assert win["data"]["status"] == "win" and win["data"]["reference"] is True
+
+
+def test_cut_state_json_keeps_the_last_good_state(tmp_path, fake):
+    run = copy_run(tmp_path)
+    b = bridge(run, fake)
+    b.pass_once()
+    p = run / "idea_clusters.json"
+    obj = json.loads(p.read_text(encoding="utf-8"))
+    obj["clusters"][0]["selected"] = not obj["clusters"][0].get("selected")
+    p.write_text(json.dumps(obj), encoding="utf-8")
+    s = run / "state.json"
+    text = s.read_text(encoding="utf-8")
+    s.write_text(text[: len(text) // 2], encoding="utf-8")         # the loop is rewriting state.json
+    t = p.stat().st_mtime + 1
+    os.utime(s, (t, t))
+    before = len(fake.posted())
+    b.pass_once()
+    new = [e for e in fake.posted()[before:] if e["kind"] == "cluster_snapshot"]
+    assert len(new) == 1 and new[0]["data"]["round"] == 2 and new[0]["data"]["stage"] == "deepened"
+
+
+def test_a_refused_key_keeps_the_events_in_the_outbox(tmp_path):
+    locked = FakeSpace(key="k1")
+    try:
+        run = copy_run(tmp_path)
+        n = B.Bridge(run, locked.url, pull=False, presence=False).pass_once()
+        box = run / B.OUTBOX_FILE
+        assert n > 0 and locked.events == [] and len(box.read_text(encoding="utf-8").splitlines()) == n
+        assert B.Bridge(run, locked.url, pull=False, presence=False, key="k1").pass_once() == 0
+        assert len(locked.events) == n and box.read_text(encoding="utf-8") == ""
+    finally:
+        locked.close()
+
+
 # ---------------------------------------------------------------- import at the original pace
 
 def _pin_mtimes(run: Path, when: str = "2026-10-17T19:33:40") -> None:
@@ -535,7 +618,8 @@ def test_import_fast(tmp_path, fake):
     res = B.import_run(run, fake.url, pace="fast")
     _check_import(run, fake, res)
     assert res["slept_s"] == 0.0 and res["finished"] is True
-    assert len(fake.posts) == (res["events"] + B.POST_BATCH - 1) // B.POST_BATCH
+    assert fake.refused == [] and all(len(p) <= B.POST_BATCH for p in fake.posts)
+    assert len(fake.posts) == len(B._chunks(fake.posted()))
 
 
 def test_import_original_pace_at_speed_1000(tmp_path, fake):
