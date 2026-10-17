@@ -248,6 +248,43 @@ def _parse(text: str) -> dict | None:
             "source": src, "fidelity": (f.group(1).lower() if f else ""), "fidelity_note": (f.group(2).strip()[:200] if f else "")}
 
 
+_UPWARD_KEYS = (("PROPOSAL", "proposal", 200), ("REFRAMING", "reframing", 600), ("NEW MEASURE", "new_measure", 600),
+                ("WHY", "why", 400), ("COST", "cost", 400))
+
+
+def parse_upward(text: str, *, round_no: int, call_id: str, idgen) -> list[dict]:
+    """An upward reply in tree.UPWARD_FORMAT -> proposal records {id, proposal, reframing, new_measure, why, cost,
+    round, call_id}. A block counts when it has a PROPOSAL and at least a REFRAMING or a NEW MEASURE."""
+    text = str(text or "").replace("**", "")
+    keys = "|".join(k for k, _, _ in _UPWARD_KEYS)
+    out = []
+    for block in re.split(r"(?=^[ \t>*-]*PROPOSAL\s*:)", text, flags=re.M):
+        f = {}
+        for key, name, cap in _UPWARD_KEYS:
+            m = re.search(rf"^[ \t>*-]*{key}\s*:\s*(.+?)(?=\n[ \t>*-]*(?:{keys})\s*:|\Z)", block, flags=re.S | re.M)
+            if m:
+                f[name] = " ".join(m.group(1).split())[:cap]
+        if f.get("proposal") and (f.get("reframing") or f.get("new_measure")):
+            out.append({"id": idgen(), **{name: f.get(name, "") for _, name, _ in _UPWARD_KEYS},
+                        "round": round_no, "call_id": call_id})
+    return out
+
+
+def keep_upward(capped: list, ups: list) -> list:
+    """After the test-mode cap: the root's upward contexts sort last (prio 3, one part among many), so a cap at or
+    below the number of parts drops them all (arch-2: capped to 24, all research and diagnosis, none upward). When any context is
+    dealt, one upward context stays, in place of the last non-owner context."""
+    if not ups or not capped or any(sp[3] == "upward" for sp in capped):
+        return capped
+    out = list(capped)
+    drop = next((i for i in range(len(out) - 1, -1, -1) if out[i][0] != "owner"), None)
+    if drop is None:
+        out.append(ups[0])
+    else:
+        out[drop] = ups[0]
+    return out
+
+
 class NanoLoop:
     mode = "baseline"                           # class default; __init__ sets the profile's mode
 
@@ -598,7 +635,11 @@ class NanoLoop:
                            "implemented": sum(1 for c in impl if (c.extra or {}).get("direction") == d),
                            "checked": sum(1 for c in checked if (c.extra or {}).get("direction") == d)}
                        for d in n["directions"]}
-            stats.append({**n, "stats": per_dir})
+            row = {**n, "stats": per_dir}
+            if "upward" in n.get("directions", []):    # proposals for a new verifier, shown where people can read and vote
+                row["proposals"] = [{k: u.get(k, "") for k in ("id", "proposal", "reframing", "new_measure", "why", "cost", "round", "call_id")}
+                                    for u in self.upward if u.get("node", n["id"]) == n["id"] and u.get("proposal")]
+            stats.append(row)
         write_json(self.run_dir / "problem_tree.json", {"nodes": stats, "inward_share": self.inward_share,
                                                          "off_tree_share": self.off_tree_share, "origins": self._origin_stats()})
 
@@ -683,8 +724,13 @@ class NanoLoop:
             # test mode: the contexts that read the most (owner, research, diagnosis, analogy) first, dealt round-robin
             # across the parts so a small cap gives every part a context before any part gets a second
             prio = {"owner": -1, "research": 0, "diagnosis": 1, "analogy": 2}   # the owner's seeds are never capped away
+            ups = [sp for sp in specs if sp[3] == "upward"]
             specs = ideate.deal_by_part(specs, self.max_sketch_calls, lambda sp: prio.get(sp[0], 3), lambda sp: sp[2]["id"])
-            self.decisions.append({"round": round_no, "step": "ideate", "capped_to": len(specs)})
+            specs = keep_upward(specs, ups)
+            self.decisions.append({"round": round_no, "step": "ideate", "capped_to": len(specs),
+                                   "upward": sum(1 for sp in specs if sp[3] == "upward")})
+        # upward contexts go first, so the ideation budget check (_afford) meets them before the other contexts spend it
+        specs.sort(key=lambda sp: sp[3] != "upward")
 
         def _one(spec):
             card, seed, node, direction = spec
@@ -723,10 +769,11 @@ class NanoLoop:
                     prompt += ideate.EXCLUSION_ADDENDUM.format(names="\n".join(f"- {n}" for n in names))
             if round_no > 1 and self.history:
                 prompt += self.history_text() + "\n\n"
-            if self.staged_sketch:
+            up = direction == "upward"                  # a proposal for a new verifier, not a sketch: own format, no sketch addenda
+            if self.staged_sketch and not up:
                 prompt += ideate.STAGED_ADDENDUM
             op = ""
-            if self.leap_share > 0:
+            if self.leap_share > 0 and not up:
                 with self.lock:
                     i = self._leap_counter.get(node["id"], 0)
                     self._leap_counter[node["id"]] = i + 1
@@ -740,7 +787,7 @@ class NanoLoop:
                 prompt += ideate.WEB_ADDENDUM
             elif delegated:
                 prompt += ideate.WEB_DELEGATED_ADDENDUM
-            tail = ideate.SKETCH_FORMAT
+            tail = tree.UPWARD_FORMAT if up else ideate.SKETCH_FORMAT
             note = f"{node['name']} / {direction} / {card}" + (f" ({seed})" if card == "seeded" else "")
             est = (len(prompt) // 4) * (2 if delegated else 1) + 1800 + (20000 if self.ideation_web else 0)   # searches add fetched pages
             if not self._afford("ideation", est, note):
@@ -756,6 +803,12 @@ class NanoLoop:
                                         context=f"the part '{node['name']}' of the {self.pf.v('recipe', 'recipe')}, {direction} direction", tail=tail)
             else:
                 r = self._call(prompt + tail, "generate", max_out, meta, model=family)
+            if up:
+                props = parse_upward(r.text or "", round_no=round_no, call_id=r.call_id, idgen=lambda: new_id("u"))
+                for s in props:
+                    s["node"], s["direction"], s["card"] = node["id"], direction, card
+                self._ledger(f"sketch:{card}", f"{node['id']}:{direction}", seed, r.call_id, r.usage, round_no, "ideate")
+                return props
             sk = ideate.parse_sketches(r.text or "", card=card, operator=direction, seed=seed, call_id=r.call_id,
                                        idgen=lambda: new_id("s"))
             for s in sk:
@@ -770,7 +823,7 @@ class NanoLoop:
         new = [s for b in batches for s in b]
         upward = [s for s in new if s.get("direction") == "upward"]
         if upward:                                   # proposals for a new verifier; logged, not implemented
-            append_jsonl(self.run_dir / "proposals_upward.jsonl", [{**s, "round": round_no} for s in upward])
+            append_jsonl(self.run_dir / "proposals_upward.jsonl", upward)
             self.upward.extend(upward)
         new = [s for s in new if s.get("direction") != "upward"]
         append_jsonl(self.run_dir / "ideas.jsonl", [{**s, "round": round_no} for s in new])
@@ -2622,7 +2675,8 @@ class NanoLoop:
                               "step_s": self.vres[c.id]["metrics"].get("step_s")} for c in pool],
                   "generations": gens, "n_sketches": len(self.sketches),
                   "obvious_clusters": sum(1 for c in self.clusters if c.get("obvious")),
-                  "upward_proposals": [{"idea": u.get("idea"), "mechanism": u.get("mechanism")} for u in self.upward][:20],
+                  "upward_proposals": [{k: u.get(k, "") for k in ("id", "proposal", "reframing", "new_measure", "why", "cost", "round")}
+                                       for u in self.upward if u.get("proposal")][:20],
                   "spent_tokens": self.spent, "budget": self.B, "spent_aux_tokens": self.spent_aux, "aux_budget": self.aux_budget,
                   "wall_s": round(time.time() - t0),
                   "next": "python -m nano.batch_verify --run <this folder>: staged seeds against the pooled baseline"}
@@ -2888,7 +2942,7 @@ def main() -> int:
     for p in ans.get("proposals", []):
         print(f"  proposal {p['rank']}. {p['id']} panel {p['panel_score']} sd {p['panel_sd']} | {p['claim'][:90]}")
     for u in ans.get("upward_proposals", [])[:5]:
-        print(f"  upward: {u['idea']}")
+        print(f"  upward: {u.get('proposal')}")
     print(f"run folder: {loop.run_dir}")
     return 0
 

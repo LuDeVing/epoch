@@ -128,7 +128,24 @@ def _mock_profiles(prompt: str, role: str, meta: dict, name: str) -> str | None:
     return None
 
 
+def mock_upward(meta: dict) -> str:
+    """An upward context's reply in tree.UPWARD_FORMAT: two proposals for a new verifier."""
+    tag = str(meta.get("seed", ""))[:24] or "x"
+    return ("PROPOSAL: judge by loss on rare tokens, not mean loss (" + tag + ")\n"
+            "REFRAMING: the mean over all tokens hides the tail; model the tail separately.\n"
+            "NEW MEASURE: validation loss on the 10 percent rarest tokens, from the same held-out file.\n"
+            "WHY: mean loss is dominated by frequent tokens, so tail gains are invisible.\n"
+            "COST: a token-frequency table and one extra pass of the eval.\n\n"
+            "PROPOSAL: judge by loss after a fixed wall-clock budget (" + tag + ")\n"
+            "REFRAMING: fixed time instead of fixed tokens.\n"
+            "NEW MEASURE: validation loss at 10 minutes of training on the reference GPU.\n"
+            "WHY: a fixed token budget cannot see a faster step.\n"
+            "COST: a timed training harness and repeated runs to control timing noise.")
+
+
 def mock(prompt: str, role: str, meta: dict) -> str:
+    if "Direction UPWARD" in prompt:           # upward contexts answer in their own format (tree.UPWARD_FORMAT)
+        return mock_upward(meta)
     name = PF.current().name
     if name in ("binpack_nobase", "review_process"):
         r = _mock_profiles(prompt, role, meta, name)

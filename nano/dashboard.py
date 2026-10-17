@@ -165,7 +165,7 @@ async function tick(){
   const cell=s=>s?`${s.sketches} / ${s.clusters} / ${s.implemented} / <b>${s.checked}</b>`:'';
   const bf=d.briefs||{}; const brief=n=>{const b=bf[n.id]; return b?`<div class="muted">research: ${b.known} known, ${b.failed} failed, ${b.open} open (${esc(b.source)})<br>${b.top.map((t,i)=>`<a href="${esc(b.urls[i])}" target="_blank">${esc(t)}</a>`).join(' · ')}</div>`:''};
   document.getElementById('tree').innerHTML=(d.tree||[]).map(n=>`<tr><td><b>${esc(n.name)}</b></td><td class="muted">${esc(n.frame)}${brief(n)}</td><td>${cell(n.stats?.inward)}</td><td>${cell(n.stats?.outward)}</td><td>${cell(n.stats?.upward)}</td></tr>`).join('');
-  document.getElementById('upward').innerHTML=(d.upward||[]).length?('<b>Upward proposals (new framings, logged not implemented):</b> '+d.upward.map(u=>esc(u.idea)).join(' · ')):'';
+  document.getElementById('upward').innerHTML=(d.upward||[]).length?('<b>Upward proposals (new framings, logged not implemented):</b> '+d.upward.map(u=>esc(u.proposal||u.idea)).join(' · ')):'';
   document.getElementById('ideas').innerHTML='';
   document.getElementById('nsk').textContent=d.n_sketches||0;
   const ptag=c=>c.prior==='new'?'<span class="pill chk">new</span>':(c.prior==='failed'?'<span class="pill fail">known failure</span>':(c.prior==='known'?'<span class="pill wait">known</span>':''));
