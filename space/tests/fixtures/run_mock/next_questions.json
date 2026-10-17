@@ -1,0 +1,145 @@
+{
+ "round": 2,
+ "top3": [
+  {
+   "id": "u3d885a4738",
+   "kind": "upward",
+   "text": "judge by loss on rare tokens, not mean loss (footprint) the mean over all tokens hides the tail; model the tail separately.",
+   "node": "root",
+   "parent": "root",
+   "branch": "upward",
+   "test": {
+    "metric": "validation loss on the 10 percent rarest tokens, from the same held-out file.",
+    "rung": null,
+    "op": "proposed",
+    "what": "a new success measure (proposal only)"
+   },
+   "threshold": "a person approves the new measure; until then the current check decides",
+   "fails_if": "a person rejects the measure, or ideas under it do not move the current check",
+   "requires_human": true,
+   "path": [
+    "goal"
+   ],
+   "path_ids": [
+    "root"
+   ],
+   "open_children": 0,
+   "score": 0.0625,
+   "p_resolve": 0.5,
+   "gain": 1.0,
+   "novelty": 1.0,
+   "cost": 8000,
+   "lp_bonus": 1.0,
+   "reason": "P(resolve) 0.50 (0 of 0 on upward, Beta(1,1)); gain 1.00 (priority 1.00 x (1 + 0 open children)); novelty 1.00; cost 8000 tokens; learning progress x1.00 (no history)",
+   "rank": 1,
+   "slot": "score"
+  },
+  {
+   "id": "u624a0b9fbb",
+   "kind": "upward",
+   "text": "judge by loss on rare tokens, not mean loss (canvas) the mean over all tokens hides the tail; model the tail separately.",
+   "node": "root",
+   "parent": "root",
+   "branch": "upward",
+   "test": {
+    "metric": "validation loss on the 10 percent rarest tokens, from the same held-out file.",
+    "rung": null,
+    "op": "proposed",
+    "what": "a new success measure (proposal only)"
+   },
+   "threshold": "a person approves the new measure; until then the current check decides",
+   "fails_if": "a person rejects the measure, or ideas under it do not move the current check",
+   "requires_human": true,
+   "path": [
+    "goal"
+   ],
+   "path_ids": [
+    "root"
+   ],
+   "open_children": 0,
+   "score": 0.0625,
+   "p_resolve": 0.5,
+   "gain": 1.0,
+   "novelty": 1.0,
+   "cost": 8000,
+   "lp_bonus": 1.0,
+   "reason": "P(resolve) 0.50 (0 of 0 on upward, Beta(1,1)); gain 1.00 (priority 1.00 x (1 + 0 open children)); novelty 1.00; cost 8000 tokens; learning progress x1.00 (no history)",
+   "rank": 2,
+   "slot": "score"
+  },
+  {
+   "id": "u92753a997a",
+   "kind": "upward",
+   "text": "judge by loss after a fixed wall-clock budget (canvas) fixed time instead of fixed tokens.",
+   "node": "root",
+   "parent": "root",
+   "branch": "upward",
+   "test": {
+    "metric": "validation loss at 10 minutes of training on the reference GPU.",
+    "rung": null,
+    "op": "proposed",
+    "what": "a new success measure (proposal only)"
+   },
+   "threshold": "a person approves the new measure; until then the current check decides",
+   "fails_if": "a person rejects the measure, or ideas under it do not move the current check",
+   "requires_human": true,
+   "path": [
+    "goal"
+   ],
+   "path_ids": [
+    "root"
+   ],
+   "open_children": 0,
+   "score": 0.0625,
+   "p_resolve": 0.5,
+   "gain": 1.0,
+   "novelty": 1.0,
+   "cost": 8000,
+   "lp_bonus": 1.0,
+   "reason": "P(resolve) 0.50 (0 of 0 on upward, Beta(1,1)); gain 1.00 (priority 1.00 x (1 + 0 open children)); novelty 1.00; cost 8000 tokens; learning progress x1.00 (no history)",
+   "rank": 3,
+   "slot": "score"
+  }
+ ],
+ "explore": false,
+ "n_candidates": 4,
+ "chosen": {
+  "id": "u3d885a4738",
+  "kind": "upward",
+  "text": "judge by loss on rare tokens, not mean loss (footprint) the mean over all tokens hides the tail; model the tail separately.",
+  "node": "root",
+  "parent": "root",
+  "branch": "upward",
+  "test": {
+   "metric": "validation loss on the 10 percent rarest tokens, from the same held-out file.",
+   "rung": null,
+   "op": "proposed",
+   "what": "a new success measure (proposal only)"
+  },
+  "threshold": "a person approves the new measure; until then the current check decides",
+  "fails_if": "a person rejects the measure, or ideas under it do not move the current check",
+  "requires_human": true,
+  "path": [
+   "goal"
+  ],
+  "path_ids": [
+   "root"
+  ],
+  "open_children": 0,
+  "score": 0.0625,
+  "p_resolve": 0.5,
+  "gain": 1.0,
+  "novelty": 1.0,
+  "cost": 8000,
+  "lp_bonus": 1.0,
+  "reason": "P(resolve) 0.50 (0 of 0 on upward, Beta(1,1)); gain 1.00 (priority 1.00 x (1 + 0 open children)); novelty 1.00; cost 8000 tokens; learning progress x1.00 (no history)",
+  "rank": 1,
+  "slot": "score"
+ },
+ "vetoed": [],
+ "by": "default",
+ "focus_contexts": 2,
+ "requires_human": true,
+ "answered": false,
+ "ts": "2026-10-17T19:33:58"
+}

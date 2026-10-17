@@ -1,0 +1,80 @@
+{
+ "rules": [
+  "C1. The file defines choose_bin(item, bins, capacity) -> int, returning the index of an open bin the item fits in or -1 to open a new bin; it must not change the bins list it is given.",
+  "C2. Same benchmark: the harness's scorer generates the instances from fixed seeds and computes the score; the scorer is never visible to the rule, and the rule may not try to read it, its instances or its state.",
+  "C3. Online: the rule sees one item at a time and the current bin fills; nothing about future items.",
+  "C4. Time per item at most 5x the reference rule's, measured by the harness on the same instances.",
+  "C5. Standard library only; socket, urllib, http, subprocess, ctypes, multiprocessing, importlib, pickle and shutil are denied, and so are introspection and files (sys, os, inspect, gc, open, exec, eval); no network; no subprocesses. The process runs under a tripwire that fails the candidate on any of these.",
+  "C6. The metric is the mean of bins used over the lower bound on the full benchmark; a rule replaces the reference only if it beats it by more than 0.002."
+ ],
+ "win": {
+  "margin_nats": 0.002,
+  "alpha": 0.01,
+  "min_seeds": 3
+ },
+ "stackable": {
+  "margin_nats": 0.002,
+  "alpha": 0.05
+ },
+ "baseline_version": "v2",
+ "baseline_hash": "58f3bb17b4ac",
+ "weights": {
+  "angle": 1.0,
+  "new": 0.25,
+  "known": 0.0,
+  "failed": -2.0,
+  "obvious": -0.75,
+  "departure": 0.5,
+  "cheap": 0.25,
+  "size": -0.05,
+  "metric_blind": -1.0
+ },
+ "weights_calibrated": false,
+ "slots": {
+  "k_impl": 3,
+  "rounds": 2,
+  "per_node": 1,
+  "inward_share": 0.6,
+  "longshot_share": 0.2,
+  "leap_share": 0.25,
+  "family_variants": 2
+ },
+ "models": {
+  "model": "fable",
+  "cheap": "sonnet",
+  "research": "sonnet"
+ },
+ "web_mode": "delegate",
+ "budget": 3000000,
+ "aux_budget": 30000000,
+ "stage_shares": {
+  "research": 0.05,
+  "ideation": 0.2,
+  "judging": 0.05,
+  "interrogation": 0.2,
+  "build": 0.4,
+  "reserve": 0.1
+ },
+ "tune": {
+  "on": true,
+  "knobs": [
+   "lr_x1.4",
+   "wd_x3"
+  ],
+  "top": 3
+ },
+ "anomaly_seeds": 3,
+ "sham_share": 0.1,
+ "controls": [
+  "placebo_order",
+  "zero_init_proj",
+  "lr_x10"
+ ],
+ "lens": "parts",
+ "lens_design": "fixed",
+ "aim": "",
+ "scope": [],
+ "profile": "binpack_nobase",
+ "digest": null,
+ "ts": "2026-10-17T19:33:18"
+}
