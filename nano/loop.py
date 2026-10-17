@@ -61,6 +61,28 @@ FIDELITY: <exact | partial | substituted | cannot, then one clause: exact = the 
 Keep everything not related to your change identical to the given file."""
 
 
+# Fetch on demand (docs/TEAM_GAPS_SPEC.md, agent D): with the flag on, the builder and reviser reply format gains an
+# optional NEED line before the code block. A reply with NEED lines and no code is a request: the loop fetches each
+# fact (at most 2) and re-prompts the same builder once with the answers and their sources.
+NEED_LINE = ("NEED: <optional: one specific fact you are missing that would change the implementation, then stop and "
+             "write no code; the loop looks it up and asks you again. At most 2 NEED lines. Omit this line when you can build.>")
+REFETCH_CARD = "impl:refetch"
+
+
+def with_need_line(fmt: str) -> str:
+    """The reply format with the optional NEED line before its first code fence (at the end if it has none)."""
+    lines = fmt.splitlines()
+    for i, line in enumerate(lines):
+        if line.lstrip().startswith("```"):
+            return "\n".join(lines[:i] + [NEED_LINE] + lines[i:]) + ("\n" if fmt.endswith("\n") else "")
+    return fmt.rstrip("\n") + "\n" + NEED_LINE + "\n"
+
+
+def fetch_on_demand_default(flag: bool | None, web_mode: str) -> bool:
+    """--fetch-on-demand / --no-fetch-on-demand win; otherwise on exactly when the web is on."""
+    return bool(flag) if flag is not None else web_mode != "off"
+
+
 def baseline_path() -> Path:
     """The baseline artifact the builders modify (profile artifact.path, relative to the repo root). A profile
     without a baseline (Mode 2 or 3) gives its skeleton file instead, or None when it has none."""
@@ -346,6 +368,9 @@ class NanoLoop:
         self.ideation_web = True                # sketch contexts may search the web (WebSearch, WebFetch)
         self.web_mode = "delegate"              # delegate: the model asks, the research model searches; self: it searches itself; off
         self.research_max_age_days = 7.0
+        self.fetch_on_demand = False            # builders may ask for one fact (NEED: ...); main() turns it on with the web
+        self.fetch_stats = {"requests": 0, "answered": 0, "reprompts": 0, "logged_only": 0, "ignored_after_reprompt": 0,
+                            "over_cap": 0}
         self.learn_steps, self.long_steps = self.checker.LEARN_STEPS, self.checker.LONG_STEPS
         self.new_share = 0.5                    # quota of build slots for ideas tagged new
         self.select_weights: dict = {}          # overrides for ideate.WEIGHTS
@@ -2042,8 +2067,16 @@ class NanoLoop:
                 "implement": "writing the file for idea cluster " + (next((c["name"] for c in self.clusters if c["cluster_id"] == operator), operator) if card == "implement" else ""),
                 "program": f"program search on {operator}, variation {seed}",
                 "revise": f"{operator} on {parent.id if parent else '?'}"}.get(card, "")
-        r = self._call(prompt, "generate", max_out, {"card": card, "operator": operator, "seed": seed, "note": note})
+        meta = {"card": card, "operator": operator, "seed": seed, "note": note}
+        fetch = bool(self.fetch_on_demand) and card in ("implement", "revise")
+        if fetch:
+            prompt = self._add_need_line(prompt)
+        r = self._call(prompt, "generate", max_out, meta)
         parsed = _parse(r.text or "")
+        refetched = False
+        if fetch:
+            r, parsed, refetched = self._handle_needs(r, parsed, prompt, card, operator, seed, parent, round_no,
+                                                      round_type, max_out, meta)
         cand = None
         if parsed:
             cid = new_id("n")
@@ -2089,9 +2122,86 @@ class NanoLoop:
         if cand:
             row["program"] = f"cands/src/{cand.id}.py"      # keep the jsonl small; the source is a file
         append_jsonl(self.run_dir / "cands" / f"{r.call_id}.jsonl", row)
-        self._ledger(card, operator, seed, r.call_id, r.usage, round_no, round_type,
+        self._ledger(REFETCH_CARD if refetched else card, operator, seed, r.call_id, r.usage, round_no, round_type,
                      cand_id=cand.id if cand else None)
         return cand
+
+    # ------------------------------------------------------------ fetch on demand (NEED lines)
+    def _add_need_line(self, prompt: str) -> str:
+        """The build prompt with the NEED line in its reply format (or after it, if the format is not found)."""
+        fmt = output_format()
+        if fmt and fmt in prompt:
+            head, _, tail = prompt.rpartition(fmt)
+            return head + with_need_line(fmt) + tail
+        return prompt.rstrip("\n") + "\n" + NEED_LINE + "\n"
+
+    def _need_node(self, card: str, operator: str, parent: Candidate | None) -> dict | None:
+        """The tree part a build works on, as context for the fetch."""
+        nid = None
+        if card == "implement":
+            cl = next((c for c in self.clusters if c["cluster_id"] == operator), None)
+            nid = cl.get("node") if cl else None
+        elif parent is not None:
+            nid = parent.extra.get("node")
+        return next((n for n in (self.tree or []) if n.get("id") == nid), None) if nid else None
+
+    def fetch_fact(self, question: str, node: dict | None, round_no: int, operator: str = "") -> dict:
+        """research.fetch_fact with the run's research model, ledger and per-run cache (facts_fetched.jsonl)."""
+        def call(p: str) -> str:
+            if not self._aux_ok("fetch_fact"):
+                raise RuntimeError("the research meter is full")
+            r = self._call(p, "research", 1500, {"card": "fetch_fact", "operator": operator, "note": "fetching: " + question[:60]},
+                           model=self.research_model, tools=research.RESEARCH_TOOLS, max_turns=20, timeout=900)
+            self._ledger("fetch_fact", operator, "", r.call_id, r.usage, round_no, "encode")
+            return r.text or ""
+        return research.fetch_fact(question, node, call, cache_dir=self.run_dir)
+
+    def _handle_needs(self, r, parsed, prompt: str, card: str, operator: str, seed: str, parent: Candidate | None,
+                      round_no: int, round_type: str, max_out: int, meta: dict):
+        """After a builder or reviser reply: NEED lines and no code -> fetch each (cap 2) and re-prompt once;
+        NEED lines and code -> build as is, the asks are only logged. Returns (reply, parsed, re-prompted)."""
+        needs, over = research.parse_needs(r.text or "")
+        if not needs:
+            return r, parsed, False
+        with self.lock:
+            self.fetch_stats["over_cap"] += over
+        if parsed is not None:
+            with self.lock:
+                self.fetch_stats["logged_only"] += len(needs)
+                self.decisions.append({"round": round_no, "step": "need", "action": "logged_only", "card": card,
+                                       "operator": operator, "needs": needs, "ts": now_ts()})
+            return r, parsed, False
+        node = self._need_node(card, operator, parent)
+        facts = [self.fetch_fact(q, node, round_no, operator) for q in needs]
+        answered = sum(1 for f in facts if f.get("answer"))
+        with self.lock:
+            self.fetch_stats["requests"] += len(needs)
+            self.fetch_stats["answered"] += answered
+            self.decisions.append({"round": round_no, "step": "need", "action": "fetched", "card": card, "operator": operator,
+                                   "needs": needs, "answered": answered, "dropped_over_cap": over, "ts": now_ts()})
+        prompt2 = (prompt + "\n\n" + research.facts_block(facts) + "\n\nProceed now with what you have: reply in the format "
+                   "above with the complete file. Do not ask again. A NEED line in this reply is ignored.")
+        est = len(prompt2) // 4 + max_out
+        if not self._afford("build", est, REFETCH_CARD):
+            return r, None, False                           # no room for the re-prompt: the request stays unbuilt
+        self._ledger(card, operator, seed, r.call_id, r.usage, round_no, round_type, status="need")
+        r2 = self._call(prompt2, "generate", max_out, {**meta, "refetch": True,
+                                                       "note": f"re-prompt with {len(facts)} fetched facts: " + str(meta.get("note", ""))[:60]})
+        with self.lock:
+            self.fetch_stats["reprompts"] += 1
+        again, _ = research.parse_needs(r2.text or "")
+        if again:                                           # the re-prompt is the only one: further asks are logged
+            with self.lock:
+                self.fetch_stats["ignored_after_reprompt"] += len(again)
+                self.decisions.append({"round": round_no, "step": "need", "action": "ignored_after_reprompt", "card": card,
+                                       "operator": operator, "needs": again, "ts": now_ts()})
+        return r2, _parse(r2.text or ""), True
+
+    def _fetched_facts_report(self) -> dict:
+        s = self.fetch_stats
+        return {"enabled": bool(self.fetch_on_demand), "requests": s["requests"], "answered": s["answered"],
+                "reprompts": s["reprompts"], "logged_only": s["logged_only"],
+                "ignored_after_reprompt": s["ignored_after_reprompt"], "over_cap": s["over_cap"]}
 
     # ------------------------------------------------------------ verify
     def verify(self, cand: Candidate, round_no: int) -> dict:
@@ -2946,6 +3056,7 @@ class NanoLoop:
                   "obvious_clusters": sum(1 for c in self.clusters if c.get("obvious")),
                   "upward_proposals": [{k: u.get(k, "") for k in ("id", "proposal", "reframing", "new_measure", "why", "cost", "round")}
                                        for u in self.upward if u.get("proposal")][:20],
+                  "fetched_facts": self._fetched_facts_report(),
                   "spent_tokens": self.spent, "budget": self.B, "spent_aux_tokens": self.spent_aux, "aux_budget": self.aux_budget,
                   "wall_s": round(time.time() - t0),
                   "next": "python -m nano.batch_verify --run <this folder>: staged seeds against the pooled baseline"}
@@ -2964,6 +3075,13 @@ class NanoLoop:
             report.write(self.run_dir)
             if self.mode != "baseline":
                 self._report_modes(answer)
+            rj = self.run_dir / "report.json"           # fetch on demand: requests, answers, re-prompts
+            try:
+                d_ = json.loads(rj.read_text(encoding="utf-8")) if rj.exists() else {}
+            except Exception:  # noqa: BLE001
+                d_ = {}
+            d_["fetched_facts"] = self._fetched_facts_report()
+            rj.write_text(json.dumps(d_, indent=1), encoding="utf-8")
             try:
                 from nano import lessons as LS
                 if self.backend != "mock":                       # mock runs teach nothing
@@ -3172,6 +3290,11 @@ def main() -> int:
     ap.add_argument("--web-mode", default="delegate", choices=["delegate", "self", "off"],
                     help="how idea and questioning agents reach the web: delegate = they list questions and the research model "
                          "searches (default); self = they search themselves (multi-turn); off = no web")
+    ap.add_argument("--fetch-on-demand", dest="fetch_on_demand", action="store_true", default=None,
+                    help="builders and revisers may ask for one missing fact (NEED: ...); the loop fetches it with a source "
+                         "and re-prompts once (default: on when the web is on)")
+    ap.add_argument("--no-fetch-on-demand", dest="fetch_on_demand", action="store_false",
+                    help="control arm: no NEED lines, builders write with what they have")
     ap.add_argument("--no-deepen", action="store_true", help="skip the interrogation of chosen ideas")
     ap.add_argument("--deepen-depth", type=int, default=2, help="how many levels of open questions to follow")
     ap.add_argument("--deepen-fanout", type=int, default=1, help="open questions followed per level")
@@ -3190,6 +3313,7 @@ def main() -> int:
     loop.aux_budget = a.aux_budget if a.aux_budget > 0 else 10 * a.budget
     loop.web_mode = "off" if a.no_ideation_web else a.web_mode
     loop.ideation_web = loop.web_mode != "off"
+    loop.fetch_on_demand = fetch_on_demand_default(a.fetch_on_demand, loop.web_mode)
     loop.do_deepen, loop.deepen_depth, loop.deepen_fanout = (not a.no_deepen), a.deepen_depth, a.deepen_fanout
     loop.deepen_top, loop.deepen_generations = a.deepen_top, a.deepen_generations
     loop.learn_steps, loop.long_steps, loop.new_share = a.learn_steps, a.long_steps, a.new_share

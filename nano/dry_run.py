@@ -143,7 +143,39 @@ def mock_upward(meta: dict) -> str:
             "COST: a timed training harness and repeated runs to control timing noise.")
 
 
+_need_sent: list[bool] = []                 # fetch on demand: one builder asks for a fact once per process
+
+
+def mock_need(prompt: str, role: str, meta: dict) -> str | None:
+    """The first build whose prompt offers the NEED line asks for one fact and writes no code; its re-prompt
+    (with FACTS YOU ASKED FOR) falls through to the usual code reply."""
+    if role != "generate" or str(meta.get("card", "")) != "implement" or "NEED: <optional" not in prompt:
+        return None
+    if "FACTS YOU ASKED FOR" in prompt:
+        return None
+    with _counter_lock:
+        if _need_sent:
+            return None
+        _need_sent.append(True)
+    q = ("what is the proven asymptotic worst-case ratio of first fit for online bin packing?"
+         if PF.current().name == "binpack_nobase" else
+         "what initial value did 2026 work use for the attention gate bias below 100M parameters?")
+    return f"HYPOTHESIS: pending one fact.\nCHANGE: none yet\nFIDELITY: exact, waiting for the fact\nNEED: {q}\n"
+
+
+def mock_fetch(prompt: str) -> str:
+    """The delegated research model answering one fetched fact, with a source."""
+    q = re.search(r"QUESTION:\s*(.+)", prompt)
+    return (f"ANSWER: mock answer to '{(q.group(1) if q else '?')[:80]}': 1.7 in the asymptotic worst case.\n"
+            "SOURCE: https://example.org/fetched-fact\nCONFIDENCE: medium")
+
+
 def mock(prompt: str, role: str, meta: dict) -> str:
+    if str(meta.get("card", "")) == "fetch_fact":
+        return mock_fetch(prompt)
+    need = mock_need(prompt, role, meta)
+    if need is not None:
+        return need
     if "Direction UPWARD" in prompt:           # upward contexts answer in their own format (tree.UPWARD_FORMAT)
         return mock_upward(meta)
     name = PF.current().name
