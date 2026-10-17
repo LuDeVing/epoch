@@ -169,7 +169,7 @@ def fresh_space_name(prefix: str) -> str:
 def server_argv(name: str, port: int = C.PORT, lab: str | None = None, py: str | None = None) -> list[str]:
     lab = lab or lab_root()
     argv = [py or python_exe(), "-m", "space.server", "--db", f"{lab}/spaces/{name}/space.db",
-            "--memory-dir", f"{lab}/memory/_mock/{PROFILE}"]
+            "--memory-dir", f"{lab}/memory/_mock/{PROFILE}", "--open"]
     return argv + (["--port", str(port)] if port != C.PORT else [])
 
 

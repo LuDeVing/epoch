@@ -185,22 +185,55 @@ def use_invite(code: str, name: str) -> dict:
     return rec
 
 
-def register(name_raw, password, code) -> str:
-    """A new person joins with an invitation: returns the name."""
+def register(name_raw, password, code=None) -> str:
+    """A new account: a name and a password. With an invitation code the person also becomes a member of the
+    space the invitation is for. Returns the name."""
     name = clean_name(name_raw)
     if len(str(password or "")) < 4:
         raise Reject(422, "short_password", hint="4 characters at least")
     with _LOCK:
         u = users()
-        if name in u and u[name].get("hash"):
-            raise Reject(409, "name_taken", hint="that name has a password already; sign in instead")
-    use_invite(code, name)
-    with _LOCK:
-        u = users()
+        if name in u:
+            raise Reject(409, "name_taken", hint="that name is taken; sign in instead, or choose another")
         salt = secrets.token_hex(16)
-        u[name] = {"name": name, "salt": salt, "hash": _hash(str(password), salt), "owner": False, "created": _now()}
+        u[name] = {"name": name, "salt": salt, "hash": _hash(str(password), salt), "owner": not any(u.values()), "created": _now()}
         _save("users.json", u)
+    if code:
+        accept_invite(code, name)
     return name
+
+
+# ---------------------------------------------------------------- members (who may take part in a space)
+def members_of(space: str | None) -> list[str] | None:
+    """The members list of a space, or None when the space has no list (a stage or hand-made space: open to all)."""
+    if not space:
+        return None
+    m = _load("members.json").get(space)
+    return list(m) if isinstance(m, list) else None
+
+
+def add_member(space: str, name: str) -> list[str]:
+    with _LOCK:
+        m = _load("members.json")
+        rows = m.get(space) if isinstance(m.get(space), list) else []
+        if name not in rows:
+            rows.append(name)
+        m[space] = rows
+        _save("members.json", m)
+    return rows
+
+
+def is_member(space: str | None, name: str | None) -> bool:
+    rows = members_of(space)
+    return True if rows is None else (name in rows)
+
+
+def accept_invite(code: str, name: str) -> dict:
+    """A signed-in person opens an invitation link: they join the space it names."""
+    rec = use_invite(code, name)
+    if rec.get("space"):
+        add_member(rec["space"], name)
+    return rec
 
 
 # ---------------------------------------------------------------- the request-level rules
@@ -211,64 +244,76 @@ def is_local(client_address) -> bool:
         return False
 
 
-def whoami(headers, client_address) -> tuple[str | None, str | None]:
-    """(name, new_cookie_token). The owner on this PC is signed in without a password: a fresh session is made
-    when none is present; the token comes back so the caller can set the cookie."""
+def whoami(headers, client_address, open_mode: bool = False) -> tuple[str | None, str | None]:
+    """(name, new_cookie_token). Normally the session cookie decides. In open mode (the stage demo, --open) the
+    person on this PC is signed in as the OS login without a password."""
     tok = cookie_of(headers)
     name = session_name(tok)
     if name:
         return name, None
-    if is_local(client_address):
+    if open_mode and is_local(client_address):
         owner = ensure_owner()
         return owner, new_session(owner)
     return None, None
 
 
-def require_human(by: str, headers, client_address) -> None:
-    """A human event must come from a session whose name is the author; else 401 login_required."""
+def require_human(by: str, headers, client_address, space_id: str | None = None, open_mode: bool = False) -> None:
+    """A human event must come from a session whose name is the author (401 login_required), and from a member
+    when the space has a members list (403 member_required). Open mode trusts everyone, as the stage demo needs."""
+    if open_mode:
+        return
     name = session_name(cookie_of(headers))
-    if name is None and is_local(client_address) and by == owner_name():
-        return                                               # the owner's page before its first GET /api/me
     if name != by:
         raise Reject(401, "login_required", who=name, by=by)
+    if not is_member(space_id, name):
+        raise Reject(403, "member_required", hint="ask a member of this space for an invitation")
 
 
-def handle(path: str, body: dict, headers, client_address, space_id: str | None, base_url: str):
+def handle(path: str, body: dict, headers, client_address, space_id: str | None, base_url: str, open_mode: bool = False):
     """The auth routes shared by the space server and the hub. Returns (code, body, cookie_header_or_None),
     or None when the path is not an auth route."""
     tok = cookie_of(headers)
-    if path == "/api/me":
-        name, new_tok = whoami(headers, client_address)
+
+    def me() -> str:
+        name, _ = whoami(headers, client_address, open_mode)
         if not name:
-            return 401, {"error": "login_required", "owner": owner_name()}, None
+            raise Reject(401, "login_required")
+        return name
+
+    if path == "/api/me":
+        name, new_tok = whoami(headers, client_address, open_mode)
+        if not name:
+            return 401, {"error": "login_required", "hint": owner_name(), "open": open_mode}, None
         rec = users().get(name) or {}
-        return 200, {"name": name, "owner": bool(rec.get("owner")), "has_password": bool(rec.get("hash"))}, (set_cookie(new_tok) if new_tok else None)
+        return 200, {"name": name, "owner": bool(rec.get("owner")), "has_password": bool(rec.get("hash")),
+                     "member": is_member(space_id, name), "open": open_mode}, (set_cookie(new_tok) if new_tok else None)
     if path == "/api/login":
         name = clean_name(body.get("name"))
         if not check_password(name, body.get("password")):
             raise Reject(401, "bad_login", hint="wrong name or password")
+        if body.get("invite"):
+            accept_invite(body["invite"], name)
         return 200, {"name": name}, set_cookie(new_session(name))
     if path == "/api/register":
-        name = register(body.get("name"), body.get("password"), body.get("invite"))
+        name = register(body.get("name"), body.get("password"), body.get("invite") or None)
         return 200, {"name": name}, set_cookie(new_session(name))
     if path == "/api/logout":
         drop_session(tok)
         return 200, {"ok": True}, set_cookie(None)
     if path == "/api/password":
-        name = session_name(tok)
-        if not name:
-            name, _ = whoami(headers, client_address)
-        if not name:
-            raise Reject(401, "login_required")
-        set_password(name, body.get("password"))
-        return 200, {"name": name, "has_password": True}, None
+        set_password(me(), body.get("password"))
+        return 200, {"name": me(), "has_password": True}, None
     if path == "/api/invites":
-        name = session_name(tok)
-        if not name:
-            name, _ = whoami(headers, client_address)
-        if not name:
-            raise Reject(401, "login_required")
-        if body is not None and body.get("_method", "POST") == "POST" and "list" not in body:
+        name = me()
+        if body is not None and "list" not in body:
+            if space_id and not is_member(space_id, name):
+                raise Reject(403, "member_required")
             return 200, make_invite(name, space_id, base_url), None
         return 200, {"invites": invites_for(space_id)}, None
+    if path == "/api/invites/accept":
+        name = me()
+        rec = accept_invite(body.get("code"), name)
+        return 200, {"name": name, "space": rec.get("space"), "member": True}, None
+    if path == "/api/members":
+        return 200, {"space": space_id, "members": members_of(space_id), "open_to_all": members_of(space_id) is None}, None
     return None

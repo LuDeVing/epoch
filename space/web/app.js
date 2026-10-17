@@ -351,12 +351,17 @@ export function toast(text) {
 // login of this PC. The page then reopens itself with ?me=<name>, which the rest of the code reads as before.
 async function autoJoin() {
   const clean = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 24);
+  const kq = flags.key ? `?key=${encodeURIComponent(flags.key)}` : '';
   let name = '';
   try {
-    const r = await fetch(`${base}/api/me${flags.key ? `?key=${encodeURIComponent(flags.key)}` : ''}`, { cache: 'no-store', credentials: 'same-origin' });
+    const r = await fetch(`${base}/api/me${kq}`, { cache: 'no-store', credentials: 'same-origin' });
     if (r.ok) name = clean((await r.json()).name);
   } catch (e) { name = ''; }
   if (!name) return false;
+  const code = params.get('invite');
+  if (code) {                                            // signed in and holding an invitation: join this space
+    try { await fetch(`${base}/api/invites/accept${kq}`, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) }); } catch (e) { /* shown later */ }
+  }
   const u = new URL(location.href); u.searchParams.set('me', name); u.searchParams.delete('invite');
   location.replace(u.toString());
   return true;
@@ -370,8 +375,8 @@ function askLogin() {
   const go = async (e) => {
     e.preventDefault();
     const f = e.target.elements;
-    const body = mode === 'login' ? { name: f.name.value, password: f.password.value }
-      : { name: f.name.value, password: f.password.value, invite: f.invite.value };
+    const body = { name: f.name.value, password: f.password.value };
+    if (invite) body.invite = invite;
     try {
       const r = await fetch(`${base}/api/${mode}${flags.key ? `?key=${encodeURIComponent(flags.key)}` : ''}`, { method: 'POST', credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -382,11 +387,11 @@ function askLogin() {
   };
   const draw = () => render(html`<form class="join" onSubmit=${go}>
     <span class="brand">HTSA space</span>
-    ${mode === 'register' ? html`<label>Invitation <input name="invite" value=${invite} autocomplete="off" /></label>` : null}
+    ${invite ? html`<span class="tag">invitation ${invite.slice(0, 6)}...</span>` : null}
     <label>Name <input name="name" autocomplete="username" autofocus /></label>
     <label>Password <input name="password" type="password" autocomplete=${mode === 'login' ? 'current-password' : 'new-password'} /></label>
-    <button class="btn btn--primary" type="submit">${mode === 'login' ? 'Sign in' : 'Join with the invitation'}</button>
-    <button class="btn" type="button" onClick=${() => { mode = mode === 'login' ? 'register' : 'login'; err = ''; draw(); }}>${mode === 'login' ? 'I have an invitation' : 'I have a password'}</button>
+    <button class="btn btn--primary" type="submit">${mode === 'login' ? 'Sign in' : 'Create account'}</button>
+    <button class="btn" type="button" onClick=${() => { mode = mode === 'login' ? 'register' : 'login'; err = ''; draw(); }}>${mode === 'login' ? 'New here? Register' : 'I have an account'}</button>
     ${err ? html`<span class="error">${err}</span>` : null}
     <span class="muted">or open with ?stage=1 to watch</span></form>`, top);
   draw();

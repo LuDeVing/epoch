@@ -45,7 +45,7 @@ function Space({ s, refresh, meDefault }) {
   const join = s.alive && name ? s.join.replace('{name}', name) : null;
   return html`<div class="space">
     <div class="space__head"><span class=${`dot${s.alive ? ' dot--on' : ''}`}></span><span class="space__name">${s.name}</span>
-      <span class="muted">${s.alive ? `running on port ${s.port}` : (s.port ? 'stopped' : 'not started here')}${s.lan ? ' . open to the network' : ''}</span>
+      <span class="muted">${s.alive ? `running on port ${s.port}` : (s.port ? 'stopped' : 'not started here')}${s.lan ? ' . open to the network' : ''}${s.member ? ' . you are a member' : ''}</span>
       ${s.people.length ? html`<span class="muted">people: ${s.people.join(', ')}</span>` : null}
       <span style="flex:1"></span>
       ${s.alive ? html`<a class="btn btn--small btn--primary" href=${name ? s.join.replace('{name}', name) : `${s.url}/`} target="_blank" rel="noopener">Open</a>
@@ -64,17 +64,18 @@ function Space({ s, refresh, meDefault }) {
 
 function Login({ onDone }) {
   const [err, setErr] = useState('');
+  const [mode, setMode] = useState('login');
   const go = async (e) => {
     e.preventDefault();
     const f = e.target.elements;
-    try { await api('/api/login', { name: f.name.value, password: f.password.value }); onDone(); } catch (ex) { setErr(ex.message); }
+    try { await api(`/api/${mode}`, { name: f.name.value, password: f.password.value }); onDone(); } catch (ex) { setErr(ex.message); }
   };
   return html`<form class="hub__form" onSubmit=${go}>
     <input type="text" name="name" placeholder="name" autocomplete="username" />
-    <input type="password" name="password" placeholder="password" autocomplete="current-password" />
-    <button class="btn btn--small btn--primary" type="submit">Sign in</button>
+    <input type="password" name="password" placeholder="password" autocomplete=${mode === 'login' ? 'current-password' : 'new-password'} />
+    <button class="btn btn--small btn--primary" type="submit">${mode === 'login' ? 'Sign in' : 'Create account'}</button>
+    <button class="btn btn--small" type="button" onClick=${() => setMode(mode === 'login' ? 'register' : 'login')}>${mode === 'login' ? 'New here? Register' : 'I have an account'}</button>
     ${err ? html`<span class="err">${err}</span>` : null}
-    <span class="muted">On this PC the owner is signed in by itself; others sign in with the password they chose with their invitation.</span>
   </form>`;
 }
 

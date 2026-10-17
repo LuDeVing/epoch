@@ -37,9 +37,11 @@ function PeoplePanel({ api, onClose }) {
   const stop = async (n) => { setBusy(true); setErr(''); try { await post('/api/people/stop', { name: n }); await refresh(); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const people = (data && data.people) || [];
   const [invites, setInvites] = useState([]);
+  const [members, setMembers] = useState(null);
   const [pw, setPw] = useState('');
   const loadInvites = async () => { try { const r = await fetch(`${base}/api/invites`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setInvites(((await r.json()).invites) || []); } catch (e) { /* offline */ } };
-  useEffect(() => { loadInvites(); }, []);
+  const loadMembers = async () => { try { const r = await fetch(`${base}/api/members`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setMembers(await r.json()); } catch (e) { /* offline */ } };
+  useEffect(() => { loadInvites(); loadMembers(); }, []);
   const makeInvite = async () => { setBusy(true); setErr(''); try { await post('/api/invites', {}); await loadInvites(); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const setPassword = async (e) => { e.preventDefault(); setBusy(true); setErr(''); try { await post('/api/password', { password: pw }); setPw(''); setMade({ name: api.me, join_url: '', password: true }); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const inviteBase = (data && data.invite_url) ? data.invite_url.split('?')[0] : `${base}/`;
@@ -54,8 +56,9 @@ function PeoplePanel({ api, onClose }) {
       <button class="btn btn--small" type="button" style="float:right" onClick=${onClose}>x</button></div>
     <div class="people__me">You are <strong>${api.me || 'not joined'}</strong> on this PC <button class="btn btn--small" type="button" onClick=${rename}>change</button></div>
     <div class="people__invite">
-      <div><button class="btn btn--small btn--primary" type="button" disabled=${busy} onClick=${makeInvite}>Create an invitation</button>
-        <span class="muted">one link per person; they choose a name and a password when they open it</span></div>
+      <div class="muted">${members && members.open_to_all ? 'This space is open to every signed-in account.' : `Members: ${((members && members.members) || []).join(', ') || 'none yet'}`}</div>
+      <div><button class="btn btn--small btn--primary" type="button" disabled=${busy} onClick=${makeInvite}>Invite an account</button>
+        <span class="muted">one link per person; they sign in or register when they open it and become a member of this space</span></div>
       ${invites.length ? html`<ul class="people__list">${invites.slice(0, 6).map((i) => html`<li class="people__row">
           <span class="mono" style="user-select:all">${inviteBase}?invite=${i.code}${data && data.lan ? `&key=${data.invite_url.split('key=')[1] || ''}` : ''}</span>
           <span class=${`tag ${i.used_by ? 'tag--on' : ''}`}>${i.used_by ? `used by ${i.used_by}` : 'open'}</span></li>`)}</ul>` : null}

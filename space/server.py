@@ -370,7 +370,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
     def _auth(self, path: str, body) -> bool:
         """The shared login routes (space/auth.py). True when the path was one of them and was answered."""
         space_id = getattr(self.server.space.store, "space_id", None) if self.server.space else None
-        res = auth.handle(path, body if isinstance(body, dict) else {}, self.headers, self.client_address, space_id, self._base_url())
+        res = auth.handle(path, body if isinstance(body, dict) else {}, self.headers, self.client_address, space_id, self._base_url(),
+                          open_mode=bool(getattr(self.server, "open_mode", False)))
         if res is None:
             return False
         code, obj, cookie = res
@@ -431,7 +432,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
                 return None
             by, by_kind = self._who(q)
             if by_kind == "human":
-                auth.require_human(by, self.headers, self.client_address)
+                auth.require_human(by, self.headers, self.client_address,
+                                   getattr(sp.store, "space_id", None), bool(getattr(self.server, "open_mode", False)))
             elif not auth.is_local(self.client_address):   # agents and the loop are processes on this PC
                 raise Reject(403, "local_only", detail="agents and the loop run on the PC that hosts the space")
             if u.path == "/api/events":
@@ -471,7 +473,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
         try:
             self._key(q)
             one = lambda name, default=None: q.get(name, [default])[0]          # noqa: E731
-            if u.path in ("/api/me", "/api/invites"):
+            if u.path in ("/api/me", "/api/invites", "/api/members"):
                 if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
                     return None
             if u.path == "/api/events":                        # first load, catch-up, long-poll, agents
@@ -631,6 +633,7 @@ def main(argv=None) -> int:
     ap.add_argument("--memory-dir", default=None)
     ap.add_argument("--space-id", default=None)
     ap.add_argument("--lan", action="store_true", help="bind 0.0.0.0 and require the printed key")
+    ap.add_argument("--open", action="store_true", help="no logins: everyone is trusted (the stage demo)")
     ap.add_argument("--replay", default=None, help="load a recorded ndjson log into the database")
     ap.add_argument("--speed", type=float, default=1.0)
     ap.add_argument("--seek", type=int, default=0)
@@ -648,6 +651,7 @@ def main(argv=None) -> int:
     host = "0.0.0.0" if a.lan else contract.HOST
     run = make(a.db, port=a.port, host=host, web_dir=a.web, key=key, memory_dir=a.memory_dir, space_id=a.space_id,
                replay=a.replay, speed=a.speed, seek=a.seek)
+    run.httpd.open_mode = bool(a.open)
     sp = run.space
     print("space on http://%s:%d/  epoch %s  head %d" % (contract.HOST, run.port, sp.epoch, sp.head()), flush=True)
     if sp.restart_expired:

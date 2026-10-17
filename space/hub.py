@@ -184,6 +184,8 @@ class Hub:
                     break
                 except OSError:
                     time.sleep(0.1)
+        if me:
+            auth.add_member(name, me)
         self._start_my_agent(port, me)
         return self._row(rec)
 
@@ -266,7 +268,11 @@ class Handler(BaseHTTPRequestHandler):
                 if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
                     return None
             if u.path == "/api/spaces":
-                return self._send(200, dict(hub.list(), me=auth.whoami(self.headers, self.client_address)[0]))
+                me = auth.whoami(self.headers, self.client_address)[0]
+                d = hub.list()
+                for row in d["spaces"]:
+                    row["member"] = auth.is_member(row["name"], me) if me else False
+                return self._send(200, dict(d, me=me))
             p = (WEB / u.path.lstrip("/")).resolve()
             if WEB.resolve() in p.parents and p.is_file():
                 return self._send(200, p.read_bytes(), STATIC_TYPES.get(p.suffix, "application/octet-stream"))
