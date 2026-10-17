@@ -8,10 +8,13 @@ step 5; MSR-02).
   order, BRAINTEASER option order mapped back to canonical letters), selected like
   bestofn_verify ("seeded best-of-N with the same /verify").
 
-N is derived from budget_tokens: the first call always runs; later calls are spawned while
-realized spend plus the largest call cost seen so far stays within the budget, in batches of
-up to MAX_WORKERS while the room is at least two such calls and one at a time after that, so
-the overshoot above the budget is bounded by one call's deviation. With no budget, N = m.
+N is derived from budget_tokens (plan.md s2): the first call always runs; later calls are
+spawned while realized spend plus the mean call cost so far stays within the budget. Parallel
+batches keep one mean call of room in reserve: with room for `fit` mean calls, a batch launches
+at most fit - 1 (and at most MAX_WORKERS), and the last call runs alone, so a batch overshoots
+only if its calls together run more than one mean call over their mean; the sequential tail
+overshoots by at most one call's deviation from the mean. Hard cap N <= MAX_N_MULT x m. With no
+budget, N = m.
 The runs.jsonl row records overshoot = max(0, spent - budget_tokens).
 """
 from __future__ import annotations
@@ -58,9 +61,10 @@ def seed_for(item_id: str, arm: str, replicate: int, index: int, words: list[str
 # ---------------------------------------------------------------- spawning under the budget
 def next_batch_size(spent: int, n_done: int, budget: int | None, n_cap: int,
                     max_cost: int | None = None) -> int:
-    """How many calls to launch now: 1 first; then, sized by the largest call cost seen (the
-    mean when no per-call costs are known), as many as fit up to MAX_WORKERS while at least
-    two more fit, and one at a time once the remaining room is under two calls."""
+    """How many calls to launch now (plan.md s2): 1 first; then, with fit = how many mean call
+    costs fit in the remaining budget, fit - 1 calls (one mean call kept in reserve) up to
+    MAX_WORKERS, and a single call when exactly one fits. max_cost is accepted for callers of
+    the old rule and ignored."""
     room_n = n_cap - n_done
     if room_n <= 0:
         return 0
@@ -68,13 +72,15 @@ def next_batch_size(spent: int, n_done: int, budget: int | None, n_cap: int,
         return 1
     if budget is None:
         return min(MAX_WORKERS, room_n)
-    unit = float(max_cost if max_cost else spent / n_done)
+    unit = float(spent / n_done)
     if unit <= 0:
         return min(MAX_WORKERS, room_n)
     fit = int((budget - spent) // unit)
-    if fit < 2:
-        return min(fit, room_n) if fit > 0 else 0
-    return max(0, min(fit, MAX_WORKERS, room_n))
+    if fit <= 0:
+        return 0
+    if fit == 1:
+        return 1
+    return max(1, min(fit - 1, MAX_WORKERS, room_n))
 
 
 def spawn_pool(item: dict, *, arm: str, run_dir: Path, backend: str, replicate: int, batch: str,

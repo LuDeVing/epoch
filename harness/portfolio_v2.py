@@ -11,9 +11,12 @@ Method v2, per puzzle:
      size, then shortest program. If the top two groups are still level, an anchored check: the model predicts the
      test output directly from the examples (without seeing candidates); the group closest to it wins.
   5. Two answers (official ARC scoring): the top two groups. Nothing passes: the two most common plain answers.
-Baseline, same puzzle: plain attempts only (reusing the method's plain attempts, same prompt and distribution, plus
-extra plain samples) until its tokens reach the method's; selection = standard majority among passing programs,
-two answers. Also reported: plain one answer (the first plain attempt).
+Baseline, same puzzle: its own independent plain samples (plain arm's prompt) until its tokens reach the method's,
+never the method's attempts; selection = standard majority among passing programs, two answers. Also reported: plain
+one answer (the baseline's first sample). --reuse-method-plain restores the earlier baseline (the method's plain
+attempts plus extra samples), kept only to reproduce arc1fresh-v2 and arc1large-v2: when the method stops early
+after two agreeing plain attempts that baseline selects from the identical attempts, so the tie is tautological.
+v2_summary.md reports how many puzzles stopped early and on how many the two arms saw identical attempts.
 
     HTSA_MODEL=haiku HTSA_ARC_SET=arc1fresh python -m harness.portfolio_v2 --batch arc1fresh-v2 --split fresh --items 60
 """
@@ -155,11 +158,14 @@ def solve(item, args, out_dir):
         how += "nothing passed; plain answers"
     m_tokens = sum(c["tokens"] for c in cands)
 
-    # baseline: plain samples only, up to the method's tokens, standard majority among passing
-    base = [c for c in cands if c["kind"] == "plain"]
+    # baseline: plain samples only, up to the method's tokens, standard majority among passing; its own draws
+    reuse = bool(getattr(args, "reuse_method_plain", False))
+    base = [c for c in cands if c["kind"] == "plain"] if reuse else []
+    n_reused = len(base)
     while sum(c["tokens"] for c in base) < m_tokens and len(base) < args.k_base_max:
         base.append(attempt("plainextra", str(len(base)), plain_prompt))
         cands.remove(base[-1])
+    identical = n_reused > 0 and len(base) == n_reused     # baseline saw exactly the method's plain attempts
     BG = groups_of(base, t_in, key=lambda g: (-len(g), min(c["len"] for c in g)))
     if BG:
         b_answers = [BG[0][0]["pred"]] + ([BG[1][0]["pred"]] if len(BG) > 1 else [])
@@ -169,7 +175,8 @@ def solve(item, args, out_dir):
 
     key = item["test_output"]                                   # read by this scorer only
     first = base[0]["pred"] if base else None
-    return {"id": item["id"], "how": how, "stopped_early": stopped,
+    return {"id": item["id"], "how": how, "stopped_early": stopped, "base_mode": "reuse" if reuse else "independent",
+            "n_base_reused": n_reused, "identical_arms": identical,
             "method_top1": bool(answers) and answers[0] == key, "method_top2": key in answers,
             "base_top1": bool(b_answers) and b_answers[0] == key, "base_top2": key in b_answers,
             "plain_one": first == key, "any_right": any(c["pred"] == key for c in cands + base),
@@ -179,6 +186,14 @@ def solve(item, args, out_dir):
                           "right": c["pred"] == key, "tokens": c["tokens"]} for c in cands],
             "base_attempts": [{"name": c["name"], "passed": f"{c['passed']}/{c['total']}", "right": c["pred"] == key}
                               for c in base]}
+
+
+def identical_arms(r) -> bool:
+    """The baseline saw exactly the method's plain attempts (no draws of its own). Rows written before the field
+    existed were all in reuse mode: identical when n_base equals the method's plain attempt count."""
+    if "identical_arms" in r:
+        return bool(r["identical_arms"])
+    return r.get("n_base") == sum(1 for a in r.get("attempts", []) if a.get("kind") == "plain")
 
 
 def summary(rows, path):
@@ -198,6 +213,13 @@ def summary(rows, path):
              f"| plain, one answer | | {s('plain_one')}/{n} | |",
              f"| any attempt right | {s('any_right')}/{n} | | |", "",
              f"Paired, two answers: method right and baseline wrong on {w} puzzles; the reverse on {l}."]
+    stopped = sum(1 for r in rows if r.get("stopped_early"))
+    same = sum(1 for r in rows if identical_arms(r))
+    modes = sorted({r.get("base_mode", "reuse") for r in rows})
+    lines += ["", f"Method stopped early (two agreeing plain attempts) on {stopped} of {n} puzzles. Baseline mode: "
+              f"{', '.join(modes)}. The two arms saw identical attempts on {same} of {n} puzzles"
+              + (" (baseline reused the method's plain attempts: on those puzzles a tie is by construction, not "
+                 "evidence)." if same else ".")]
     return "\n".join(lines) + "\n"
 
 
@@ -212,6 +234,9 @@ def main() -> int:
     ap.add_argument("--k-base-max", type=int, default=10)
     ap.add_argument("--no-early-stop", dest="early_stop", action="store_false")
     ap.add_argument("--no-anchored", dest="anchored", action="store_false")
+    ap.add_argument("--reuse-method-plain", action="store_true",
+                    help="old baseline: start from the method's plain attempts (reproduces the earlier v2 batches)")
+    ap.add_argument("--summary-only", action="store_true", help="rewrite v2_summary.md from v2_runs.jsonl, no calls")
     ap.add_argument("--effort", default=os.environ.get("HTSA_PLAIN_EFFORT", "medium"))
     ap.add_argument("--backend", default=None)
     ap.add_argument("--workers", type=int, default=3)
@@ -247,8 +272,9 @@ def main() -> int:
                   f"plain1 {r['plain_one']} | totals method {sum(x['method_top2'] for x in rows)} base "
                   f"{sum(x['base_top2'] for x in rows)} plain1 {sum(x['plain_one'] for x in rows)} | tokens "
                   f"{r['method_tokens']:,}/{r['base_tokens']:,} ({r['how']})", flush=True)
-    with ThreadPoolExecutor(max_workers=args.workers) as ex:
-        list(ex.map(work, [it for it in items if it["id"] not in done]))
+    if not args.summary_only:
+        with ThreadPoolExecutor(max_workers=args.workers) as ex:
+            list(ex.map(work, [it for it in items if it["id"] not in done]))
     rows = [done[it["id"]] for it in items if it["id"] in done]
     text = summary(rows, path)
     (out_dir / "v2_summary.md").write_text(text, encoding="utf-8")

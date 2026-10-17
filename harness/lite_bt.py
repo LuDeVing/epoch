@@ -60,9 +60,15 @@ def run_item(item: dict, args, out_dir: Path) -> dict:
     log_dir.mkdir(parents=True, exist_ok=True)
     q = puzzle_text(item)
     res = {"id": item["id"], "group": item.get("group", item["id"]), "key": LETTERS[int(item["label"])]}
-    # plain
-    t, tok = call("Solve this riddle. Reason step by step." + "\n\n" + q + FORMAT, args, "plain", log_dir)
-    res["plain"], res["plain_tokens"] = parse(t), tok
+    # plain: reused from --plain-from when given (never re-run), else one call
+    reused = getattr(args, "plain_answers", None)
+    if reused is not None and item["id"] in reused:
+        ans = reused[item["id"]]
+        res["plain"] = str(ans).strip().upper()[:1] if ans else None
+        res["plain_tokens"], res["plain_reused"] = args.plain_tokens.get(item["id"], 0), True
+    else:
+        t, tok = call("Solve this riddle. Reason step by step." + "\n\n" + q + FORMAT, args, "plain", log_dir)
+        res["plain"], res["plain_tokens"] = parse(t), tok
     # lite: four thinkers then a blind judge
     outs, tokens = [], 0
     for name, how in THINKERS.items():
@@ -91,6 +97,24 @@ def run_item(item: dict, args, out_dir: Path) -> dict:
         c = Counter(a for a in answers if a)
         res["vote"], res["vote_tokens"] = (c.most_common(1)[0][0] if c else None), vtok
     return res
+
+
+def load_plain(folder) -> tuple[dict, dict, list]:
+    """Plain answers of an earlier harness.bench batch: the last runs.jsonl row per run_id, replicate 0 (else the
+    lowest replicate) per item; returns (answers, tokens, item ids in first-seen order, each once)."""
+    last = {}
+    for l in (Path(folder) / "runs.jsonl").read_text(encoding="utf-8").splitlines():
+        if l.strip():
+            r = json.loads(l)
+            if r.get("arm") == "plain":
+                last[r["run_id"]] = r
+    pick: dict = {}
+    for r in last.values():
+        cur = pick.get(r["item_id"])
+        if cur is None or int(r.get("replicate", 0)) < int(cur.get("replicate", 0)):
+            pick[r["item_id"]] = r
+    return ({k: r.get("answer") for k, r in pick.items()}, {k: int(r.get("spent_tokens") or 0) for k, r in pick.items()},
+            list(pick))
 
 
 def bootstrap_diff(rows, a, b, n=2000):
@@ -123,11 +147,7 @@ def main() -> int:
     args.plain_answers, args.plain_tokens = None, {}
     plain_ids = None
     if args.plain_from:
-        prow = [json.loads(l) for l in (Path(args.plain_from) / "runs.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
-        prow = [r for r in prow if r.get("arm") == "plain"]
-        args.plain_answers = {r["item_id"]: r.get("answer") for r in prow}
-        args.plain_tokens = {r["item_id"]: int(r.get("spent_tokens") or 0) for r in prow}
-        plain_ids = [r["item_id"] for r in prow]
+        args.plain_answers, args.plain_tokens, plain_ids = load_plain(args.plain_from)
     args.backend = args.backend or config.default_backend()
     data = Path(config.DATA_DIR) / "brainteaser_sp.jsonl"
     items = [json.loads(l) for l in data.read_text(encoding="utf-8").splitlines() if l.strip()]
