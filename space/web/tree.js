@@ -120,6 +120,19 @@ export function mountTree(el, store, bus, opts = {}) {
   try {
     zoom = d3.zoom().scaleExtent([0.25, 2.5]).on('zoom', (e) => { applyTransform(e.transform); if (e.sourceEvent) stopFollow(); });
     d3.select(viewport).call(zoom).on('dblclick.zoom', null);
+    // the wheel scrolls (pans) the view like a page; Ctrl or Cmd with the wheel zooms, pinch on a trackpad zooms too
+    zoom.filter((e) => (e.type !== 'wheel' || e.ctrlKey || e.metaKey) && !e.button)
+        .wheelDelta((e) => -e.deltaY * (e.deltaMode === 1 ? 0.05 : e.deltaMode ? 1 : 0.004));
+    viewport.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey || !zoom) return;
+      e.preventDefault();
+      const k = d3.zoomTransform(viewport).k || 1;
+      const m = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
+      let dx = e.deltaX * m, dy = e.deltaY * m;
+      if (e.shiftKey && !dx) { dx = dy; dy = 0; }                      // Shift and the wheel: sideways
+      d3.select(viewport).call(zoom.translateBy, -dx / k, -dy / k);
+      stopFollow();
+    }, { passive: false });
   } catch { zoom = null; }
 
   function viewSize() {
