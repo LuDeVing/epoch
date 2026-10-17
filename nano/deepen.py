@@ -223,6 +223,8 @@ def knowledge_text(nodes: list[dict], cap_chars: int = 4000) -> str:
         if n.get("chain"):
             statuses = [s for m in nodes if m.get("root") == n.get("id") or m.get("id") == n.get("id") for s in (m.get("link_status") or [])]
             lines.append(chain_text(n["chain"], statuses))
+        if n.get("revised_idea"):                       # the author conceded an objection and changed the idea
+            lines.append(f"THE IDEA AS REVISED BY ITS AUTHOR AFTER THE PRE-MORTEM (build this version): {n['revised_idea']}")
     lines.append("WHAT IS KNOWN ABOUT THIS IDEA (from interrogating it before building; facts, not instructions; tagged by source):")
     seen = set()
     beliefs = []
@@ -373,6 +375,13 @@ def objections_text(objections: list[dict], verdict: str = "", standing: set[str
         elif o.get("if_true"):
             it = o["if_true"]
             tag += f" | test: {it['metric']} {it['op']} {it['threshold']}"
+        d = o.get("dialogue") or {}
+        if d.get("reply") == "concede":
+            tag += f" | author conceded, idea changed: {d.get('change') or 'see the revised idea'}"
+        elif d.get("reply") == "rebut":
+            tag += f" | author rebutted: {d.get('fact', '')[:160]} [{d.get('source') or 'untagged'}], critic: {d.get('verdict')}"
+        elif d.get("reply") == "measure":
+            tag += f" | author asks to measure: {d.get('test')}"
         lines.append(f"- {tag}] {o['text']}")
     if collapsed:
         cls = sorted({o.get("cls") for o in collapsed if o.get("cls")})
@@ -382,11 +391,210 @@ def objections_text(objections: list[dict], verdict: str = "", standing: set[str
     return "\n".join(lines)
 
 
-_RENDERED = {"ROOT_FORMAT": "_ROOT_FORMAT", "CHILD_FORMAT": "_CHILD_FORMAT", "PREMORTEM_FORMAT": "_PREMORTEM_FORMAT"}
+# ---------------------------------------------------------------- one anchored reply round: the author answers the critic
+# research_notes/team_gaps/01_dialogue.md: free debate gives small, unreliable gains; an anchored reply helps. The author
+# may only concede (and change the idea), rebut with a quoted fact, or propose a measurement. The critic marks each
+# objection resolved, revised or standing. Nothing is dropped: the critic is a checklist, never a gate. Standing
+# objections keep their if_true test, so the ladder settles them as before. At most two exchanges; stop early when
+# an update changes nothing. The critic sees the ladder's results only after its first objections (in the calibration).
+REPLY_KINDS = ("concede", "rebut", "measure")
+VERDICTS = ("resolved", "revised", "standing")
+MAX_EXCHANGES = 2
+
+_REPLY_FORMAT = """Use exactly this form. One block per objection, by its number, in the order given:
+REPLY <i>: concede | rebut | measure
+then exactly one line:
+CHANGE: <concede only: what the idea changes to, one line>
+FACT: <rebut only: a quoted fact that answers the objection> [script|measured|web|belief]
+TEST: <measure only: <metric> <above|below> <number> at <ladder rung>>
+After the last block, if you conceded anything:
+REVISED IDEA: <the idea as it now stands, one or two sentences>
+Rules: no other prose. A rebut needs a FACT line, tagged with where the fact comes from (script = read from the script; measured = from a measurement; web = from a page, with its URL; belief = your own reasoning). A belief cannot settle an objection. A TEST names one of these measurements: {v:ladder_metrics}."""
+
+_CRITIC_UPDATE_FORMAT = """Use exactly this form, one line per objection, by its number:
+UPDATE <i>: resolved | revised | standing | <one reason>
+Rules: resolved only when the reply quotes a fact that settles the objection. A rebut without a FACT line, or with a fact tagged belief, cannot resolve it. A measure reply leaves the objection standing, with its test. A concede makes it revised. Judge the facts, not the tone or the confidence of the reply."""
+
+
+def test_text(t: dict | None) -> str:
+    if not t:
+        return ""
+    return f"{t['metric']} {t['op']} {t['threshold']:g}" + (f" at {t['rung']}" if t.get("rung") else "")
+
+
+def reply_prompt(brief: str, chain: str, objections: list[dict], indices: list[int] | None = None) -> str:
+    """The author's reply: a fresh call that sees the idea, its chain and the objections, nothing else."""
+    idx = indices if indices is not None else list(range(1, len(objections) + 1))
+    lines = []
+    for i in idx:
+        o = objections[i - 1]
+        it = o.get("if_true")
+        lines.append(f"OBJECTION {i}: {o['text']}" + (f" | if true: {it['metric']} {it['op']} {it['threshold']:g}" if it else ""))
+    return ("You proposed the idea below. A critic raised objections against it. Answer each objection with one move: "
+            "concede it and change the idea, rebut it with a quoted fact, or propose the measurement that would settle it. "
+            "Do not argue. Do not defend the idea with confidence or rhetoric.\n\n"
+            f"THE IDEA:\n{brief}\n\n" + (f"{chain}\n\n" if chain else "")
+            + "THE OBJECTIONS:\n" + "\n".join(lines) + "\n\n" + fill(_REPLY_FORMAT))
+
+
+def critic_update_prompt(objections: list[dict], replies: dict[int, dict]) -> str:
+    """The critic sees its own objections and the replies, and marks each one."""
+    lines = []
+    for i in sorted(replies):
+        o, r = objections[i - 1], replies[i]
+        lines.append(f"OBJECTION {i}: {o['text']}")
+        lines.append(f"REPLY {i}: {r['kind']}" + (f" | CHANGE: {r['change']}" if r.get("change") else "")
+                     + (f" | FACT: {r['fact']} [{r.get('source') or 'untagged'}]" if r.get("fact") else "")
+                     + (f" | TEST: {test_text(r['test'])}" if r.get("test") else ""))
+    return ("You raised these objections against an idea. Its author replied to each. Mark each objection. "
+            "You are a checklist, not a gate: nothing is dropped because of your marks, and a standing objection is measured later.\n\n"
+            + "\n".join(lines) + "\n\n" + _CRITIC_UPDATE_FORMAT)
+
+
+def _parse_test(v: str) -> dict | None:
+    mm = re.match(r"\s*<?\s*([a-z][a-z0-9_]*)\s+(above|below|>|<)\s*([-+]?\d*\.?\d+)\s*(?:at\s+(.+?))?\s*>?\s*$", v or "", flags=re.I)
+    if not mm:
+        return None
+    return {"metric": mm.group(1).lower(), "op": "above" if mm.group(2) in ("above", ">") else "below",
+            "threshold": float(mm.group(3)), "rung": (mm.group(4) or "").strip()[:60]}
+
+
+def parse_replies(text: str) -> dict:
+    """REPLY_FORMAT -> {"replies": {i: {"kind", "change", "fact", "source", "test"}}, "revised": str}."""
+    text = text or ""
+    replies: dict[int, dict] = {}
+    for block in re.split(r"(?=^\s*REPLY\s+\d+\s*:)", text, flags=re.M | re.I):
+        m = re.match(r"\s*REPLY\s+(\d+)\s*:\s*(concede|rebut|measure)\b", block, flags=re.I)
+        if not m:
+            continue
+        r = {"kind": m.group(2).lower(), "change": "", "fact": "", "source": "", "test": None}
+        cm = re.search(r"^\s*CHANGE:\s*(.+)$", block, flags=re.M | re.I)
+        fm = re.search(r"^\s*FACT:\s*(.+)$", block, flags=re.M | re.I)
+        tm = re.search(r"^\s*TEST:\s*(.+)$", block, flags=re.M | re.I)
+        if cm:
+            r["change"] = " ".join(cm.group(1).split())[:300]
+        if fm:
+            f_ = " ".join(fm.group(1).split())
+            sm = re.search(r"[\[(]\s*(?:source:\s*)?(script|measured|web|belief)\s*[\])]\s*$", f_, flags=re.I)
+            if sm:
+                r["source"], f_ = sm.group(1).lower(), f_[: sm.start()].rstrip()
+            r["fact"] = f_[:400]
+        if tm:
+            r["test"] = _parse_test(tm.group(1))
+        replies.setdefault(int(m.group(1)), r)
+    rv = re.search(r"^\s*REVISED IDEA:\s*(.+)$", text, flags=re.M | re.I)
+    return {"replies": replies, "revised": (" ".join(rv.group(1).split())[:400] if rv else "")}
+
+
+def parse_updates(text: str) -> dict[int, dict]:
+    """CRITIC_UPDATE_FORMAT -> {i: {"verdict", "reason"}}."""
+    out: dict[int, dict] = {}
+    for m in re.finditer(r"^\s*UPDATE\s+(\d+)\s*:\s*(resolved|revised|standing)\b\s*\|?\s*(.*)$", text or "", flags=re.M | re.I):
+        out.setdefault(int(m.group(1)), {"verdict": m.group(2).lower(), "reason": m.group(3).strip()[:300]})
+    return out
+
+
+def apply_rules(reply: dict | None, said: dict | None) -> str:
+    """The verdict the rules allow, whatever the critic wrote. A concede is revised; a measure is standing with its test;
+    a rebut resolves only with a FACT not tagged belief, and only if the critic accepts it; no reply leaves it standing."""
+    if not reply:
+        return "standing"
+    if reply["kind"] == "concede":
+        return "revised"
+    if reply["kind"] == "measure":
+        return "standing"
+    ok_fact = bool(reply.get("fact")) and reply.get("source") != "belief"
+    return "resolved" if (ok_fact and (said or {}).get("verdict") == "resolved") else "standing"
+
+
+def run_dialogue(objections: list[dict], ask_author, ask_critic, max_exchanges: int = MAX_EXCHANGES) -> dict:
+    """The reply round. ask_author(indices) -> REPLY_FORMAT text; ask_critic(replies) -> CRITIC_UPDATE_FORMAT text;
+    either may return None when the budget is out. Returns {"objections": copies, each with a "dialogue" field, and a
+    measure reply's test as if_true when the objection had none; "rows"; "exchanges"; "revised"; "stop"}.
+    Never drops an objection and never removes an if_true: the critic is a checklist, not a gate."""
+    objs = [dict(o) for o in objections]
+    state = {i: {"verdict": "standing", "reply": None, "reason": "", "exchange": 0} for i in range(1, len(objs) + 1)}
+    rows, revised, stop, ex = [], [], "", 0
+    todo = sorted(state)
+    cap = max(0, min(max_exchanges, MAX_EXCHANGES))
+    while todo and ex < cap:
+        rtext = ask_author(todo)
+        if rtext is None:
+            stop = "budget"
+            break
+        ex += 1
+        pr = parse_replies(rtext)
+        replies = {i: r for i, r in pr["replies"].items() if i in todo}
+        if pr["revised"]:
+            revised.append(pr["revised"])
+        utext = ask_critic(replies) if replies else ""
+        said = parse_updates(utext or "")
+        changed = False
+        for i in todo:
+            r = replies.get(i)
+            v = apply_rules(r, said.get(i))
+            new_test = bool(r and r["kind"] == "measure" and r.get("test"))
+            if new_test and not objs[i - 1].get("if_true"):
+                objs[i - 1]["if_true"] = {k: r["test"][k] for k in ("metric", "op", "threshold")}
+            if v != state[i]["verdict"] or new_test:
+                changed = True
+            state[i] = {"verdict": v, "reply": r, "reason": (said.get(i) or {}).get("reason", ""), "exchange": ex}
+            rows.append({"objection": i, "cls": objs[i - 1].get("cls", ""), "reply": (r or {}).get("kind", "none"),
+                         "fact": (r or {}).get("fact", ""), "source": (r or {}).get("source", ""),
+                         "test": test_text((r or {}).get("test")), "change": (r or {}).get("change", ""),
+                         "verdict": v, "reason": state[i]["reason"], "exchange": ex})
+        if not changed:
+            stop = "nothing changed"
+            break
+        # a second reply only for objections still standing with no test of any kind attached
+        todo = [i for i in todo if state[i]["verdict"] == "standing" and not objs[i - 1].get("if_true")]
+    if not stop:
+        stop = "cap" if todo else "done"
+    for i, o in enumerate(objs, 1):
+        st, r = state[i], state[i]["reply"] or {}
+        o["dialogue"] = {"reply": r.get("kind", "none"), "verdict": st["verdict"], "fact": r.get("fact", ""),
+                         "source": r.get("source", ""), "test": test_text(r.get("test")), "change": r.get("change", ""),
+                         "reason": st["reason"], "exchange": st["exchange"]}
+    return {"objections": objs, "rows": rows, "exchanges": ex, "revised": revised[-1] if revised else "", "stop": stop}
+
+
+def dialogue_summary(rows: list[dict], resolved_objs: list[dict] | None = None) -> dict:
+    """report.json "dialogue": counts by reply kind and final verdict, and the critic's calibration after the ladder:
+    of the objections it marked resolved, how many the metric later confirmed (so the resolution was wrong)."""
+    final: dict[tuple, dict] = {}
+    exchanges: dict = {}
+    for r in rows:
+        final[(r.get("idea"), r.get("objection"))] = r          # the last exchange wins
+        exchanges[r.get("idea")] = max(exchanges.get(r.get("idea"), 0), int(r.get("exchange") or 0))
+    by_reply = {k: 0 for k in REPLY_KINDS + ("none",)}
+    by_verdict = {k: 0 for k in VERDICTS}
+    for r in final.values():
+        by_reply[r.get("reply", "none")] = by_reply.get(r.get("reply", "none"), 0) + 1
+        by_verdict[r.get("verdict", "standing")] = by_verdict.get(r.get("verdict", "standing"), 0) + 1
+    calib = {v: {"confirmed": 0, "refuted": 0, "pending": 0, "untestable": 0} for v in VERDICTS}
+    seen = set()
+    for o in sorted(resolved_objs or [], key=lambda x: x.get("status") in (None, "pending")):   # a measured build first
+        d = o.get("dialogue") or {}
+        key = (d.get("idea") or "", (o.get("text") or "").lower()[:60])
+        if d.get("verdict") not in calib or key in seen:
+            continue
+        seen.add(key)
+        st = o.get("status") or "pending"
+        calib[d["verdict"]][st] = calib[d["verdict"]].get(st, 0) + 1
+    res = calib["resolved"]
+    judged = res["confirmed"] + res["refuted"]
+    return {"ideas": len(exchanges), "objections": len(final), "exchanges": sum(exchanges.values()),
+            "by_reply": by_reply, "by_verdict": by_verdict, "after_ladder": calib,
+            "resolved_later_confirmed": res["confirmed"], "resolved_later_refuted": res["refuted"],
+            "resolved_wrong_share": round(res["confirmed"] / judged, 3) if judged else None}
+
+
+_RENDERED = {"ROOT_FORMAT": "_ROOT_FORMAT", "CHILD_FORMAT": "_CHILD_FORMAT", "PREMORTEM_FORMAT": "_PREMORTEM_FORMAT",
+             "REPLY_FORMAT": "_REPLY_FORMAT", "CRITIC_UPDATE_FORMAT": "_CRITIC_UPDATE_FORMAT"}
 
 
 def __getattr__(name: str):
-    """deepen.ROOT_FORMAT, CHILD_FORMAT and PREMORTEM_FORMAT are rendered for the active profile on access."""
+    """deepen.ROOT_FORMAT, CHILD_FORMAT, PREMORTEM_FORMAT, REPLY_FORMAT and CRITIC_UPDATE_FORMAT are rendered for the active profile on access."""
     if name in _RENDERED:
         return fill(globals()[_RENDERED[name]])
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

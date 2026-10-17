@@ -143,6 +143,40 @@ def mock_upward(meta: dict) -> str:
             "COST: a timed training harness and repeated runs to control timing noise.")
 
 
+def mock_reply(prompt: str, meta: dict) -> str:
+    """First exchange: a concede with CHANGE, a rebut with a measured FACT, a measure with a TEST, then a rebut that rests
+    on a belief (cannot resolve, so it earns the second exchange). Second exchange: measure everything still open."""
+    idx = [int(i) for i in re.findall(r"^OBJECTION (\d+):", prompt, flags=re.M)]
+    second = str(meta.get("seed", "1")) != "1"
+    out, conceded = [], False
+    for k, i in enumerate(idx):
+        kind = "measure" if second else ["concede", "rebut", "measure", "rebut"][k % 4]
+        if kind == "concede":
+            conceded = True
+            out.append(f"REPLY {i}: concede\nCHANGE: apply the change only to the last two layers, so the cost is a quarter")
+        elif kind == "rebut":
+            out.append(f"REPLY {i}: rebut\nFACT: \"seed-to-seed spread is 0.004 at 45 steps\" "
+                       + ("[measured]" if k % 4 == 1 else "[belief]"))
+        else:
+            out.append(f"REPLY {i}: measure\nTEST: " + ("fidelity below 1 at rung 4" if second else "learn_z above 0.5 at rung 3"))
+    if conceded:
+        out.append("REVISED IDEA: the same change, applied to the last two layers only.")
+    return "\n".join(out)
+
+
+def mock_update(prompt: str) -> str:
+    out = []
+    for m in re.finditer(r"^REPLY (\d+): (concede|rebut|measure)(.*)$", prompt, flags=re.M):
+        i, kind, rest = m.group(1), m.group(2), m.group(3)
+        if kind == "concede":
+            out.append(f"UPDATE {i}: revised | the author changed the idea")
+        elif kind == "rebut" and "FACT:" in rest and "[belief]" not in rest:
+            out.append(f"UPDATE {i}: resolved | the quoted measurement settles it")
+        else:
+            out.append(f"UPDATE {i}: standing | " + ("a test is attached" if kind == "measure" else "a belief is not a fact"))
+    return "\n".join(out)
+
+
 def mock(prompt: str, role: str, meta: dict) -> str:
     if "Direction UPWARD" in prompt:           # upward contexts answer in their own format (tree.UPWARD_FORMAT)
         return mock_upward(meta)
@@ -167,6 +201,10 @@ def mock(prompt: str, role: str, meta: dict) -> str:
                                           "mechanism": "feedback with a budget", "correspondence": "their X is our Y",
                                           "case": "a documented case", "url": "https://example.org/analogy"} for k in range(5)],
                            "queries": ["q"]})
+    if card == "dialogue_reply":              # team gap B: the author's typed reply (nano/deepen.py REPLY_FORMAT)
+        return mock_reply(prompt, meta)
+    if card == "dialogue_update":             # the critic marks each reply, consistently with the rules
+        return mock_update(prompt)
     if card == "premortem":
         return ("OBJECTIONS:\n- it adds a matmul per layer | severity: high | class: hidden_cost | if_true: step_ratio above 1.2\n"
                 "- the effect is within seed noise | severity: medium | class: below_noise | if_true: learn_z above -0.5\n"

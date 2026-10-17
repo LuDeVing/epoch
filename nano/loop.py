@@ -361,6 +361,7 @@ class NanoLoop:
         self.working_src = self.baseline_src    # what direct-build cards see (climb arm advances it)
         self.analogies: dict[str, dict] = {}    # structured analogies per part (nano/research.py)
         self.do_analogy, self.do_diagnostics, self.do_premortem = True, True, True
+        self.do_dialogue = True                 # team gap B: the author's anchored reply to the pre-mortem (--no-dialogue = control)
         self.diagnostics_text = ""              # how the baseline behaves (nano/diagnose.py), fed to agents
         self.max_compose = 3                    # mechanical composites per round (nano/compose.py)
         self.control_note = ""                  # a note from control.json that every later agent reads
@@ -1304,6 +1305,8 @@ class NanoLoop:
                     if pm["verdict"]:
                         verdicts.append(pm["verdict"])
                 dn["objections"], dn["premortem_verdict"] = objections, " | ".join(verdicts)[:400]
+                if objections and getattr(self, "do_dialogue", True):   # team gap B: one anchored reply round (--no-dialogue = control)
+                    self._dialogue(dn, cl, brief, deepen.chain_text(parsed.get("chain") or []), round_no)
             with self.lock:
                 self.deepen_nodes.append(dn)
                 new_sketches.extend(sk)
@@ -2670,7 +2673,64 @@ class NanoLoop:
         if not objs:
             return
         resolved = deepen.resolve_objections(objs, rec.get("metrics") or {})
-        rec.setdefault("metrics", {})["objections"] = [{k: o.get(k) for k in ("text", "severity", "cls", "link", "if_true", "status", "measured")} for o in resolved]
+        rec.setdefault("metrics", {})["objections"] = [{k: o.get(k) for k in ("text", "severity", "cls", "link", "if_true", "status", "measured", "dialogue")} for o in resolved]
+
+    def _dialogue(self, dn: dict, cl: dict, brief: str, chain: str, round_no: int) -> None:
+        """Team gap B (nano/deepen.py run_dialogue): the idea's author answers the pre-mortem once, typed and anchored;
+        the critic marks each objection. Nothing is dropped; standing objections keep their test for the ladder."""
+        objs, step = dn["objections"], {"n": 0}
+
+        def ask_author(indices: list[int]) -> str | None:
+            step["n"] += 1
+            p = deepen.reply_prompt(brief, chain, objs, indices)
+            if not self._afford("interrogation", len(p) // 4 + 1500, "reply round"):
+                return None
+            r = self._call(p, "generate", 1500, {"card": "dialogue_reply", "operator": cl["cluster_id"], "seed": str(step["n"]),
+                                                 "note": f"author replies to the pre-mortem of '{cl['name']}' ({step['n']})", "node": cl.get("node")})
+            self._ledger("dialogue_reply", cl["cluster_id"], str(step["n"]), r.call_id, r.usage, round_no, "generate")
+            return r.text or ""
+
+        def ask_critic(replies: dict) -> str | None:
+            p = deepen.critic_update_prompt(objs, replies)
+            if not self._afford("interrogation", len(p) // 4 + 800, "critic update"):
+                return None
+            r = self._call(p, "generate", 800, {"card": "dialogue_update", "operator": cl["cluster_id"], "seed": str(step["n"]),
+                                                "note": f"critic marks the replies on '{cl['name']}' ({step['n']})", "node": cl.get("node")})
+            self._ledger("dialogue_update", cl["cluster_id"], str(step["n"]), r.call_id, r.usage, round_no, "generate")
+            return r.text or ""
+
+        out = deepen.run_dialogue(objs, ask_author, ask_critic)
+        for o in out["objections"]:
+            o["dialogue"]["idea"] = cl["cluster_id"]
+        dn["objections"] = out["objections"]            # same objections, same order: revised or tested, never dropped
+        dn["dialogue"] = {"exchanges": out["exchanges"], "stop": out["stop"]}
+        if out["revised"]:
+            dn["revised_idea"] = out["revised"]
+        with self.lock:
+            with (self.run_dir / "dialogue.jsonl").open("a", encoding="utf-8") as f:
+                for row in out["rows"]:
+                    f.write(json.dumps({"idea": cl["cluster_id"], "round": round_no, **row,
+                                        "revised_idea": out["revised"] if row["reply"] == "concede" else ""}) + "\n")
+            self.decisions.append({"round": round_no, "step": "dialogue", "idea": cl["cluster_id"], "exchanges": out["exchanges"],
+                                   "stop": out["stop"], "ts": now_ts()})
+
+    def _report_dialogue(self) -> None:
+        """report.json "dialogue": "off" for the control arm, else counts by reply and verdict and the critic's calibration."""
+        rj = self.run_dir / "report.json"
+        try:
+            d = json.loads(rj.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            d = {}
+        if not getattr(self, "do_dialogue", True):
+            d["dialogue"] = "off"
+        else:
+            rows = []
+            p = self.run_dir / "dialogue.jsonl"
+            if p.exists():
+                rows = [json.loads(l) for l in p.read_text(encoding="utf-8").splitlines() if l.strip()]
+            measured = [o for v in self.vres.values() for o in ((v.get("metrics") or {}).get("objections") or [])]
+            d["dialogue"] = deepen.dialogue_summary(rows, measured)
+        rj.write_text(json.dumps(d, indent=1), encoding="utf-8")
 
     def _queue_families(self, checked: list) -> None:
         """A candidate from the ambitious lane that passed the ladder is a near miss or better: queue two
@@ -2964,6 +3024,7 @@ class NanoLoop:
             report.write(self.run_dir)
             if self.mode != "baseline":
                 self._report_modes(answer)
+            self._report_dialogue()
             try:
                 from nano import lessons as LS
                 if self.backend != "mock":                       # mock runs teach nothing
@@ -3132,6 +3193,7 @@ def main() -> int:
     ap.add_argument("--no-analogy", action="store_true", help="skip the cross-field analogy research and card")
     ap.add_argument("--no-diagnostics", action="store_true", help="skip the instrumented baseline run and the diagnosis card")
     ap.add_argument("--no-premortem", action="store_true", help="skip the pre-mortem call per interrogated idea")
+    ap.add_argument("--no-dialogue", action="store_true", help="control arm: skip the author's anchored reply to the pre-mortem")
     ap.add_argument("--max-compose", type=int, default=3, help="mechanical composites per round (0 = off)")
     ap.add_argument("--diag-steps", type=int, default=100)
     ap.add_argument("--resume", action="store_true", help="continue a run folder of the same batch/replicate from its last completed stage")
@@ -3195,6 +3257,7 @@ def main() -> int:
     loop.learn_steps, loop.long_steps, loop.new_share = a.learn_steps, a.long_steps, a.new_share
     loop.arm, loop.n_builds, loop.immediate_fix = a.arm, a.n_builds, not a.no_immediate_fix
     loop.do_analogy, loop.do_diagnostics, loop.do_premortem = not a.no_analogy, not a.no_diagnostics, not a.no_premortem
+    loop.do_dialogue = not a.no_dialogue
     loop.max_compose, loop.diag_steps = a.max_compose, a.diag_steps
     loop.resume = a.resume
     loop.stop_after, loop.max_sketch_calls = a.stop_after, a.max_sketch_calls
