@@ -272,8 +272,8 @@ def compute(batch: str, *, arm: str = "scaffold", item_loader: Callable | None =
     if item_loader is None or correct_fn is None:
         dl, dc = _default_loaders()
         item_loader, correct_fn = item_loader or dl, correct_fn or dc
-    runs = [r for r in read_jsonl(Path(config.RESULTS_DIR) / batch / "runs.jsonl")
-            if arm is None or r.get("arm") == arm]
+    last = {r["run_id"]: r for r in read_jsonl(Path(config.RESULTS_DIR) / batch / "runs.jsonl")}
+    runs = [r for r in last.values() if arm is None or r.get("arm") == arm]   # last row per run, as score.py
     items: dict[tuple, dict] = {}
     recs = []
     for row in runs:

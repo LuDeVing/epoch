@@ -157,13 +157,16 @@ def plain_rows(plain_from, items) -> dict:
     """One plain-arm row per puzzle from an earlier harness.bench batch: replicate 0 if present, else the first row,
     so replicates do not inflate the denominator. Same rule in arc_think."""
     ids = {it["id"] for it in items}
-    out = {}
+    last = {}                          # last row per run_id: a retried run replaces its error row
     for l in (Path(plain_from) / "runs.jsonl").read_text(encoding="utf-8").splitlines():
         if not l.strip():
             continue
         r = json.loads(l)
         if r.get("arm") != "plain" or r.get("item_id") not in ids:
             continue
+        last[r.get("run_id") or len(last)] = r
+    out = {}
+    for r in last.values():
         old = out.get(r["item_id"])
         if old is None or (int(r.get("replicate") or 0) == 0 and int(old.get("replicate") or 0) != 0):
             out[r["item_id"]] = r

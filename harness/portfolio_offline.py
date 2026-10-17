@@ -100,7 +100,7 @@ def main():
     data = load(batch, items)
     rules = ["by_test_answer", "plain_weighted", "plain_only_if_any", "sym_consistent"]
     print(f"{len(data)} puzzles; recorded method {sum(d['row']['solved'] for d in data.values())}, "
-          f"plain one answer {sum(d['cands'][0]['right'] for d in data.values() if d['cands'])}, "
+          f"plain one answer {sum(next((c['right'] for c in d['cands'] if c['kind'] == 'plain'), False) for d in data.values())}, "
           f"any right {sum(any(c['right'] for c in d['cands']) for d in data.values())}")
     for r in rules:
         top1 = sum(1 for d in data.values() if (p := pick(d["cands"], r)) and p[0] == d["key"])
