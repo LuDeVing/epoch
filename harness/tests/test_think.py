@@ -310,9 +310,10 @@ def lab_root(tmp_path, monkeypatch):
 def stubs(monkeypatch):
     s = Stubs()
     monkeypatch.setattr(think, "_MODS", s.mods)
-    # these tests pin the section 4 loop with the judge on and m_verify capping every benchmark;
-    # the pilot-2 defaults (judge off and verify-all when the check is free) are covered separately
-    monkeypatch.setitem(config.FLAGS, "judge_when_verify_free", True)
+    # these tests pin the section 4 loop with m_verify capping every benchmark. The judge stays
+    # at its default (off for decisions when the check is a free script) and runs on every item
+    # as calibration only, so the default path and the EVL-08 calibration log are both exercised
+    monkeypatch.setitem(config.FLAGS, "judge_calibration_sample", 1.0)
     monkeypatch.setitem(config.PARAMS, "verify_all_when_free", False)
     yield s
     llm.set_mock(None)
@@ -365,7 +366,7 @@ def assert_run_folder(run_dir: Path) -> dict:
 
 
 def spent_matches_ledger(run_id: str, answer_spent: int) -> None:
-    rows = ledger_rows(run_id)
+    rows = [r for r in ledger_rows(run_id) if not r.get("calibration_only")]   # outside B
     assert sum(r["tokens"]["total_tokens"] for r in rows) == answer_spent
 
 

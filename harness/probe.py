@@ -29,10 +29,11 @@ FALLBACK_SEEDS = ["river", "mirror", "ladder", "harvest", "orbit", "knot", "lant
 @dataclass
 class ProbeResult:
     clusters: dict[str, int]            # dedup key -> number of probe calls with that answer
-    n: int                              # number of probe calls (the agreement denominator)
-    usage: Usage
+    n: int                              # probe calls that gave a parsed answer (the agreement
+    usage: Usage                        #   denominator; errors and parse failures excluded)
     cands: list[Candidate] = field(default_factory=list)
     calls: list[dict] = field(default_factory=list)   # [{call_id, usage, error, seed}] per call
+    n_calls: int = 0                    # every probe call made, parsed or not
 
 
 # ---------------------------------------------------------------- seeds and prompt
@@ -137,7 +138,7 @@ def run_probe(problem, *, n: int, backend: str, log_dir: Path, replicate: int,
                       "seed": seed})
         parsed = None if res.error else parse_answer(res.text, problem)
         if parsed is None:
-            continue                                    # counts in n, joins no cluster
+            continue                                    # not in n, joins no cluster
         text, prog, pred = parsed
         c = Candidate(id=new_id("p"), text=text, card="probe", operator="none", seed=seed, perm=0,
                       round=0, call_id=res.call_id, origin="probe", program=prog, pred=pred)
@@ -146,7 +147,10 @@ def run_probe(problem, *, n: int, backend: str, log_dir: Path, replicate: int,
         clusters[k] = clusters.get(k, 0) + 1
     if cands:
         append_jsonl(Path(run_dir) / "cands" / "probe.jsonl", [c.to_dict() for c in cands])
-    return ProbeResult(clusters=clusters, n=len(seeds), usage=usage, cands=cands, calls=calls)
+    # n counts parsed answers only: a call that failed or gave no answer is not a vote against
+    # the others, so 2 agreeing of 2 parsed is 1.0, not 2/3
+    return ProbeResult(clusters=clusters, n=len(cands), usage=usage, cands=cands, calls=calls,
+                       n_calls=len(seeds))
 
 
 def agreement(probe: ProbeResult, cand: Candidate, benchmark: str) -> float:

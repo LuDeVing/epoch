@@ -110,7 +110,7 @@ def test_stats_rebuild_train_only(lab):
     ledger.append(lrow(round_type="first", tokens={"total_tokens": 300}, status="verified"))
     ledger.append(lrow(round_type="first", tokens={"total_tokens": 200}, status="fail"))
     ledger.append(lrow(card="revise", round_type="revise", status="verified"))
-    ledger.append(lrow(split="dev-tune", status="verified"))          # excluded by default
+    ledger.append(lrow(split="test", status="verified"))              # held out: excluded
     ledger.append(lrow(batch="other", status="verified"))             # other batch
     assert stats.load_views("b") is None and stats.load_views(None) is None
     p = stats.rebuild("b")
@@ -118,7 +118,7 @@ def test_stats_rebuild_train_only(lab):
     v = stats.load_views("b")
     assert v["calibration"] is None and v["batch"] == "b"
     sv = v["strategy_stats"]
-    assert sv["splits"] == ["train"] and sv["n_rows"] == 4
+    assert sv["splits"] == list(stats.TRAIN_SPLITS) == ["train", "dev-tune"] and sv["n_rows"] == 4
     c = stats.cell(v, "arc", "seeded", "first")
     assert {k: c[k] for k in ("pass", "fail", "n", "n_calls", "mean_tokens", "mean_verify_tokens",
                               "beta_a", "beta_b")} == {
@@ -130,7 +130,7 @@ def test_stats_rebuild_train_only(lab):
     stats.rebuild("b")
     assert stats.load_views("b")["strategy_stats"]["content_hash"] != old_hash
     assert (config.VIEWS_DIR / "b" / "history" / f"strategy_stats.{old_hash[:12]}.json").exists()
-    v2 = json.loads(stats.rebuild("b", splits=("train", "dev-tune")).read_text(encoding="utf-8"))
+    v2 = json.loads(stats.rebuild("b", splits=("train", "test")).read_text(encoding="utf-8"))
     assert v2["n_rows"] == 6
 
 

@@ -166,13 +166,13 @@ def test_probe_arc_uses_predict_and_hides_key(tmp_path, monkeypatch):
                     "no code here"])
     llm.set_mock(lambda p, r, m: prompts.append(p) or next(replies))
     pr = probe_mod.run_probe(prob, n=3, backend="mock", log_dir=log, replicate=0, run_dir=rd)
-    assert pr.n == 3 and len(pr.cands) == 2
+    assert pr.n == 2 and pr.n_calls == 3 and len(pr.cands) == 2   # parse failures not in n
     assert pr.clusters == {"grid:[[0,2]]": 2}
     key_str = json.dumps(item["test_output"], separators=(",", ":"))
     for p in prompts + [(rd / "cands" / "probe.jsonl").read_text(encoding="utf-8")]:
         assert key_str not in p and "test_output" not in p
     c = cand("q", text="prog", pred=[[0, 2]], program="def transform(g): return g")
-    assert probe_mod.agreement(pr, c, "arc") == pytest.approx(2 / 3)
+    assert probe_mod.agreement(pr, c, "arc") == 1.0                 # 2 of 2 parsed answers
 
 
 def test_calibrate_identity_and_gate():

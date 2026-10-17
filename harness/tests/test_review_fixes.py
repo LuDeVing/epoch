@@ -406,7 +406,8 @@ def test_think_crash_writes_answer_and_error_row_and_retry_moves_aside(stubs):  
     assert {r["run_instance"] for r in rows} == {runs[-1]["run_instance"], runs[-2]["run_instance"]}
     cur = ledger.current_rows(rows)
     assert {r["run_instance"] for r in cur} == {runs[-1]["run_instance"]}
-    assert sum(r["tokens"]["total_tokens"] for r in cur) == ans2.spent_tokens
+    assert sum(r["tokens"]["total_tokens"] for r in cur if not r.get("calibration_only")) \
+        == ans2.spent_tokens
     with pytest.raises(FileExistsError):                            # a completed run is protected
         think.think(item, m=20, replicate=0, backend="mock", batch="tc_crash")
 
@@ -419,16 +420,20 @@ def test_judge_is_skipped_when_it_does_not_fit_the_budget(stubs):  # noqa: F811
     st = read_json(tt.run_dir_of("tc_jbudget", item) / "state.json")
     cyc = [d for d in st["decisions"] if d["step"].startswith("cycle")]
     assert cyc and "judge_skipped" in cyc[0]["signal"]
-    assert not [r for r in tt.ledger_rows(st["run_id"]) if r["card"] == "judge"]
+    assert not [r for r in tt.ledger_rows(st["run_id"]) if r["card"] == "judge"
+                and not r.get("calibration_only")]
     assert ans.status == "solved"
     tt.spent_matches_ledger(st["run_id"], ans.spent_tokens)
 
 
 def test_clears_checks_required_verification_and_checklist():
     bar = {"required_verification": "demo_match", "all_items": True}
-    ok = VerifyResult(id="a", status="verified", verification_type="demo_match", partial_score=1.0)
+    ok = VerifyResult(id="a", status="verified", verification_type="demo_match", partial_score=1.0,
+                      details={"checklist": {"size": True}})
     why: list = []
     assert think._clears(bar, ok, why) and why == []
+    bare = VerifyResult(id="m", status="verified", verification_type="demo_match", partial_score=1.0)
+    assert not think._clears(bar, bare)                              # all_items needs the map
     weak = VerifyResult(id="b", status="verified", verification_type="agreement", partial_score=1.0)
     why = []
     assert not think._clears(bar, weak, why) and "below required demo_match" in why[0]
