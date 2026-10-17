@@ -12,9 +12,16 @@ clusters.jsonl, optional state.json (header flags) and optional defaults_match.j
 Rows of graph.jsonl:
   {kind: node, cand_id, card, operator, round, island_id, lineage_id, root_ids, parent_ids,
    status, vtype, partial_score, p_raw, origin, cluster_id, matches_default}
-  {kind: edge, src, dst, kind2: parent_of | same_cluster}
+  {kind: edge, src, dst, kind2: parent_of | same_cluster | covers_constraint}
   {kind: cluster, cluster_id, rule, representative_id, members, n_members,
-   n_independent_roots, n_independent_nonseeded}
+   n_independent_roots, n_independent_nonseeded, probe_members, n_independent_roots_pooled}
+
+covers_constraint edges (candidate -> "constraint:<id>") come from a verify row's "covers" list
+(or details.covers), the /verify step 5 coverage mapping. That mapping is not built at P0, so
+P0 runs have no such edges. Probe candidates never pass through dedup, so they are not cluster
+members; a probe node gets the cluster_id of the cluster whose members share its pred, and the
+cluster row pools them in n_independent_roots_pooled (each probe call is its own root).
+A parent id with no cands row is a dangling reference: no edge, no root, and check() fails.
 
 CLI: python -m harness.graph --write RUN_DIR | --render RUN_DIR | --check RUN_DIR
 (RUN_DIR may also be a bare run id under config.RUNS_DIR).
@@ -30,7 +37,8 @@ from pathlib import Path
 from . import config
 from .schemas import read_json, read_jsonl
 
-SEEDED_CARDS = ("seeded", "probe")     # excluded from n_independent_nonseeded
+SEEDED_CARDS = ("seeded", "probe")     # excluded from n_independent_nonseeded (probe only reaches a
+                                       # cluster through the pooled count, which keeps it out too)
 
 
 # ---------------------------------------------------------------- loading
@@ -121,8 +129,8 @@ def root_ids(cands: dict[str, dict]) -> dict[str, list[str]]:
             return memo[cid]
         c = cands.get(cid)
         if c is None:
-            return [cid]                       # parent outside this run's cands: treat as root
-        parents = [p for p in (c.get("parent_ids") or []) if p not in stack]
+            return []                          # dangling parent: no root of its own (check() flags it)
+        parents = [p for p in (c.get("parent_ids") or []) if p not in stack and p in cands]
         if not parents:
             res = [c.get("lineage_id") or cid]
         else:
@@ -135,6 +143,27 @@ def root_ids(cands: dict[str, dict]) -> dict[str, list[str]]:
     return memo
 
 
+def _is_probe(c: dict) -> bool:
+    return c.get("card") == "probe" or c.get("origin") == "probe"
+
+
+def probe_clusters(cands: list[dict], clusters: dict) -> dict[str, str]:
+    """Probe cand id -> cluster_id of the cluster whose members have the same pred."""
+    by_id = {c["id"]: c for c in cands}
+    by_pred: dict[str, str] = {}
+    for cl in clusters.values():
+        for m in cl["members"]:
+            k = _pred_key(by_id.get(m) or {})
+            if k is not None:
+                by_pred.setdefault(k, cl["cluster_id"])
+    out = {}
+    for c in cands:
+        k = _pred_key(c)
+        if _is_probe(c) and k is not None and k in by_pred:
+            out[c["id"]] = by_pred[k]
+    return out
+
+
 def build_nodes(cands: list[dict], verify: dict, judg: dict, clusters: dict,
                 defaults: set) -> list[dict]:
     """Node rows (section 2 graph.jsonl node fields)."""
@@ -143,6 +172,8 @@ def build_nodes(cands: list[dict], verify: dict, judg: dict, clusters: dict,
     for cl in clusters.values():
         for m in cl["members"]:
             member_of.setdefault(m, cl["cluster_id"])
+    for pid, clid in probe_clusters(cands, clusters).items():
+        member_of.setdefault(pid, clid)
     nodes = []
     for c in cands:
         v, j, rs = verify.get(c["id"], {}), judg.get(c["id"], {}), roots[c["id"]]
@@ -150,7 +181,7 @@ def build_nodes(cands: list[dict], verify: dict, judg: dict, clusters: dict,
             "kind": "node", "cand_id": c["id"], "card": c.get("card"),
             "operator": c.get("operator"), "round": int(c.get("round") or 0),
             "island_id": c.get("island_id", "main"),
-            "lineage_id": c.get("lineage_id") or (rs[0] if rs else c["id"]), "root_ids": rs,
+            "lineage_id": c.get("lineage_id") or (rs[0] if rs else c["id"]), "root_ids": rs or [c["id"]],
             "parent_ids": list(c.get("parent_ids") or []),
             "status": v.get("status", "unverified"), "vtype": v.get("verification_type"),
             "partial_score": v.get("partial_score"), "p_raw": j.get("p_raw"),
@@ -160,12 +191,26 @@ def build_nodes(cands: list[dict], verify: dict, judg: dict, clusters: dict,
     return nodes
 
 
-def build_edges(cands: list[dict], clusters: dict) -> list[dict]:
-    """parent_of edges (parent -> child) and same_cluster edges (representative -> member)."""
+def covers_of(v: dict) -> list:
+    """Constraint ids a verify row says the candidate covers (/verify step 5); [] when absent."""
+    cov = v.get("covers")
+    if cov is None:
+        cov = (v.get("details") or {}).get("covers")
+    return [str(x) for x in cov] if isinstance(cov, list) else []
+
+
+def build_edges(cands: list[dict], clusters: dict, verify: dict | None = None) -> list[dict]:
+    """parent_of edges (parent -> child; only for parents with a cands row), same_cluster edges
+    (representative -> member) and covers_constraint edges (candidate -> constraint:<id>)."""
     edges = []
+    ids = {c["id"] for c in cands}
     for c in cands:
         for p in c.get("parent_ids") or []:
-            edges.append({"kind": "edge", "src": p, "dst": c["id"], "kind2": "parent_of"})
+            if p in ids:
+                edges.append({"kind": "edge", "src": p, "dst": c["id"], "kind2": "parent_of"})
+    for c in cands:
+        for k in covers_of((verify or {}).get(c["id"], {})):
+            edges.append({"kind": "edge", "src": c["id"], "dst": "constraint:" + k, "kind2": "covers_constraint"})
     for cl in clusters.values():
         rep = cl.get("representative_id") or (cl["members"][0] if cl["members"] else None)
         for m in cl["members"]:
@@ -176,8 +221,14 @@ def build_edges(cands: list[dict], clusters: dict) -> list[dict]:
 
 def build_cluster_rows(clusters: dict, nodes: list[dict]) -> list[dict]:
     """Per-cluster member and independent-root counts (section 8, Graph metrics).
-    A lineage counts as nonseeded when its root candidate's card is not seeded or probe."""
+    A lineage counts as nonseeded when its root candidate's card is not seeded or probe.
+    n_independent_roots_pooled adds the probe calls that gave the cluster's answer (P1 feature
+    "pooled with probe clusters"); the other counts are over dedup members only."""
     by_id = {n["cand_id"]: n for n in nodes}
+    probes: dict[str, list[str]] = {}
+    for n in nodes:
+        if (n.get("card") == "probe" or n.get("origin") == "probe") and n.get("cluster_id"):
+            probes.setdefault(n["cluster_id"], []).append(n["cand_id"])
     out = []
     for cl in clusters.values():
         lineages: dict[str, str | None] = {}
@@ -191,7 +242,9 @@ def build_cluster_rows(clusters: dict, nodes: list[dict]) -> list[dict]:
                     "representative_id": cl.get("representative_id"),
                     "members": list(cl["members"]), "n_members": len(cl["members"]),
                     "n_independent_roots": len(lineages),
-                    "n_independent_nonseeded": len(nonseeded)})
+                    "n_independent_nonseeded": len(nonseeded),
+                    "probe_members": probes.get(cl["cluster_id"], []),
+                    "n_independent_roots_pooled": len(set(lineages) | set(probes.get(cl["cluster_id"], [])))})
     return out
 
 
@@ -210,7 +263,7 @@ def write(run_dir: Path) -> dict:
     clusters = load_clusters(run_dir)
     nodes = build_nodes(cands, load_verify(run_dir), load_judgments(run_dir), clusters,
                         load_defaults_match(run_dir))
-    edges = build_edges(cands, clusters)
+    edges = build_edges(cands, clusters, load_verify(run_dir))
     crows = build_cluster_rows(clusters, nodes)
     p = run_dir / "graph.jsonl"
     _write_jsonl_atomic(p, nodes + edges + crows)
@@ -272,7 +325,8 @@ def check(run_dir: Path) -> dict:
     in_cluster = {m for r in crows for m in (r.get("members") or []) + [r.get("representative_id")] if m}
     cands = load_cands(run_dir)
     want_nodes = {c["id"] for c in cands}
-    want_edges = {(p, c["id"]) for c in cands for p in (c.get("parent_ids") or [])}
+    want_edges = {(p, c["id"]) for c in cands for p in (c.get("parent_ids") or []) if p in want_nodes}
+    dangling = sorted({(p, c["id"]) for c in cands for p in (c.get("parent_ids") or []) if p not in want_nodes})
     drops = expected_drops(cands, dedup_enabled(run_dir), dropped_ids(run_dir))
     src_clusters = set(load_clusters(run_dir))
     res = {
@@ -285,9 +339,11 @@ def check(run_dir: Path) -> dict:
         "missing_nodes": sorted(want_nodes - node_ids)[:20],
         "missing_edges": [list(e) for e in sorted(want_edges - pedges)][:20],
         "missing_drops": sorted(drops - in_cluster)[:20],
+        "n_dangling_parents": len(dangling), "dangling_parents": [list(e) for e in dangling][:20],
     }
     res["ok"] = all(res[k] == 100.0 for k in ("node_completeness", "edge_completeness",
-                                               "cluster_completeness", "cluster_rows_completeness"))
+                                               "cluster_completeness", "cluster_rows_completeness")) \
+        and not dangling
     return res
 
 

@@ -1,6 +1,8 @@
 """Thinking-only test on ARC: several thinkers, each with one human strategy, write a program; every program is run on
 the example grids (the objective check); the answer comes from the programs that reproduce every example. No judge,
-no setup calls, no budget. The plain answers come from an earlier harness.bench batch on the same puzzles.
+no setup calls, no budget. The plain answers come from an earlier harness.bench batch on the same puzzles (one row
+per puzzle, same rule as portfolio_arc; that batch must use the same HTSA_PLAIN_EFFORT). think() sees only the
+key-stripped item; score() reads the answer key after the puzzle's model calls.
 
     $env:HTSA_LAB_ROOT = "D:\\AGI-lab"; $env:HTSA_MODEL = "haiku"; $env:HTSA_ARC_SET = "arc2"
     python -m harness.arc_think --batch arc2-think --items 10 --plain-from D:\\AGI-lab\\results\\arc2-haiku-plain
@@ -18,7 +20,9 @@ from pathlib import Path
 
 from . import config, llm
 from .arms.plain import arc_data, parse_program
+from .portfolio_arc import plain_line, right
 from .schemas import strip_key
+from .think import dedup as DD
 
 STRATEGIES = {
     "describe": "First describe in plain words exactly what changes between each input and its output, cell by cell or region by region. Then turn that description into code.",
@@ -33,11 +37,12 @@ FORMAT = ("\n\nGive your final answer as exactly one python code block that defi
           "library. It must reproduce every example output from its input.")
 
 
-def think(item: dict, args, out_dir: Path) -> dict:
+def think(clean: dict, args, out_dir: Path) -> dict:
+    """All model calls and the answer for one puzzle. Sees only the key-stripped item (no test_output)."""
     from . import arc_exec as EX
-    clean = strip_key(item)
+    assert "test_output" not in clean, "think() must get the key-stripped item"
     data = arc_data(clean, list(range(len(clean["train"]))))
-    log_dir = out_dir / "calls" / item["id"]
+    log_dir = out_dir / "calls" / clean["id"]
     log_dir.mkdir(parents=True, exist_ok=True)
     cands, tokens = [], 0
     for name in list(STRATEGIES)[: args.thinkers]:
@@ -53,14 +58,20 @@ def think(item: dict, args, out_dir: Path) -> dict:
             continue
         outs = EX.run_program(prog, [p["input"] for p in clean["train"]] + [clean["test_input"]])
         passed = sum(1 for o, p in zip(outs, clean["train"]) if o == p["output"])
-        cands.append({"strategy": name, "passed": passed, "total": len(clean["train"]), "pred": outs[-1]})
+        cands.append({"strategy": name, "passed": passed, "total": len(clean["train"]), "pred": outs[-1], "prog": prog})
     full = [c for c in cands if c["pred"] is not None and c["passed"] == c["total"]]
     pool = full or sorted([c for c in cands if c["pred"] is not None], key=lambda c: -c["passed"])[:1]
-    votes = Counter(json.dumps(c["pred"]) for c in pool)
-    answer = json.loads(votes.most_common(1)[0][0]) if votes else None
-    key = item["test_output"]                                    # read by this scorer only
-    return {"id": item["id"], "solved": answer == key, "n_full_pass": len(full), "tokens": tokens,
-            "strategies": {c["strategy"]: {"passed": f"{c['passed']}/{c['total']}", "right": c["pred"] == key} for c in cands}}
+    best, _k, _n = DD.vote(pool, lambda c: c["pred"], lambda c: len(c.get("prog") or ""))   # the rule think.py uses
+    answer = best["pred"] if best else None
+    return {"id": clean["id"], "answer": answer, "n_full_pass": len(full), "tokens": tokens,
+            "strategies": {c["strategy"]: {"passed": f"{c['passed']}/{c['total']}", "pred": c["pred"]} for c in cands}}
+
+
+def score(item: dict, rec: dict) -> dict:
+    """Read the answer key once the puzzle's model calls are done (score.is_correct); no grids in the row."""
+    return {"id": rec["id"], "solved": right(item, rec["answer"]), "n_full_pass": rec["n_full_pass"],
+            "tokens": rec["tokens"],
+            "strategies": {k: {"passed": v["passed"], "right": right(item, v["pred"])} for k, v in rec["strategies"].items()}}
 
 
 def main() -> int:
@@ -91,7 +102,7 @@ def main() -> int:
     print(f"[think] {len(items)} puzzles from {path.name}, {args.thinkers} thinkers, model {config.DEFAULT_MODEL}", flush=True)
 
     def work(it):
-        r = think(it, args, out_dir)
+        r = score(it, think(strip_key(it), args, out_dir))
         with lock:
             with rows_path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(r) + "\n")
@@ -104,11 +115,7 @@ def main() -> int:
              "| arm | solved | tokens per puzzle |", "|---|---|---|",
              f"| thinking ({args.thinkers} strategies + example check) | {sum(r['solved'] for r in rows)}/{len(rows)} | {sum(r['tokens'] for r in rows) / max(1, len(rows)):,.0f} |"]
     if args.plain_from:
-        prow = [json.loads(l) for l in (Path(args.plain_from) / "runs.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
-        keys = {it["id"]: it["test_output"] for it in items}
-        prow = [r for r in prow if r.get("arm") == "plain" and r["item_id"] in keys]
-        ok = sum(1 for r in prow if r.get("answer") == keys[r["item_id"]])
-        lines.append(f"| plain (one answer) | {ok}/{len(prow)} | {sum(int(r.get('spent_tokens') or 0) for r in prow) / max(1, len(prow)):,.0f} |")
+        lines.append(plain_line(args.plain_from, items))
     per = Counter()
     for r in rows:
         for k, v in r["strategies"].items():
