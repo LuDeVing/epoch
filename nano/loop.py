@@ -298,6 +298,7 @@ class NanoLoop:
         self.off_tree_share = 0.4               # share of idea contexts that work off the map (blank, gaps, doubt); 0 = off
         self.source_yield: list[dict] = []      # per round: yield per origin (tree / off) and the share chosen next
         self.promoted: set[str] = set()         # off-map winners already turned into branches
+        self.human_nodes_seen: set[str] = set() # control.json add_nodes ids already put on the map
         self.plan_with_model = True             # one planner call refines DEFAULT_TREE
         self.upward: list[dict] = []            # root-level reframing proposals (logged only)
         self.briefs: dict[str, dict] = {}       # web research briefs per node (nano/research.py)
@@ -1144,12 +1145,40 @@ class NanoLoop:
             self.control_note = str(ctl.get("note", ""))[:600]
             self.skip_nodes = set(ctl.get("skip_nodes", []) or [])
             self.exclude_clusters = set(ctl.get("exclude_clusters", []) or [])
+            self._add_human_nodes(ctl.get("add_nodes") or [], round_no)
             if ctl.get("stop_after_stage") or (self.stop_after and name == self.stop_after):
                 raise StopRun(name)
             if not ctl.get("pause"):
                 return
             self._live(note=f"paused by control.json after '{name}' (set pause to false to continue)")
             time.sleep(10)
+
+    def _add_human_nodes(self, specs, round_no: int) -> None:
+        """control.json "add_nodes": branches people add, in the tree's node schema. Each goes on the map once,
+        marked origin "human" (docs/mapper/03_maintenance_and_people.md, "Add problem or branch"); a re-plan
+        carries it over (replan_tree). Before the first map exists they wait for the next stage boundary."""
+        if self.tree is None or not isinstance(specs, list):
+            return
+        added = []
+        for sp in specs:
+            if not isinstance(sp, dict) or not sp.get("id") or not sp.get("name"):
+                continue
+            nid = re.sub(r"[^a-z0-9_]", "", str(sp["id"]).lower())[:16]
+            if not nid or nid in self.human_nodes_seen:
+                continue
+            self.human_nodes_seen.add(nid)
+            if any(n["id"] == nid for n in self.tree):
+                continue                                  # already on the map (a resume, or a clash with a planned id)
+            asm = sp.get("assumptions") if isinstance(sp.get("assumptions"), list) else []
+            node = {**sp, "id": nid, "name": str(sp["name"])[:60], "parent": str(sp.get("parent") or "root"),
+                    "frame": str(sp.get("frame", ""))[:400], "assumptions": [str(a)[:160] for a in asm][:5],
+                    "boundary": str(sp.get("boundary") or self.pf.boundary_all)[:200],
+                    "directions": list(sp.get("directions") or ["inward", "outward"]), "origin": "human"}
+            self.tree.append(node)
+            added.append(nid)
+            self.decisions.append({"round": round_no, "step": "human_node", "node": nid, "name": node["name"], "ts": now_ts()})
+        if added:
+            self._write_tree()
 
     def load_state(self) -> None:
         """Resume: reload everything a previous attempt left on disk; the interrupted round is redone from
@@ -2434,7 +2463,18 @@ class NanoLoop:
         return None
 
     def replan_tree(self, round_no: int) -> None:
-        """Arm: redraw the map from what the run learned (outcomes, objections, discovered assumptions)."""
+        """Arm: redraw the map from what the run learned (outcomes, objections, discovered assumptions).
+
+        Carry-over rule (docs/TEAM_OF_RESEARCHERS.md, "a map, not a fence", rule 4): a re-plan redraws the map
+        but never deletes what the run or people put on it. After the planner's list is parsed, every old node
+        that must survive is carried over: promoted off-map wins (origin "offtree"), branches people added
+        (origin "human", control.json add_nodes) and any part with implemented candidates (the "implemented"
+        count of _write_tree). A carried node the new list matches (same id; the new node `refines` it, or both
+        refine the same id; same name; or a name head only that carried node has) is merged: it keeps its id,
+        origin and other fields (assumptions_added, idea_assumptions, priority, ...) and takes the planner's
+        newer frame text. An unmatched carried node is appended unchanged. A re-plan may lower a carried node's
+        priority once a priority mechanism exists (none does yet), never drop it. Other old nodes may be
+        dropped. The off-map pseudo-node is re-added by _ensure_off_node. Logged as step "replan_carry"."""
         goal = (self.run_dir / "problem.md").read_text(encoding="utf-8")
         extra = self.history_text()
         objections = [o["text"] for n in self.deepen_nodes for o in (n.get("objections") or [])][:20]
@@ -2457,9 +2497,51 @@ class NanoLoop:
                 for a in prev.get("assumptions_added", []):
                     if a["text"].lower()[:60] not in have:
                         n["assumptions"].append(a["text"])
+        nodes = self._replan_carry(self.tree or [], nodes, round_no)
         self.tree = nodes
+        self._ensure_off_node()
         self.decisions.append({"round": round_no, "step": "replan", "parts": [n["id"] for n in nodes], "ts": now_ts()})
         self._write_tree()
+
+    def _replan_carry(self, old: list[dict], new: list[dict], round_no: int) -> list[dict]:
+        """The carry-over rule of replan_tree: `new` with every node that must survive merged in or appended."""
+        import copy
+
+        def implemented(n) -> int:                       # the "implemented" count _write_tree writes for this node
+            dirs = n.get("directions") or []
+            return sum(1 for c in self.cands if (c.extra or {}).get("node") == n["id"] and (c.extra or {}).get("direction") in dirs)
+
+        def head(n) -> str:
+            return tree._plain(n.get("name", "")).split(":")[0].strip()
+
+        must = [n for n in old if n["id"] not in ("root", tree.OFF_TREE_ID)
+                and (n.get("origin") in (tree.OFF_TREE_ID, "human") or implemented(n) > 0)]
+        heads = Counter(head(n) for n in must)
+        kept, merged, claimed = [], [], set()
+        for o in must:
+            def same(n, o=o) -> bool:
+                if n["id"] == o["id"] or (n.get("refines") and n["refines"] in (o["id"], o.get("refines"))):
+                    return True
+                if tree._plain(n.get("name", "")) == tree._plain(o.get("name", "")):
+                    return True
+                return bool(head(o)) and heads[head(o)] == 1 and head(n) == head(o)
+            hit = next((n for n in new if id(n) not in claimed and n["id"] not in ("root", tree.OFF_TREE_ID) and same(n)), None)
+            if hit is None:
+                new.append(copy.deepcopy(o))
+                kept.append(o["id"])
+                continue
+            claimed.add(id(hit))
+            planner_id, frame = hit["id"], hit.get("frame", o.get("frame", ""))
+            for k, v in o.items():                       # the carried node's fields win, except the newer frame text
+                if k not in hit or k in ("id", "origin", "parent"):
+                    hit[k] = copy.deepcopy(v)
+            hit["frame"] = frame
+            merged.append({"id": o["id"], "planner_id": planner_id, "origin": o.get("origin", "tree")})
+        new_ids = {n["id"] for n in new}
+        dropped = [n["id"] for n in old if n["id"] not in new_ids and n["id"] != tree.OFF_TREE_ID]
+        self.decisions.append({"round": round_no, "step": "replan_carry", "kept": kept, "merged": merged,
+                               "dropped": dropped, "ts": now_ts()})
+        return new
 
     def _immediate_fix(self, cand: Candidate, round_no: int) -> list[tuple[Candidate, dict]]:
         """A rung 0 or rung 1 failure is a one-call fix: do it now, in this round, once."""
