@@ -32,8 +32,9 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
-LAB = Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab"))
+LAB = _labroot.lab_root()
 PY = Path(os.environ.get("HTSA_EXEC_PYTHON", str(LAB / ".venv" / "Scripts" / "python.exe")))
 HERE = Path(__file__).resolve().parent
 BASELINE = HERE / "train.py"

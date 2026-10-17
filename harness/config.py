@@ -10,11 +10,12 @@ import contextvars
 import os
 import sys
 from pathlib import Path
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 # ---------------------------------------------------------------- paths
 PROJECT_ROOT = Path(__file__).resolve().parent.parent          # C:\Users\User\Desktop\AGI
 HARNESS_DIR = PROJECT_ROOT / "harness"
-LAB_ROOT = Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab"))
+LAB_ROOT = _labroot.lab_root()
 RUNS_DIR = LAB_ROOT / "runs"
 MEMORY_DIR = LAB_ROOT / "memory"
 VIEWS_DIR = MEMORY_DIR / "views"

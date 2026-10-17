@@ -15,8 +15,9 @@ import re
 import sys
 import time
 from pathlib import Path
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
-os.environ.setdefault("HTSA_LAB_ROOT", "D:/AGI-lab")
+_labroot.lab_root()
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 HERE = Path(__file__).resolve().parent

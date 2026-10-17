@@ -20,10 +20,11 @@ import sys
 import time
 from pathlib import Path
 
-os.environ.setdefault("HTSA_LAB_ROOT", "D:/AGI-lab")
+_labroot.lab_root()
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from nano.ideate import PF, fill  # noqa: E402  (PF: nano/profile.py, or the shim with the LLM defaults in ideate.py)
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 HERE = Path(__file__).resolve().parent
 BASELINE = HERE / "train.py"                 # the LLM profile's artifact; main() reads the active profile's

@@ -34,6 +34,7 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 ARMS = ("profile_only", "full", "best_of_n")
@@ -218,7 +219,7 @@ def run_arms(out: Path, dry: bool, seeds=None, prefix: str | None = None, timeou
     pre = write_prereg(out)
     seeds = list(seeds if seeds is not None else ([0] if dry else pre["seeds"]))
     prefix = prefix or ("mock-binpack-arms" if dry else "binpack-arms")
-    lab = (out / "lab") if dry else Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab"))
+    lab = (out / "lab") if dry else _labroot.lab_root()
     lab.mkdir(parents=True, exist_ok=True)
     env = _arm_env(lab, dry)
     manifest = {"dry": dry, "lab_root": str(lab), "profile": pre["profile"], "prereg_hash": pre["hash"],
@@ -513,7 +514,7 @@ def report(out: Path, run_planted: bool = True) -> str:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("mode", choices=["prereg", "dry", "run", "report", "bestofn"])
-    ap.add_argument("--out", default=str(Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab")) / "results" / "binpack_arms"))
+    ap.add_argument("--out", default=str(_labroot.lab_root() / "results" / "binpack_arms"))
     ap.add_argument("--seeds", default="", help="dry/run: comma-separated seeds (default: dry 0, run the pre-registered ones)")
     ap.add_argument("--no-planted", action="store_true", help="report: skip the planted-solution check")
     ap.add_argument("--arms", default="", help="dry/run: comma-separated arms in the order to run them (default: all, "

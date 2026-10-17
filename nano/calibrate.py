@@ -16,8 +16,9 @@ import math
 import os
 from collections import defaultdict
 from pathlib import Path
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
-LAB = Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab"))
+LAB = _labroot.lab_root()
 
 
 def _json(p: Path, default):

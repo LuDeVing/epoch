@@ -40,6 +40,7 @@ from pathlib import Path
 
 from . import actions as A
 from . import contract as C
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 HERE = Path(__file__).resolve().parent
 PROMPT_PATH = HERE / "prompts" / "person_agent.txt"
@@ -163,7 +164,7 @@ class Agent:
         self.llm_model = "sonnet" if model == "mock" else model
         self.timings = dict(TIMINGS, **(timings or {}))
         self.http = Http(base, self.actor, "agent", self.timings["http_timeout_s"], key)
-        lab = Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab"))
+        lab = _labroot.lab_root()
         self.state_dir = Path(state_dir) if state_dir else lab / "spaces" / space_id / "agents"
         self.state_path = self.state_dir / f"{me}.json"
         self.outbox_path = self.state_dir / f"{me}.outbox.ndjson"

@@ -16,12 +16,13 @@ import re
 import sys
 import threading
 
-os.environ.setdefault("HTSA_LAB_ROOT", "D:/AGI-lab")
+_labroot.lab_root()
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from harness import llm                                           # noqa: E402
 from nano import loop as L                                        # noqa: E402
 from nano import profile as PF                                    # noqa: E402
 from nano import tree as TREE                                     # noqa: E402
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 BASE = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "train.py"), encoding="utf-8").read()
 TOPICS = ["gated attention", "value residual", "sliding window", "qk norm", "untied embeddings",

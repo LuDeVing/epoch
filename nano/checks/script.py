@@ -48,12 +48,13 @@ from pathlib import Path
 from nano import boundary as bnd
 from nano import verdict as V
 from nano.checks.base import lower_is_better
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 CHECKER = "ScriptChecker"
 ROOT = Path(__file__).resolve().parent.parent.parent
 HERE_NANO = ROOT / "nano"
 LAUNCH = HERE_NANO / "launch.py"
-LAB = Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab"))
+LAB = _labroot.lab_root()
 PY = Path(os.environ.get("HTSA_EXEC_PYTHON", str(LAB / ".venv" / "Scripts" / "python.exe")))
 PY_NAMES = {"python", "python3", "python.exe", "python3.exe", "py", "{python}"}
 

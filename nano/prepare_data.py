@@ -16,8 +16,9 @@ import time
 from pathlib import Path
 
 import numpy as np
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
-DATA_DIR = Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab")) / "data" / "fineweb"
+DATA_DIR = _labroot.lab_root() / "data" / "fineweb"
 SHARD_TOKENS = 50_000_000
 
 

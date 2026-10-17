@@ -44,9 +44,10 @@ import statistics
 import subprocess
 import time
 from pathlib import Path
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 ROOT = Path(__file__).resolve().parent.parent
-LAB = Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab"))
+LAB = _labroot.lab_root()
 PY = Path(os.environ.get("HTSA_EXEC_PYTHON", str(LAB / ".venv" / "Scripts" / "python.exe")))
 BASELINE = ROOT / "nano" / "train.py"
 EXAM = ROOT / "nano" / "exam.py"

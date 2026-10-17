@@ -27,9 +27,12 @@ from pathlib import Path
 
 from space import contract
 from space.store import Reject
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 REPO = Path(__file__).resolve().parent.parent
 PYTHON = r"D:\AGI-lab\.venv\Scripts\python.exe"
+if not os.path.exists(PYTHON):          # another computer: the interpreter that runs the server
+    PYTHON = sys.executable
 PROFILES_DIR = REPO / "nano" / "profiles"
 MODES = ("mock", "real")
 TAIL_LINES = 20
@@ -233,7 +236,7 @@ def space_name(db_path) -> str:
 
 
 def lab_root() -> Path:
-    return Path(os.environ.get("HTSA_LAB_ROOT") or "D:/AGI-lab")
+    return _labroot.lab_root()
 
 
 def _now() -> str:

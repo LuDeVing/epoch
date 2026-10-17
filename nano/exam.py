@@ -29,8 +29,9 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
-LAB = Path(os.environ.get("HTSA_LAB_ROOT", r"D:\AGI-lab"))
+LAB = _labroot.lab_root()
 DATA_FULL = LAB / "data" / "fineweb"
 EXAM_SEQ_LEN = 1024
 EXAM_TOKENS = 2_000_000

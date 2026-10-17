@@ -35,6 +35,7 @@ import urllib.request
 from pathlib import Path
 
 from space import contract as C
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 REPO = Path(__file__).resolve().parent.parent
 HERE = REPO / "space"
@@ -129,7 +130,7 @@ def _say(msg: str = "") -> None:
 
 # ---------------------------------------------------------------- paths and environment
 def lab_root() -> str:
-    return (os.environ.get("HTSA_LAB_ROOT") or "D:/AGI-lab").replace("\\", "/").rstrip("/")
+    return str(_labroot.lab_root()).replace("\\", "/").rstrip("/")
 
 
 def python_exe() -> str:

@@ -10,7 +10,11 @@ The contract behind this guide is [MULTIPLAYER_DESIGN.md](MULTIPLAYER_DESIGN.md)
 
 ## 1. Start the server
 
-Use the lab Python and set the lab root first (PowerShell):
+The lab folder (runs, spaces, memory, results, data) is found in this order: the HTSA_LAB_ROOT environment
+variable; else D:\AGI-lab when it exists; else a folder named AGI-lab next to the project folder, created on first
+start. On a new computer nothing needs to be set: clone the project, start the server, and the folder appears.
+
+On this PC the lab Python is used, with the lab root set (PowerShell):
 
 ```
 $env:HTSA_LAB_ROOT = "D:/AGI-lab"

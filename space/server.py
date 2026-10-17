@@ -32,6 +32,7 @@ from space.claims import Claims
 from space.presence import Presence
 from space.replay import Replayer
 from space.store import Reject, Store, clean_id, read_db, strip_private, write_ndjson
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
 CLIENT_FIELDS = ("kind", "data", "subject", "label", "op", "base", "round", "stage", "claim", "cause")
 INT_FIELDS = ("base", "round", "claim", "cause")
@@ -58,7 +59,7 @@ MIME = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=ut
 
 
 def _lab_root() -> str:
-    return os.environ.get("HTSA_LAB_ROOT") or "D:/AGI-lab"
+    return str(_labroot.lab_root())
 
 
 def _int(v, name):

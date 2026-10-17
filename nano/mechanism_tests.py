@@ -27,8 +27,9 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
+from harness import labroot as _labroot  # noqa: E402  (the lab folder, on any computer)
 
-os.environ.setdefault("HTSA_LAB_ROOT", "D:/AGI-lab")
+_labroot.lab_root()
 ROOT = Path(__file__).resolve().parent.parent
 LAB = Path(os.environ["HTSA_LAB_ROOT"])
 
