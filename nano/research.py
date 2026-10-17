@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+import threading
 import time
 from pathlib import Path
 
@@ -390,3 +391,130 @@ def findings_prompt(questions: list[str], context: str = "", year: int = 2026) -
             "If nothing can be found, write 'no source found' for that question. Do not propose ideas; report what exists. "
             "Keep each answer to 3-8 lines; the whole reply under 1500 words.\n\n"
             "QUESTIONS:\n" + qs + "\n\nAnswer in this form:\nFINDINGS:\n1. <answer with URLs>\n2. <answer with URLs>")
+
+
+# ---------------------------------------------------------------- fetch on demand (one fact, mid-task)
+# A builder or reviser that lacks one specific fact writes `NEED: <fact>` instead of guessing. The loop asks the
+# research model for that one fact (web search, a source on the line), caches it per run, and re-prompts once.
+# Other stages (the interrogation chain in deepen.py) may import fetch_fact and pass their own `call`.
+FETCH_CACHE_NAME = "facts_fetched.jsonl"
+NEED_CAP = 2                    # NEED lines honoured per reply
+_NEED_EMPTY = {"", "none", "omit", "omitted", "n/a", "na", "-", "nothing", "no"}
+_fetch_lock = threading.Lock()
+_fetch_key_locks: dict[str, threading.Lock] = {}
+
+
+def parse_needs(text: str, cap: int = NEED_CAP) -> tuple[list[str], int]:
+    """The NEED lines of a reply, outside code blocks, in order: (the first `cap`, the number dropped by the cap).
+    Placeholders ('omit', 'none', '<...>') do not count; repeats (same normalised text) count once."""
+    outside = re.sub(r"```.*?(```|\Z)", "", str(text or ""), flags=re.S).replace("**", "")
+    out, seen = [], set()
+    for line in outside.splitlines():
+        m = re.match(r"^\s*(?:[-*]\s*)?NEED\s*:\s*(.*?)\s*$", line, flags=re.I)
+        if not m:
+            continue
+        q = m.group(1).strip()
+        if q.lower().strip(" .") in _NEED_EMPTY or q.startswith("<") or len(q) < 6:
+            continue
+        k = normalise_question(q)
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append(q[:300])
+    return out[:cap], max(0, len(out) - cap)
+
+
+def normalise_question(q: str) -> str:
+    """Lower case, punctuation dropped, whitespace collapsed: the cache key of a fetched fact."""
+    return " ".join(re.sub(r"[^a-z0-9%.+-]+", " ", str(q or "").lower()).split()).strip(" .")
+
+
+def fetch_prompt(question: str, node: dict | None = None, year: int = 2026) -> str:
+    part = (f" The agent is working on this part: {node.get('name')} ({node.get('frame', '')})."
+            if isinstance(node, dict) and node.get("name") else "")
+    return ("You are the research assistant of an agent that is writing code and is missing one fact." + part
+            + f" Find this one fact on the web. Use web search and fetch as much as it takes. Prefer {year} and {year - 1} "
+            "sources, then the best-supported older work. Give the measured number or the exact rule when the source has it. "
+            "Do not propose ideas. Report what the source says.\n\n"
+            f"QUESTION: {question}\n\n"
+            "Answer in exactly this form:\n"
+            "ANSWER: <the fact, one to four sentences, or 'not found'>\n"
+            "SOURCE: <the URL the answer comes from>\n"
+            "CONFIDENCE: <high | medium | low>\n"
+            "Rules: an answer without a real URL is not an answer. If nothing can be found, write ANSWER: not found.")
+
+
+def parse_fetch(text: str, question: str) -> dict:
+    """A fetch reply -> {question, answer, source_url, confidence, tag: "web"} or {question, answer: None, reason}."""
+    t = str(text or "").replace("**", "")
+    a = re.search(r"ANSWER:\s*(.+?)(?=\n\s*(?:SOURCE|CONFIDENCE)\s*:|\Z)", t, flags=re.S | re.I)
+    s = re.search(r"SOURCE:\s*(\S+)", t, flags=re.I)
+    c = re.search(r"CONFIDENCE:\s*(high|medium|low)\b", t, flags=re.I)
+    ans = " ".join(a.group(1).split())[:800] if a else ""
+    url = s.group(1).strip("<>()[],;") if s else ""
+    if not ans or ans.lower().startswith(("not found", "no source")):
+        return {"question": question, "answer": None, "reason": "not found"}
+    if not URL_RE.match(url):
+        m = URL_RE.search(ans)                          # a URL inside the answer still counts as its source
+        if not m:
+            return {"question": question, "answer": None, "reason": "no source URL"}
+        url = m.group(0).rstrip(".,;)")
+    return {"question": question, "answer": ans, "source_url": url.rstrip("."),
+            "confidence": c.group(1).lower() if c else "low", "tag": "web"}
+
+
+def _read_fetch_cache(path: Path) -> dict[str, dict]:
+    out: dict[str, dict] = {}
+    if path.exists():
+        for line in path.read_text(encoding="utf-8").splitlines():
+            try:
+                row = json.loads(line)
+            except Exception:  # noqa: BLE001
+                continue
+            if isinstance(row, dict) and row.get("key"):
+                out[row["key"]] = row
+    return out
+
+
+def fetch_fact(question: str, node: dict | None, call, cache_dir: Path | str | None = None) -> dict:
+    """One delegated web call for one missing fact. `call(prompt) -> str` (or a result with .text) runs the
+    research model with web tools; the caller logs and charges it. Returns {question, answer, source_url,
+    confidence: high|medium|low, tag: "web"} or {question, answer: None, reason}. With cache_dir (the run folder)
+    results, "not found" included, are cached by normalised question in facts_fetched.jsonl, so the same question
+    is never fetched twice in a run; a result read from the cache carries "cached": True."""
+    key = normalise_question(question)
+    if not key:
+        return {"question": question, "answer": None, "reason": "empty question"}
+    path = Path(cache_dir) / FETCH_CACHE_NAME if cache_dir is not None else None
+    with _fetch_lock:
+        klock = _fetch_key_locks.setdefault(f"{path}|{key}", threading.Lock())
+    with klock:                                         # two builders asking the same thing: one fetch
+        if path is not None:
+            hit = _read_fetch_cache(path).get(key)
+            if hit is not None:
+                return {**{k: v for k, v in hit.items() if k not in ("key", "ts", "node")}, "cached": True}
+        try:
+            text = call(fetch_prompt(question, node))
+        except Exception as e:  # noqa: BLE001
+            return {"question": question, "answer": None, "reason": f"fetch failed: {str(e)[:120]}"}
+        res = parse_fetch(text if isinstance(text, str) else getattr(text, "text", ""), question)
+        if path is not None:
+            row = {"key": key, "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                   "node": node.get("id") if isinstance(node, dict) else None, **res}
+            with _fetch_lock:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with path.open("a", encoding="utf-8") as fh:
+                    fh.write(json.dumps(row) + "\n")
+        return res
+
+
+def facts_block(facts: list[dict]) -> str:
+    """The re-prompt block: every fact asked for, with its source, or 'not found'."""
+    lines = ["FACTS YOU ASKED FOR (a research assistant looked each one up on the web):"]
+    for f in facts:
+        if f.get("answer"):
+            lines.append(f"- {f['question']}\n  ANSWER: {f['answer']} (source: {f['source_url']}; "
+                         f"confidence: {f.get('confidence', 'low')})")
+        else:
+            lines.append(f"- {f['question']}\n  not found ({f.get('reason', 'no source')})")
+    return "\n".join(lines)
