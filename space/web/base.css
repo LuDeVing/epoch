@@ -186,3 +186,12 @@ body.stage .chat__form, body.stage .switch { display: none; }
 .people__add input, .people__add select { padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-card, var(--bg)); color: inherit; font: inherit; }
 .people__made, .people__foot { margin-top: 6px; overflow-wrap: anywhere; }
 .tag--on { color: var(--ok); }
+
+/* Pane dividers (splitters.js): drag to resize the tree, the clusters and the rail */
+#panes { position: relative; }
+.splitter { position: absolute; top: 0; bottom: 0; width: 8px; cursor: col-resize; z-index: 30; touch-action: none; }
+.splitter::after { content: ""; position: absolute; top: 0; bottom: 0; left: 3px; width: 2px; background: transparent; transition: background .15s; }
+.splitter:hover::after, .splitter.is-dragging::after { background: var(--line-strong); }
+body.is-resizing { cursor: col-resize; user-select: none; }
+body.is-resizing iframe, body.is-resizing svg { pointer-events: none; }
+@media (max-width: 900px) { .splitter { display: none; } }
