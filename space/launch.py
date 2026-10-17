@@ -363,7 +363,7 @@ class Launcher:
             if not env.get("HTSA_EXEC_PYTHON"):                # candidate scripts: a temp lab root has no venv
                 env["HTSA_EXEC_PYTHON"] = PYTHON if os.path.exists(PYTHON) else sys.executable
             if os.name == "nt":
-                kw = {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS}
+                kw = {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW}
             else:
                 kw = {"start_new_session": True}
             with open(log, "ab") as out:

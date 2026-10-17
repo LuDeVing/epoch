@@ -166,7 +166,7 @@ class Hub:
                 cmd += ["--memory-dir", str(memory_dir)]
             log = folder / "server.log"
             env = dict(os.environ, HTSA_LAB_ROOT=str(lab_root()), PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
-            kw = ({"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS} if os.name == "nt"
+            kw = ({"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW} if os.name == "nt"
                   else {"start_new_session": True})
             with open(log, "ab") as out:
                 out.write(("$ %s\n" % " ".join(cmd)).encode("utf-8"))
