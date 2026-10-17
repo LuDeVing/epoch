@@ -1,0 +1,237 @@
+{
+ "head": 40,
+ "epoch": "4f2a9c1e",
+ "replay": null,
+ "problem": "binpack",
+ "run": {
+  "round": 1,
+  "stage": "planned",
+  "waiting": true,
+  "paused_by": [],
+  "mode": "check_only",
+  "step_mode": true
+ },
+ "people": [
+  {
+   "name": "ana",
+   "hue": "a"
+  },
+  {
+   "name": "ben",
+   "hue": "b"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "root",
+   "name": "use fewer bins on the benchmark instances",
+   "parent": null,
+   "kind": "part",
+   "origin": "map",
+   "by": "team.loop",
+   "status": "map",
+   "assumptions": [
+    "items must be placed the moment they arrive",
+    "a placed item never moves"
+   ]
+  },
+  {
+   "id": "choice",
+   "name": "choice rule",
+   "parent": "root",
+   "kind": "part",
+   "origin": "map",
+   "by": "team.loop",
+   "status": "map",
+   "assumptions": [
+    "the first bin with room is as good as any other",
+    "bins are scanned in opening order"
+   ]
+  },
+  {
+   "id": "state",
+   "name": "bin state kept",
+   "parent": "root",
+   "kind": "part",
+   "origin": "map",
+   "by": "team.loop",
+   "status": "map",
+   "assumptions": [
+    "a fill level is all that matters about a bin",
+    "nothing needs remembering between items"
+   ]
+  },
+  {
+   "id": "open",
+   "name": "when to open a bin",
+   "parent": "root",
+   "kind": "part",
+   "origin": "map",
+   "by": "team.loop",
+   "status": "map",
+   "assumptions": [
+    "opening a bin is always worse than using one with room",
+    "the decision to open depends only on fit"
+   ]
+  },
+  {
+   "id": "stats",
+   "name": "use of item statistics",
+   "parent": "root",
+   "kind": "part",
+   "origin": "map",
+   "by": "team.loop",
+   "status": "map",
+   "assumptions": [
+    "the size distribution is unknown and stays unknown",
+    "past items say nothing about future items"
+   ]
+  },
+  {
+   "id": "ties",
+   "name": "tie-breaking",
+   "parent": "root",
+   "kind": "part",
+   "origin": "map",
+   "by": "team.loop",
+   "status": "map",
+   "claim": {
+    "holder": "ben.agent",
+    "ttl_left_s": 61
+   },
+   "assumptions": [
+    "ties are rare enough not to matter",
+    "opening order is a fair tie-breaker"
+   ]
+  },
+  {
+   "id": "recipe",
+   "name": "the whole rule (cross-part changes)",
+   "parent": "root",
+   "kind": "part",
+   "origin": "map",
+   "by": "team.loop",
+   "status": "map",
+   "assumptions": [
+    "each part can be improved on its own"
+   ]
+  }
+ ],
+ "clusters": [
+  {
+   "node": "choice",
+   "direction": "inward",
+   "cluster_id": "choice-in-k01",
+   "name": "best fit",
+   "n": 6,
+   "members": [
+    "s01",
+    "s02"
+   ],
+   "selected": true,
+   "lane": "main",
+   "prior": "known",
+   "status": "open"
+  },
+  {
+   "node": "choice",
+   "direction": "inward",
+   "cluster_id": "choice-in-k02",
+   "name": "worst fit",
+   "n": 3,
+   "members": [
+    "s03"
+   ],
+   "selected": false,
+   "lane": "main",
+   "prior": "known",
+   "status": "open"
+  },
+  {
+   "node": "choice",
+   "direction": "outward",
+   "cluster_id": "choice-ou-k01",
+   "name": "next fit",
+   "n": 2,
+   "members": [
+    "s04"
+   ],
+   "selected": false,
+   "lane": "main",
+   "prior": "known",
+   "status": "loss"
+  },
+  {
+   "node": "open",
+   "direction": "inward",
+   "cluster_id": "open-in-k01",
+   "name": "reserve for large items",
+   "n": 4,
+   "members": [
+    "s05"
+   ],
+   "selected": true,
+   "lane": "main",
+   "prior": "new",
+   "status": "open"
+  },
+  {
+   "node": "ties",
+   "direction": "inward",
+   "cluster_id": "ties-in-k01",
+   "name": "harmonic classes",
+   "n": 3,
+   "members": [
+    "s06"
+   ],
+   "selected": false,
+   "lane": "main",
+   "prior": "known",
+   "status": "open"
+  }
+ ],
+ "questions": {
+  "preview": {
+   "round_next": 2,
+   "top3": [
+    {
+     "id": "u3d885a4738",
+     "kind": "part",
+     "text": "does best fit still win when most items are tiny?",
+     "node": "choice",
+     "score": 0.71
+    },
+    {
+     "id": "u624a0b9fbb",
+     "kind": "part",
+     "text": "is a reserved bin for large items worth its cost?",
+     "node": "open",
+     "score": 0.64
+    },
+    {
+     "id": "u0c5e1a2b3c",
+     "kind": "part",
+     "text": "do ties change the bin count at all?",
+     "node": "ties",
+     "score": 0.52
+    }
+   ]
+  },
+  "picked": null,
+  "vetoed": [],
+  "chosen": null
+ },
+ "notes": [],
+ "votes": [],
+ "claims": [
+  {
+   "subject": "node:ties",
+   "holder": "ben.agent",
+   "owner": "ben",
+   "ttl_left_s": 61
+  }
+ ],
+ "mine": {
+  "actions": []
+ }
+}
