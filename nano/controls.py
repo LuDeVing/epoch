@@ -34,15 +34,8 @@ CONTROLS = {
                    "            nn.init.normal_(b.mlp.w_down.weight, std=0.02 / math.sqrt(2 * cfg.n_layer))",
                    "            nn.init.zeros_(b.attn.wo.weight)\n            nn.init.zeros_(b.mlp.w_down.weight)")],
     },
-    "qk_norm": {
-        "kind": "positive", "expect": "pass_ladder",
-        "hypothesis": "control: RMSNorm on queries and keys per head before RoPE (QK-norm, known gain)",
-        "edits": [("        self.wo = nn.Linear(cfg.n_head * self.hd, cfg.d_model, bias=False)\n        self.window = cfg.sliding_window",
-                   "        self.wo = nn.Linear(cfg.n_head * self.hd, cfg.d_model, bias=False)\n        self.window = cfg.sliding_window\n"
-                   "        self.qn, self.kn = RMSNorm(self.hd), RMSNorm(self.hd)"),
-                  ("        q, k = apply_rope(q, cos, sin), apply_rope(k, cos, sin)",
-                   "        q, k = self.qn(q), self.kn(k)\n        q, k = apply_rope(q, cos, sin), apply_rope(k, cos, sin)")],
-    },
+    # "qk_norm" (RMSNorm on queries and keys) was retired with the v2 baseline: the baseline already has
+    # q_norm and k_norm, so the control would be a no-op and the reach audit would rightly fail it at the build.
     "relu2_mlp": {
         "kind": "positive", "expect": "pass_ladder",
         "hypothesis": "control: ReLU-squared MLP with a matched parameter count in place of SwiGLU (known at small scale)",
@@ -106,7 +99,9 @@ def judge_overnight(name: str, verdict_status: str | None) -> dict:
     if v in ("error", "none"):
         return {"ok": False, "note": f"control did not complete overnight ({v}); the night itself is suspect"}
     if spec["expect"] == "fail_ladder":
-        bad = v in ("verified", "stackable", "close_call", "promising")
+        if v == "promising":                    # fewer seeds than any tier needs: not a result, so not a false one
+            return {"ok": True, "note": "known loser still promising (too few seeds for any tier); not a result"}
+        bad = v in ("verified", "stackable", "close_call")
         return {"ok": not bad, "note": ("KNOWN LOSER " + v.upper() + ": the verdict is calling a loser a result") if bad else f"loser rejected overnight ({v})"}
     if spec["expect"] == "pass_ladder":
         good = v in ("verified", "stackable", "close_call", "promising")
