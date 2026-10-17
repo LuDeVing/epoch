@@ -12,6 +12,8 @@ import { clock, glide, T, animateOnce, later } from './motion.mjs';
 
 export const CARD_W = 210;
 export const CARD_H = 48;
+export const DEEP_W = 190;            // a card deeper than OPEN_DEPTH (views.css .card--deep)
+export const DEEP_H = 40;
 export const OPEN_DEPTH = 3;          // root, parts, sub-parts are open; deeper levels fold into a count chip
 export const HALO_BURST = 3;          // in a burst only the latest three changes get a halo
 
@@ -74,6 +76,10 @@ function queryMe() {
 
 function sameState(a, b) { return a === b; }
 
+// The drawn box of a card: deep cards are smaller (views.css), so edges and the camera use this, never CARD_W alone.
+const cardW = (c) => (c.depth >= OPEN_DEPTH ? DEEP_W : CARD_W);
+const cardH = (c) => (c.depth >= OPEN_DEPTH ? DEEP_H : CARD_H);
+
 export function mountTree(el, store, bus, opts = {}) {
   const d3 = requireD3();
   if (!el || typeof document === 'undefined') throw new Error('mountTree needs a DOM element');
@@ -125,7 +131,7 @@ export function mountTree(el, store, bus, opts = {}) {
     const { w, h: vh } = viewSize();
     if (!list.length || !w || !vh) return false;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-    for (const c of list) { x0 = Math.min(x0, c.tx); y0 = Math.min(y0, c.ty); x1 = Math.max(x1, c.tx + CARD_W); y1 = Math.max(y1, c.ty + CARD_H); }
+    for (const c of list) { x0 = Math.min(x0, c.tx); y0 = Math.min(y0, c.ty); x1 = Math.max(x1, c.tx + cardW(c)); y1 = Math.max(y1, c.ty + cardH(c)); }
     const pad = 40;
     const k = Math.max(0.25, Math.min(1.25, (w - 2 * pad) / Math.max(1, x1 - x0), (vh - 2 * pad) / Math.max(1, y1 - y0)));
     const tx = w / 2 - k * (x0 + x1) / 2, ty = vh / 2 - k * (y0 + y1) / 2;
@@ -138,7 +144,7 @@ export function mountTree(el, store, bus, opts = {}) {
     const { w, h: vh } = viewSize();
     if (!c || !w || !vh) return;
     const k = transform.k;
-    moveCamera(w / 2 - k * (c.tx + CARD_W / 2), vh / 2 - k * (c.ty + CARD_H / 2), k, animate);
+    moveCamera(w / 2 - k * (c.tx + cardW(c) / 2), vh / 2 - k * (c.ty + cardH(c) / 2), k, animate);
   }
 
   function moveCamera(tx, ty, k, animate) {
@@ -269,7 +275,7 @@ export function mountTree(el, store, bus, opts = {}) {
       const p = c.parent != null ? cards.get(c.parent) : null;
       if (!p) { if (c.fresh) c.edge.setAttribute('d', ''); continue; }
       if (!(c.moved || p.moved || c.fresh)) continue;
-      const x1 = p.x + CARD_W, y1 = p.y + CARD_H / 2, x2 = c.x, y2 = c.y + CARD_H / 2, xm = (x1 + x2) / 2;
+      const x1 = p.x + cardW(p), y1 = p.y + cardH(p) / 2, x2 = c.x, y2 = c.y + cardH(c) / 2, xm = (x1 + x2) / 2;
       c.edge.setAttribute('d', `M${x1},${y1} C${xm},${y1} ${xm},${y2} ${x2},${y2}`);
     }
     for (const c of cards.values()) { c.moved = false; c.fresh = false; }
@@ -279,7 +285,8 @@ export function mountTree(el, store, bus, opts = {}) {
 
   // --- claim countdown (server time) ---
   function serverNow(state) {
-    const off = state && Number.isFinite(state.serverOffsetMs) ? state.serverOffsetMs : 0;
+    const off = state && Number.isFinite(state.serverOffsetMs) ? state.serverOffsetMs
+      : state && state.net && Number.isFinite(state.net.offsetMs) ? state.net.offsetMs : 0;
     return Date.now() + off;
   }
 
@@ -306,7 +313,7 @@ export function mountTree(el, store, bus, opts = {}) {
       const kind = cl.kind || cl.by_kind || 'human';
       if (kind !== 'human') continue;
       const name = cl.name || cl.owner;
-      if (!name || name === me) continue;
+      if (!name || name === me || (me && cl.owner === me)) continue;
       if (!byNode.has(cl.focus.id)) byNode.set(cl.focus.id, []);
       byNode.get(cl.focus.id).push({ name, hue: hueOf(cl.owner || name, state.people) });
     }
@@ -363,6 +370,7 @@ export function mountTree(el, store, bus, opts = {}) {
     const haloNow = new Set(halos.slice(0, HALO_BURST).map((hl) => hl.id));
 
     const now = serverNow(state);
+    const seenSeq = typeof opts.lastSeenSeq === 'function' ? opts.lastSeenSeq() : lastSeenSeq;
     const seen = new Set();
     let anyClaim = false;
     for (const id of visible) {
@@ -382,7 +390,7 @@ export function mountTree(el, store, bus, opts = {}) {
       c.tx = pos.x; c.ty = pos.y;
       // the card state
       const st = cardState(n, state.run, me, { nowMs: now, people: state.people, focus: focusByNode.get(id),
-                                                lastSeenSeq: Number.isFinite(lastSeenSeq) ? lastSeenSeq : undefined,
+                                                lastSeenSeq: Number.isFinite(seenSeq) ? seenSeq : undefined,
                                                 stages: opts.contract && opts.contract.stages });
       paintCard(c, n, st, ix, nodes, haloNow.has(id));
       if (n.claim) anyClaim = true;
@@ -472,11 +480,15 @@ export function mountTree(el, store, bus, opts = {}) {
   function followStep(state) {
     const clients = state.presence && Array.isArray(state.presence.clients) ? state.presence.clients : [];
     const cl = clients.find((x) => x && (x.name === follow || x.owner === follow || x.client === follow));
-    if (!cl || !cl.focus || cl.focus.type !== 'node') return;
-    if (followLast === cl.focus.id) return;
-    followLast = cl.focus.id;
-    if (!cards.has(cl.focus.id) && openAncestors(cl.focus.id)) update(true);
-    centerOn(cl.focus.id, true);
+    if (cl) followTo(cl.focus);
+  }
+
+  function followTo(f) {
+    if (!f || f.type !== 'node') return;
+    if (followLast === f.id) return;
+    followLast = f.id;
+    if (!cards.has(f.id) && openAncestors(f.id)) update(true);
+    centerOn(f.id, true);
   }
 
   // --- keyboard ---
@@ -516,7 +528,13 @@ export function mountTree(el, store, bus, opts = {}) {
     paintHover();
   });
   on('fit', (e) => { if (!e || e.type === 'tree' || !e.type) fit(e && e.id ? subtreeIds(e.id) : null); });
-  on('follow', (e) => { const who = e && (e.person || e.name || e.owner); if (who && who !== follow) { follow = who; followLast = null; if (lastState) followStep(lastState); } else if (!who) { follow = null; followLast = null; } });
+  on('follow', (e) => {
+    const who = e && (e.who || e.person || e.name || e.owner);
+    if (!who) { follow = null; followLast = null; return; }
+    if (who !== follow) { follow = who; followLast = null; }
+    if (e.focus) followTo(e.focus);                      // the page shell sends {who, focus}
+    else if (lastState) followStep(lastState);
+  });
   on('state', () => update());
   on('select', (e) => { if (e && e.type === 'node' && e.source !== 'tree' && e.id !== selectedId) { selectedId = e.id; for (const c of cards.values()) c.el.classList.toggle('is-selected', c.id === e.id); } });
   if (typeof document.addEventListener === 'function') {

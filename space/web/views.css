@@ -193,10 +193,11 @@
 .clusters.color-by-status .bubble.status-loss .bubble__body, .clusters.color-by-status .bubble.status-not_preferred .bubble__body { fill: color-mix(in oklab, var(--serious) 18%, var(--bg-card)); }
 .clusters.color-by-status .bubble.status-failed_check .bubble__body { fill: color-mix(in oklab, var(--bad) 22%, var(--bg-card)); }
 
-/* projector */
-.stage .card { width: 260px; height: 60px; }
-.stage .card__name { font-size: 15px; line-height: 17px; max-height: 34px; }
-.stage .chip { font-size: 12px; height: 17px; line-height: 17px; }
+/* projector: larger type inside the same card box, so cards never overlap on the 250 x 56 layout grid
+   and the edges (tree.js CARD_W, CARD_H) still meet the card sides */
+.stage .card:not(.card--deep) .card__name { font-size: 15px; line-height: 17px; max-height: 17px; -webkit-line-clamp: 1; }
+.stage .card:not(.card--deep) .card__row { height: 16px; }
+.stage .card:not(.card--deep) .chip { font-size: 12px; height: 16px; line-height: 16px; }
 .stage .bubble__label { font-size: 14px; }
 .stage .island__label { font-size: 15px; }
 

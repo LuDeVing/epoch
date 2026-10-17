@@ -348,7 +348,7 @@ export function mountClusters(el, store, bus, opts = {}) {
 
     // islands in first-seen part order
     const partOrder = [...anchors.keys()];
-    const grouped = islandsOf(state.clusters, partOrder);
+    const grouped = islandsOf([...state.clusters.values()].filter((c) => !c.mergedInto), partOrder);
     const seenParts = new Set();
     for (const g of grouped) {
       const anchor = anchors.get(g.part) || anchorFor(g.index, grouped.length);
@@ -405,11 +405,12 @@ export function mountClusters(el, store, bus, opts = {}) {
           if (delay > 0) b.pending = { x: pos.x, y: pos.y, r: pos.r, at: now + delay };
           else { b.tx = pos.x; b.ty = pos.y; b.tr = pos.r; b.pending = null; }
         }
+        if (delay === 0 && b.arriving) { b.arriving = false; b.el.classList.remove('is-arriving'); }
         paintBubble(b, c, state, word);
       }
     }
     for (const b of bubbles.values()) if (!seen.has(b.key) && !b.retiring) {
-      const c = state.clusters.get(b.key);
+      const c = state.clusters.get(b.key) || (state.retired instanceof Map ? state.retired.get(b.key) : null);
       retire(b, c && c.mergedInto ? c.mergedInto : null);
     }
     hud.classList.toggle('is-empty', state.clusters.size === 0);
@@ -458,10 +459,13 @@ export function mountClusters(el, store, bus, opts = {}) {
   function followStep(state) {
     const clients = state.presence && Array.isArray(state.presence.clients) ? state.presence.clients : [];
     const cl = clients.find((x) => x && (x.name === follow || x.owner === follow || x.client === follow));
-    if (!cl || !cl.focus || cl.focus.type !== 'cluster') return;
-    if (followLast === cl.focus.id) return;
-    followLast = cl.focus.id;
-    centerOn(cl.focus.id, true);
+    if (cl) followTo(cl.focus);
+  }
+  function followTo(f) {
+    if (!f || f.type !== 'cluster') return;
+    if (followLast === f.id) return;
+    followLast = f.id;
+    centerOn(f.id, true);
   }
 
   function setColorBy(mode) {
@@ -475,7 +479,13 @@ export function mountClusters(el, store, bus, opts = {}) {
   // --- bus ---
   on('hover', (e) => { if (e && e.source === 'clusters') return; linkedNode = e && e.type === 'node' ? e.id : null; paintHover(); });
   on('fit', (e) => { if (!e || e.type === 'clusters') fit(e && e.node != null ? e.node : null); });
-  on('follow', (e) => { const who = e && (e.person || e.name || e.owner); if (who && who !== follow) { follow = who; followLast = null; if (lastState) followStep(lastState); } else if (!who) { follow = null; followLast = null; } });
+  on('follow', (e) => {
+    const who = e && (e.who || e.person || e.name || e.owner);
+    if (!who) { follow = null; followLast = null; return; }
+    if (who !== follow) { follow = who; followLast = null; }
+    if (e.focus) followTo(e.focus);                      // the page shell sends {who, focus}
+    else if (lastState) followStep(lastState);
+  });
   on('state', () => update());
   on('select', (e) => { if (e && e.type === 'cluster' && e.source !== 'clusters' && e.key !== selectedKey) { selectedKey = e.key; paintLod(); } });
   svg.addEventListener('keydown', (e) => { if (e && (e.key === 'f' || e.key === 'F')) { fit(null); if (e.preventDefault) e.preventDefault(); } });
