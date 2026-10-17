@@ -52,8 +52,15 @@ def option_of(cand: Candidate) -> str | None:
     return m.group(1).upper() if m else None
 
 
+KNOWN_RULES = ("text", "grid", "option")
+
+
 def rule_of(benchmark: str) -> str:
-    return config.BENCHMARKS.get(benchmark, {}).get("dedup_rule", "text")
+    """The benchmark's exact-dedup rule; an unknown rule name is an error, never a silent fall-back to text hashing."""
+    rule = config.BENCHMARKS.get(benchmark, {}).get("dedup_rule", "text")
+    if rule not in KNOWN_RULES:
+        raise ValueError(f"unknown dedup_rule {rule!r} for benchmark {benchmark}; known: {KNOWN_RULES}")
+    return rule
 
 
 def dedup_key(cand: Candidate, benchmark: str) -> str:

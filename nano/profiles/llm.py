@@ -10,7 +10,7 @@ CONSTRAINTS = [
     "C4. Peak VRAM under 5.6 GB and step time at most 2x the baseline on an RTX 4050 (6 GB).",
     "C5. The file keeps the same command-line interface and still writes metrics.json with val_loss; --build-only, --smoke-steps and --smoke-seconds must keep working.",
     "C6. No dependencies beyond torch, numpy and the plain standard library; socket, urllib, http, subprocess, ctypes, multiprocessing, importlib, pickle and shutil are denied; no network; no subprocesses; no reference to the validation split anywhere in training code. The process runs under a tripwire that fails the candidate on any of these.",
-    "C7. The metric is the exam's validation loss after the fixed budget; a change counts only if it beats the pooled baseline mean by more than 0.005 nats with a one-sided Welch test at p < 0.01 over at least 3 seeds.",
+    "C7. The metric is the exam's validation loss after the fixed budget; a change counts only if it beats the baseline by more than the 0.005-nat margin under the anytime-valid e-value rule (e >= 100, one-sided, noise fixed from baseline-only runs; docs/VERDICT.md) over at least 3 paired seeds.",
 ]
 
 ASSUMPTIONS = [
