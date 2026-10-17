@@ -647,6 +647,99 @@ class NanoLoop:
             return False
         return node_id not in tree.resolve_scope(self.only_nodes, self.tree or tree.DEFAULT_TREE)
 
+    # ------------------------------------------------------------ the doubt card: measure, map, read, then doubt
+    DOUBT_LIT_CAP = 3000            # characters of literature shown to a doubt card
+
+    @staticmethod
+    def _read_entries(brief: dict) -> int:
+        """Literature rows in a brief (ledger rows from earlier runs are not reading)."""
+        return sum(1 for key in ("known", "failed", "open") for e in (brief or {}).get(key, []) or []
+                   if isinstance(e, dict) and not research._is_ledger(e))
+
+    def _doubt_ready(self, round_no: int) -> tuple[bool, int, int]:
+        """Doubt cards are dealt only after reading: briefs for at least half of the non-root parts, or a
+        later round with any brief. Returns (ready, parts with a brief, parts)."""
+        parts = [n for n in (self.tree or []) if n["id"] not in ("root", tree.OFF_TREE_NODE["id"]) and not self._skipped(n["id"])]
+        k = sum(1 for n in parts if self._read_entries(self.briefs.get(n["id"])) > 0)
+        any_read = any(self._read_entries(b) > 0 for b in self.briefs.values())
+        ready = (k > 0 and 2 * k >= len(parts)) or (round_no > 1 and any_read)
+        return ready, k, len(parts)
+
+    def _literature_block(self, cap: int | None = None) -> str:
+        """What the research briefs say about every part of the map, measured findings first, newest briefs first,
+        each line with its source URL, capped to about `cap` characters."""
+        cap = self.DOUBT_LIT_CAP if cap is None else cap
+        names = {n["id"]: n.get("name", n["id"]) for n in (self.tree or [])}
+        tier = {"known": 0, "failed": 1, "open": 2}          # measured effect > reported failure > untested direction
+        rows = []
+        for nid, b in self.briefs.items():
+            ts = str((b or {}).get("ts", ""))
+            for key in ("known", "failed", "open"):
+                rank = 0
+                for e in (b or {}).get(key, []) or []:
+                    if not isinstance(e, dict) or research._is_ledger(e):
+                        continue
+                    if key == "known":
+                        body = f"KNOWN: {e.get('name', '')}: {e.get('mechanism', '')} Effect: {e.get('effect', '')} ({e.get('where', '')})"
+                    elif key == "failed":
+                        body = f"DID NOT HELP: {e.get('name', '')}: {e.get('why', '')}"
+                    else:
+                        body = f"OPEN: {e.get('direction', '')}: {e.get('why', '')}"
+                    body = " ".join(body.split())
+                    body = body if len(body) <= 260 else body[:257] + "..."   # one long entry must not crowd out the other parts
+                    rows.append((tier[key], rank, ts, f"- [{names.get(nid, nid)}] {body} {e.get('url', '')}"))
+                    rank += 1
+        rows.sort(key=lambda r: r[2], reverse=True)          # newest brief first ...
+        rows.sort(key=lambda r: (r[0], r[1]))                # ... within: highest-confidence tier, every part's first entry before any second
+        head = "WHAT THE LITERATURE SAYS ABOUT THIS MAP (from the research briefs):\n"
+        out, used = [], len(head)
+        for *_, line in rows:
+            if used + len(line) + 1 > cap:
+                break
+            out.append(line)
+            used += len(line) + 1
+        if len(out) < len(rows):
+            out.append(f"(showing {len(out)} of {len(rows)} sourced lines)")
+        return head + ("\n".join(out) if out else "(no sourced lines)")
+
+    def _doubt_addendum(self) -> str:
+        return ("ORDER OF WORK: This map was drawn from the script and the measurements, then the team read the literature; "
+                "you are the first to compare the two.\n\n" + self._literature_block() + "\n\n"
+                "Doubt facts of the map against both the measurements and the literature above. Where either disagrees with "
+                "the map, that fact is your target. Start each sketch with one line DOUBT: <the fact of the map, what "
+                "contradicts it, and the source you lean on: a URL from the list above, or 'measured: <the number>'>.\n\n")
+
+    @staticmethod
+    def _doubt_lines(text: str) -> dict:
+        """Each sketch's IDEA text -> the DOUBT: line in its block, or else the last DOUBT: line before it."""
+        out, last = {}, ""
+        for b in re.split(r"\n\s*\n", (text or "").strip()):
+            m = re.search(r"^\s*DOUBT:\s*(.+)$", b, flags=re.M)
+            if m:
+                last = " ".join(m.group(1).split())
+            i = re.search(r"IDEA:\s*(.+?)(?=\n[A-Z_]+:|\Z)", b, flags=re.S)
+            if i and "MECHANISM:" in b:
+                out.setdefault(" ".join(i.group(1).split())[:120], last)
+        return out
+
+    def _record_doubts(self, sketches: list[dict], text: str, round_no: int) -> None:
+        """Store the DOUBT: line on each doubt sketch and log the disputed fact for the mapper to re-measure."""
+        lines = self._doubt_lines(text)
+        rows = []
+        for s in sketches:
+            d = lines.get(str(s.get("idea", ""))[:120], "")
+            if not d:
+                continue
+            s["doubt"] = d[:500]
+            nid = self._node_by_name(d.split(":")[0]) or next(
+                (n["id"] for n in (self.tree or []) if n["id"] not in ("root", tree.OFF_TREE_NODE["id"])
+                 and str(n.get("name", "")).lower() in d.lower()), None)
+            rows.append({"round": round_no, "node": nid or s.get("node", tree.OFF_TREE_NODE["id"]),
+                         "text": s["doubt"], "sketch_id": s["id"]})
+        if rows:
+            with self.lock:
+                append_jsonl(self.run_dir / "disputed_facts.jsonl", rows)
+
     def ideate_round(self, round_no: int, seeds: list[str]) -> list[dict]:
         """Node x direction contexts (per_node each), plus upward contexts at the root. Cards cycle
         over the push types so every part is seen from several framings."""
@@ -708,16 +801,22 @@ class NanoLoop:
         if off_node is not None and self.off_tree_share > 0:
             n_on = sum(1 for sp in specs if sp[3] != "upward")
             n_off = max(1, round(n_on * self.off_tree_share / max(0.05, 1 - self.off_tree_share)))
+            # measure, map, read, then doubt: no doubt card before the map's facts can be compared with the literature
+            ready, k_read, m_parts = self._doubt_ready(round_no)
+            off_cards = tuple(c for c in tree.OFF_TREE_CARDS if ready or c != "doubt")
             for i in range(n_off):
                 seed = self.rng.choice([w for w in seeds if w not in self.used_seeds] or seeds)
                 self.used_seeds.add(seed)
-                specs.append((tree.OFF_TREE_CARDS[i % len(tree.OFF_TREE_CARDS)], seed, off_node, "inward" if i % 2 == 0 else "outward"))
+                specs.append((off_cards[i % len(off_cards)], seed, off_node, "inward" if i % 2 == 0 else "outward"))
             self.decisions.append({"round": round_no, "step": "off_tree", "on_map": n_on, "off_map": n_off, "share": self.off_tree_share})
+            self.decisions.append({"round": round_no, "step": "doubt_cards", "dealt": sum(1 for sp in specs if sp[0] == "doubt"),
+                                   "reason": f"briefs for {k_read} of {m_parts} parts"
+                                             + ("" if ready else "; doubt waits until the team has read (briefs for half the parts)")})
 
         if self.max_sketch_calls > 0 and len(specs) > self.max_sketch_calls:
             # test mode: the contexts that read the most (owner, research, diagnosis, analogy) first, dealt round-robin
             # across the parts so a small cap gives every part a context before any part gets a second
-            prio = {"owner": -1, "research": 0, "diagnosis": 1, "analogy": 2}   # the owner's seeds are never capped away
+            prio = {"owner": -1, "research": 0, "diagnosis": 1, "analogy": 2, "doubt": 2}   # the owner's seeds are never capped away; doubt reads the briefs
             specs = ideate.deal_by_part(specs, self.max_sketch_calls, lambda sp: prio.get(sp[0], 3), lambda sp: sp[2]["id"])
             self.decisions.append({"round": round_no, "step": "ideate", "capped_to": len(specs)})
         # the contexts each part (and the off-map node) got this round: selection deals build slots in the same shares
@@ -751,6 +850,8 @@ class NanoLoop:
                            + "\n\n" + ideate.ADAPT_ADDENDUM)
             elif card == "contradiction":
                 prompt += ideate.CONTRADICTION_ADDENDUM.format(text=seed)
+            elif card == "doubt" and off:
+                prompt += self._doubt_addendum()
             if self.digest_text and card not in ("docs", "blank"):          # blank gets no hints at all
                 prompt += (PF.fill("{v:digest_title} ({v:digest_use}):\n")
                            + self.digest_text + "\n\n")
@@ -799,6 +900,8 @@ class NanoLoop:
                 s["node"], s["direction"], s["family"] = node["id"], direction, family or (self.model or "default")
                 s["leap_op"] = op if s.get("kind") == "leap" else ""
                 s["origin"], s["round"] = ("off" if off else "tree"), round_no
+            if card == "doubt" and off:
+                self._record_doubts(sk, r.text or "", round_no)
             self._ledger(f"sketch:{card}", f"{node['id']}:{direction}", seed, r.call_id, r.usage, round_no, "ideate")
             return sk
 
