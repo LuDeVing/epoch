@@ -56,18 +56,45 @@ function ClusterDetail({ v, key }) {
   </div>`;
 }
 
+// Where the panel opens: next to the clicked card or bubble, inside its pane; it can then be dragged by its head.
+function placeNear(box, pane, target) {
+  const pr = pane.getBoundingClientRect();
+  const W = box.offsetWidth || 320, H = Math.min(box.offsetHeight || 240, pr.height - 20);
+  let left = 12, top = 34;
+  if (target) {
+    const r = target.getBoundingClientRect();
+    left = r.right - pr.left + 10;
+    top = r.top - pr.top;
+    if (left + W > pr.width - 8) left = r.left - pr.left - W - 10;         // no room on the right: open on the left
+    if (left < 8) left = Math.max(8, Math.min(r.left - pr.left, pr.width - W - 8));
+  }
+  top = Math.max(8, Math.min(top, pr.height - H - 8));
+  left = Math.max(8, Math.min(left, pr.width - W - 8));
+  box.style.left = `${Math.round(left)}px`;
+  box.style.top = `${Math.round(top)}px`;
+}
+
 export function mountInspector(treePane, clustersPane, api, bus) {
   const box = document.createElement('div');
   box.className = 'inspect';
   box.style.display = 'none';
-  let open = null;                 // {type, id, pane}
-  const close = () => { open = null; box.style.display = 'none'; render(null, box); };
+  let open = null;                 // {type, id}
+  let moved = false;               // once dragged, the panel stays where the person put it until it closes
+  const close = () => { open = null; moved = false; box.style.display = 'none'; render(null, box); };
+  const hueOf = (v) => {
+    if (!open) return 'team';
+    const n = open.type === 'node' ? v.nodes.get(open.id) : null;
+    return n && n.origin === 'human' ? 'owner' : 'team';
+  };
   const paint = () => {
     if (!open) return;
     const v = api.view();
     const title = open.type === 'node' ? nameOf(v, open.id) : ((v.clusters.get(open.id) || {}).name || open.id);
-    render(html`<div class="inspect__head"><strong>${title}</strong><button class="btn btn--small" type="button" title="close" onClick=${close}>x</button></div>
-      ${open.type === 'node' ? html`<${NodeDetail} v=${v} id=${open.id} />` : html`<${ClusterDetail} v=${v} key=${open.id} />`}`, box);
+    box.dataset.hue = hueOf(v);
+    render(html`<div class="inspect__head" title="drag to move"><span class="inspect__grip" aria-hidden="true"></span><strong class="inspect__title">${title}</strong>
+        <span class="muted inspect__kind">${open.type === 'node' ? 'part' : 'idea'}</span>
+        <button class="btn btn--small" type="button" title="close" onClick=${close}>x</button></div>
+      <div class="inspect__body">${open.type === 'node' ? html`<${NodeDetail} v=${v} id=${open.id} />` : html`<${ClusterDetail} v=${v} key=${open.id} />`}</div>`, box);
   };
   bus.on('select', (sel) => {
     if (!sel || (sel.type !== 'node' && sel.type !== 'cluster')) return;
@@ -75,12 +102,41 @@ export function mountInspector(treePane, clustersPane, api, bus) {
     if (!id) return;
     if (open && open.type === sel.type && open.id === id) { close(); return; }      // the same one again: shrink
     const pane = sel.type === 'node' ? treePane : clustersPane;
-    if (box.parentNode !== pane) pane.appendChild(box);
+    if (box.parentNode !== pane) { pane.appendChild(box); moved = false; }
     open = { type: sel.type, id };
     box.style.display = '';
     paint();
+    if (!moved) {
+      const esc = (x) => (window.CSS && CSS.escape ? CSS.escape(x) : String(x).replace(/"/g, '\\"'));
+      const target = sel.type === 'node' ? pane.querySelector(`.card[data-id="${esc(id)}"]`) : pane.querySelector(`.bubble[data-key="${esc(id)}"]`);
+      placeNear(box, pane, target);
+    }
   });
   bus.on('state', () => paint());
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) close(); });
+  // a click outside the panel closes it, unless it lands on a card or a bubble (that click opens the next one)
+  document.addEventListener('pointerdown', (e) => {
+    if (!open || box.contains(e.target)) return;
+    if (e.target.closest && e.target.closest('.card, .bubble, .inspect')) return;
+    close();
+  }, true);
+  // drag by the head
+  box.addEventListener('pointerdown', (e) => {
+    const head = e.target.closest && e.target.closest('.inspect__head');
+    if (!head || (e.target.closest && e.target.closest('button'))) return;
+    e.preventDefault();
+    const pane = box.parentNode;
+    const pr = pane.getBoundingClientRect();
+    const start = { x: e.clientX, y: e.clientY, left: box.offsetLeft, top: box.offsetTop };
+    const move = (ev) => {
+      const left = Math.max(0, Math.min(start.left + ev.clientX - start.x, pr.width - box.offsetWidth));
+      const top = Math.max(0, Math.min(start.top + ev.clientY - start.y, pr.height - 30));
+      box.style.left = `${left}px`; box.style.top = `${top}px`;
+      moved = true;
+    };
+    const up = () => { try { box.releasePointerCapture(e.pointerId); } catch (x) { /* ignore */ } box.removeEventListener('pointermove', move); box.removeEventListener('pointerup', up); box.removeEventListener('pointercancel', up); };
+    box.setPointerCapture(e.pointerId);
+    box.addEventListener('pointermove', move); box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up);
+  });
   return { close, isOpen: () => !!open };
 }

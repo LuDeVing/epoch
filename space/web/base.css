@@ -169,9 +169,15 @@ body.stage .chat__form, body.stage .switch { display: none; }
 .finding--replaced { opacity: 0.55; }
 
 /* Inspector: the detail panel of a clicked card or bubble (inspect.js) */
-.inspect { position: absolute; top: 30px; right: 10px; width: 320px; max-height: calc(100% - 44px); overflow: auto; z-index: 6;
-  background: var(--bg-2, var(--bg)); border: 1px solid var(--line-strong); border-radius: 10px; padding: 8px 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.45); font-size: 12px; }
-.inspect__head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+.inspect { position: absolute; top: 30px; left: 12px; width: 320px; max-height: calc(100% - 44px); display: flex; flex-direction: column; z-index: 6;
+  background: var(--bg-panel); color: var(--text-1); border: 1px solid var(--line-strong); border-left: 4px solid var(--owner-team, var(--line-strong)); border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.55); font-size: 12px; }
+.inspect[data-hue="owner"] { border-left-color: var(--owner-a, var(--line-strong)); }
+.inspect__head { display: flex; align-items: center; gap: 8px; padding: 7px 8px 7px 10px; cursor: move; user-select: none;
+  background: var(--bg-card); border-bottom: 1px solid var(--line-subtle); border-radius: 8px 8px 0 0; }
+.inspect__grip { width: 10px; height: 10px; border-radius: 2px; background: repeating-linear-gradient(90deg, var(--line-strong) 0 2px, transparent 2px 4px); opacity: .8; }
+.inspect__title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.inspect__body { overflow: auto; padding: 6px 10px 8px; }
 .inspect__row { display: flex; gap: 8px; padding: 3px 0; border-top: 1px solid var(--line-subtle); }
 .inspect__k { flex: 0 0 72px; color: var(--text-2, var(--text)); opacity: 0.75; }
 .inspect__v { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
