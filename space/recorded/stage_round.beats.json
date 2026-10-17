@@ -1,0 +1,206 @@
+{
+ "batch": "rehearse-002519",
+ "beats": [
+  {
+   "beat": "open",
+   "kind": "stage_entered",
+   "seq": 10,
+   "t": "0:00"
+  },
+  {
+   "beat": "branch",
+   "kind": "node_added",
+   "seq": 17,
+   "t": "0:15"
+  },
+  {
+   "beat": "note",
+   "kind": "note_posted",
+   "seq": 23,
+   "t": "0:35"
+  },
+  {
+   "beat": "go_planned_1",
+   "kind": "run_step",
+   "seq": 25,
+   "t": "0:50"
+  },
+  {
+   "beat": "go_ideated_1",
+   "kind": "run_step",
+   "seq": 49,
+   "t": "1:15"
+  },
+  {
+   "beat": "votes",
+   "kind": "vote_cast",
+   "seq": 78,
+   "t": "1:30"
+  },
+  {
+   "beat": "go_clustered_1",
+   "kind": "run_step",
+   "seq": 80,
+   "t": "1:45"
+  },
+  {
+   "beat": "reply",
+   "kind": "reply_posted",
+   "seq": 487,
+   "t": "2:05"
+  },
+  {
+   "beat": "go_deepened_1",
+   "kind": "run_step",
+   "seq": 489,
+   "t": "2:20"
+  },
+  {
+   "beat": "go_built_1",
+   "kind": "run_step",
+   "seq": 496,
+   "t": "2:20"
+  },
+  {
+   "beat": "win",
+   "kind": "test_result",
+   "seq": 505,
+   "t": "2:55"
+  },
+  {
+   "beat": "preview",
+   "kind": "question_preview",
+   "seq": 509,
+   "t": "3:10"
+  },
+  {
+   "beat": "veto",
+   "kind": "question_vetoed",
+   "seq": 517,
+   "t": "3:15"
+  },
+  {
+   "beat": "choose",
+   "kind": "question_chosen",
+   "seq": 525,
+   "t": "3:25"
+  },
+  {
+   "beat": "drill",
+   "kind": "claim_expired",
+   "seq": 527,
+   "t": "3:30"
+  },
+  {
+   "beat": "go_verified_1",
+   "kind": "run_step",
+   "seq": 530,
+   "t": "3:40"
+  },
+  {
+   "beat": "pick",
+   "kind": "question_picked",
+   "seq": 532,
+   "t": "3:40"
+  }
+ ],
+ "drill": true,
+ "elapsed_s": 232.5,
+ "ids": {
+  "item_order_seq": 17,
+  "preview_seq": 509,
+  "q1": "u1bfd800627",
+  "q2": "u63d9e403ab",
+  "q3": "ue6bf5e5143",
+  "reply_idea": "open-in-k01",
+  "reply_name": "harmonic classes",
+  "reply_objection": 2,
+  "vote_ana": "choice-ou-k00",
+  "vote_ana_name": "worst fit",
+  "vote_ben": "offtree-in-k04",
+  "vote_ben_name": "best fit"
+ },
+ "log": "stage_round.ndjson",
+ "pace": 1.0,
+ "rows": {
+  "ack_2s": {
+   "detail": "8 chats, slowest ack 0.03 s",
+   "ok": true
+  },
+  "applied_item_order": {
+   "detail": "control_applied e26 at planned r1, node by ana",
+   "ok": true
+  },
+  "beats_in_order": {
+   "detail": "17 beats, seqs 10 to 532",
+   "ok": true
+  },
+  "digests_both": {
+   "detail": "7 boundaries x 2 agents",
+   "ok": true
+  },
+  "drill_restart": {
+   "detail": "head 526 -> 529, contiguous True, reader gaps 0 dups 0, epochs 1, claim_expired restart e527, outboxes flushed True",
+   "ok": true
+  },
+  "free_memory": {
+   "detail": "5.0 GB free",
+   "ok": true
+  },
+  "no_child_left": {
+   "detail": "none",
+   "ok": true
+  },
+  "no_claude": {
+   "detail": "none seen among the child processes",
+   "ok": true
+  },
+  "overwrote": {
+   "detail": "e525 after ana's e521: the screen shows overwrote [{'field': 'choose', 'seq': 521, 'by': 'ana'}]; no server stamp (base e522 had seen e521)",
+   "ok": true
+  },
+  "peer_2s": {
+   "detail": "e20 after 0.09 s: Ana added item order. I carry it to the inventors at planned r1.",
+   "ok": true
+  },
+  "post_200ms": {
+   "detail": "14 human POSTs, slowest 28 ms (run_step by ben)",
+   "ok": true
+  },
+  "preview_before_pick": {
+   "detail": "preview e509, pick e532",
+   "ok": true
+  },
+  "sketch_item_order": {
+   "detail": "e39, 5 sketches",
+   "ok": true
+  },
+  "time_limit": {
+   "detail": "233 s (limit 300 s)",
+   "ok": true
+  },
+  "vetoed_in_pick": {
+   "detail": "u1bfd800627 in vetoed ['u1bfd800627'], chosen by person",
+   "ok": true
+  },
+  "voters_hit_or_miss": {
+   "detail": "ana: miss, ben: miss/hit",
+   "ok": true
+  },
+  "win_and_won": {
+   "detail": "test_result win e505 (n887c706939), clusters won: 1",
+   "ok": true
+  }
+ },
+ "space": "rehearse-002519",
+ "voters": {
+  "ana": [
+   "miss"
+  ],
+  "ben": [
+   "miss",
+   "hit"
+  ]
+ },
+ "won": 1
+}
