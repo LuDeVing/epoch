@@ -94,6 +94,8 @@ DEFAULT_TREE = [
                      "no auxiliary prediction heads"],
      "boundary": "GPT.forward loss computation, new heads if any; evaluate() stays fixed", "directions": ["inward", "outward"]},
 ]
+for _n in DEFAULT_TREE:      # every node says which default part it refines (tree.resolve_scope); here, itself
+    _n["refines"] = _n["id"]
 
 LENSES = {
     "parts": "the parts of the recipe: inputs/outputs, sequence mixing, per-token computation, state across depth, "

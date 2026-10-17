@@ -40,7 +40,8 @@ SPLIT turns the problem into 6 to 9 parts. Each part is a node.
 | Field | Meaning |
 |---|---|
 | id | short lowercase id, at most 16 characters |
-| name | at most 60 characters; the planner keeps the default name as the first words, so scopes still resolve |
+| name | at most 60 characters; the planner is asked to start it with the default part's name and a colon (secondary scope match) |
+| refines | the default part id this node refines or splits, or "new"; `--only-nodes` resolves through it first (default trees: their own id) |
 | parent | "root" for parts |
 | frame | one or two sentences on how this part works today (max 400 characters) |
 | assumptions | 3 to 5 choices a different design could remove (max 160 characters each) |
