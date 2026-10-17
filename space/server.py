@@ -352,6 +352,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
         self.send_error(404, "not found")
         return None
 
+    def end_headers(self):                                     # the page's own files are never cached stale
+        if not self.path.startswith("/api/"):
+            self.send_header("Cache-Control", "no-cache")
+        super().end_headers()
+
     def _send(self, code: int, obj, cookie: str | None = None) -> None:
         b = json.dumps(obj, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
         self.send_response(code)
