@@ -34,6 +34,7 @@ from harness.schemas import Candidate, LedgerRow, Usage, append_jsonl, new_id, n
 from nano import profile as PF                                      # noqa: E402
 from nano import deepen, ideate                                             # noqa: E402
 from nano import tree                                               # noqa: E402
+from nano import pick as PK                                         # noqa: E402
 from nano import research                                           # noqa: E402
 from nano import version as nano_version                            # noqa: E402
 from nano import budget as budget_mod                               # noqa: E402
@@ -410,6 +411,12 @@ class NanoLoop:
         self.premortems = 1                     # independent pre-mortems per interrogated idea (1-3)
         self.identity_init = False              # arm: builders wrap new paths as x + tanh(a) f(x), a = 0
         self.replan = False                     # arm: re-plan the map between rounds from the ledger
+        self.pick_questions = True              # gap C: pick the team's next question each round > 1 (nano/pick.py)
+        self.focus_contexts = 2                 # extra inward contexts the chosen question's node gets that round
+        self.max_rounds_focus = 2               # budget cap: a question with this many rounds of focus is not picked again
+        self.explore_every = 5                  # every n-th round the highest-novelty question takes the chosen slot
+        self.question_picks: list[dict] = []    # one record per round: top 3, scores, reasons, chosen, vetoed, answered
+        self._focus_q: dict | None = None       # the question chosen for this round's focus contexts
         self.weights_from_ledger = False        # selection weights from nano/calibrate.py when enough builds exist
         self.hedge_share = 0.0                  # share of rung-3 gap failures promoted anyway (lane "hedge")
         self.fidelity = True                    # diagnostics on checked candidates: did the named cell move?
@@ -668,11 +675,125 @@ class NanoLoop:
             if rec.get("status") != "fail" or not reason or nid in (None, "root", tree.OFF_TREE_ID) \
                     or not any(n["id"] == nid for n in self.tree or []) or made[nid] >= tree.FAIL_QUESTIONS_PER_PART:
                 continue
-            node = tree.add_failure_question(self.tree, nid, c.id, c.extra.get("cluster") or c.extra.get("hypothesis", ""), reason)
+            node = tree.add_failure_question(self.tree, nid, c.id, c.extra.get("cluster") or c.extra.get("hypothesis", ""), reason,
+                                             feedback=rec.get("feedback") or {}, metrics=rec.get("metrics") or {})
             if node:
                 made[nid] += 1
                 self.decisions.append({"round": round_no, "step": "fail_question", "candidate": c.id, "node": node["id"],
                                        "parent": nid, "name": node["name"]})
+
+    # ------------------------------------------------------------ gap C: the team picks its next question
+    def _build_tokens(self, c) -> int:
+        """Tokens of the call that built a candidate, from its call log (0 when unknown)."""
+        try:
+            d = json.loads((self.run_dir / "calls" / f"{c.call_id}.json").read_text(encoding="utf-8"))
+            return int((d.get("usage") or {}).get("total_tokens") or 0)
+        except Exception:  # noqa: BLE001
+            return 0
+
+    def _question_answered(self, rec: dict) -> bool:
+        """A pick is answered when its node got a checked candidate whose metrics carry the test metric."""
+        ch = rec.get("chosen") or {}
+        if ch.get("kind") != "question":
+            return False                         # an upward proposal is answered only by a person
+        metric = (ch.get("test") or {}).get("metric")
+        for c in self.cands:
+            if (c.extra or {}).get("node") != ch.get("node"):
+                continue
+            v = self.vres.get(c.id) or {}
+            if v.get("status") == "checked" and (metric == "rung_reached" or (v.get("metrics") or {}).get(metric) is not None):
+                rec["answered_by"] = c.id
+                return True
+        return False
+
+    def _pick_question(self, round_no: int) -> dict | None:
+        """Score the open questions (nano/pick.py), write next_questions.json (top 3, scores, reasons, chosen,
+        vetoed), log a decision. control.json `veto` / `choose` are obeyed; the default is the top one. A chosen
+        upward proposal is marked requires_human: it gets contexts, but nothing changes the success measure."""
+        for rec in self.question_picks:
+            if not rec.get("answered"):
+                rec["answered"] = self._question_answered(rec)
+        cands = PK.candidates(self.tree or [], self.upward, self.question_picks, max_rounds_focus=self.max_rounds_focus)
+        builds = [{"node": (c.extra or {}).get("node"), "round": c.round, "status": (self.vres.get(c.id) or {}).get("status"),
+                   "tokens": self._build_tokens(c)} for c in self.cands
+                  if not c.card.startswith("control") and (c.extra or {}).get("node") not in (None, "tune", "control", "program")]
+        stats = PK.branch_stats(self.tree or [], builds, self.contexts_by_node.get(round_no - 1), self.question_picks,
+                                default_cost=float(self.pf.get("question_cost", PK.DEFAULT_COST) or PK.DEFAULT_COST),
+                                round_no=round_no)
+        res = PK.pick([PK.score(q, stats) for q in cands], round_no, explore_every=self.explore_every)
+        ctl = {}
+        try:
+            p = self.run_dir / "control.json"
+            ctl = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+        except Exception:  # noqa: BLE001
+            ctl = {}
+        v = PK.apply_veto(res["top3"], ctl)
+        chosen = v["chosen"]
+        rec = {"round": round_no, "top3": res["top3"], "explore": res["explore"], "n_candidates": res["n_candidates"],
+               "chosen": chosen, "vetoed": v["vetoed"], "by": v["by"], "focus_contexts": self.focus_contexts if chosen else 0,
+               "requires_human": bool(chosen and chosen.get("requires_human")), "answered": False, "ts": now_ts()}
+        self.question_picks.append(rec)
+        write_json(self.run_dir / "next_questions.json", rec)
+        write_json(self.run_dir / "questions.json", {"picks": self.question_picks})
+        self.decisions.append({"round": round_no, "step": "pick_question", "chosen": (chosen or {}).get("id"),
+                               "kind": (chosen or {}).get("kind"), "score": (chosen or {}).get("score"),
+                               "top3": [q["id"] for q in res["top3"]], "vetoed": v["vetoed"], "by": v["by"],
+                               "explore": res["explore"], "path": (chosen or {}).get("path"),
+                               "requires_human": rec["requires_human"], "ts": now_ts()})
+        return chosen
+
+    def _focus_addendum(self) -> str:
+        q = self._focus_q or {}
+        t = q.get("test") or {}
+        lines = [f"THE TEAM'S CURRENT QUESTION: {q.get('text', '')}",
+                 f"How it is answered: {t.get('what') or t.get('metric')} (metric {t.get('metric')}, threshold {q.get('threshold')}).",
+                 f"It fails if: {q.get('fails_if', '')}"]
+        if q.get("requires_human"):
+            lines.append("This question comes from a proposal for a new success measure. The measure does not change: "
+                         "ideas are still judged by the current check. Sketch ideas that the current check can see.")
+        else:
+            lines.append("Sketch ideas that would answer this question under the current check.")
+        return "\n".join(lines) + "\n\n"
+
+    def _report_questions(self) -> None:
+        """report.json "questions" and a REPORT.md section "Questions the team chose"."""
+        if not self.question_picks:
+            return
+        for rec in self.question_picks:
+            if not rec.get("answered"):
+                rec["answered"] = self._question_answered(rec)
+        write_json(self.run_dir / "questions.json", {"picks": self.question_picks})
+        rows = []
+        for r in self.question_picks:
+            ch = r.get("chosen") or {}
+            rows.append({"round": r["round"], "chosen": ch.get("id"), "kind": ch.get("kind"), "text": ch.get("text", ""),
+                         "score": ch.get("score"), "test": ch.get("test"), "threshold": ch.get("threshold"),
+                         "fails_if": ch.get("fails_if"), "path": ch.get("path"), "by": r.get("by"),
+                         "vetoed": r.get("vetoed", []), "explore": r.get("explore"), "requires_human": r.get("requires_human"),
+                         "answered": bool(r.get("answered")), "answered_by": r.get("answered_by"),
+                         "top3": [{"id": q["id"], "score": q.get("score"), "reason": q.get("reason")} for q in r.get("top3", [])]})
+        rj = self.run_dir / "report.json"
+        try:
+            d = json.loads(rj.read_text(encoding="utf-8")) if rj.exists() else {}
+        except Exception:  # noqa: BLE001
+            d = {}
+        d["questions"] = rows
+        rj.write_text(json.dumps(d, indent=1), encoding="utf-8")
+        lines = ["", "## Questions the team chose", "",
+                 "Each round after the first, the open questions were scored: P(resolve) x gain x novelty / cost, "
+                 "times a learning-progress bonus. A person could veto in control.json; the default was the top one.", ""]
+        for r in rows:
+            if not r["chosen"]:
+                lines.append(f"- round {r['round']}: no question was open")
+                continue
+            t = r["test"] or {}
+            lines.append(f"- round {r['round']}: {r['chosen']} ({r['kind']}, score {r['score']}, {r['by']}"
+                         + (", exploration" if r["explore"] else "") + (", needs a person" if r["requires_human"] else "")
+                         + f"): {r['text'][:160]}. Test: {t.get('metric')} against {r['threshold']}. "
+                         + (f"Answered by {r['answered_by']}." if r["answered"] else "Not answered."))
+        md = self.run_dir / "REPORT.md"
+        old = md.read_text(encoding="utf-8") if md.exists() else ""
+        md.write_text(old.rstrip("\n") + "\n" + "\n".join(lines) + "\n", encoding="utf-8")
 
     def _write_tree(self) -> None:
         for d in tree.enforce_depth(self.tree):          # depth <= 4: a deeper node moves up to its depth-3 ancestor
@@ -819,6 +940,7 @@ class NanoLoop:
         if round_no > 1:                             # last round's results are in: move the off-map share, promote winners
             self._promote_off_wins(round_no)
             self._shift_off_share(round_no)
+        self._focus_q = self._pick_question(round_no) if (round_no > 1 and self.pick_questions and self.tree) else None
         specs = []
         per = self.per_node if round_no == 1 else 1
         # contexts go to the leaves: a part with children shares its per-part budget with them (tree.deal_contexts),
@@ -890,6 +1012,13 @@ class NanoLoop:
             specs = keep_upward(specs, ups)
             self.decisions.append({"round": round_no, "step": "ideate", "capped_to": len(specs),
                                    "upward": sum(1 for sp in specs if sp[3] == "upward")})
+        # the team's chosen question: extra inward contexts on its node (an upward proposal's on the root), after the
+        # test cap so they are never cut; the question text goes into the prompt
+        if self._focus_q is not None:
+            fnode = next((n for n in self.tree if n["id"] == self._focus_q.get("node")), None)
+            if fnode is not None:
+                for i in range(self.focus_contexts):
+                    specs.append(("focus", f"question {self._focus_q['id']} #{i + 1}", fnode, "inward"))
         # upward contexts go first, so the ideation budget check (_afford) meets them before the other contexts spend it
         specs.sort(key=lambda sp: sp[3] != "upward")
         # the contexts each part (and the off-map node) got this round: selection deals build slots in the same shares
@@ -925,6 +1054,8 @@ class NanoLoop:
                 prompt += ideate.CONTRADICTION_ADDENDUM.format(text=seed)
             elif card == "doubt" and off:
                 prompt += self._doubt_addendum()
+            elif card == "focus":
+                prompt += self._focus_addendum()
             if self.digest_text and card not in ("docs", "blank"):          # blank gets no hints at all
                 prompt += (PF.fill("{v:digest_title} ({v:digest_use}):\n")
                            + self.digest_text + "\n\n")
@@ -1452,6 +1583,8 @@ class NanoLoop:
         for (node_id, direction), groups in groups_by_key.items():    # the blind clustering is not repeated on resume
             all_ids = frozenset(m for g in groups for m in g["members"])
             self._cluster_cache[(node_id, direction, all_ids)] = groups
+        if (rd / "questions.json").exists():
+            self.question_picks = json.loads((rd / "questions.json").read_text(encoding="utf-8")).get("picks", [])
         for line in (rd / "proposals_upward.jsonl").read_text(encoding="utf-8").splitlines() if (rd / "proposals_upward.jsonl").exists() else []:
             try:
                 self.upward.append(json.loads(line))
@@ -2964,6 +3097,7 @@ class NanoLoop:
             report.write(self.run_dir)
             if self.mode != "baseline":
                 self._report_modes(answer)
+            self._report_questions()
             try:
                 from nano import lessons as LS
                 if self.backend != "mock":                       # mock runs teach nothing
@@ -3114,6 +3248,11 @@ def main() -> int:
     ap.add_argument("--premortems", type=int, default=1, help="independent pre-mortems per interrogated idea (1-3)")
     ap.add_argument("--identity-init", action="store_true", help="arm: builders wrap new paths as x + tanh(a) f(x), a = 0, with gate read-out")
     ap.add_argument("--replan", action="store_true", help="arm: re-plan the map between rounds from the run's record")
+    ap.add_argument("--pick-questions", dest="pick_questions", action="store_true", default=True,
+                    help="gap C (default on): each round > 1 the team picks its next question (nano/pick.py) and gives its node extra contexts")
+    ap.add_argument("--no-pick-questions", dest="pick_questions", action="store_false", help="control arm: no question picking")
+    ap.add_argument("--focus-contexts", type=int, default=2, help="extra inward contexts for the chosen question's node")
+    ap.add_argument("--max-rounds-focus", type=int, default=2, help="rounds of focus a question may get before it is not picked again")
     ap.add_argument("--weights-from-ledger", action="store_true", help="selection weights from nano/calibrate.py when >= 100 builds are on record")
     ap.add_argument("--hedge-share", type=float, default=0.0, help="share of rung-3 gap failures still sent to the long run and the night (lane hedge)")
     ap.add_argument("--no-fidelity", action="store_true", help="skip the diagnostic probe of checked candidates (did the named cell move?)")
@@ -3217,6 +3356,7 @@ def main() -> int:
     loop.controls = (None if (a.controls == ["none"]) else (a.controls if a.controls is not None else loop.controls))
     loop.staged_sketch, loop.exclusion_list, loop.cross_family_share = a.staged_sketch, a.exclusion_list, a.cross_family_share
     loop.premortems, loop.identity_init, loop.replan = a.premortems, a.identity_init, a.replan
+    loop.pick_questions, loop.focus_contexts, loop.max_rounds_focus = a.pick_questions, max(0, a.focus_contexts), max(1, a.max_rounds_focus)
     loop.weights_from_ledger, loop.hedge_share, loop.fidelity = a.weights_from_ledger, a.hedge_share, not a.no_fidelity
     loop.program_search, loop.program_k = a.program_search, a.program_k
     loop.adapt_card, loop.contradiction_cards = not a.no_adapt, not a.no_contradictions

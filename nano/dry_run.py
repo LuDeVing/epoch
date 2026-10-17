@@ -119,6 +119,11 @@ def _mock_profiles(prompt: str, role: str, meta: dict, name: str) -> str | None:
     if role == "generate" and card in ("implement", "revise", "program", "seeded", "formal", "docs", "low_prior", "transform"):
         n = _next(name)
         if name == "binpack_nobase":
+            if card == "implement" and n == 1:      # one build deliberately breaks (it raises), so round 1 has a failed check
+                src = pack_file("first", n).replace("    for i, fill in enumerate(bins):",
+                                                    "    raise ValueError('mock: deliberately broken')\n    for i, fill in enumerate(bins):", 1)
+                return ("HYPOTHESIS: first fit with a broken guard should use few bins.\nCHANGE: choose_bin\n"
+                        "FIDELITY: exact, the idea as specified\n```python\n" + src + "```")
             rule = _PACK_ORDER[n % len(_PACK_ORDER)]
             return (f"HYPOTHESIS: {_RULES[rule][0]} should use few bins.\nCHANGE: choose_bin\n"
                     "FIDELITY: exact, the idea as specified\n```python\n" + pack_file(rule, n) + "```")
@@ -270,6 +275,7 @@ def main() -> int:
                     help="problem profile passed to the loop (nano/profiles/<name>.py); the mock replies are written for llm, "
                          "binpack_nobase (Mode 2) and review_process (Mode 3)")
     a, rest = ap.parse_known_args()
+    _counter.clear()                          # every dry run sees the same reply sequence, also several in one process
     llm.set_mock(mock)
     sys.argv = ["loop", "--profile", a.profile, "--batch", a.batch, "--model", "fable", "--backend", "mock", "--budget", a.budget,
                 "--rounds", a.rounds, "--learn-steps", "12", "--long-steps", "30", "--per-node", "1", "--diag-steps", "30", "--tune-knobs", "lr_x1.4,wd_x3",
