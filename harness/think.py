@@ -617,6 +617,8 @@ def _dedup(ctx: Ctx, st: State, C: list[Candidate]) -> tuple[list[Candidate], fl
                                                       for r in rows])
     for r in rows:                # the vote weighs a verified answer by its cluster size
         if r.get("key") is not None:
+            if not hasattr(st, "cluster_members"):      # a stand-in state in tests
+                st.cluster_members = {}
             mem = st.cluster_members.setdefault(r["key"], [])
             mem.extend(i for i in r.get("members") or [] if i not in mem)
     return kept, dup_rate
@@ -1162,11 +1164,12 @@ def _vote_verified(ctx: Ctx, st: State):
     # cluster counts all its members (self-consistency), once, on its first pool candidate
     dd, counted = _m("dedup"), set()
     weight = {}
+    cmembers = getattr(st, "cluster_members", None) or {}
     for c in pool:
         key = None
-        if c.origin != "probe" and st.cluster_members and hasattr(dd, "dedup_key"):
+        if c.origin != "probe" and cmembers and hasattr(dd, "dedup_key"):
             key = dd.dedup_key(c, ctx.benchmark)
-        members = st.cluster_members.get(key) if key is not None else None
+        members = cmembers.get(key) if key is not None else None
         if not members:
             weight[c.id] = 1
         else:
