@@ -9,7 +9,7 @@ Not yet merged into think.py; it reuses harness.llm, harness.ledger and harness.
 
 Usage:
   python -m nano.loop --batch nano-1 --replicate 0 --backend cli_json --budget 400000 --rounds 2
-Outputs: D:/AGI-lab/runs/<batch>__nano__gpt2_50m__scaffold__r<rep>/ with cands/, verify.jsonl,
+Outputs: D:/AGI-lab/runs/<batch>__nano__gpt2_50m__<arm>__r<rep>/ (arm scaffold, plain or climb) with cands/, verify.jsonl,
 state.json, answer.json and pool/<cand_id>.py for every checked candidate.
 """
 from __future__ import annotations
@@ -314,12 +314,13 @@ class NanoLoop:
     mode = "baseline"                           # class default; __init__ sets the profile's mode
 
     def __init__(self, batch: str, replicate: int, backend: str, budget: int, rounds: int,
-                 smoke_seconds: float, model: str | None):
+                 smoke_seconds: float, model: str | None, arm: str = "scaffold"):
         self.batch, self.rep, self.backend, self.B, self.rounds = batch, replicate, backend, budget, rounds
         self.smoke, self.model = smoke_seconds, model
         self.pf = PF.current()                  # the problem profile (nano/profiles/<name>.py)
         self.checker = make_checker(self.pf)    # the profile's checker (nano/checks/<name>.py)
-        self.run_id = f"{batch}__nano__{spec_id()}__scaffold__r{replicate}"
+        # each arm has its own folder: a control arm on the same batch and replicate never writes into the scaffold's
+        self.run_id = f"{batch}__nano__{spec_id()}__{arm}__r{replicate}"
         self.run_dir = config.RUNS_DIR / self.run_id
         for d in ("calls", "prompts", "cands", "cands/src", "private", "pool"):
             (self.run_dir / d).mkdir(parents=True, exist_ok=True)
@@ -384,8 +385,14 @@ class NanoLoop:
         self.defaults_lines: list[str] = []     # the private obvious answers (tagging only, never routed)
         self.history: list[dict] = []           # what was built and what happened (fed to later rounds)
         self.interrogated: set[str] = set()     # sketch ids whose cluster was interrogated (persists across rounds)
-        self.arm = "scaffold"                   # scaffold | plain | climb (control arms, same ladder and budget)
-        self.n_builds = 12                      # builds for the control arms
+        self.arm = arm                          # scaffold | plain | climb (control arms, same ladder and budget)
+        self.n_builds = 0                       # cap on builds for the control arms (0 = build until the budget is spent)
+        self.reserved = 0                       # estimated tokens of build calls in flight (F9: _afford counts them)
+        self.reserved_build = 0
+        self._state_lock = threading.Lock()     # state.json is written from parallel build threads
+        self._last_control: dict = {}           # the last control.json that parsed (a malformed file keeps it)
+        self.commitments_hash = ""
+        self.judge_model: str | None = None     # Mode 3: the panel's judge model (never the generator)
         self.lens = DEFAULT_LENS                # how the planner draws the map (tree.LENSES); a factor apart from the replicate
         self.lens_design = "fixed"              # fixed = same lens every replicate; by_replicate = --lens-by-replicate
         self.immediate_fix = True               # one same-round fix for rung 0/1 failures
@@ -1784,20 +1791,28 @@ class NanoLoop:
         rj.write_text(json.dumps(d, indent=1), encoding="utf-8")
 
     def _stage(self, round_no: int, name: str) -> None:
-        """A stage boundary: record it, then obey control.json (pause, stop, skips, note)."""
-        st = json.loads((self.run_dir / "state.json").read_text(encoding="utf-8"))
-        st["stage"] = {"round": round_no, "step": name, "ts": now_ts()}
+        """A stage boundary: record it with the spend so far (a crash after it resumes with the right spend),
+        then obey control.json (pause, stop, skips, note)."""
         if name == "verified":
-            st["completed_rounds"] = round_no
-        write_json(self.run_dir / "state.json", st)
+            self.completed_rounds = max(self.completed_rounds, round_no)
+        self._write_state(stage={"round": round_no, "step": name, "ts": now_ts()})
         p = self.run_dir / "control.json"
         while True:
             ctl = {}
             if p.exists():
                 try:
                     ctl = json.loads(p.read_text(encoding="utf-8"))
-                except Exception:  # noqa: BLE001
-                    ctl = {}
+                    if not isinstance(ctl, dict):
+                        raise ValueError("control.json must hold one JSON object")
+                    self._last_control = ctl
+                except Exception as e:  # noqa: BLE001
+                    # a half-written or malformed file must not silently drop a pause or a stop: keep the last good one
+                    ctl = self._last_control
+                    msg = f"control.json unreadable ({str(e)[:120]}); keeping the last good control"
+                    print(f"[nano] WARNING {msg}", flush=True)
+                    self.decisions.append({"round": round_no, "step": "control", "warning": msg, "ts": now_ts()})
+                    append_jsonl(self.run_dir / "control_log.jsonl", {"ts": now_ts(), "round": round_no, "stage": name,
+                                                                      "warning": msg})
             h = hashlib.sha1(json.dumps(ctl, sort_keys=True).encode()).hexdigest()[:10] if ctl else ""
             if h != self._control_hash:
                 self._control_hash = h
@@ -1869,7 +1884,18 @@ class NanoLoop:
         self.decisions = st.get("decisions", [])
         self.spent = int(st.get("spent", 0))
         self.spent_aux = int(st.get("spent_aux", 0))
+        self.spent_by_stage = {str(k): int(v) for k, v in (st.get("spent_by_stage") or {}).items()}
+        self.commitments_hash = st.get("commitments_hash", "") or ""
         self.interrogated = set()
+        if (rd / "reference.json").exists():          # Mode 2/3: the reference and its measured profile survive a resume
+            try:
+                ref = json.loads((rd / "reference.json").read_text(encoding="utf-8"))
+                self.reference = ref.get("reference") or None
+                self.reference_log = list(ref.get("log") or [])
+                self._reference_profile = dict(ref.get("profile") or {})
+            except Exception as e:  # noqa: BLE001
+                print(f"[nano] WARNING reference.json unreadable on resume ({str(e)[:120]}); "
+                      "the next checked candidate becomes the reference", flush=True)
         pt = json.loads((rd / "problem_tree.json").read_text(encoding="utf-8")) if (rd / "problem_tree.json").exists() else {}
         if pt.get("nodes"):
             self.tree = [tree.migrate_node({k: v for k, v in n.items() if k != "stats"}) for n in pt["nodes"]]
@@ -1923,8 +1949,10 @@ class NanoLoop:
                     continue
                 if r.get("id"):
                     rows.append(r)
-        # the twin the run actually kept is the one with a verify record; duplicates never got one
-        rows.sort(key=lambda r: (r["id"] not in verify, r.get("round", 0), r.get("ts", "")))
+        # the twin the run actually kept is the one with a verify record; duplicates never got one. Within that,
+        # creation order (rows carry "t" since the fix pass; older rows fall back to "ts", then the id) so ties in
+        # compose_round, _retest_top and the revise queue resolve as they did before the interruption
+        rows.sort(key=lambda r: (r["id"] not in verify, r.get("round", 0), float(r.get("t") or 0.0), r.get("ts", ""), r["id"]))
         for r in rows:
             if True:
                 src_p = rd / "cands" / "src" / f"{r['id']}.py"
@@ -1944,7 +1972,8 @@ class NanoLoop:
                 if v:
                     self.vres[c.id] = {"status": v["status"], "rung_reached": v["details"]["rung_reached"],
                                        "partial_score": v.get("partial_score", 0.0), "feedback": v.get("feedback_record") or {},
-                                       "metrics": v["details"].get("metrics", {}), "rungs": []}
+                                       "metrics": v["details"].get("metrics", {}), "rungs": [],
+                                       **({"reused_from": v["reused_from"]} if v.get("reused_from") else {})}
                     self.history.append({"round": v.get("round", 0), "cand_id": c.id, "node": c.extra.get("node"),
                                          "hypothesis": c.extra.get("hypothesis", ""), "status": v["status"],
                                          "reason": (v.get("feedback_record") or {}).get("reason", ""),
@@ -1981,6 +2010,11 @@ class NanoLoop:
             self.cost_card, self.diagnostics_text, self.anomaly_text = "", "", ""
             if self.mode == "no_check":
                 self.long_steps = 0                 # a proposal is read, not run: no long check
+            ref_prof = getattr(self, "_reference_profile", None)
+            if self.reference and ref_prof:           # a resume: the reference measured before the interruption
+                self.decisions.append({"step": "baseline", "mode": self.mode, "note": "resume: the reference "
+                                       f"{self.reference.get('cand_id')} and its profile from reference.json", "ts": now_ts()})
+                return ref_prof
             self.decisions.append({"step": "baseline", "mode": self.mode,
                                    "note": "no baseline; the best checked candidate so far is the reference", "ts": now_ts()})
             return {}
@@ -2011,8 +2045,10 @@ class NanoLoop:
         try:
             from nano import cost as COST
             self.cost_card = COST.card(self.baseline_src, prof) if llm_checker else ""
-        except Exception:  # noqa: BLE001
+        except Exception as e:  # noqa: BLE001
             self.cost_card = ""
+            self.decisions.append({"step": "cost_card", "error": str(e)[:200], "note": "prompts go without the cost card",
+                                   "ts": now_ts()})
         if self.do_diagnostics and not llm_checker:   # a profile's own "module:function" diagnostics text
             self.diagnostics_text = self._profile_diagnostics(prof)
         if self.do_diagnostics and prof.get("diagnostics_md"):
@@ -2075,9 +2111,29 @@ class NanoLoop:
         self._live()
         return r
 
+    def _resolve_judge_model(self) -> str:
+        """Mode 3: the panel's judges must not be the generator (a same-model judge picks among its own drafts and
+        moves the reference on that). The judge model comes from --judge-model, the checker's judge_model or the
+        profile's judge_model; without one, or with the generator's own model, the run refuses to start."""
+        gen = self.model or config.DEFAULT_MODEL
+        jm = (self.judge_model or getattr(self.checker.impl, "judge_model", None)
+              or (self.pf.checker_args or {}).get("judge_model") or self.pf.get("judge_model"))
+        if not jm and self.backend == "mock":
+            jm = "mock-judge"                       # the mock backend has no models; any name apart from the generator
+        if not jm:
+            raise SystemExit("Mode 3 (panel checker) needs a judge model apart from the generator: pass --judge-model, "
+                             "or set judge_model in the profile's checker_args")
+        if jm == gen:
+            raise SystemExit(f"Mode 3: the judge model ({jm}) is the generator's model; pick a different --judge-model")
+        self.judge_model = jm
+        if hasattr(self.checker.impl, "judge_model"):
+            self.checker.impl.judge_model = jm     # the checker's own fallback call uses it too
+        self.decisions.append({"step": "judge_model", "judge_model": jm, "generator": gen, "ts": now_ts()})
+        return jm
+
     def _judge_call(self, prompt: str, meta: dict) -> str:
         """One blind judge call for the panel checker (Mode 3), logged and charged like every other call."""
-        model = getattr(self.checker.impl, "judge_model", None)
+        model = self.judge_model or self._resolve_judge_model()
         r = self._call(prompt, "judge", 1500, dict(meta), model=model)
         self._ledger("panel", str(meta.get("operator", "")), str(meta.get("seed", "")), r.call_id, r.usage,
                      self.round_now, "verify")
@@ -2174,12 +2230,12 @@ class NanoLoop:
              "ts": now_ts()}
         write_json(self.run_dir / "commitments.json", c)
         h = hashlib.sha1(json.dumps(c, sort_keys=True, default=str).encode()).hexdigest()[:12]
+        self.commitments_hash = h                  # kept in memory: every later state write carries it
         try:
-            st = json.loads((self.run_dir / "state.json").read_text(encoding="utf-8"))
-            st["commitments_hash"] = h
-            write_json(self.run_dir / "state.json", st)
-        except Exception:  # noqa: BLE001
-            pass
+            self._write_state()
+        except Exception as e:  # noqa: BLE001
+            print(f"[nano] WARNING commitments hash not written to state.json yet ({str(e)[:120]}); "
+                  "the next state write carries it", flush=True)
 
     def _log_selection(self, by_node: dict, main: list, picks: list, done: set, weights: dict, wsum: float) -> None:
         """selection.jsonl: one row per group per round with the reason it was chosen or dropped (why this, not that)."""
@@ -2208,14 +2264,29 @@ class NanoLoop:
         for r in rows:
             append_jsonl(self.run_dir / "selection.jsonl", r)
 
-    def _afford(self, stage: str, est: int, note: str = "") -> bool:
-        """A call is paid for only if it fits the budget and, for a non-build call, leaves the builds their floor."""
-        ok, why = budget_mod.afford(self.spent, est, self.B, stage, self.spent_by_stage.get("build", 0), self.stage_shares)
-        if not ok:
-            with self.lock:
+    def _afford(self, stage: str, est: int, note: str = "", reserve: bool = False) -> bool:
+        """A call is paid for only if it fits the budget and, for a non-build call, leaves the builds their floor.
+        Build calls still in flight count at their estimate (self.reserved): up to six builds start before any
+        returns, and each must see the others. reserve=True books est atomically with the check; the caller
+        releases it with _release once the call has been charged."""
+        with self.lock:
+            spent = self.spent + self.reserved
+            ok, why = budget_mod.afford(spent, est, self.B, stage, self.spent_by_stage.get("build", 0) + self.reserved_build,
+                                        self.stage_shares)
+            if ok and reserve:
+                self.reserved += est
+                if stage == "build":
+                    self.reserved_build += est
+            if not ok:
                 self.decisions.append({"round": self.round_now, "step": "budget", "refused": stage, "why": why, "est": est,
-                                       "spent": self.spent, "note": note[:80]})
+                                       "spent": self.spent, "reserved": self.reserved, "note": note[:80]})
         return ok
+
+    def _release(self, stage: str, est: int) -> None:
+        with self.lock:
+            self.reserved = max(0, self.reserved - est)
+            if stage == "build":
+                self.reserved_build = max(0, self.reserved_build - est)
 
     def _call_with_web(self, prompt: str, role: str, max_tokens: int, meta: dict, round_no: int, round_type: str,
                        model: str | None = None, context: str = "", tail: str = "") -> llm.CallResult:
@@ -2255,7 +2326,7 @@ class NanoLoop:
                 round_type: str, status: str | None = None, vtype: str | None = None, cand_id=None):
         from harness import ledger
         ledger.append(LedgerRow(run_id=self.run_id, batch=self.batch, benchmark="nano", item_id=spec_id(),
-                                split="dev-tune", family="nano", cls="nano", arm="scaffold", card=card,
+                                split="dev-tune", family="nano", cls="nano", arm=self.arm, card=card,
                                 operator=operator, round_type=round_type, round=round_no, seed=seed,
                                 perm=0, call_id=call_id, tokens=usage.to_dict(), verification_type=vtype,
                                 status=status, cand_id=cand_id))
@@ -2359,10 +2430,11 @@ class NanoLoop:
 
     def spec_prompt(self, card: str, seed: str, operator: str, parent: Candidate | None,
                     feedback: dict | None) -> str:
+        # the control arms' builders see the rules in the same (canonical) order as the scaffold's builders
         if card == "seeded":
-            return self._common(self.working_src, True, seed) + f"Starting point: {seed}\n\n" + self.control_history() + output_format()
+            return self._common(self.working_src, False) + f"Starting point: {seed}\n\n" + self.control_history() + output_format()
         if card == "low_prior":
-            return (self._common(_strip_comments(self.working_src), True, "low_prior") + self.control_history()
+            return (self._common(_strip_comments(self.working_src), False) + self.control_history()
                     + f"The {_artifact_word()} above is given without its comments. Propose one change to the parts "
                       "of the computation that the constraints do not fix.\n\n" + output_format())
         if card == "transform":
@@ -2429,7 +2501,7 @@ class NanoLoop:
                     + output_format())
         if card == "docs":          # SOC-02 / I6: a retrieved-document pack as a seed (structural, no persona)
             digest = _doc_text("reference")
-            return (self._common(self.working_src, True, "docs")
+            return (self._common(self.working_src, False)
                     + PF.fill("REFERENCE MATERIAL ({v:reference_what}; {v:reference_use}):\n\n")
                     + digest + "\n\n" + self.control_history() + output_format())
         if card == "revise":
@@ -2477,10 +2549,20 @@ class NanoLoop:
         prompt = self.spec_prompt(card, seed, operator, parent, feedback)
         max_out = getattr(self, "max_out", 12000)   # a full train.py is ~5k tokens plus reasoning
         est = len(prompt) // 4 + max_out
-        if not self._afford("build", est, card):
+        if not self._afford("build", est, card, reserve=True):
             self.decisions.append({"round": round_no, "step": "spawn", "action": "budget_skip",
                                    "card": card, "spent": self.spent, "est": est})
             return None
+        held = [est]                              # the reservation, released once the call is charged
+        try:
+            return self._run_card_paid(card, round_no, operator, seed, parent, feedback, round_type, prompt, max_out, held)
+        finally:
+            if held[0]:
+                self._release("build", held[0])
+            self._write_state()                   # after every build: a crash mid-round resumes with this spend
+
+    def _run_card_paid(self, card: str, round_no: int, operator: str, seed: str, parent: Candidate | None,
+                       feedback: dict | None, round_type: str, prompt: str, max_out: int, held: list) -> Candidate | None:
         note = {"seeded": f"seed word: {seed}", "low_prior": "comments stripped, constraints only",
                 "transform": f"opposite of: {operator}", "formal": "direct rewrite",
                 "docs": (self.pf.docs or {}).get("reference_note", "reads the reference document"),
@@ -2491,7 +2573,11 @@ class NanoLoop:
         fetch = bool(self.fetch_on_demand) and card in ("implement", "revise")
         if fetch:
             prompt = self._add_need_line(prompt)
-        r = self._call(prompt, "generate", max_out, meta)
+        try:
+            r = self._call(prompt, "generate", max_out, meta)
+        finally:
+            self._release("build", held[0])       # charged now at its real size
+            held[0] = 0
         parsed = _parse(r.text or "")
         refetched = False
         if fetch:
@@ -2539,6 +2625,7 @@ class NanoLoop:
                                                               "change": parsed["change"], "src_hash": key, **node_tag})
             (self.run_dir / "cands" / "src" / f"{cid}.py").write_text(parsed["source"], encoding="utf-8")
         row = cand.to_dict() if cand else {"id": None, "card": card, "call_id": r.call_id, "parse_failed": True}
+        row.update(_created())
         if cand:
             row["program"] = f"cands/src/{cand.id}.py"      # keep the jsonl small; the source is a file
         append_jsonl(self.run_dir / "cands" / f"{r.call_id}.jsonl", row)
@@ -2694,25 +2781,45 @@ class NanoLoop:
         except Exception:  # noqa: BLE001
             return {}
 
+    def _baseline_hash(self) -> str:
+        """The baseline text itself: an edit of train.py without a new baseline version must not serve old verdicts."""
+        return hashlib.sha1(self.baseline_src.encode()).hexdigest()[:12]
+
     def _remember_hash(self, cand: Candidate, rec: dict) -> None:
         if self.backend == "mock":
             return
         key = cand.extra.get("src_hash")
-        if not key:
-            return
+        if not key or rec.get("reused_from"):
+            return                                        # a reused verdict keeps the run and candidate that measured it
         p = config.MEMORY_DIR / "experiments" / "verified_by_hash.json"
-        self.hash_memory[key] = {**self.hash_memory.get(key, {}), "ladder": {
-            "status": rec["status"], "rung_reached": rec["rung_reached"], "metrics": rec["metrics"],
-            "feedback": rec.get("feedback"), "run": self.run_id, "cand_id": cand.id,
-            "baseline_version": self.baseline_version, "learn_steps": self.learn_steps, "ts": now_ts()}}
-        p.parent.mkdir(parents=True, exist_ok=True)
-        write_json(p, self.hash_memory)
+        entry = {"status": rec["status"], "rung_reached": rec["rung_reached"], "metrics": rec["metrics"],
+                 "feedback": rec.get("feedback"), "run": self.run_id, "cand_id": cand.id,
+                 "baseline_version": self.baseline_version, "baseline_hash": self._baseline_hash(),
+                 "learn_steps": self.learn_steps, "ts": now_ts()}
+        self.hash_memory[key] = {**self.hash_memory.get(key, {}), "ladder": entry}
+        # read, merge one key, write, under a lock file: two replicates (or batch_verify) writing at once must not
+        # lose each other's entries
+        try:
+            with _file_lock(p):
+                try:
+                    disk = json.loads(p.read_text(encoding="utf-8"))
+                except Exception:  # noqa: BLE001
+                    disk = {}
+                disk[key] = {**disk.get(key, {}), "ladder": entry}
+                tmp = p.with_name(p.name + f".{self.run_id}.tmp")
+                write_json(tmp, disk)
+                tmp.replace(p)
+        except Exception as e:  # noqa: BLE001
+            print(f"[nano] WARNING verdict for {cand.id} not saved to {p.name}: {str(e)[:160]}", flush=True)
 
     def _recall_hash(self, cand: Candidate) -> dict | None:
-        """An identical script already went up the ladder against this baseline: reuse its record."""
+        """An identical script already went up the ladder against this baseline (same version and same text):
+        reuse its record. Every reuse is logged (decisions; controls.json and tuning.json say "reused from run X")."""
         e = (self.hash_memory.get(cand.extra.get("src_hash") or "") or {}).get("ladder")
         if not e or e.get("baseline_version") != self.baseline_version or e.get("run") == self.run_id:
             return None
+        if e.get("baseline_hash") != self._baseline_hash():
+            return None                                   # baseline text changed (or an old entry without the hash)
         if e.get("learn_steps") not in (None, self.learn_steps):
             return None                                   # measured under other settings
         if e.get("status") != "checked" and int(e.get("rung_reached") or 0) >= 2:
@@ -2836,6 +2943,19 @@ class NanoLoop:
             rec["lane"] = c.extra.get("lane", "main")
             rec["retested_against"] = ref_id
             self.vres[c.id] = rec
+            # the pool follows the retest: report.collect, batch_verify and promote read pool/<id>.json
+            pj, pp = self.run_dir / "pool" / f"{c.id}.json", self.run_dir / "pool" / f"{c.id}.py"
+            if rec["status"] == "checked":
+                if pj.exists():
+                    d = json.loads(pj.read_text(encoding="utf-8"))
+                    d["metrics"], d["retested_against"] = rec["metrics"], ref_id
+                    write_json(pj, d)
+            else:
+                for f in (pj, pp, self.run_dir / "pool" / f"{c.id}.md"):
+                    try:
+                        f.unlink()
+                    except FileNotFoundError:
+                        pass
             append_jsonl(self.run_dir / "verify.jsonl",
                          {"id": c.id, "status": rec["status"], "verification_type": "execution", "attempts": 2,
                           "partial_score": rec["partial_score"], "feedback_record": rec["feedback"],
@@ -2898,6 +3018,7 @@ class NanoLoop:
         return kept
 
     def run(self) -> dict:
+        _utf8_stdout()
         t0 = time.time()
         self.digest_text = (Path(self.digest_file).read_text(encoding="utf-8").strip()
                             if self.digest_file and Path(self.digest_file).exists() else "")
@@ -2906,9 +3027,11 @@ class NanoLoop:
                        "arm": self.arm, "backend": self.backend, "model": self.model or config.DEFAULT_MODEL,
                        "B": self.B, "aux_budget": self.aux_budget, "rounds": self.rounds, "lens": self.lens,
                        "lens_design": self.lens_design, "baseline_version": self.baseline_version, "decisions": []})
-        self._write_commitments()
         if self.resume:
-            self.load_state()
+            self.load_state()                     # first: every later state write carries the spend read back here
+        self._write_commitments()
+        if self.mode == "no_check":
+            self._resolve_judge_model()
         self.profile = self._load_profile()
         if not (self.resume and (self.run_dir / "problem.md").exists() and self.defaults_lines):
             self._live("encoding", "writing problem.md and the private defaults")
@@ -2946,6 +3069,7 @@ class NanoLoop:
                 rec = self.verify(c, c.round or self.completed_rounds + 1)
                 print(f"[nano] resume   {c.card:9s} {c.id} -> {rec['status']} rung {rec['rung_reached']} (verified after resume)", flush=True)
             near = sorted([c for c in self.cands if self.vres.get(c.id, {}).get("status") == "fail"
+                           and not c.card.startswith("control") and c.card not in ("tune", "compose")
                            and (self.vres[c.id]["rung_reached"] >= 1 or (self.vres[c.id].get("feedback") or {}).get("rung") in (0, 1))
                            and not any(p.parent_ids and c.id in p.parent_ids for p in self.cands)],
                           key=lambda c: -self.vres[c.id]["rung_reached"])
@@ -3112,6 +3236,13 @@ class NanoLoop:
         rows = []
         for name, spec in built.items():
             cid = f"tune_{name}".replace(".", "_")
+            if cid in self.vres:                  # a resume of round 1: this knob already went up the ladder
+                rec = self.vres[cid]
+                rows.append({"id": cid, "knob": name, "field": spec["field"], "old": spec["old"], "new": spec["new"],
+                             "status": rec["status"] if rec["status"] != "tune_pruned" else "checked",
+                             "rung": rec["rung_reached"], "learn_z": (rec.get("metrics") or {}).get("learn_z"), "kept": False,
+                             "resumed": True, **({"reused_from": rec["reused_from"]} if rec.get("reused_from") else {})})
+                continue
             key = hashlib.sha1(_norm_source(spec["source"]).encode()).hexdigest()[:12]
             cand = Candidate(id=cid, text=spec["hypothesis"], card="tune", operator=name, seed="", perm=0,
                              round=round_no, call_id="", parent_ids=[], lineage_id=cid, program=spec["source"],
@@ -3120,13 +3251,15 @@ class NanoLoop:
                                     "prediction": f"{spec['field']} {spec['old']:g} -> {spec['new']:g}"})
             (self.run_dir / "cands" / "src" / f"{cid}.py").write_text(spec["source"], encoding="utf-8")
             row = cand.to_dict()
+            row.update(_created())
             row["program"] = f"cands/src/{cid}.py"
             append_jsonl(self.run_dir / "cands" / f"tune_{cid}.jsonl", row)
             self.cands.append(cand)
             self._live(f"round {round_no}: tuning", f"{name}: {spec['field']} {spec['old']:g} -> {spec['new']:g}, through the ladder")
             rec = self.verify(cand, round_no)
             rows.append({"id": cid, "knob": name, "field": spec["field"], "old": spec["old"], "new": spec["new"],
-                         "status": rec["status"], "rung": rec["rung_reached"], "learn_z": rec["metrics"].get("learn_z"), "kept": False})
+                         "status": rec["status"], "rung": rec["rung_reached"], "learn_z": rec["metrics"].get("learn_z"), "kept": False,
+                         **({"reused_from": f"reused from run {rec['reused_from']}"} if rec.get("reused_from") else {})})
             print(f"[nano] tune {name:14s} -> {rec['status']} rung {rec['rung_reached']} | learn z {rec['metrics'].get('learn_z')}", flush=True)
         passed = sorted([r for r in rows if r["status"] == "checked" and r["learn_z"] is not None], key=lambda r: r["learn_z"])
         keep = {r["id"] for r in passed[: self.tune_top] if r["learn_z"] < 0}   # better than the original at 45 steps, best first
@@ -3152,6 +3285,14 @@ class NanoLoop:
                 report[name] = {"ok": None, "note": spec.get("unavailable")}
                 continue
             cid = f"ctl_{name}"
+            if cid in self.vres:                  # a resume of round 1: this control already went up the ladder
+                rec = self.vres[cid]
+                report[name] = {**CT.judge(name, rec["status"], rung=rec.get("rung_reached")), "kind": spec["kind"],
+                                "status": rec["status"], "rung": rec["rung_reached"],
+                                "learn_z": (rec.get("metrics") or {}).get("learn_z"), "resumed": True}
+                if rec.get("reused_from"):
+                    report[name]["reused_from"] = f"reused from run {rec['reused_from']}"
+                continue
             key = hashlib.sha1(_norm_source(spec["source"]).encode()).hexdigest()[:12]
             cand = Candidate(id=cid, text=spec["hypothesis"], card=f"control:{name}", operator="control", seed="", perm=0,
                              round=round_no, call_id="", parent_ids=[], lineage_id=cid, program=spec["source"],
@@ -3159,6 +3300,7 @@ class NanoLoop:
                                     "direction": "control", "control": name})
             (self.run_dir / "cands" / "src" / f"{cid}.py").write_text(spec["source"], encoding="utf-8")
             row = cand.to_dict()
+            row.update(_created())
             row["program"] = f"cands/src/{cid}.py"
             append_jsonl(self.run_dir / "cands" / f"control_{cid}.jsonl", row)
             self.cands.append(cand)
@@ -3166,6 +3308,9 @@ class NanoLoop:
             rec = self.verify(cand, round_no)
             report[name] = {**CT.judge(name, rec["status"], rung=rec.get("rung_reached")), "kind": spec["kind"], "status": rec["status"],
                             "rung": rec["rung_reached"], "learn_z": rec["metrics"].get("learn_z")}
+            if rec.get("reused_from"):            # not measured today: the verdict of an identical script on this baseline
+                report[name]["reused_from"] = f"reused from run {rec['reused_from']}"
+                report[name]["note"] = f"{report[name].get('note', '')} (reused from run {rec['reused_from']}, not run today)"
             print(f"[nano] control {name:14s} -> {rec['status']} rung {rec['rung_reached']} | {report[name]['note']}", flush=True)
         write_json(self.run_dir / "controls.json", report)
         self.decisions.append({"round": round_no, "step": "controls", "report": {k: v.get("ok") for k, v in report.items()}, "ts": now_ts()})
@@ -3472,6 +3617,7 @@ class NanoLoop:
                                                          "src_hash": key, "node": "recipe", "direction": "inward", "cluster": "composite"})
             (self.run_dir / "cands" / "src" / f"{cid}.py").write_text(r["source"], encoding="utf-8")
             row = cand.to_dict()
+            row.update(_created())
             row["program"] = f"cands/src/{cid}.py"
             append_jsonl(self.run_dir / "cands" / f"compose_{cid}.jsonl", row)
             kept = self.dedup([cand], round_no)
@@ -3485,34 +3631,69 @@ class NanoLoop:
         return out
 
     def run_control(self, t0: float) -> dict:
-        """The control arms, same ladder and budget: `plain` = N independent direct builds (best-of-N);
-        `climb` = the autoresearch loop, each build from the current best checked script, keep or discard."""
+        """The control arms, on the same ladder and the same budget as the scaffold: `plain` = independent direct
+        builds (best-of-N) until the token budget is spent (or --n-builds, when set); `climb` = the autoresearch loop,
+        each build from the current best checked script, keep or discard. A baseline must get an equal budget and the
+        same tuning effort (research_notes/team_gaps/05_evidence.md, rows 4-6), so both arms also run the round-1
+        controls and the scripted tuning sweep exactly as the scaffold does, and their builders see the rules in
+        the same (canonical) order as the scaffold's builders."""
         seeds = _seeds()
         cards = ["seeded", "formal", "docs", "low_prior"]
+        cap = self.n_builds if self.n_builds > 0 else 10 ** 6
         best_key = None
-        specs = []
-        for i in range(self.n_builds):
+        self.round_now = 1
+        if self.resume:                                  # built before the interruption, never verified
+            for c in [c for c in self.cands if c.id not in self.vres]:
+                self.verify(c, c.round or 1)
+        built = sum(1 for c in self.cands if c.card in cards)
+        stopped = ""
+
+        def next_spec(i: int) -> tuple[str, str]:
             seed = self.rng.choice([w for w in seeds if w not in self.used_seeds] or seeds)
             self.used_seeds.add(seed)
-            specs.append((cards[i % len(cards)], seed))
+            return cards[i % len(cards)], seed
         if self.arm == "plain":
-            self._live("control arm: plain", f"{len(specs)} independent builds, best-of-N")
-            with ThreadPoolExecutor(max_workers=6) as ex:
-                results = list(ex.map(lambda s: self.run_card(s[0], 1, "none", s[1], None, None, "first"), specs))
-            kept = self.dedup([c for c in results if c], 1)
-            self.cands.extend(kept)
-            for c in kept:
-                rec = self.verify(c, 1)
-                print(f"[nano] plain {c.card:9s} {c.id} -> {rec['status']} rung {rec['rung_reached']} | {c.extra.get('change','')[:70]}", flush=True)
-                if rec["status"] != "checked":
-                    self._immediate_fix(c, 1)
-        else:
-            self._live("control arm: climb", f"{len(specs)} sequential builds, keep or discard")
-            for i, (card, seed) in enumerate(specs, 1):
-                if self.spent >= self.B:
+            self._live("control arm: plain", "independent builds until the budget is spent, best-of-N")
+            while True:
+                k = min(6, cap - built, budget_mod.affordable_slots(self.spent + self.reserved, self.B, 6))
+                if k <= 0:
+                    stopped = "n_builds" if built >= cap else "budget"
                     break
+                specs = [next_spec(built + j) for j in range(k)]
+                spent0 = self.spent
+                with ThreadPoolExecutor(max_workers=k) as ex:
+                    results = list(ex.map(lambda s: self.run_card(s[0], 1, "none", s[1], None, None, "first"), specs))
+                built += k
+                kept = self.dedup([c for c in results if c], 1)
+                self.cands.extend(kept)
+                for c in kept:
+                    rec = self.verify(c, 1)
+                    print(f"[nano] plain {c.card:9s} {c.id} -> {rec['status']} rung {rec['rung_reached']} | {c.extra.get('change','')[:70]}", flush=True)
+                    if rec["status"] != "checked":
+                        self._immediate_fix(c, 1)
+                self._write_state()
+                if self.spent >= self.B:
+                    stopped = "budget"
+                    break
+                if self.spent == spent0:
+                    stopped = "no build was affordable"
+                    break
+        else:
+            self._live("control arm: climb", "sequential builds until the budget is spent, keep or discard")
+            i = built
+            while built < cap:
+                if self.spent >= self.B:
+                    stopped = "budget"
+                    break
+                card, seed = next_spec(i)
+                i += 1
+                spent0 = self.spent
                 c = self.run_card(card, i, "none", seed, None, None, "first")
+                built += 1
                 if not c:
+                    if self.spent == spent0:
+                        stopped = "no build was affordable"
+                        break
                     continue
                 kept = self.dedup([c], i)
                 if not kept:
@@ -3532,7 +3713,15 @@ class NanoLoop:
                     self.history[-1]["kept"] = True
                 self.decisions.append({"round": i, "step": "climb", "cand": c.id, "keep": keep, "key": key, "spent": self.spent})
                 self._write_state()
-        self.decisions.append({"round": 0, "step": "control", "arm": self.arm, "n_builds": len(specs), "spent": self.spent, "ts": now_ts()})
+            else:
+                stopped = "n_builds"
+        # the same scripted ladder controls and tuning sweep the scaffold runs at round 1 (zero model tokens)
+        if self.controls and self.mode == "baseline":
+            self.run_controls(1)
+        if self.tune and self.mode == "baseline":
+            self.run_tuning(1)
+        self.decisions.append({"round": 0, "step": "control", "arm": self.arm, "n_builds": built, "stopped": stopped,
+                               "spent": self.spent, "budget": self.B, "ts": now_ts()})
         self._write_state()
         return self._finish(t0)
 
@@ -3699,16 +3888,88 @@ class NanoLoop:
     def _select(self, clusters, k, exclude=None, sketches=None):
         return ideate.select_clusters(clusters, k, exclude=exclude, sketches=sketches, weights=self.select_weights)
 
-    def _write_state(self) -> None:
-        st = json.loads((self.run_dir / "state.json").read_text(encoding="utf-8"))
-        st["decisions"] = self.decisions
-        st["spent"] = self.spent
-        st["spent_aux"] = self.spent_aux
-        st["completed_rounds"] = max(int(st.get("completed_rounds", 0)), self.completed_rounds)
-        write_json(self.run_dir / "state.json", st)
+    def _write_state(self, stage: dict | None = None) -> None:
+        """state.json with the spend, the per-stage spend and the decisions so far. Called at every stage boundary
+        and after every build, from parallel build threads too, so a crash resumes with what was really spent."""
+        with self._state_lock:
+            p = self.run_dir / "state.json"
+            try:
+                st = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:  # noqa: BLE001
+                st = {"run_id": self.run_id, "arm": self.arm}
+            with self.lock:
+                st["decisions"] = list(self.decisions)
+                st["spent"] = self.spent
+                st["spent_aux"] = self.spent_aux
+                st["spent_by_stage"] = dict(self.spent_by_stage)
+            st["completed_rounds"] = max(int(st.get("completed_rounds", 0)), self.completed_rounds)
+            if self.commitments_hash:
+                st["commitments_hash"] = self.commitments_hash
+            if stage is not None:
+                st["stage"] = stage
+            tmp = p.with_name("state.json.tmp")
+            write_json(tmp, st)
+            for attempt in range(5):           # Windows: a reader may hold the file briefly
+                try:
+                    tmp.replace(p)
+                    break
+                except PermissionError:
+                    time.sleep(0.05 * (attempt + 1))
+            else:
+                write_json(p, st)
 
 
 DEFAULT_LENS = "parts"
+
+
+def _created() -> dict:
+    """Creation time of a candidate row: load_state orders a resume by it (the wall-clock "ts" has one-second ties)."""
+    return {"ts": now_ts(), "t": time.time()}
+
+
+class _file_lock:
+    """A lock file next to a shared file (memory/experiments/verified_by_hash.json): replicates and batch_verify
+    write it from separate processes. Waits up to timeout seconds; a lock older than stale seconds is taken over."""
+
+    def __init__(self, path: Path, timeout: float = 30.0, stale: float = 120.0):
+        self.lock = Path(str(path) + ".lock")
+        self.timeout, self.stale = timeout, stale
+
+    def __enter__(self):
+        import os
+        self.lock.parent.mkdir(parents=True, exist_ok=True)
+        t0 = time.time()
+        while True:
+            try:
+                os.close(os.open(str(self.lock), os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+                return self
+            except FileExistsError:
+                try:
+                    if time.time() - self.lock.stat().st_mtime > self.stale:
+                        self.lock.unlink()
+                        continue
+                except FileNotFoundError:
+                    continue
+                if time.time() - t0 > self.timeout:
+                    raise TimeoutError(f"lock {self.lock} held for more than {self.timeout:.0f}s")
+                time.sleep(0.05)
+
+    def __exit__(self, *exc):
+        try:
+            self.lock.unlink()
+        except FileNotFoundError:
+            pass
+        return False
+
+
+def _utf8_stdout() -> None:
+    """Candidate text holds arrows and other non-ASCII; a Windows cp1252 pipe would raise on print and kill the run."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            if (getattr(stream, "encoding", "") or "").lower().replace("-", "") != "utf8":
+                stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:  # noqa: BLE001
+            pass
 
 
 def choose_lens(lens_arg: str | None, replicate: int, by_replicate: bool, lenses) -> tuple[str, str, str]:
@@ -3737,6 +3998,7 @@ def select_profile(argv: list[str] | None = None) -> PF.Profile:
 
 
 def main() -> int:
+    _utf8_stdout()
     pf = select_profile()
     ck = make_checker(pf)
     ap = argparse.ArgumentParser()
@@ -3777,7 +4039,10 @@ def main() -> int:
     ap.add_argument("--no-adapt", action="store_true", help="skip the port-and-adapt contexts")
     ap.add_argument("--no-contradictions", action="store_true", help="skip the measured trade-off contexts in later rounds")
     ap.add_argument("--arm", default="scaffold", choices=["scaffold", "plain", "climb"], help="control arms: plain = best-of-N direct builds; climb = sequential keep-or-discard")
-    ap.add_argument("--n-builds", type=int, default=12, help="builds for the control arms")
+    ap.add_argument("--n-builds", type=int, default=0,
+                    help="cap on builds for the control arms (default 0: build until the token budget is spent, as the scaffold does)")
+    ap.add_argument("--judge-model", default=None,
+                    help="Mode 3 (panel checker): the judges' model; must differ from --model (default: the profile's judge_model)")
     ap.add_argument("--lens", default=None, help="how the planner draws the map: " + ", ".join(tree.LENSES)
                     + f" (default {DEFAULT_LENS} for every replicate: the lens is a separate factor from the replicate)")
     ap.add_argument("--lens-by-replicate", action="store_true",
@@ -3851,7 +4116,8 @@ def main() -> int:
     if a.lens and a.lens_by_replicate:
         ap.error("--lens and --lens-by-replicate exclude each other")
     loop = NanoLoop(a.batch, a.replicate, a.backend or config.default_backend(), a.budget, a.rounds,
-                    a.smoke_seconds, a.model)
+                    a.smoke_seconds, a.model, arm=a.arm)
+    loop.judge_model = a.judge_model
     loop.per_node, loop.k_impl, loop.inward_share = a.per_node, a.implement, a.inward_share
     loop.off_tree_share = max(0.0, min(0.6, a.off_tree_share))
     loop.plan_with_model = not a.no_planner

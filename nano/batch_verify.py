@@ -395,6 +395,12 @@ def main() -> int:
         R.write(run)
     except Exception as e:  # noqa: BLE001
         print(f"[rung5] report failed: {e}")
+    try:                                    # outcome lessons: the overnight verdicts are what they are made from
+        from nano import lessons as LS
+        n = LS.update_from_run(run, LAB / "memory" / "lessons.jsonl", version)
+        print(f"[rung5] lessons: {n}")
+    except Exception as e:  # noqa: BLE001
+        print(f"[rung5] lessons not updated: {e}")
     return 0
 
 
