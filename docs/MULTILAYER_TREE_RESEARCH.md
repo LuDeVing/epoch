@@ -33,7 +33,7 @@ skel-1) produced their results from a one-level map, so nothing forced the issue
   parent gets a debugging child; a working parent gets a refinement child.
 - Numbers: max debug depth 3; node budgets 21, 12, 12, 12 per stage; 1 hour max per node; 15 hours per paper.
 - Replication nodes rerun a parent on new seeds; aggregation nodes combine replicates into statistics.
-- Caution for us: the judge is an LLM. Our critic calibration says LLM judgement of ideas is near chance.
+- Caution for us: the judge is an LLM. The literature finds unaided selection of ideas often near chance (catalog EVL-04, a finding about people, which we take as a warning for an LLM judge). Our own critic calibration (docs/VERDICT.md) found something narrower: the critic named the planted flaw on 4 of 5 mutants, but its severity did not separate a flawed idea from a good one.
   There it judges measured results, which is a different thing.
 
 ### Adaptive Graph of Thoughts (2025)

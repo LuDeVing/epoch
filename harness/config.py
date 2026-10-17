@@ -178,7 +178,7 @@ PARAMS = {
     "n_probe": 3,                # agreement probe calls, once per item
     "N_min": 20,                 # ledger rows per cell before Thompson allocation
     "exploration_floor": 0.10,
-    "encode_cap_mult": 2.0,      # encode tokens capped at 2x one CoT call
+    "encode_cap_mult": 2.0,      # encode cap = this x max_tokens["plain"] (32000); checked only before the optional resolve call
     # Raised 2026-10-11 after a plain ARC run hit the 4000-token output cap (headroom-test errors).
     # Raised again 2026-10-11: 9/32 plain ARC-2 runs exceeded 8000 output tokens (long reasoning
     # before the program). A truncated plain answer would understate the baseline unfairly.
@@ -186,7 +186,7 @@ PARAMS = {
                    "probe": 8000, "verify": 1500, "plain": 16000},
     "max_turns": 1,              # no tool loops at P0; the runner executes programs itself
     "call_timeout_s": int(os.environ.get("HTSA_CALL_TIMEOUT", "600")),   # long-thinking calls (ARC-2 at high effort) need more
-    "exec_timeout_s": 10,        # per candidate program on ARC
+    "exec_timeout_s": 10,        # ARC: seconds of CPU time per input grid (and the import); wall guard 4x (arc_exec.WALL_FACTOR)
     "feedback_cap_tokens": 1500,
 }
 

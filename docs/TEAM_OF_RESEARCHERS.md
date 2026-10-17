@@ -22,16 +22,18 @@ Everyone reads and writes the same space. Agents do the work; people watch, comm
 
 | Role | What it does | Model today | Status |
 |---|---|---|---|
-| **Mapper** | Reads the problem and its measurements, draws the problem tree: parts, weak spots, open questions | Sonnet | [built] |
+| **Reader** | Before the map: one whole-problem reading call, how the field splits the problem and where it is weak (`--no-preread` control) | Sonnet (research model) | [built] |
+| **Mapper** | Reads the problem, the reading and the measurements, draws the problem tree: parts, sub-parts, weak spots | the strong model | [built] |
 | **Inventors** | Many separate idea sessions, each pushed a different way (see "idea cards") | Fable / Opus | [built] |
 | **Clusterer** | Groups similar ideas so each real idea is counted once | Sonnet | [built] |
-| **Critics** | Question the best ideas three levels deep, imagine how each could fail | Opus | [built] |
+| **Critics** | Question the best ideas three levels deep, imagine how each could fail, with the published failures for the part in hand; the idea's author answers once (reply round) | Opus | [built] |
+| **Curator** | After each round, proposes additions to each part's memory; a script keeps only cited, new entries (`--no-memory` control) | the cheap model | [built] |
 | **Justifier** | Checks the logic: start -> idea -> result, and whether the idea fits facts elsewhere in the tree | Opus | [planned] |
 | **Prior-art scout** | Searches the web: is this idea already known? | Sonnet | [built] |
 | **Builders** | Turn chosen ideas into working code | Opus | [built] |
 | **Testers** | Run the objective check: quick test, then full test | the machine | [built] |
 | **Router** | Decides per problem: converge (one right answer) or diverge (invent) | rules + probes | [planned] |
-| **People** | Read everything, add opinions, vote, add problems | humans | [planned] |
+| **People** | Read everything, add opinions, vote, add problems | humans | [partly built: control.json adds nodes, skips parts, seeds mechanisms, vetoes or chooses the next question, adds opinions in Mode 3; no shared space yet] |
 
 ## How one research round flows
 
@@ -111,8 +113,45 @@ steers everyone into a dead end. Guards:
 3. Wins are logged by source; if off-tree wins keep coming, the tree gets less weight next round.
 4. Off-tree wins become new branches. A quiet branch is lowered in priority, never deleted.
 
-The tree has up to four levels: parts, sub-parts, questions, helper questions; tested ideas and
-their results hang under the question they answered. Deeper than four starts a new tree.
+The tree has up to four levels: parts, sub-parts, questions, helper questions [built, fix 8]. A failed
+check with a reason becomes a question under its part, with the test that would answer it; an off-map
+win hangs under the part it named. A node deeper than four is moved up to its depth-3 ancestor. The
+full node schema is in docs/PROBLEM_TREE.md.
+
+## What landed on 2026-10-17
+
+Every addition is behind a flag with a control arm, because the research says each one helps only under
+conditions and must be measured (research_notes/team_gaps/00_SYNTHESIS.md, docs/TEAM_GAPS_SPEC.md).
+
+| Addition | What it does | Flag (default) and control arm | Status |
+|---|---|---|---|
+| Per-part memory (gap A) | One markdown file per part, read whole, kept across runs: facts, tried, priors, cues, open questions, failed framings. A curator proposes a delta after each round; a script keeps an entry only if it cites an artefact that exists and is not a near-duplicate. One context per part and round ignores the memory | on; `--no-memory` | [built] |
+| Reply round (gap B) | The idea's author answers the pre-mortem once: concede and change, rebut with a quoted and tagged fact, or propose a measurement. The critic marks each objection resolved, revised or standing. At most two exchanges; nothing is dropped | on; `--no-dialogue` | [built] |
+| Question picking (gap C) | From round 2 the team scores open questions (chance to resolve x gain x novelty / cost, with a learning-progress bonus; every few rounds the most novel wins) and gives the chosen question's part 2 extra contexts. Top 3 in next_questions.json; a person may veto or choose | on; `--no-pick-questions` | [built] |
+| Fetch on demand (gap D) | A builder or reviser missing one fact writes a NEED line (at most 2) instead of code; the loop fetches each with a source and re-prompts once; a run never fetches the same question twice | on when the web is on; `--no-fetch-on-demand` | [built] |
+| Evidence tooling (gap E) | NoveltyBench: interquartile mean per arm, paired bootstrap 95% intervals, re-judging with a second judge and an agreement check. A pre-registered bin-packing experiment: profile only, full loop, best-of-N, at an equal cap of scorer calls, with a dry mode | `python -m harness.noveltybench summary / rejudge / agreement`; `python -m nano.experiments.binpack_arms prereg / dry / run / report` | [built] |
+| Preread (N3) | One reading call on the whole problem before the map | on; `--no-preread` | [built] |
+| Seed words by function (N7) | Each seeded context on a part gets a different abstract function; distances mixed (about half far, a quarter mid, a quarter near); functions that led to new clusters are drawn more often; yield logged per function | `--seeds function` (default); `--seeds random` | [built] |
+| Pre-mortem knowledge (N8) | The brief's published failures (with URLs) go into the critic's default pack. Optionally the critic asks up to three "has this failed or faded at small scale" questions, answered in one research call. report.json logs the share of objections the ladder later confirms | pack always on; `--premortem-web` (off) | [built] |
+| Integrity layer (fix pass H) | The candidate trains in a child process under a Windows job object with one active process, secrets stripped, network and process calls refused, a read allowlist; the launcher counts the training tokens it reads and compares them with the report (2%); the exam reads the validation data and seals it before loading candidate code, and recounts non-embedding parameters from the weights | always on | [built] |
+| Budget-matched plain arm (fix pass F) | The plain and climb arms build until the same token budget is spent, run the same controls and tuning sweep, and see the rules in canonical order | `--arm plain`, `--arm climb`; `--n-builds` 0 = spend to the budget | [built] |
+
+The reply round in one drawing:
+
+```
+  critic: objections 1..n, each with "if true: <metric> <op> <number>"
+     |
+     v
+  author (fresh call, sees the idea, its chain, the objections)
+     |   per objection, exactly one move:
+     |   concede -> CHANGE      rebut -> FACT [script|measured|web|belief]      measure -> TEST
+     v
+  critic marks each: resolved (a non-belief fact settles it) | revised (conceded) | standing
+     |
+     +--> standing with no test and something changed: one more exchange (at most 2)
+     v
+  builder gets every objection (revised or tested, never dropped); the ladder settles the tests
+```
 
 ## Two modes, chosen per problem  [planned router]
 
@@ -185,9 +224,10 @@ and the loop reads it:
    (the same team; only the profile changes)
 ```
 
-Status: the cards, clustering, critics, selection, scout, budget and logs are general or nearly so;
-the tree, lenses, planner, direction texts, builders and testers are written for a training script
-and need the profile version. The language-model profile becomes the first instance.
+Status [built]: the loop reads a profile (`nano/profiles/<name>.py`, docs/GENERIC_SPEC.md). The
+language-model profile is the first instance; bin packing (with and without a baseline) and a review-process
+design question (no objective check, a blind judge panel) run through the same loop. Which profile key fills
+which part of the problem statement is in docs/PROFILE.md.
 
 ## Things to decide next
 

@@ -308,7 +308,8 @@ turns it into something the same loop can verify: a nano-scale model training ru
     CHECKLIST:
       C1. parameter count within 10 percent of baseline
       C2. same token budget
-      C3. mean val loss over 3 seeds beats baseline mean by > 2 seed SD
+      C3. val loss beats the pooled baseline by > 0.005 nats: e-value >= 100 over >= 3 paired seeds
+          (docs/VERDICT.md; the older "> 2 seed SD" rule is retired)
     BAR: required verification = execution (the training run), C3.
     DEFAULTS (private): bigger batch; more layers; longer warmup; swap AdamW for Muon;
                         add sliding-window attention.
@@ -326,8 +327,8 @@ A candidate is now a code diff against train.py, not a grid program.
         baseline                                3.412   3.418   3.409   3.413   --        --
         D1 data-difficulty LR schedule (seeded) 3.431   3.440   3.425   3.432   +0.019    fail
         D2 mix residual streams (low_prior)     crash   crash   crash   --      --        fail
-        D3 encoder-decoder split (transform)    3.401   3.409   3.399   3.403   -0.010    fail (< 2 SD = 0.012)
-        -> no verified candidate; D3 is a near miss; feedback = loss curves + the SD gap
+        D3 encoder-decoder split (transform)    3.401   3.409   3.399   3.403   -0.010    close call (e-value < 100)
+        -> no verified candidate; D3 is a near miss; feedback = loss curves + the gap and its e-value
 
     round 2: revise(D3, operator=specialize) -> "split only the top half of layers"
              lemma card (if on): tries to prove "the gap appears after 60% of training"

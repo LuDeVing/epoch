@@ -2444,8 +2444,9 @@ class NanoLoop:
                                  "(the best checked candidate so far); no baseline exists")}
         else:
             bar = {"required_verification": "execution", "rungs_today": 4,
-                   "rung_full": (f"exam by the harness; {op} {sc.get('margin', 0.005)} {sc.get('unit', 'nats')} and Welch "
-                                 f"p < {sc.get('alpha', 0.01)} over >= {sc.get('min_seeds', 3)} seeds vs the pooled baseline")}
+                   "rung_full": (f"exam by the harness; {op} {sc.get('margin', 0.005)} {sc.get('unit', 'nats')} with an anytime-valid "
+                                 f"e-value of at least {1 / sc.get('alpha', 0.01):g} over >= {sc.get('min_seeds', 3)} seeds, paired "
+                                 "with the pooled baseline's seeds, and e-BH across the night")}
         write_json(self.run_dir / "constraints.json", {"checklist": cons, "bar": bar})
         if self.mode != "baseline":
             prompt = (f"Below is the goal of {pf.v('goal_short') or 'a good ' + pf.v('artifact', 'artifact')}. Nothing exists yet. "

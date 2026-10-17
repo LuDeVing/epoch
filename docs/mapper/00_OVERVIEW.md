@@ -12,6 +12,19 @@ This folder is the design for making the mapper configurable per problem. Read i
 | `02_questions_rank_link.md` | QUESTIONS (does, weak spot, ask), RANK AND LINK (priority, contexts, slots, links) | design, partly built |
 | `03_maintenance_and_people.md` | MAINTENANCE (write-back, child questions, merge, split, promote, lower), PEOPLE (shared space) | design, mostly proposed |
 
+Built as of 2026-10-17 (the node schema is in docs/PROBLEM_TREE.md):
+
+- A real tree up to depth 4: sub-parts from the planner, `enforce_depth` (fix 8).
+- A failed check with a reason becomes a child question with `test`, `threshold`, `fails_if`, or
+  `enterable: False` (`tree.add_failure_question`).
+- The team picks its next question (`nano/pick.py`, `--pick-questions` default on, `--no-pick-questions`
+  control arm); a person may veto or choose through control.json.
+- Off-map wins hang under the part their sketch named (`promote_win`); a re-plan keeps wins, owner nodes,
+  built nodes, questions and sub-parts, lowering the undrawn ones to `priority: low`.
+- Disputed facts are marked on their node and shown to inventors and to the re-plan. Re-measuring a
+  disputed fact is not built.
+- A whole-problem reading call (preread) before the split (`--no-preread` control arm).
+
 ## The six parts in one drawing
 
 ```

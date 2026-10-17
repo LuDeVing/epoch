@@ -17,7 +17,8 @@ the ARC and NoveltyBench arms do not.
 One prompt, built by a script, with four pieces:
 
 1. A fixed instruction: return 6 to 9 parts as JSON; each part has `id`, `name`, `frame`,
-   `assumptions` (3 to 5), `boundary`.
+   `assumptions` (3 to 5), `boundary`, `refines` (the default part it refines, or `new`) and,
+   for a sub-part, `parent`.
 2. `problem.md`, written earlier by the encode step: the goal, the owner's purpose line,
    the scope (which parts may change), the measured size and speed of the baseline, the
    hard rules C1 to C7.
@@ -37,10 +38,16 @@ The instruction also names a lens, one sentence on how to look at the file:
 | bottlenecks | where capacity, compute or signal is wasted |
 | failures | how a small model trained briefly fails |
 
-- `--lens` sets it. Without `--lens`, replicate number modulo 5 picks it (replicate 0 = parts).
+- The lens is a factor separate from the replicate: every replicate uses `parts` unless `--lens`
+  names another. Only `--lens-by-replicate` (a lens experiment) picks it by replicate number
+  modulo 5. `lens` and `lens_design` (fixed or by_replicate) are recorded in state.json,
+  problem_tree.json, answer.json and report.json.
 
-The mapper does not get: the web research, the frontier digest, earlier runs' results,
-or the anomaly rows. Those come after the map.
+Since 2026-10-17 (N3) the mapper also gets the preread: one research call on the whole problem
+(card `preread`: how the field splits it and where it is weak, never fixes), appended to
+problem.md as WHAT THE FIELD SAYS ABOUT THIS PROBLEM. `--no-preread` is the control arm, and
+`--no-research` turns it off too. The mapper does not get the per-part briefs, the frontier
+digest, earlier runs' results or the anomaly rows. Those come after the map.
 
 ## 3. The call
 
@@ -57,39 +64,65 @@ The reply is a JSON array of parts. `parse_planner` then:
 - drops any entry missing `id`, `name`, `frame` or a list of `assumptions`;
 - trims: id to 16 chars (lowercase, a-z 0-9 _), name 60, frame 400, each assumption 160,
   at most 5 assumptions, boundary 200;
-- sets `parent = "root"` and `directions = ["inward", "outward"]` on every part;
+- drops a node whose id is reserved (root, recipe, offtree) and gives ids that clash after the
+  cut a numbered suffix;
+- keeps `refines` when it names a default part, else `new`;
+- sets `directions = ["inward", "outward"]`; sets `parent` to the named node when it is a node of
+  the same reply or of the default tree (that default node is then kept in the map), else `root`;
 - fails if fewer than 4 parts survive;
 - puts the fixed `root` node first and the fixed `recipe` node last.
 
 Then `plan_tree`:
 
-- on failure, or if `--only-nodes` names parts that none of the planned names resolve to,
-  uses the hand-written `DEFAULT_TREE` (7 parts) and logs a decision row;
+- with `--only-nodes`, a named part that no planned node resolves to (by `refines` first, then
+  by id and name) gets one repair call that asks only for `refines`; if the scope still does
+  not resolve, or the planner reply was unusable, or the call was not affordable, it uses the
+  profile's default tree (7 parts plus recipe) and logs a decision row;
 - appends the fixed `off the map` node, unless the run is scoped with `--only-nodes`;
 - writes `problem_tree.json`.
 
 ## 5. The shape of the tree
 
-- Root, then one row of parts. Nothing deeper. No code creates a part under a part.
-- Every part has `parent = "root"`.
+- Up to four levels below the root since fix 8 (2026-10-17): parts (1), sub-parts (2),
+  questions (3), helper questions (4). `enforce_depth` moves a deeper node up to its depth-3
+  ancestor and logs it.
+- Sub-parts come from the planner (`parent`); wins from `promote_win` hang under the part their
+  sketch named; failure questions from `add_failure_question` hang under the part the idea
+  worked on.
 
 ```
  root  (fixed; direction: upward = question the framing)
    |-- part 1
-   |-- part 2
+   |     |-- sub-part 1a          (planner)
+   |     |     '-- q_<cand>       (a failed check with a reason; kind question)
+   |     '-- win_<cand>           (an off-map win; kind win)
    |-- ...
    |-- part N
    |-- recipe       (fixed; home for ideas that touch two parts)
    '-- off the map  (fixed; agents that work without the map)
 ```
 
-## 6. The three fields of a part
+## 6. The fields of a node
 
-| field | meaning | used by |
-|---|---|---|
-| frame | how this part works now, 1 to 2 sentences | every idea agent on the part |
-| assumptions | design choices a different design could remove | outward agents must break one |
-| boundary | the functions and classes a change may touch | rung 0 rejects a build outside it |
+The full schema, with who writes and who reads each field, is in docs/PROBLEM_TREE.md
+("Node schema"). In short:
+
+| field | meaning | written by | read by |
+|---|---|---|---|
+| id, name | the node | planner, profile, promote_win, add_failure_question, owner | every stage |
+| parent, kind | place in the tree; part, question or win | planner, promote_win, add_failure_question, enforce_depth | deal_contexts, depth, path |
+| frame | how this part works now, 1 to 2 sentences | planner, profile | every idea agent on the part, the research cache key |
+| assumptions | design choices a different design could remove; never grow in a run | planner, profile | outward agents must break one |
+| idea_assumptions | what tested ideas silently assumed | interrogation, could-not-build notes | idea prompts, context only |
+| boundary | the functions and classes a change may touch | planner, profile | rung 0 rejects a build outside it |
+| directions | inward and outward; upward at the root; inward for questions | planner, profile | ideation |
+| refines | the default part this node refines, or new | planner | `--only-nodes` scope, re-plan |
+| priority | low for a node a re-plan kept but no longer drew | re-plan | one context per direction |
+| origin | offtree, failure or human | promote_win, add_failure_question, owner | re-plan keeps them |
+| disputed | facts a doubt card disputed | the loop | idea prompts, marked |
+| test, threshold, fails_if, enterable | how a question would be answered | add_failure_question | the question chooser |
+| proposals | upward proposals (root) | the loop | people, the question chooser |
+| depth, path, stats | computed for problem_tree.json | _write_tree | dashboard, report |
 
 Example from arch-2, part `seq_attention_heads`:
 
@@ -107,13 +140,16 @@ because the scope froze them.
 
 ## 7. How the map is used in the run
 
-- Ideation: for each part and each direction (inward, outward) one agent gets that part's
-  three fields and the common problem text. Inward: keep the assumptions. Outward: remove or
-  invert one and say which. Root gets two upward agents.
+- Ideation: for each part and each direction (inward, outward) `per_node` agents (default 1)
+  get that part's fields and the common problem text; a part with sub-parts shares that budget
+  with them (`deal_contexts`). Inward: keep the assumptions. Outward: remove or invert one and
+  name it on a REMOVES line. Root gets two upward agents (one survives a test cap).
 - Off the map: a share of agents (`--off-tree-share`, default 0.4) get no part. Cards: blank
   (no map), gaps (what did the map miss), doubt (which fact in the map is wrong).
 - Every prompt ends with: the map is one reader's notes, not an order.
-- Research: one web brief per part, cached per part id.
+- Research: one web brief per part (parts only, not the root, off-map or question nodes), cached
+  by profile, lens, baseline version and a hash of the frame. One extra context per part x
+  direction reads the brief, when the brief has literature rows.
 - Selection: build slots are dealt round-robin across parts, starting with the parts that
   have had the fewest.
 - Boundary check: rung 0 diffs each build against its part's boundary.
@@ -124,22 +160,25 @@ because the scope froze them.
 
 All by script rules. None adds a level.
 
-- Interrogation finds what an idea silently assumes; the line is appended to the part's
-  assumptions (`assumptions_added`).
-- An off-map idea that passes the ladder becomes a new part under root (`promote_win`).
-- With `--replan`, round 2 calls the planner again with round-1 history and the critics'
-  objections. The new list replaces the old. Parts are matched by id or exact name; matched
-  parts keep their id and their added assumptions. Unmatched old parts, including promoted
-  wins, are dropped.
+- Interrogation finds what an idea silently assumes; the line goes to the part's
+  `idea_assumptions`, kept apart from the design assumptions and shown as context only.
+- An off-map idea that passes the ladder becomes a node (`kind: win`) under the part its
+  sketch named, else under root (`promote_win`).
+- A failed check with a reason becomes a question under its part (`add_failure_question`),
+  with a test, threshold and failure condition when they can be derived.
+- With `--replan`, round 2 calls the planner again with round-1 history, the critics'
+  objections and the disputed facts. Parts are matched by id, exact name or `refines`; matched
+  parts keep their id and their idea assumptions. Promoted wins, owner nodes and nodes with
+  builds are kept as they are; failure questions and sub-parts the new map does not draw are
+  kept at low priority. A plain part with no builds that the new map does not draw is dropped.
 
 ## 9. What the mapper does not do
 
 - No root-cause analysis: it describes parts, it does not say where the loss is lost or why.
 - No causal chain: no field links a part to a measurement or to the loss. Causal chains are
   written later, per idea, in interrogation.
-- No research before the map: web briefs are per part, so they run after it.
-- No sub-parts, questions or helper questions. The four-level tree in
-  `docs/TEAM_OF_RESEARCHERS.md` is design, not code.
+- No per-part research before the map: per-part briefs need the parts, so they run after it.
+  Only the whole-problem preread comes first.
 - The model never decides the structure. It proposes a list; scripts wrap, trim, fall back,
   merge and promote.
 
@@ -147,7 +186,9 @@ All by script rules. None adds a level.
 
 | flag | default | effect |
 |---|---|---|
-| `--lens` | rotates by replicate | which lens sentence goes in the prompt |
+| `--lens` | parts | which lens sentence goes in the prompt |
+| `--lens-by-replicate` | off | lens experiment: replicate r uses lens r modulo 5 |
+| `--no-preread` | off | control arm: no whole-problem reading before the map |
 | `--no-planner` | off | skip the call, use `DEFAULT_TREE` |
 | `--only-nodes a,b` | none | scope: only these parts may change; no off-map node |
 | `--off-tree-share` | 0.4 | share of idea contexts without a part |

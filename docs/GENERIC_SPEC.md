@@ -6,8 +6,10 @@ tester come from the profile. `python -m nano.dry_run` (mock backend, no tokens)
 the LLM profile with the same stages, and a second, far-away profile (bin packing) must run through the
 same loop without code changes.
 
-There is NO git repository. Agents edit only the files assigned to them. A backup of the package as of
-2026-10-17 is in `D:\AGI-lab\backup\nano_2026-10-17`.
+Status: built (commit c0704c7, 2026-10-17). When this spec was written there was no git repository and
+agents edited disjoint files (section 5); the repository now exists and later work uses one branch per agent.
+A backup of the package as of 2026-10-17 is in `D:\AGI-lab\backup\nano_2026-10-17`. Which profile key
+fills which part of problem.md is in docs/PROFILE.md; section 7 lists what landed after this spec.
 
 Environment: Windows, python `D:\AGI-lab\.venv\Scripts\python.exe`, env `HTSA_LAB_ROOT=D:/AGI-lab`,
 run from `C:\Users\User\Desktop\AGI`. Never start real training runs; test with the mock backend.
@@ -89,7 +91,8 @@ Profile keys beyond section 1 that the loop reads when present: spec_id (run fol
 title (problem.md heading), directions and off_map (tree texts), artifact.must_contain (markers a builder's
 code must contain), baseline_summary (callable: baseline measurement -> problem.md BASELINE line),
 baseline_cache ({"real", "mock"} folder names under runs/), docs.reference_note, score.stackable_margin and
-score.stackable_alpha.
+score.stackable_alpha, mode, facts (Mode 3 known facts), judge_model (Mode 3), memory_dir (per-part memory
+folder; default `<lab>/memory/<profile>/`).
 
 ## 3. Checker protocol: `nano/checks/base.py`
 
@@ -136,7 +139,7 @@ instances x 200 items, full = 100 instances x 1000 items), runs the candidate, a
 rule, bin state kept, when to open a bin, use of item statistics, tie-breaking; lenses analogous to the
 LLM ones but in packing words. This is deliberately far from language models.
 
-## 5. Ownership (no git: disjoint files, no exceptions)
+## 5. Ownership at the time of the build (no git then: disjoint files, no exceptions)
 
 | Agent | Owns (creates or edits) | Must not touch |
 |---|---|---|
@@ -199,3 +202,22 @@ interface "def choose_bin(item, bins, capacity) -> int", skeleton with the signa
 fairness, cost in reviewer time, resistance to gaming, clarity). Both must run through
 `python -m nano.dry_run --profile <name>` with the mock backend; `nano/dry_run.py`'s mock gains replies
 shaped for each (a bin-packing function for Mode 2, a four-section proposal for Mode 3).
+
+## 7. What landed after this spec (2026-10-17)
+
+All of it runs on every profile; each item has a flag and a control arm so its effect is measured, not assumed.
+
+| Item | Built in | Flag (default) / control arm |
+|---|---|---|
+| Per-part memory, curated by script rules | `nano/memory.py`, loop hooks | on / `--no-memory` |
+| One anchored reply round between critic and author | `nano/deepen.py` (`run_dialogue`) | on / `--no-dialogue` |
+| The team picks its next question | `nano/pick.py`; questions from `tree.add_failure_question` carry `test`, `threshold`, `fails_if`, `enterable` | on / `--no-pick-questions`; `--focus-contexts 2`, `--max-rounds-focus 2` |
+| Fetch on demand (NEED lines) | `nano/research.py` `fetch_fact`, build and revise path | on when the web is on / `--no-fetch-on-demand` |
+| Evidence tooling | `harness/noveltybench.py` (IQM, paired bootstrap, rejudge, agreement); `nano/experiments/binpack_arms.py` (pre-registered arms, dry mode) | commands, no loop flag |
+| Whole-problem preread before the map | `NanoLoop.preread`, `research.preread_prompt` | on / `--no-preread` (also off with `--no-research`) |
+| Seed words by function and distance | `nano/seeds.py` | `--seeds function` / `--seeds random` |
+| Pre-mortem knowledge | `deepen.failed_pack` (always); `NanoLoop._premortem_web` | pack on; `--premortem-web` off by default |
+| A real tree, depth up to 4 | `nano/tree.py` (`enforce_depth`, `deal_contexts`, `promote_win`, `add_failure_question`) | always |
+| Integrity layer | `nano/launch.py` (child process, job object, read allowlist, launcher-side token count), `nano/exam.py` (validation sealed before candidate code, parameters recounted from the weights), `nano/boundary.py`, `nano/audit.py` | always |
+| Budget-matched control arms | `nano/loop.py` plain and climb arms: same budget, controls, tuning, canonical rule order | `--arm plain`, `--arm climb`; `--n-builds 0` = spend to the budget |
+| e-value verdict with a fixed baseline-only sigma, hedge lane | `nano/verdict.py`, `nano/batch_verify.py`, loop | `--hedge-share 0.12`, `--baseline-seeds 6` |

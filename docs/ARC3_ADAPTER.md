@@ -4,6 +4,11 @@ Status: draft v0.1, 2026-10-11. Owner decision: ARC-AGI-3 is the test for Opus 5
 score; Claude Opus 5 at 30.2 percent, humans at 100). This adds an interactive benchmark to the
 harness without changing the loop of ARCHITECTURE.md section 4.
 
+**Not built (checked 2026-10-17).** This is a spec only. `harness/arc3/` does not exist, there is no `arc3`
+entry in `config.BENCHMARKS`, `score.is_correct` and `verify.run` know no such benchmark, and
+`harness/think/dedup.py` has no `trace` rule: an unknown `dedup_rule` falls back to text hashing silently.
+Every file and command below describes what would be built.
+
 ## What ARC-AGI-3 is (measured locally 2026-10-11)
 
 - `pip install arc-agi` gives `arc_agi.Arcade()`; `arc.make(game_id)` downloads the game once and
