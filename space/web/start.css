@@ -31,7 +31,7 @@
   border: 1px solid var(--line-subtle); border-radius: 6px; padding: 4px 8px; }
 .start-size:hover { background: var(--bg-hover); }
 .start-size--on { border-color: var(--owner-c); background: var(--bg-card); }
-.start-size input { grid-row: span 3; margin: 0; accent-color: var(--owner-c); }
+.start-size input { grid-row: span 4; margin: 0; accent-color: var(--owner-c); align-self: start; margin-top: 3px; }
 .start-size__name { font-weight: 600; }
 .start-size__what, .start-size__est { font-size: var(--fs-small); }
 .start-modes { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -49,4 +49,6 @@ body.stage .start-log { display: none; }
 .start-log { max-height: 40vh; overflow: auto; }
 
 .tag--demo { font-size: 10px; padding: 1px 6px; border: 1px solid var(--ok); color: var(--ok); border-radius: 999px; margin-left: 6px; font-weight: 500; }
-.start-size__warn { display: block; font-size: var(--fs-small); margin-top: 2px; }
+.start-size__warn { grid-column: 2; font-size: var(--fs-small); margin-top: 2px; }
+.start-size__name { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.tag--demo { white-space: nowrap; margin-left: 0; }
