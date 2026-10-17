@@ -144,7 +144,7 @@ class Stubs:
                 config.LEDGER_PATH, row.to_dict() if hasattr(row, "to_dict") else row)),
             "graph": SimpleNamespace(write=self.g_write),
             "stats": SimpleNamespace(load_views=lambda b: None),
-            "dedup": SimpleNamespace(rate=self.d_rate, drop=self.d_drop),
+            "dedup": SimpleNamespace(rate=self.d_rate, drop=self.d_drop, vote=__import__("harness.think.dedup", fromlist=["vote"]).vote),   # the real vote rule (shared with portfolio_arc)
             "allocate": SimpleNamespace(
                 initial=lambda b, cls, v, n0, rep, r: [Spec("seeded", seed="river", perm=1), Spec("low_prior"),
                                                        Spec("transform", "drop"), Spec("formal")][:n0],

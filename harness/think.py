@@ -1112,9 +1112,9 @@ def _vote_verified(ctx: Ctx, st: State):
     program (dedup.vote, the rule portfolio_arc uses too): self-consistency over independent attempts (Wang et
     al. 2022), behaviour clustering (AlphaCode, Li et al. 2022), Occam. ARC probe programs join only after the
     same verify.run (charged, with its ledger row) clears the bar, and only while that check is free."""
-    bar = ctx.P.bar
+    bar = getattr(ctx.P, "bar", None) or {}
     pool = [c for c in st.all_cands
-            if st.vres.get(c.id) is not None and st.vres[c.id].status == "verified"
+            if st.vres.get(c.id) is not None and getattr(st.vres[c.id], "status", None) == "verified"
             and _clears(bar, st.vres[c.id])]
     if (ctx.benchmark == "arc" and getattr(ctx, "probe", None) is not None
             and _mean_verify(ctx, st) == 0.0):
@@ -1132,8 +1132,11 @@ def _vote_verified(ctx: Ctx, st: State):
     if not pool:
         return None, 0, 0
     aug_of = None
-    if ctx.benchmark == "arc":    # same rule as the portfolio: test answer first, augmented outputs only break ties
-        ex, variants = _m("arc_exec"), _m("arc_exec").augmented(ctx.P.item["test_input"])
+    ex = _m("arc_exec") if ctx.benchmark == "arc" else None
+    test_input = (getattr(ctx.P, "item", None) or {}).get("test_input") if ctx.benchmark == "arc" else None
+    if ex is not None and test_input is not None and hasattr(ex, "augmented") and hasattr(ex, "aug_key"):
+        # same rule as the portfolio: test answer first, augmented outputs only break ties
+        variants = ex.augmented(test_input)
 
         def aug_of(c):
             try:

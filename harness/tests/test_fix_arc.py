@@ -94,7 +94,7 @@ def test_portfolio_and_think_select_by_the_same_rule(monkeypatch):
     assert chosen["pred"] == [[1]] and how == "vote 3 of 5 passing" and len(full) == 5
     monkeypatch.setattr(think, "_MODS", {})
     pool = [cand(f"w{i}", FLIP, [[2, 1]]) for i in range(2)] + [cand("r", CONST, [[5]])]
-    st = SimpleNamespace(all_cands=pool, vres={c.id: SimpleNamespace(status="verified") for c in pool})
+    st = SimpleNamespace(all_cands=pool, vres={c.id: SimpleNamespace(status="verified", verification_type="demo_match", partial_score=1.0, details={}) for c in pool})
     ctx = SimpleNamespace(benchmark="arc", probe=None, P=SimpleNamespace(item={"train": TRAIN, "test_input": TEST}))
     c, k, n = think._vote_verified(ctx, st)
     assert c.pred == [[2, 1]] and k == 2 and n == 2
