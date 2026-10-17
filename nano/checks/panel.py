@@ -78,7 +78,7 @@ def lint(text: str, facts: list[dict]) -> dict:
     if empty:
         problems.append("sections with almost nothing in them: " + ", ".join(empty))
     order = [s for s in SECTIONS if s in sec]
-    found_order = sorted(order, key=lambda s: text.upper().find(s + ":") if (s + ":") in text.upper() else 1e9)
+    found_order = list(sec)                      # by the headers sections() found, in the order they appear
     if not missing and order != found_order:
         problems.append("sections out of order (expected " + ", ".join(SECTIONS) + ")")
     cited = set(re.findall(r"\[(F\d+)\]", text or ""))
@@ -207,9 +207,12 @@ class PanelChecker:
         vals, kept = [], []
         for o in opinions or []:
             try:
-                s = max(1.0, min(10.0, float(o.get("score"))))
+                s = float(o.get("score"))
             except (TypeError, ValueError, AttributeError):
                 continue
+            if not math.isfinite(s):                     # 'nan' or 'inf' is no opinion (min/max would make it a 10)
+                continue
+            s = max(1.0, min(10.0, s))
             vals.append(s)
             kept.append({"score": s, "note": str(o.get("note", ""))[:300], "who": str(o.get("who", ""))[:60]})
         return (statistics.mean(vals) if vals else None), len(vals), kept

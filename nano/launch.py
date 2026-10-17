@@ -459,6 +459,22 @@ def _child_env(data_dir: str) -> dict:
     return env
 
 
+def _kill_tree(proc) -> None:
+    """The wall cap ends the child and every process it started (the job object keeps there being none,
+    but it may be off or unavailable)."""
+    try:
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True, timeout=60)
+        else:
+            os.killpg(proc.pid, 9)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        proc.kill()
+    except Exception:  # noqa: BLE001
+        pass
+
+
 def parent_main(a, argv: list[str]) -> int:
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -489,11 +505,11 @@ def parent_main(a, argv: list[str]) -> int:
     sink_path = os.path.join(sink_dir, "events.jsonl")
     Path(sink_path).write_bytes(b"")
     cmd = [sys.executable, "-I", os.path.abspath(__file__), "--_child", sink_path, *argv]
-    proc = subprocess.Popen(cmd, env=_child_env(a.data_dir))
+    proc = subprocess.Popen(cmd, env=_child_env(a.data_dir), **({} if os.name == "nt" else {"start_new_session": True}))
     try:
         rc = proc.wait(timeout=a.wall_cap if a.wall_cap > 0 else None)
     except subprocess.TimeoutExpired:
-        proc.kill()
+        _kill_tree(proc)
         proc.wait()
         audit["timed_out"] = True
         rc = 124

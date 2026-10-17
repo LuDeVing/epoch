@@ -37,6 +37,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
+import math
 import os
 import shlex
 import statistics
@@ -158,13 +159,15 @@ class ScriptChecker:
         if mp.exists():
             try:
                 m = json.loads(mp.read_text(encoding="utf-8"))
-                if not isinstance(m.get("score"), (int, float)) or m["score"] != m["score"]:
+                if not isinstance(m.get("score"), (int, float)) or not math.isfinite(m["score"]):
                     res["bad_metrics"] = "metrics.json has no numeric score"
                     m = None
             except Exception as e:  # noqa: BLE001
                 res["bad_metrics"] = f"metrics.json unreadable: {e}"
                 m = None
         res["metrics"] = m if res["rc"] == 0 else None
+        if mp.exists() and (res["metrics"] is None or res["violations"]):
+            mp.replace(out / "metrics.rejected.json")    # long_run() reuses a metrics.json: only a clean run's
         return res
 
     def _cost(self, m: dict | None) -> float | None:
