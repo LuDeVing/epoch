@@ -25,8 +25,8 @@ def _llm():
 
 
 def _head_tree():
-    """nano/tree.py as committed at HEAD, loaded under another module name."""
-    src = subprocess.run(["git", "show", "HEAD:nano/tree.py"], cwd=REPO, capture_output=True, text=True, check=True).stdout
+    """nano/tree.py as committed at c0704c7 (before the tree fixes), loaded under another module name, so the comparison is not vacuous."""
+    src = subprocess.run(["git", "show", "c0704c7:nano/tree.py"], cwd=REPO, capture_output=True, text=True, check=True).stdout
     spec = importlib.util.spec_from_loader("tree_head", loader=None)
     mod = importlib.util.module_from_spec(spec)
     exec(compile(src, "tree_head.py", "exec"), mod.__dict__)

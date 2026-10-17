@@ -9,7 +9,10 @@ same verifier at the same budget; the tree changes where the search looks, never
 
 Node schema: {"id", "name", "parent", "frame", "assumptions": [...], "boundary": "...",
               "directions": ["inward", "outward"] or ["upward"], optional "kind": "part" (default) | "question" | "win",
-              "idea_assumptions": [{"from", "text", "round", "kind": "silent"|"could_not_build"}]}
+              "idea_assumptions": [{"from", "text", "round", "kind": "silent"|"could_not_build"}],
+              optional "disputed": [{"round", "text", "sketch_id", "status"}] (facts a doubt card disputed),
+              optional "priority": "low" (kept by a re-plan that no longer drew it; one context per direction)}
+
 "assumptions" are the part's design choices as the planner or the profile wrote them; they never grow during
 a run. "idea_assumptions" are what tested ideas on the part assumed (interrogation, or a builder's
 could-not-build note); context only, never material for the outward direction or the transform card.
@@ -25,6 +28,8 @@ from __future__ import annotations
 import copy
 import json
 import re
+from collections import Counter
+
 
 from nano import profile as PF
 
@@ -177,10 +182,32 @@ def repair_prompt(unresolved, nodes: list[dict]) -> str:
             "none of them.\n\n" + _default_parts_text() + "\n\nNODES:\n" + json.dumps(keep, indent=1))
 
 
+ID_LEN = 16
+RESERVED_IDS = ("root", "recipe", "offtree")     # the root, the cross-part node, the off-map pseudo-node
+
+
+def _clean_id(raw) -> str:
+    return re.sub(r"[^a-z0-9_]", "", str(raw or "").lower())
+
+
+def _unique_id(full: str, taken: set[str], fallback: str) -> str:
+    """`full` cut to ID_LEN characters; on a clash with an id already taken (two long ids with a common prefix,
+    or the same id twice) a numbered suffix keeps it unique within ID_LEN."""
+    nid = full[:ID_LEN] or fallback
+    k = 2
+    while nid in taken or nid in RESERVED_IDS:
+        sfx = f"_{k}"
+        nid = (full or fallback)[:ID_LEN - len(sfx)] + sfx
+        k += 1
+    return nid
+
+
 def parse_planner(text: str) -> list[dict] | None:
     """The planner's JSON array as nodes. A node may name a "parent": a sub-part, accepted when the parent id is
     another node of the same reply or a node of the default tree (that default node is then kept in the map);
-    any other parent becomes the root."""
+    any other parent becomes the root. Ids are unique: a node whose id is reserved (root, recipe, offtree) is
+    dropped, and ids that clash after cutting to ID_LEN characters get a numbered suffix; a parent reference
+    resolves by the full id first, so it follows the renamed node."""
     m = re.search(r"\[.*\]", text, flags=re.S)
     if not m:
         return None
@@ -190,13 +217,23 @@ def parse_planner(text: str) -> list[dict] | None:
         return None
     nodes, raw_parents = [], []
     part_ids = {d["id"] for d in default_parts()}
-    for n in arr:
+    base = default_tree()
+    base_by_id = {n["id"]: n for n in base}
+    full_to_id: dict[str, str] = {}                            # the planner's full (cleaned) id -> the id given here
+    taken: set[str] = set()
+    for n in arr if isinstance(arr, list) else []:
         if not isinstance(n, dict) or not all(k in n for k in ("id", "name", "frame", "assumptions")):
             continue
         if not isinstance(n.get("assumptions"), list):
             continue
+        full = _clean_id(n["id"])
+        if full in RESERVED_IDS:
+            continue                                           # a second root, recipe or off-map node: never
+        nid = _unique_id(full, taken | (set(base_by_id) - part_ids), f"n{len(nodes)}")
+        taken.add(nid)
+        full_to_id.setdefault(full, nid)
         ref = str(n.get("refines") or "").strip().lower()
-        nodes.append({"id": re.sub(r"[^a-z0-9_]", "", str(n["id"]).lower())[:16] or f"n{len(nodes)}",
+        nodes.append({"id": nid,
                       "name": str(n["name"])[:60], "parent": "root", "refines": ref if ref in part_ids else "new",
                       "frame": str(n["frame"])[:400],
                       "assumptions": [str(a)[:160] for a in n["assumptions"]][:5],
@@ -204,14 +241,13 @@ def parse_planner(text: str) -> list[dict] | None:
         raw_parents.append(n.get("parent"))
     if len(nodes) < 4:
         return None
-    base = default_tree()
     root = next((n for n in base if n["id"] == "root"), base[0])
     recipe = [n for n in base if n["id"] == "recipe"]          # the cross-part node, when the profile has one
     ids = {n["id"] for n in nodes}
-    base_by_id = {n["id"]: n for n in base}
     kept = []                                                  # default parts a sub-part of this reply hangs under
     for n, rp in zip(nodes, raw_parents):
-        pid = re.sub(r"[^a-z0-9_]", "", str(rp or "").lower())[:16]
+        full = _clean_id(rp)
+        pid = full_to_id.get(full) or full[:ID_LEN]
         if not pid or pid in ("root", n["id"]) or (pid not in ids and pid not in base_by_id):
             continue
         n["parent"] = pid
@@ -227,6 +263,18 @@ MAP_NOTE = ("This map is one reader's notes, not an order: if a fact, an assumpt
 IDEA_ASSUMPTIONS_HEAD = ("WHAT TESTED IDEAS ON THIS PART ASSUMED (not design choices; context only, do not treat as "
                          "rules to break):")
 IDEA_ASSUMPTIONS_CAP = 8
+
+# A fact of the map a doubt card disputed (loop._record_doubts). It stays on the map, marked, until it is
+# re-measured (docs/mapper/03: "Until then inventors see it marked disputed"); re-measurement is not built yet.
+DISPUTED_MARK = "disputed, re-measure before relying on it"
+DISPUTED_HEAD = f"FACTS ABOUT THIS PART THAT A TEAM MEMBER DISPUTED ({DISPUTED_MARK}):"
+DISPUTED_CAP = 3
+
+
+def disputed_lines(node: dict) -> list[str]:
+    """The disputed facts on a node, newest first, at most DISPUTED_CAP."""
+    out = [" ".join(str(x.get("text", "")).split()) for x in reversed(node.get("disputed") or []) if isinstance(x, dict)]
+    return [t for t in out if t][:DISPUTED_CAP]
 
 
 def idea_assumptions(node: dict) -> list[dict]:
@@ -281,6 +329,8 @@ def node_prompt(node: dict, direction: str, common: str, nodes: list[dict] | Non
     ideas = [str(x.get("text", "")) for x in reversed(node.get("idea_assumptions") or []) if str(x.get("text", "")).strip()]
     idea_block = ("\n" + IDEA_ASSUMPTIONS_HEAD + "\n" + "\n".join(f"- {t}" for t in ideas[:IDEA_ASSUMPTIONS_CAP]) + "\n"
                   if ideas else "")
+    dis = disputed_lines(node)
+    idea_block += ("\n" + DISPUTED_HEAD + "\n" + "\n".join(f"- {t} ({DISPUTED_MARK})" for t in dis) + "\n" if dis else "")
     return (common + f"PART UNDER STUDY: {name}\n{within}CURRENT DESIGN OF THIS PART: {node['frame']}\n"
             f"CODE THIS PART MAY TOUCH: {node['boundary']}\nASSUMPTIONS OF THIS PART:\n{assumptions}\n{idea_block}\n{head}\n\n"
             + MAP_NOTE + "\n\n")
@@ -309,7 +359,8 @@ def tree_text(nodes: list[dict], diagnostics: str = "") -> str:
         if n["id"] in ("root", OFF_TREE_ID):
             continue
         lines.append("  " * max(0, depth(nodes, n["id"]) - 1) + f"- {n['name']}: {n['frame']}"
-                     + (" Assumptions: " + "; ".join(n["assumptions"]) + "." if n.get("assumptions") else ""))
+                     + (" Assumptions: " + "; ".join(n["assumptions"]) + "." if n.get("assumptions") else "")
+                     + "".join(f" Disputed ({DISPUTED_MARK}): {t}" for t in disputed_lines(n)))
     return "\n".join(lines) + (f"\n\nMEASUREMENTS BEHIND THE MAP:\n{diagnostics}" if diagnostics else "")
 
 
@@ -344,7 +395,8 @@ def promote_win(nodes: list[dict], cand_id: str, cluster_name: str, hypothesis: 
 
 def split_select(clusters_by_node: dict[str, list[dict]], k: int, inward_share: float, exclude: set[str],
                  sketches: list[dict], select_fn, new_share: float = 0.5, counts: dict[str, int] | None = None,
-                 order_seed: str = "", weights: dict[str, float] | None = None) -> list[dict]:
+                 order_seed: str = "", weights: dict[str, float] | None = None,
+                 log: list | None = None) -> list[dict]:
     """Round-robin across nodes within each direction so one part cannot take every slot, with a
     quota: at least `new_share` of each direction's slots go to clusters tagged "new" against the
     research brief when enough of them exist.
@@ -357,7 +409,11 @@ def split_select(clusters_by_node: dict[str, list[dict]], k: int, inward_share: 
     fairness: one slot at a time to the part with the smallest (counts + 0.5) / weight (Sainte-Lague
     divisor; ties by the seeded shuffle), so a part with weight w gets about w / sum(weights) of the slots
     and a light part is still reached. Parts missing from `weights` get the smallest given weight. With no
-    weights, or all equal, the old pass-by-pass order is used unchanged."""
+    weights, or all equal, the old pass-by-pass order is used unchanged.
+
+    Shortfall: when one direction has fewer eligible clusters than its slots (no outward cluster at all, say),
+    the empty slots are refilled from the clusters left in the other direction, best score first, so a round
+    still fills k slots when k clusters exist. Each shortfall is logged in `log` (step "split_shortfall")."""
     import random as _random
     counts = counts if counts is not None else {}
     w = None
@@ -372,6 +428,8 @@ def split_select(clusters_by_node: dict[str, list[dict]], k: int, inward_share: 
     k_in = max(1, round(k * inward_share)) if k > 1 else k
     k_out = max(0, k - k_in)
     chosen: list[dict] = []
+    left: list[dict] = []                              # ranked but not taken, both directions: the refill pool
+    short: dict[str, int] = {}
     for direction, kk in (("inward", k_in), ("outward", k_out)):
         per_node = {}
         for nid, cl in clusters_by_node.items():
@@ -417,6 +475,21 @@ def split_select(clusters_by_node: dict[str, list[dict]], k: int, inward_share: 
             pass
         while picked < kk and take(lambda c: True):
             pass
+        if picked < kk:
+            short[direction] = kk - picked
+        left += [c for cl in per_node.values() for c in cl]
+    if short:
+        pool = sorted(enumerate(left), key=lambda ic: (-float(ic[1].get("score") or 0.0), ic[0]))
+        refill = [c for _, c in pool[:max(0, k - len(chosen))]]
+        for c in refill:
+            c["selected"], c["refill"] = True, True
+            chosen.append(c)
+            nid = c.get("node", "root")
+            counts[nid] = counts.get(nid, 0) + 1
+        if log is not None:
+            log.append({"step": "split_shortfall", "k": k, "short": short, "refilled": len(refill),
+                        "from": dict(Counter(c.get("direction") for c in refill)),
+                        "still_empty": max(0, k - len(chosen))})
     return chosen
 
 
@@ -652,7 +725,7 @@ def deal_contexts(nodes: list[dict], per: int, round_no: int = 1, skip=None) -> 
         if not n.get("parent") or n.get("parent") == "root" or n.get("parent") not in ids:
             for d in n.get("directions", []):
                 if d != "upward":
-                    give(n, d, per)
+                    give(n, d, min(per, 1) if n.get("priority") == "low" else per)   # kept by a re-plan, no longer drawn
     return out
 
 
