@@ -276,9 +276,10 @@ VERDICT: <one sentence: the single most likely way this idea does nothing or hur
 
 
 def premortem_prompt(brief: str, part_name: str, constraints: str, code: str, known: list[str], chain: str = "",
-                     failed: list[str] | None = None, findings: str = "") -> str:
+                     failed: list[str] | None = None, findings: str = "", peer: str = "") -> str:
     """`failed`: the research brief's published failures for the part, with URLs (failed_pack). `findings`: the web
-    answers to the critic's own questions (--premortem-web), numbered Q1..Q3."""
+    answers to the critic's own questions (--premortem-web), numbered Q1..Q3. `peer`: what teammates changed (the
+    shared space's digest, role critic), appended after the material and before the format only when non-empty."""
     facts = "\n".join(f"- {k}" for k in known[:30]) or "- (none)"
     failed_block = ("PUBLISHED FAILURES FOR THIS PART (from the research brief; each line has its source):\n"
                     + "\n".join(f"- {x}" for x in failed) + "\n\n") if failed else ""
@@ -292,7 +293,8 @@ def premortem_prompt(brief: str, part_name: str, constraints: str, code: str, kn
                    "than the seed-to-seed noise, and a mistake a builder would make implementing it.\n\n")
             + f"CONSTRAINTS:\n{constraints}\n\nTHE CURRENT SCRIPT:\n```{fill('{v:language}')}\n{code}\n```\n\n"
             f"THE IDEA:\n{brief}\n\n" + (f"{chain}\n\nWhen an objection attacks a link of the chain, end it with '| link: L<n>'.\n\n" if chain else "")
-            + f"WHAT THE INTERROGATION ESTABLISHED:\n{facts}\n\n" + failed_block + web_block + fill(_PREMORTEM_FORMAT))
+            + f"WHAT THE INTERROGATION ESTABLISHED:\n{facts}\n\n" + failed_block + web_block
+            + (peer + "\n\n" if peer else "") + fill(_PREMORTEM_FORMAT))
 
 
 def parse_premortem(text: str) -> dict:
@@ -514,8 +516,10 @@ def test_text(t: dict | None) -> str:
     return f"{t['metric']} {t['op']} {t['threshold']:g}" + (f" at {t['rung']}" if t.get("rung") else "")
 
 
-def reply_prompt(brief: str, chain: str, objections: list[dict], indices: list[int] | None = None) -> str:
-    """The author's reply: a fresh call that sees the idea, its chain and the objections, nothing else."""
+def reply_prompt(brief: str, chain: str, objections: list[dict], indices: list[int] | None = None, peer: str = "") -> str:
+    """The author's reply: a fresh call that sees the idea, its chain and the objections, nothing else. `peer`: people's
+    objections and what teammates changed (the shared space), after THE OBJECTIONS and before the format, only when
+    non-empty."""
     idx = indices if indices is not None else list(range(1, len(objections) + 1))
     lines = []
     for i in idx:
@@ -526,7 +530,7 @@ def reply_prompt(brief: str, chain: str, objections: list[dict], indices: list[i
             "concede it and change the idea, rebut it with a quoted fact, or propose the measurement that would settle it. "
             "Do not argue. Do not defend the idea with confidence or rhetoric.\n\n"
             f"THE IDEA:\n{brief}\n\n" + (f"{chain}\n\n" if chain else "")
-            + "THE OBJECTIONS:\n" + "\n".join(lines) + "\n\n" + fill(_REPLY_FORMAT))
+            + "THE OBJECTIONS:\n" + "\n".join(lines) + "\n\n" + (peer + "\n\n" if peer else "") + fill(_REPLY_FORMAT))
 
 
 def critic_update_prompt(objections: list[dict], replies: dict[int, dict]) -> str:
