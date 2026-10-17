@@ -331,9 +331,10 @@ def test_reach_audit_verdicts(tmp_path):
 def test_cost_card_and_lane_interleave_and_failure_card():
     from nano import cost, lessons
     b = cost.breakdown(BASE)
-    assert b["params_nonembed"] == 21_243_264 and b["n_layer"] == 12 and b["head_dim"] == 64
-    txt = cost.card(BASE, {"params_nonembed": 21_243_264, "step_s": 1.1, "peak_vram_gb": 4.07})
-    assert "headroom in parameters: +2,124,326" in txt and "up to 2.20s" in txt and "GB free" in txt and "feed-forward" in txt
+    measured = 21_242_304                                  # the v2 baseline's measured non-embedding parameters
+    assert abs(b["params_nonembed"] - measured) / measured < 0.001 and b["n_layer"] == 12 and b["head_dim"] == 64
+    txt = cost.card(BASE, {"params_nonembed": measured, "step_s": 1.1, "peak_vram_gb": 4.07})
+    assert "headroom in parameters: +2,124,230" in txt and "up to 2.20s" in txt and "GB free" in txt and "feed-forward" in txt
     pool = [("p1", {"lane": "main"}), ("p2", {"lane": "main"}), ("p3", {"lane": "main"}), ("p4", {"lane": "main"}), ("p5", {"lane": "main"}),
             ("p6", {"lane": "main"}), ("L1", {"lane": "longshot"}), ("L2", {"kind": "leap", "lane": "main"})]
     order = [x[0] for x in cost.interleave_lane(pool, lambda pm: pm[1].get("lane") in ("longshot", "family") or pm[1].get("kind") == "leap", every=5)]

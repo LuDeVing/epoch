@@ -37,7 +37,7 @@ MUTANTS = {
                     "Add a learned full-width linear mixing of the residual stream at the end of every block, initialised to the identity, so each block can re-mix channels before the next one.",
                     [("        self.attn, self.mlp = Attention(cfg), MLP(cfg)",
                       "        self.attn, self.mlp = Attention(cfg), MLP(cfg)\n        self.extra = nn.Linear(cfg.d_model, cfg.d_model, bias=False)\n        nn.init.eye_(self.extra.weight)"),
-                     ("        return x + self.mlp(self.n2(x))", "        return self.extra(x + self.mlp(self.n2(x)))")]),
+                     ("        return self.combine(x, branch, 1)", "        return self.extra(self.combine(x, branch, 1))")]),
     "early_only": ({"early_only"},
                    "Remove the learning-rate cooldown entirely so the model keeps learning at full speed to the end of the budget instead of coasting through the last third.",
                    [("    cooldown_frac: float = 0.30", "    cooldown_frac: float = 0.0")]),
@@ -52,7 +52,8 @@ MUTANTS = {
                       "            nn.init.normal_(b.mlp.w_down.weight, std=0.021 / math.sqrt(2 * cfg.n_layer))")]),
     "wrong_scale": ({"interaction_cancels", "impl_slip", "breaks_constraint"},
                     "Halve the attention branch's contribution to the residual stream in every block, to keep the residual norm from growing with depth.",
-                    [("        x = x + self.attn(self.n1(x), cos, sin)", "        x = x + 0.5 * self.attn(self.n1(x), cos, sin)")]),
+                    [("        branch = self.attn(self.n1((x * weights[None, None, :, None]).sum(2)), cos, sin)",
+                      "        branch = 0.5 * self.attn(self.n1((x * weights[None, None, :, None]).sum(2)), cos, sin)")]),
 }
 
 
@@ -133,7 +134,7 @@ def main() -> int:
     src = baseline_path().read_text(encoding="utf-8")
     cases = build_mutants(src)
     ctl = controls.build(src)
-    for name, kind in (("zero_init_proj", "winner"), ("qk_norm", "winner"), ("placebo_order", "placebo")):
+    for name, kind in (("zero_init_proj", "winner"), ("relu2_mlp", "winner"), ("placebo_order", "placebo")):
         if ctl.get(name, {}).get("source"):
             cases[name] = {"source": ctl[name]["source"], "proposal": ctl[name]["hypothesis"].replace("control: ", ""), "classes": set(), "kind": kind}
     constraints = "\n".join(f"- {c}" for c in constraints_list())

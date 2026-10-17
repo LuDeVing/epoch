@@ -405,7 +405,7 @@ class NanoLoop:
         self.diag_steps = 100
         # --- evidence-driven settings (research_notes/idea_generation/00_SYNTHESIS.md)
         self.controls: list[str] | None = ["placebo_order", "zero_init_proj", "lr_x10"]   # ladder controls each run
-        self.longshot_share = 0.3               # build slots drawn at random from leap / step-outside / analogy / new clusters
+        self.longshot_share = 0.2               # about one fifth (selection_cost/00_VERDICT.md); build slots drawn at random from leap / step-outside / analogy / new clusters
         self.leap_share = 0.25                  # quota: share of each sketch call that must be leaps (0 = off)
         self.anomaly_seeds = 3                  # diagnostics seeds for the anomaly map (1 = no map)
         self.sham_share = 0.1                   # chance that the anomaly rows carry one fabricated row (chasing is measured)
@@ -445,7 +445,8 @@ class NanoLoop:
         self.question_picks: list[dict] = []    # one record per round: top 3, scores, reasons, chosen, vetoed, answered
         self._focus_q: dict | None = None       # the question chosen for this round's focus contexts
         self.weights_from_ledger = False        # selection weights from nano/calibrate.py when enough builds exist
-        self.hedge_share = 0.0                  # share of rung-3 gap failures promoted anyway (lane "hedge")
+        self.hedge_share = 0.12                 # share of rung-3 gap failures promoted anyway (lane "hedge"); 10-15% per
+                                                # 11_decision_science.md M1 and the late-bloomer audit, selection_cost/01 item 6
         self.fidelity = True                    # diagnostics on checked candidates: did the named cell move?
         self.program_search: str | None = None  # arm: evolve one named function with continuous fitness
         self.program_k = 4
@@ -3592,7 +3593,7 @@ def main() -> int:
     ap.add_argument("--learn-steps", type=int, default=ck.LEARN_STEPS, help="rung 3: matched steps against the baseline curve")
     ap.add_argument("--long-steps", type=int, default=ck.LONG_STEPS, help="rung 4 for the pool (0 = skip)")
     ap.add_argument("--new-share", type=float, default=0.0, help="old quota of build slots for ideas tagged new (0 = off; the long-shot lane replaces it)")
-    ap.add_argument("--longshot-share", type=float, default=0.3, help="build slots drawn at random from step-outside / analogy / adapt / new clusters")
+    ap.add_argument("--longshot-share", type=float, default=0.2, help="share of build slots (about one fifth by default) drawn at random from step-outside / analogy / adapt / new clusters")
     ap.add_argument("--controls", nargs="*", default=None, help="ladder controls each run (default: placebo_order zero_init_proj lr_x10; 'none' to skip; 'all' for every control)")
     ap.add_argument("--novelty-threshold", type=float, default=0.45, help="TF-IDF cosine above which a chosen idea is a near-duplicate of a build (gate); paraphrases score about 0.5")
     ap.add_argument("--no-retire-cards", action="store_true", help="keep attractor cards instead of retiring them")
@@ -3608,7 +3609,7 @@ def main() -> int:
     ap.add_argument("--focus-contexts", type=int, default=2, help="extra inward contexts for the chosen question's node")
     ap.add_argument("--max-rounds-focus", type=int, default=2, help="rounds of focus a question may get before it is not picked again")
     ap.add_argument("--weights-from-ledger", action="store_true", help="selection weights from nano/calibrate.py when >= 100 builds are on record")
-    ap.add_argument("--hedge-share", type=float, default=0.0, help="share of rung-3 gap failures still sent to the long run and the night (lane hedge)")
+    ap.add_argument("--hedge-share", type=float, default=0.12, help="share of rung-3 gap failures still sent to the long run and the night (lane hedge; measures the ladder false-reject rate; 0 turns it off)")
     ap.add_argument("--no-fidelity", action="store_true", help="skip the diagnostic probe of checked candidates (did the named cell move?)")
     ap.add_argument("--program-search", default=None, help="arm: evolve one named function (e.g. lr_mult) with matched-step fitness")
     ap.add_argument("--program-k", type=int, default=4)

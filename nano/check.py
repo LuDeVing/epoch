@@ -9,7 +9,8 @@ Rungs, cheapest first:
   0 boundary : free; the candidate changes only what its part may change, imports nothing denied,
                and adds no reference to the validation split (nano/boundary.py)
   1 build    : --build-only runs; non-embedding parameters at most +10% over the baseline (fewer is fine)
-  2 steps    : --smoke-steps 3 on real data; step time <= 2x the baseline timed today; VRAM <= cap
+  2 steps    : --smoke-steps 4 on real data, the first step discarded as warm-up; step time <= 2x the
+               baseline timed the same way today (both re-timed once if the candidate looks slow); VRAM <= cap
   3 learn    : --smoke-steps N (default 45, seed 0): the loss must fall, and the gap to the baseline's
                curve at the same step and seed must not exceed max(LEARN_TOL, Z_TOL x seed spread)
   4 long     : --smoke-steps M (default 240): gap at M and at M/2, the trend between them, and the
@@ -25,6 +26,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -136,12 +138,38 @@ def _integrity_fail(rec: dict, rung: int, r: dict) -> bool:
     return False
 
 
+TIMING_STEPS = 4          # the first is warm-up (CUDA context, kernel autotune) and is not counted
+STEP_METHOD = "warmup_excluded"   # the profile's step_s was measured this way; an older one is re-measured
+_FIRST_STEP_RE = re.compile(r"\[nano\] step 1/\d+ .*?([0-9.]+)k tok/s")
+
+
+def _first_step_s(stdout: str, tokens_per_step: float) -> float | None:
+    """Seconds of the first step, from the trainer's own step-1 line (tokens per second since the start)."""
+    m = _FIRST_STEP_RE.search(stdout or "")
+    if not m or float(m.group(1)) <= 0:
+        return None
+    return tokens_per_step / (float(m.group(1)) * 1e3)
+
+
 def _step_time(candidate: Path, out: Path) -> tuple[float | None, dict | None, dict]:
-    r = _run(candidate, ["--smoke-steps", "3", "--out", str(out)], out, 300, wall_cap=280)
+    """Seconds per optimizer step after warm-up: TIMING_STEPS smoke steps, the first one subtracted (read
+    from the trainer's step-1 line, or else timed by a separate one-step run). Candidate and baseline go
+    through this same function, so both sides are measured the same way."""
+    r = _run(candidate, ["--smoke-steps", str(TIMING_STEPS), "--out", str(out)], out, 300, wall_cap=280)
     m = _metrics(out)
-    if r["rc"] == 0 and m is not None and m.get("steps", 0) >= 3 and m.get("wall_s") is not None:
-        return m["wall_s"] / max(1, m["steps"]), m, r
-    return None, m, r
+    if not (r["rc"] == 0 and m is not None and m.get("steps", 0) >= TIMING_STEPS and m.get("wall_s") is not None):
+        return None, m, r
+    steps, wall = m["steps"], float(m["wall_s"])
+    first = _first_step_s(r.get("stdout", ""), float(m.get("tokens") or 0) / max(1, steps))
+    if first is None or not 0 < first < wall:
+        r1 = _run(candidate, ["--smoke-steps", "1", "--out", str(out / "warmup")], out / "warmup", 300, wall_cap=280)
+        m1 = _metrics(out / "warmup")
+        first = float(m1["wall_s"]) if r1["rc"] == 0 and m1 and m1.get("wall_s") is not None else None
+    if first is not None and 0 < first < wall:
+        m["step_timing"] = "warm-up step excluded"
+        return (wall - first) / (steps - 1), m, r
+    m["step_timing"] = "warm-up step included (could not be separated)"
+    return wall / steps, m, r
 
 
 def check(candidate: Path, out: Path, baseline: dict, *, learn_steps: int = LEARN_STEPS,
@@ -226,24 +254,37 @@ def check(candidate: Path, out: Path, baseline: dict, *, learn_steps: int = LEAR
                            "stdout": _tail(r["stdout"]), "timed_out": r["timed_out"]}
         rec["rungs"].append({"rung": 2, "ok": False, "wall": r["wall"]})
         return rec
-    base_step = baseline.get("step_s") or step_s
-    detail = {"rung": 2, "ok": True, "wall": r["wall"]}
-    if step_s > STEP_TIME_TOL * base_step:
-        # a slow first measurement is often the card, not the code: measure once more, keep the faster
+    detail = {"rung": 2, "ok": True, "wall": r["wall"], "step_timing": m.get("step_timing")}
+    base_step = baseline.get("step_s") if baseline.get("step_s_method") == STEP_METHOD else None
+    if not base_step:
+        # the profile has no step time measured the same way: time the baseline now, so the 2x rule is real
+        base_step, _, _ = _step_time(BASELINE, out / "base_steps")
+        detail["base_step_source"] = "timed with this candidate (the profile had no comparable step time)"
+    if base_step and step_s > STEP_TIME_TOL * base_step:
+        # a slow first measurement is often the card, not the code: measure both sides once more and keep each
+        # side's faster time, so candidate and baseline are measured the same number of times
         step_s2, m2, _ = _step_time(candidate, out / "steps2")
-        detail["step_s_first"] = round(step_s, 2)
+        base_step2, _, _ = _step_time(BASELINE, out / "base_steps2")
+        detail.update({"step_s_first": round(step_s, 2), "base_step_first": round(base_step, 2)})
         if step_s2 is not None and step_s2 < step_s:
             step_s, m = step_s2, m2
-    detail.update({"step_s": round(step_s, 2), "peak_vram_gb": m.get("peak_vram_gb"), "tok_per_s": m.get("tok_per_s")})
+        if base_step2 is not None and base_step2 < base_step:
+            base_step = base_step2
+    if not base_step:
+        # no baseline time at all: the timing rule cannot be applied; say so instead of comparing with itself
+        detail["timing_rule"] = f"not applied: the baseline step time could not be measured ({STEP_TIME_TOL}x rule skipped)"
+    detail.update({"step_s": round(step_s, 2), "base_step_s": round(base_step, 3) if base_step else None,
+                   "peak_vram_gb": m.get("peak_vram_gb"), "tok_per_s": m.get("tok_per_s")})
     rec["metrics"].update({"step_s": round(step_s, 2), "peak_vram_gb": m.get("peak_vram_gb"),
-                           "step_ratio": round(step_s / base_step, 2)})
+                           "step_ratio": round(step_s / base_step, 2) if base_step else None})
+    base_step = base_step or step_s                     # only for the wall caps below, never for the 2x rule
     rec["rungs"].append(detail)
     rec["rung_reached"] = 2
     rec["partial_score"] = 2 / 4
     if m.get("peak_vram_gb", 0) > VRAM_CAP_GB:
         rec["feedback"] = {"rung": 2, "reason": f"peak VRAM {m['peak_vram_gb']} GB exceeds cap {VRAM_CAP_GB} GB"}
         return rec
-    if step_s > STEP_TIME_TOL * base_step:
+    if rec["metrics"]["step_ratio"] is not None and step_s > STEP_TIME_TOL * base_step:
         rec["feedback"] = {"rung": 2, "reason": f"step time {step_s:.2f}s is more than {STEP_TIME_TOL}x "
                            f"the baseline {base_step:.2f}s measured today (same token budget means a slower run)"}
         return rec
@@ -376,11 +417,12 @@ def refresh_profile(profile_dir: Path, *, learn_steps: int = LEARN_STEPS, long_s
         m = _metrics(profile_dir / "base_build")
         if m:
             prof["params_nonembed"] = int(m["params_nonembed"])
-    if retime or not prof.get("step_s"):
+    if retime or not prof.get("step_s") or prof.get("step_s_method") != STEP_METHOD:
         step_s, m, _ = _step_time(BASELINE, profile_dir / "base_steps")
         if step_s is not None:
             prof["step_s"], prof["peak_vram_gb"], prof["tok_per_s"] = step_s, m.get("peak_vram_gb"), m.get("tok_per_s")
             prof["step_s_measured"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+            prof["step_s_method"] = STEP_METHOD if m.get("step_timing") == "warm-up step excluded" else "warmup_included"
     for key, steps, window in ((("short", learn_steps, SHORT_WINDOW), ("long", long_steps, LONG_WINDOW)) if curves else ()):
         # curves=False: a run that trains nothing (stops before the ladder) must not pay for them
         curves = prof.setdefault(f"curves_{key}", {})

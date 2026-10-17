@@ -15,22 +15,43 @@ def _val(src: str, field: str) -> float | None:
     return float(m.group(1)) if m else None
 
 
+def _attr(src: str, name: str) -> int | None:
+    m = re.search(rf"^\s+self\.{re.escape(name)} = (\d+)\s*$", src, flags=re.M)
+    return int(m.group(1)) if m else None
+
+
+def _compress_width(src: str) -> int | None:
+    m = re.search(r"^\s+self\.compress = nn\.Linear\(cfg\.d_model, (\d+), bias=False\)", src, flags=re.M)
+    return int(m.group(1)) if m else None
+
+
 def breakdown(src: str) -> dict | None:
-    """Parameters and forward FLOPs per token by component, from the Config values of a GPT-2-style script."""
+    """Parameters and forward FLOPs per token by component, from the Config values of a GPT-2-style script.
+    Two attention shapes are known: plain (q and o full width, k and v at the kv width) and the compressed-KV
+    attention of the v2 baseline (q with extra rotary dims, a shared K/V latent, one shared rotary key)."""
     L, d, h, ff, V, T = (_val(src, k) for k in ("n_layer", "d_model", "n_head", "d_ff", "vocab_size", "seq_len"))
     kv = _val(src, "n_kv_head") or h
     if None in (L, d, h, ff, V, T):
         return None
     L, d, h, ff, V, T, kv = int(L), int(d), int(h), int(ff), int(V), int(T), int(kv)
     hd = d // h
-    attn_proj = d * d * 2 + 2 * d * (kv * hd)          # q and o full width; k and v at the kv width
+    latent = _compress_width(src)                      # width of the shared K/V latent; None for plain attention
+    qk_norm = 2 * hd if re.search(r"self\.q_norm, self\.k_norm = RMSNorm\(self\.hd\), RMSNorm\(self\.hd\)", src) else 0
+    if latent:
+        rd = _attr(src, "rd") or 0                     # decoupled rotary dims per head
+        # q at h x (hd + rd); K/V latent down, its norm, up to K and V; the shared rotary key; o; the q and k norms
+        attn_proj = d * h * (hd + rd) + d * latent + latent + latent * 2 * h * hd + d * rd + h * hd * d + qk_norm
+        score_dim = h * (hd + rd) + h * hd             # q.k over hd + rd per head, then the sum of v over hd
+    else:
+        attn_proj = d * d * 2 + 2 * d * (kv * hd) + qk_norm   # q and o full width; k and v at the kv width
+        score_dim = 2 * d
     mlp = 3 * d * ff                                   # SwiGLU: gate, up, down
     norms = 2 * d
-    per_block = attn_proj + mlp + norms
+    per_block = attn_proj + mlp + norms                # leaves out the few dozen stream-mixing logits per block
     params = {"attention projections": L * attn_proj, "feed-forward": L * mlp, "norms": L * norms + d, "embeddings (tied)": V * d}
     nonembed = L * per_block + d
     # forward FLOPs per token: 2 per multiply-add; attention scores and values over the causal half of T
-    flops = {"attention projections": L * 2 * attn_proj, "attention scores and values": L * 2 * 2 * (T / 2) * d,
+    flops = {"attention projections": L * 2 * attn_proj, "attention scores and values": L * 2 * (T / 2) * score_dim,
              "feed-forward": L * 2 * mlp, "output head": 2 * d * V}
     total = sum(flops.values())
     return {"n_layer": L, "d_model": d, "n_head": h, "head_dim": hd, "d_ff": ff, "vocab": V, "seq_len": T,

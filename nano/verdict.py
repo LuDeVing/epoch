@@ -1,9 +1,10 @@
 """Statistics for the ladder and the overnight verdict, with no dependency beyond the standard library.
 
-Verdict rule (following the two public speedruns: modded-nanogpt asks for p < 0.01 on the mean,
-parameter-golf for a 0.005-nat margin as well): a candidate is verified when its mean score
-beats the pooled baseline mean by more than `margin` AND a one-sided Welch t-test gives
-p < `alpha`, with at least `min_seeds` runs on each side.
+Overnight rule (sequential_verdict, used by nano/batch_verify.py): an anytime-valid e-value on paired
+seed differences, with the noise fixed from the baseline runs alone before the first look; verified at
+E >= 1/alpha for `margin`, stackable at E >= 1/stackable_alpha for `stackable_margin`, and e-BH across
+the night. The older fixed-sample rule (verdict(): margin plus a one-sided Welch t-test, p < `alpha`)
+is kept for reference; its p is reported beside the e-value.
 
 Direction: the verdict functions take raw scores in the profile's units. When the active profile is
 higher-is-better (PF.current().lower_is_better is False) the values are negated first, so `gain` is
@@ -160,13 +161,39 @@ def _chi2_lower_quantile(df: int, q: float = 0.10) -> float:
     return df * (1.0 - h + z * math.sqrt(h)) ** 3
 
 
-def sigma_upper(sd: float, df: int, q: float = 0.50) -> float:
-    """A conservative (1-q) upper confidence bound on the true SD from a sample SD with df degrees of
-    freedom: sd * sqrt(df / chi2_q(df)). With few seeds this is much larger than the point estimate,
-    which is the price of treating sigma as known in the e-process."""
+def sigma_upper(sd: float, df: int, q: float = 0.10) -> float:
+    """One-sided (1-q) upper confidence bound on the true SD from a sample SD with df degrees of freedom:
+    sd * sqrt(df / chi2_q(df)), chi2_q the lower q-quantile. q must be below 0.5 to be an upper bound
+    (q = 0.5 gives about the median). With few seeds this is much larger than the point estimate, which
+    is the price of treating sigma as known in the e-process."""
     if df <= 0:
         return sd * 3.0
     return sd * math.sqrt(df / max(_chi2_lower_quantile(df, q), 1e-9))
+
+
+# Sigma rule for the overnight e-value, fixed before the first look from the baseline runs only: the 75%
+# upper bound once the baseline has at least 6 runs (df >= 5), the 90% upper bound below that.
+# Calibrated by simulation (2026-10-17; harness/tests/test_verdict.py repeats a smaller version). The
+# candidate stops the moment it verifies (worst-case optional stopping), up to 8 candidate seeds, alpha 1%:
+#   6 baseline runs, q 0.25: false-verified 0.6%; power 63% (5 seeds) / 83% (8 seeds) at a 3-noise-unit effect
+#   5 baseline runs, q 0.10: false-verified 0.25%; power 30% / 51%
+#   3 baseline runs, q 0.10: false-verified 0.9%
+# The rule it replaces (candidate and baseline residuals pooled and re-fitted at every look, q 0.5, which is
+# a median) gave 1.1% with 5 baseline runs and 2.1% with 3, above the nominal 1%.
+SIGMA_MIN_DF_LOOSE = 5
+
+
+def sigma_quantile(df: int) -> float:
+    """The lower chi-square quantile q the sigma rule uses for a baseline with df degrees of freedom."""
+    return 0.25 if df >= SIGMA_MIN_DF_LOOSE else 0.10
+
+
+def baseline_sigma(base_vals: list[float]) -> tuple[float, float, int]:
+    """(sample SD, upper-bound SD, df) of single runs, from the baseline runs alone."""
+    if len(base_vals) < 2:
+        return 0.0, 0.0, 0
+    sd, df = statistics.stdev(base_vals), len(base_vals) - 1
+    return sd, sigma_upper(sd, df, sigma_quantile(df)), df
 
 
 def e_value(diffs: list[float], sigma: float, margin: float = 0.0, tau: float | None = None) -> float:
@@ -202,7 +229,8 @@ def e_bh(evalues: dict[str, float], alpha: float = 0.01) -> set[str]:
 
 
 def pooled_sd(cand_vals: list[float], base_vals: list[float]) -> tuple[float, int]:
-    """Pooled within-group SD of single runs and its degrees of freedom."""
+    """Pooled within-group SD of single runs and its degrees of freedom (reference only; the overnight
+    e-value takes its sigma from the baseline runs alone, see baseline_sigma)."""
     ss, df = 0.0, 0
     for vals in (cand_vals, base_vals):
         if len(vals) >= 2:
@@ -212,13 +240,31 @@ def pooled_sd(cand_vals: list[float], base_vals: list[float]) -> tuple[float, in
     return (math.sqrt(ss / df) if df > 0 else 0.0), df
 
 
+def paired_diffs(cand_vals: list[float], base_vals: list[float], cand_seeds: list | None = None,
+                 base_seeds: list | None = None) -> list[float]:
+    """Per-seed (baseline - candidate) differences, positive = candidate better. With seed ids, candidate
+    seed s is paired with baseline seed s (they share the data order); without them, by list position.
+    A candidate seed with no baseline partner (that baseline seed errored or was never run) is compared
+    with the baseline mean. Errored runs carry no value, so they are on neither side of any pair."""
+    base_mean = statistics.mean(base_vals)
+    if cand_seeds is None or base_seeds is None:
+        k = min(len(cand_vals), len(base_vals))
+        return [base_vals[i] - cand_vals[i] for i in range(k)] + [base_mean - c for c in cand_vals[k:]]
+    by_seed = dict(zip(base_seeds, base_vals))
+    return [(by_seed[s] if s in by_seed else base_mean) - c for s, c in zip(cand_seeds, cand_vals)]
+
+
 def sequential_verdict(cand_vals: list[float], base_vals: list[float], *, margin: float = 0.005, alpha: float = 0.01,
                        stackable_margin: float = 0.002, stackable_alpha: float = 0.05, min_seeds: int = 3,
-                       sign_consistent: bool | None = None, lower_is_better: bool | None = None) -> dict:
+                       sign_consistent: bool | None = None, lower_is_better: bool | None = None,
+                       cand_seeds: list | None = None, base_seeds: list | None = None) -> dict:
     """The verdict used overnight; valid under any seed-adding or stopping rule.
-    Candidate seed i is paired with baseline seed i where both exist (shared data order), extra
-    candidate seeds are compared with the baseline mean. The per-difference SD is sqrt(2) times a
-    conservative upper bound on the pooled single-run SD. Tiers:
+    Candidate seed s is paired with baseline seed s (paired_diffs). Sigma comes from the baseline runs
+    ALONE, as an upper confidence bound (baseline_sigma), so it is the same at every look as long as the
+    caller keeps the baseline set fixed for the night (nano/batch_verify.py loads it before any candidate).
+    A known-sigma test supermartingale with a fixed sigma at or above the truth is anytime-valid; a sigma
+    re-fitted from the candidate's own runs at every look is not. The per-difference SD is sqrt(2) times
+    the single-run bound (a shared data order makes the true one smaller). Tiers:
       verified  : E >= 1/alpha for `margin`, n >= min_seeds
       stackable : E >= 1/stackable_alpha for `stackable_margin`, n >= min_seeds, rung gaps of one sign;
                   feeds composition and promotion-by-accumulation, never a win on its own
@@ -231,19 +277,15 @@ def sequential_verdict(cand_vals: list[float], base_vals: list[float], *, margin
     if not cand_vals or len(base_vals) < 2:
         out.update({"status": "error", "gain": None, "e": None, "e_stack": None, "p": None})
         return out
-    base_mean = statistics.mean(base_vals)
-    sd, df = pooled_sd(cand_vals, base_vals)
-    # calibrated by simulation (2026-10-13): pooled point estimate, sqrt(2) for a difference of two runs,
-    # effect prior 1.5 x that: false-verified 0.7% under optional stopping at alpha 1%, power 74% at a
-    # three-sigma effect with 5 seeds, 92% with 8
-    sigma_d = math.sqrt(2.0) * sigma_upper(sd, df, 0.50)
-    k = min(len(cand_vals), len(base_vals))
-    diffs = [base_vals[i] - cand_vals[i] for i in range(k)] + [base_mean - c for c in cand_vals[k:]]
+    sd, sd_up, df = baseline_sigma(base_vals)
+    sigma_d = math.sqrt(2.0) * sd_up              # effect prior tau = 1.5 x this (calibration note above)
+    diffs = paired_diffs(cand_vals, base_vals, cand_seeds, base_seeds)
     gain = statistics.mean(diffs) if diffs else 0.0
     e_win = e_value(diffs, sigma_d, margin, tau=1.5 * sigma_d)
     e_stack = e_value(diffs, sigma_d, stackable_margin, tau=1.5 * sigma_d)
     w = verdict(cand_vals, base_vals, margin=margin, alpha=alpha, min_seeds=min_seeds, lower_is_better=True)
     out.update({"gain": round(gain, 5), "sd_single": round(sd, 5), "sd_diff_used": round(sigma_d, 5), "df": df,
+                "sigma_q": sigma_quantile(df),
                 "e": round(e_win, 3), "e_stack": round(e_stack, 3), "p": w.get("p"), "t": w.get("t")})
     n = len(cand_vals)
     if gain <= 0:

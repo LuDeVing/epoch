@@ -7,7 +7,16 @@ nano/exam.py on the saved weights: the candidate's own number is only a self-rep
 the exam and failed on mismatch.
 
 Baseline seeds live in <lab>/runs/nano_baseline_full/<baseline version>/seed<N>/ and are shared by
-every run, so the spread estimate grows over time. `--baseline-seeds N` makes sure N exist.
+every run, so the spread estimate grows over time. `--baseline-seeds N` makes sure N exist (default 6:
+the verdict's noise comes from the baseline runs alone, and from 6 runs on it uses a tighter bound;
+nano/verdict.py sigma rule). The baseline set is loaded once, before any candidate, so the noise is
+fixed for the night. Candidate seed N is paired with baseline seed N by seed number; an errored seed
+on either side is in no pair.
+
+The exam (nano/exam.py) reads one batch more of the validation split than the trainer's own
+evaluate() (489 against 488 batches of 4 x 1024 tokens at the default 2M exam tokens). Every verdict
+compares exam with exam, so this is fair; only the candidate's self-report differs from the exam by
+that batch, and the self-report tolerance absorbs it.
 
 Seeds per candidate (serial on the single GPU), best extrapolated long-run z first:
   seed 0 for every candidate; a pre-declared futility stop after seed 1 (both seeds worse than the
@@ -79,6 +88,14 @@ def train_with_args(script: Path, out: Path, seed: int, tokens: float, timeout_s
 
 def train(script: Path, out: Path, seed: int, tokens: float, timeout_s: int, wall_cap: float = 0.0,
           extra: list[str] | None = None) -> dict:
+    """One full run plus the exam, tagged with its seed (the verdict pairs by seed number)."""
+    r = _train(script, out, seed, tokens, timeout_s, wall_cap=wall_cap, extra=extra)
+    r.setdefault("seed", seed)
+    return r
+
+
+def _train(script: Path, out: Path, seed: int, tokens: float, timeout_s: int, wall_cap: float = 0.0,
+           extra: list[str] | None = None) -> dict:
     """One full run plus the exam. Resumable: an existing exam.json with a val_loss is reused."""
     from nano import check as C
     out.mkdir(parents=True, exist_ok=True)
@@ -112,9 +129,10 @@ def train(script: Path, out: Path, seed: int, tokens: float, timeout_s: int, wal
 
 
 def summarize(name: str, runs: list[dict]) -> dict:
-    vals = [r["val_loss"] for r in runs if r.get("val_loss") is not None]
+    ok = [r for r in runs if r.get("val_loss") is not None]
+    vals = [r["val_loss"] for r in ok]
     return {"name": name, "n": len(vals), "mean": statistics.mean(vals) if vals else None,
-            "sd": statistics.stdev(vals) if len(vals) > 1 else 0.0, "vals": vals,
+            "sd": statistics.stdev(vals) if len(vals) > 1 else 0.0, "vals": vals, "seeds": [r.get("seed") for r in ok],
             "errors": [r.get("error") for r in runs if "error" in r],
             "wall_s": sum(r.get("wall_s") or 0 for r in runs)}
 
@@ -124,15 +142,16 @@ def baseline_dir(version: str) -> Path:
 
 
 def baseline_runs(version: str, tokens: float) -> list[dict]:
-    """Every finished, examined baseline seed at this token budget and baseline version."""
+    """Every finished, examined baseline seed at this token budget and baseline version, in seed order."""
     out = []
-    for d in sorted(baseline_dir(version).glob("seed*")):
+    seeds = [(int(d.name[4:]), d) for d in baseline_dir(version).glob("seed*") if d.name[4:].isdigit()]
+    for seed, d in sorted(seeds):
         e = d / "exam.json"
         m = d / "metrics.json"
         if e.exists() and m.exists():
             ex, mt = json.loads(e.read_text(encoding="utf-8")), json.loads(m.read_text(encoding="utf-8"))
             if ex.get("val_loss") is not None and float(mt.get("tokens", 0)) >= tokens * 0.98:
-                out.append({**ex, "wall_s": mt.get("wall_s"), "tokens": mt.get("tokens")})
+                out.append({**ex, "wall_s": mt.get("wall_s"), "tokens": mt.get("tokens"), "seed": seed})
     return out
 
 
@@ -151,7 +170,7 @@ def main() -> int:
     ap.add_argument("--run", required=True, help="nano loop run folder with pool/")
     ap.add_argument("--tokens", type=float, default=50e6)
     ap.add_argument("--timeout", type=int, default=3 * 3600, help="seconds per training run (backstop)")
-    ap.add_argument("--baseline-seeds", type=int, default=5, help="baseline seeds to have in the shared folder")
+    ap.add_argument("--baseline-seeds", type=int, default=6, help="baseline seeds to have in the shared folder (6+ gives the verdict its tighter noise bound)")
     ap.add_argument("--max-seeds", type=int, default=5, help="most seeds a candidate may get")
     ap.add_argument("--min-seeds", type=int, default=3, help="seeds before any tier is granted")
     ap.add_argument("--margin", type=float, default=0.005, help="nats a verified win must beat the baseline mean by")
@@ -194,7 +213,9 @@ def main() -> int:
         return (key is None, key or 0.0)
     pool.sort(key=rank)
     from nano import cost as COST
-    pool = COST.interleave_lane(pool, lambda pm: pm[1].get("lane") in ("longshot", "family") or pm[1].get("kind") == "leap", every=5)
+    # the hedge lane (rung-3 gap failures promoted at random) ranks low by construction; the lane slot makes sure
+    # it reaches the night, or the ladder's false-reject rate it exists to measure is never measured
+    pool = COST.interleave_lane(pool, lambda pm: pm[1].get("lane") in ("longshot", "family", "hedge") or pm[1].get("kind") == "leap", every=5)
     if a.max_candidates:
         pool = pool[: a.max_candidates]
     print(f"[rung5] {len(pool)} candidates at {a.tokens:.0f} tokens; baseline {version}, seeds wanted {a.baseline_seeds}", flush=True)
@@ -248,9 +269,11 @@ def main() -> int:
 
     def record(cid: str, meta: dict, runs: list[dict], stage: int) -> dict:
         s = summarize(cid, runs)
+        seeded = None not in s["seeds"] and None not in base["seeds"]
         v = V.sequential_verdict(s["vals"], base["vals"], margin=a.margin, alpha=a.alpha,
                                  stackable_margin=a.stackable_margin, stackable_alpha=a.stackable_alpha,
-                                 min_seeds=a.min_seeds, sign_consistent=sign_ok(meta))
+                                 min_seeds=a.min_seeds, sign_consistent=sign_ok(meta),
+                                 cand_seeds=s["seeds"] if seeded else None, base_seeds=base["seeds"] if seeded else None)
         s.update({"status": v["status"], "p": v.get("p"), "t": v.get("t"), "gain": v.get("gain"), "e": v.get("e"),
                   "e_stack": v.get("e_stack"), "sd_diff_used": v.get("sd_diff_used"),
                   "delta": (s["mean"] - base["mean"]) if (s["mean"] is not None and base["mean"] is not None) else None,
@@ -315,13 +338,19 @@ def main() -> int:
             runs_by[p.stem].append(train(p, out / p.stem / f"seed{seed}", seed, a.tokens, a.timeout, wall_cap=cap_for(meta)))
             record(p.stem, meta, runs_by[p.stem], seed + 1)
 
-    # ---- false-discovery control across the night, and the controls' report
-    evals = {cid: (s.get("e") or 0.0) for cid, s in results["candidates"].items() if s["n"] >= a.min_seeds}
+    # ---- false-discovery control across the night, and the controls' report. The family is every candidate
+    # that entered sequential testing, with its last e-value (a run with no value has e = 1, no evidence);
+    # dropping the ones stopped early would shrink m and loosen every threshold. Controls are not in the
+    # family; each is judged as if it were the one extra member, so it faces the threshold a candidate would.
+    def last_e(s: dict) -> float:
+        return 1.0 if s.get("e") is None else float(s["e"])
+    evals = {cid: last_e(s) for cid, s in results["candidates"].items() if not s.get("control")}
     passed = V.e_bh(evals, a.alpha)
     for cid, s in results["candidates"].items():
-        s["ebh"] = cid in passed
+        s["ebh"] = (cid in V.e_bh({**evals, cid: last_e(s)}, a.alpha)) if s.get("control") else (cid in passed)
         if s["status"] == "verified" and not s["ebh"]:
             s["status"] = "close_call"                                   # verified alone, not after multiplicity control
+    results["ebh_family"] = len(evals)
     if a.controls is not None:
         from nano import controls as CT
         results["controls"] = {}
