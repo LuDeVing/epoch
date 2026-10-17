@@ -540,7 +540,7 @@ def test_control_route_is_the_merge(mk, monkeypatch):
     monkeypatch.setattr(S.control, "merge", fake)
     st, b = call(r.port, "GET", "/api/control?loop=team.loop&since=4")
     assert st == 200 and b["control"] == {"note": "x"} and b["head"] == r.space.head()
-    assert seen["seqs"] == list(range(5, r.space.head() + 1)) and seen["since"] == 4 and seen["file_ctl"] is None
+    assert seen["seqs"] == list(range(1, r.space.head() + 1)) and seen["since"] == 4 and seen["file_ctl"] is None
     assert seen["claims"] == [{"subject": "node:ties", "owner": "team.loop2"}] and seen["loop"] == "team.loop"
     monkeypatch.undo()
     st, b = call(r.port, "GET", "/api/control?loop=team.loop&since=0")             # the real merge
@@ -549,6 +549,24 @@ def test_control_route_is_the_merge(mk, monkeypatch):
     assert a in b["refs"] and n in b["refs"]
     assert [x["id"] for x in b["control"]["add_nodes"]] == ["item_order"]
     assert b["steps"] == [{"seq": s, "round": 1, "stage": "planned", "by": "ben"}]
+
+
+def test_control_since_keeps_level_keys(mk):
+    """The merge folds the whole log; since only limits refs, steps, disputes and seeds (section 6.2 rule 11)."""
+    r = mk()
+    a, n, s = _seed(r.port)
+    post(r.port, "node_skipped", {}, actor="ben", subject="node:ties")
+    post(r.port, "question_vetoed", {"question": "q1"}, actor="ana", subject="question:q1")
+    post(r.port, "run_paused", {"reason": "look"}, actor="ana")
+    cursor = r.space.head()
+    late = post(r.port, "note_posted", {"text": "after the cursor"}, actor="ana")[1]["seq"]
+    st, b = call(r.port, "GET", "/api/control?loop=team.loop&since=%d" % cursor)
+    assert st == 200 and b["head"] == r.space.head()
+    c = b["control"]
+    assert c["skip_nodes"] == ["ties"] and c["veto"] == ["q1"] and c["pause"] is True
+    assert [x["id"] for x in c["add_nodes"]] == ["item_order"]
+    assert c["note"].startswith("ana: after the cursor") and "ben: check tie-breaking" in c["note"]
+    assert b["refs"] == [late] and b["steps"] == []
 
 
 def test_snapshot_counts(mk):
@@ -694,6 +712,27 @@ def test_replay_seek_loads_the_first_n_at_once(mk, tmp_path):
     assert r.space.head() == 150                                     # the rest waits for the original gaps
     st, b = call(r.port, "GET", "/api/snapshot")
     assert b["replay"]["seek"] == 150 and b["replay"]["total"] == 300
+
+
+def test_replay_of_a_log_without_seq_writes_every_event(mk, tmp_path):
+    path = tmp_path / "noseq.ndjson"
+    rows = [{"kind": "note_posted", "by": "ana", "by_kind": "human", "owner": "ana", "data": {"text": "n%d" % i}}
+            for i in range(5)]
+    write_ndjson(path, rows)
+    r = mk(db=str(tmp_path / "ns" / "space.db"), replay=str(path), speed=1000)
+    assert wait_until(lambda: r.space.replayer.done.is_set(), 10)
+    assert [e["data"]["text"] for e in r.space.store.events()[1:]] == ["n0", "n1", "n2", "n3", "n4"]
+
+
+def test_dump_reads_a_path_with_hash_and_space(mk, tmp_path):
+    db = str(tmp_path / "a b#c" / "space.db")
+    r = mk(db=db)
+    post(r.port, "note_posted", {"text": "x"})
+    r.stop()
+    out = tmp_path / "dump2.ndjson"
+    assert S.main(["--db", db, "--dump", str(out)]) == 0
+    assert [e["seq"] for e in read_ndjson(out)] == [1, 2]
+    assert not (tmp_path / "a b").exists()                           # read only: no stray database is made
 
 
 def test_restart_keeps_epoch_expires_claims_and_readers_stay_contiguous(mk, tmp_path):

@@ -51,6 +51,7 @@ class Replayer:
         self.store, self.path = store, str(path)
         self.speed, self.seek = float(speed), int(seek or 0)
         self.events = read_ndjson(self.path)
+        self.pos = {id(ev): i for i, ev in enumerate(self.events)}
         self.idmap: dict = {}
         self.written = 0
         self.done = threading.Event()
@@ -68,8 +69,8 @@ class Replayer:
         if ev["kind"] in SKIP_KINDS:
             return None
         by, by_kind = ev.get("by") or "anon", ev.get("by_kind") or "human"
-        op = ev.get("op") or "replay-%s" % ev.get("seq")
         old = ev.get("seq")
+        op = ev.get("op") or "replay-%s" % (old if isinstance(old, int) else "i%d" % self.pos.get(id(ev), 0))   # no seq: file line
         with self.store.lock:
             dup = self.store.find_op(by, op)
             if dup is not None:

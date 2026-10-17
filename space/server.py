@@ -290,10 +290,10 @@ class Space:
 
     def control(self, loop="team.loop", since=0) -> dict:
         since = max(0, since)
-        rows = self.store.since(since, self.head())
+        rows = self.store.events()          # the whole log: level keys are a state; since limits only the deltas
         claims = [{"subject": c["subject"], "owner": c["owner"]} for c in self.claims.as_list()]
         out = dict(control.merge(rows, loop=loop, claims=claims, since=since, file_ctl=None))
-        out["head"] = rows[-1]["seq"] if rows else self.head()
+        out["head"] = rows[-1]["seq"] if rows else 0
         return out
 
     def snapshot(self, me=None) -> dict:

@@ -14,6 +14,7 @@ import re
 import secrets
 import sqlite3
 import threading
+import urllib.parse
 
 from space.contract import PRIVATE_KEYS
 
@@ -218,7 +219,7 @@ def row_to_event(r) -> dict:
 
 def read_db(path) -> list:
     """Read a space database without writing to it (for --dump while a server may be live)."""
-    uri = "file:%s?mode=ro" % os.path.abspath(str(path)).replace("\\", "/")
+    uri = "file:%s?mode=ro" % urllib.parse.quote(os.path.abspath(str(path)).replace("\\", "/"), safe="/:")
     con = sqlite3.connect(uri, uri=True)
     try:
         return [row_to_event(r) for r in
