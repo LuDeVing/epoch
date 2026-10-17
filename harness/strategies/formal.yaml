@@ -1,0 +1,19 @@
+# Section 3 /generate, P0 card "formal": program hypotheses for ARC (REP-03, GEN-09).
+# exec_feedback = final-only: the runner never executes inside the call; the verifier runs the
+# programs after the call returns.
+name: formal
+version: 1
+description: One to three python programs transform(grid) -> grid over the exact grids.
+role: generate
+view: canonical
+data_style: python
+operator_choices: [none]
+applies_to: [arc]
+steps:
+  - id: generate
+    template: formal.generate
+    inputs: [facts, resources, goal, constraints, format]
+    max_tokens: 3500
+    n: 3
+    parser: candidates
+    emit: true

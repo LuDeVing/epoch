@@ -1,0 +1,4 @@
+Copy the answers in the text below into a numbered list, one answer per item, verbatim. Start each item with its option letter (A, B, C or D) when the text gives one. Add nothing else.
+
+Text:
+{{raw}}

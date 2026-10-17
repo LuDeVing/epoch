@@ -1,0 +1,64 @@
+# Prompt lint patterns (ARCHITECTURE.md section 1, Pr10 and the I5 part D rule).
+# Each pattern is a Python regex, matched case-insensitively against templates and rendered
+# prompts by harness/lint.py. "fail" blocks a call when the match lies in template text;
+# "warn" is logged only. Matches inside inlined item or model text are logged, never blocking.
+fail:
+  # personas and role-play
+  - id: persona_you_are
+    pattern: '\byou\s+are\s+an?\b'
+  - id: persona_act_as
+    pattern: '\bact\s+as\b'
+  - id: persona_as_expert
+    pattern: '\bas\s+an?\s+(?:\w+\s+)?expert\b'
+  - id: persona_world_class
+    pattern: '\bworld[\s-]+class\b'
+  - id: persona_pretend
+    pattern: '\b(?:pretend|imagine)\s+(?:that\s+)?you\s+are\b'
+  - id: persona_role
+    pattern: '\b(?:play|take\s+on|adopt)\s+the\s+role\b'
+  - id: persona_you_are_article
+    pattern: '\byou(?:''re|\s+are)\s+(?:an?|the)\s+\w+'
+  - id: persona_as_a_role
+    pattern: '\bas\s+an?\s+(?:\w+\s+)?(?:expert|specialist|scientist|mathematician|physicist|chemist|biologist|engineer|professor|researcher|programmer|developer|teacher|doctor|lawyer|detective|genius|master|assistant|philosopher|analyst|consultant|linguist|logician|puzzler|solver|strategist)\b'
+  - id: persona_imagine_youre
+    pattern: '\bimagine\s+you(?:''re|\s+are)\b'
+  # stakes
+  - id: stakes_job
+    pattern: '\byour\s+(?:job|career)\s+depends\b'
+  - id: stakes_lives
+    pattern: '\blives\s+depend\b'
+  - id: stakes_tip
+    pattern: '\bi\s+will\s+tip\b'
+  - id: stakes_penalty
+    pattern: '\byou\s+will\s+be\s+(?:fired|punished|penalized)\b'
+  - id: stakes_important_to_my
+    pattern: '\b(?:very\s+|extremely\s+)?important\s+(?:to|for)\s+my\b'
+  - id: stakes_high_stakes
+    pattern: '\bhigh[\s-]+stakes\b'
+  # bodily imperatives
+  - id: bodily_breath
+    pattern: '\btake\s+a\s+deep\s+breath\b'
+  - id: bodily_relax
+    pattern: '\b(?:close\s+your\s+eyes|relax\s+your\s+mind)\b'
+  # hidden-reasoning framing (I5 part D)
+  - id: hidden_subconscious
+    pattern: '\bsubconscious(?:ly)?\b'
+  - id: hidden_free_associate
+    pattern: '\bfree[\s-]+associat\w*'
+  - id: hidden_secretly_thinking
+    pattern: '\bwhat\s+you\s+are\s+secretly\s+thinking\b'
+  - id: hidden_secret_thoughts
+    pattern: '\bsecret(?:ly)?\s+(?:think\w*|thoughts?)\b'
+  - id: hidden_reasoning
+    pattern: '\b(?:reveal\s+your\s+)?hidden\s+reasoning\b'
+  - id: hidden_really_think
+    pattern: '\bwhat\s+you\s+really\s+think\b'
+warn:
+  - id: creative_be_creative
+    pattern: '\bbe\s+(?:very\s+)?creative\b'
+  - id: creative_outside_box
+    pattern: '\bthink\s+outside\s+(?:of\s+)?the\s+box\b'
+  - id: creative_creatively
+    pattern: '\bthink\s+creatively\b'
+  - id: boilerplate_step_by_step
+    pattern: '\bthink\s+step\s+by\s+step\b'

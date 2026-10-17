@@ -1,0 +1,5 @@
+{{data}}
+{{seed}}
+Reason step by step. Then end your reply with one line of the form
+ANSWER: <letter>
+where <letter> is one of A, B, C, D.

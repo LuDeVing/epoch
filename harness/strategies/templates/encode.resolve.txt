@@ -1,0 +1,11 @@
+{{problem}}
+
+Two hard-constraint checklists were written for this problem.
+
+Checklist A:
+{{checklist_a}}
+
+Checklist B:
+{{checklist_b}}
+
+Write one merged checklist as a numbered list. Keep each hard constraint that the problem text supports, write each one once, and leave out items the problem text does not support. Write no other text.

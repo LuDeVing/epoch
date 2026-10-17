@@ -1,0 +1,1 @@
+Write {{n}} or fewer candidate answers as a numbered list, one per line. Each item starts with one option letter (A, B, C or D) and may add one short sentence.

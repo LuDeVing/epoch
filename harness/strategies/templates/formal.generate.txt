@@ -1,0 +1,13 @@
+{{facts}}
+
+Resources:
+{{resources}}
+
+Goal: {{goal}}
+
+Hard constraints:
+{{constraints}}
+
+Each program will be run on the example inputs and on the test input after this reply.
+
+{{format}}

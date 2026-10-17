@@ -1,0 +1,4 @@
+Copy every python function named transform from the text below into a numbered list, one python code block per item, verbatim. Add nothing else.
+
+Text:
+{{raw}}

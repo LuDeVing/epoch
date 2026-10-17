@@ -1,0 +1,6 @@
+Task: find the rule that maps each example input grid to its output grid, then write a program that applies it to the test input.
+Each grid is shown as rows of integers 0-9 separated by spaces.
+
+{{data}}
+{{seed}}
+Reason step by step about the rule that turns each example input into its output. Then give your final answer as exactly one python code block that defines transform(grid) -> grid. The argument is the input grid as a list of lists of ints; the function returns the output grid in the same form, uses only the python standard library, and should reproduce every example output from its input.

@@ -1,0 +1,11 @@
+{{facts}}
+
+Resources:
+{{resources}}
+
+Goal: {{goal}}
+
+Hard constraints:
+{{constraints}}
+
+{{format}}

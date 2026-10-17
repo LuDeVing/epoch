@@ -1,0 +1,62 @@
+# Where breakthrough ideas come from, and how the loop gets a lane for them
+
+*2026-10-13. Synthesis of seven Sonnet briefs (01 to 07 in this folder) on upper-tail creativity: case histories, the cognitive science of transformational ideas, the practices of exceptional researchers, techniques that raise the ceiling, machine discoveries 2020 to 2026, the economics of long shots, anomalies and problem finding. Built on top of `idea_generation/00_SYNTHESIS.md` and `thinking_parts/00_IDEAS.md`. Evidence tags: strong = replicated or large-N; medium = one controlled or large observational study; weak = case, essay or analogy. Everything about LLM loops specifically is untested and must run as an arm.*
+
+## 1. What the seven briefs agree on
+
+1. **An ambitious idea is a rule break with a conventional core, not a big number.** Transformation means dropping or inverting a rule the space's own operators assume (what a loss is, what a layer computes, which data is seen when, how an update is made), not sitting far from the baseline (02, weak theory; the case histories all fit it, 01). The hits that change fields keep a conventional core and add one atypical link; large pivots away from the core are under-represented in the top 1 percent by about 70 percent (02, 06, medium). Hamming's "important" means "you have a reasonable attack"; Pólya's ambitious plan wins only on real vision (03). So a leap ships with its attack: a mechanism, a numeric prediction, the diagnostic it should move, and a kill number.
+
+2. **Wording does nothing; structure does.** "Be creative", "avoid the example", personas, SCAMPER, lateral thinking and TRIZ prompts did no better than plain prompts, and models copy examples even when told not to (02, 04, strong). What moved the maximum: disjoint inputs per generator, set-level generation, tail-probability draws, an existence target, a single constraint or opposite slot, far sources with the schema written first (04, medium). An operator is an input bundle plus an output schema, never an instruction to be bold (03).
+
+3. **The ceiling is a sampling problem.** The best of N draws grows with effective N, and correlated draws collapse it: 4,000 LLM ideas held 200 distinct ones (04, medium). Independence comes from different inputs, not from asking twice. Variance levers raise the maximum and lower the mean, so a lane that looks worse on average is working (04, 06).
+
+4. **The same few moves recur in every breakthrough.** Across Darwin, Einstein, Shannon, Feynman, Kalman, attention, CRISPR and the rest: two to four existing parts recombined, one assumption dropped, one representation changed, years of preparation, the last step in days (01, historian grade). As executable operators: literalize a loose analogy, delete a load-bearing part, start from an anomaly then audit what forbids the idea, re-measure an inherited constant, re-represent until the constraint is computable, shrink-solve-generalize-invert, known-answer test before the novelty claim, port by adapting at the violated assumption (01, 03). The one operator with a controlled result is subtraction: telling people removal was allowed lifted subtractive ideas from 21 to 48 percent (03, medium).
+
+5. **Machines so far supply variance under a prior; humans supply the slot and the reading.** Every documented machine discovery was sampling plus a cheap exact check inside a slot a human defined; hit rates were 0.5 to 3 percent per run and claims shrank under audit (05, medium). Nothing autonomous above "publishable". The loop analogue: fix the slot (one named symbol, one rule), free the content, verify exactly, read the structure of near-misses.
+
+6. **Protect the lane, do not force the line.** Novelty loses at the cheapest gate and wins late; failure-tolerant funding bought 96 percent more top-1-percent papers and 35 percent more flops (06, medium). No evidence fixes a share; sizing follows from success probability, payoff and cost. Judge the lane by counts, maxima and upper quantiles, never means; never stop it on a failure streak (one failure moves the odds by 1.07x); review at 40 to 150 lane builds, where zero wins bounds the yield below 2 percent (06).
+
+7. **Anomalies are the best seed and the worst trap.** Surprises are common and mostly artifacts; conversion is the scarce step; observers, and LLM agents more so, protect the incumbent (07, medium). Seed the lane from residuals that replicate on a second seed and survive a false-discovery filter, show a few concrete rows not the table, and plant sham anomalies to measure chasing.
+
+8. **Log the rationale at proposal time.** Every retrospective account drifted (Darwin's date, Einstein's beam, Kekulé's dream, Poincaré's omnibus). The idea card is written before the build: rule broken, core kept, import and source, anomaly cited, stated probability, cell and direction, minimal diff, falsifier (01, 02).
+
+## 2. The design: a leap quota and lane
+
+What to build now, in order. Each item names its evidence and how it is measured. The lane competes against a plain "propose ambitious ideas" control at equal tokens; executed outcomes only.
+
+**D1. Two kinds of sketch, by construction.** Every sketch carries `KIND: port` (a known technique adapted; must cite its source) or `KIND: leap`. A leap must add `BREAKS:` (the rule of the recipe it drops or flips), `KEEPS:` (the conventional core left intact), `P_SUCCESS:` (the agent's own chance it helps, at most 0.2), and `KILL:` (the number at the first learning rung that discards it). Quota: at least a quarter of each agent's sketches, never fewer than two of eight. A leap whose source is a known technique applied unchanged is reclassified as a port by the prior-art tagger, so the quota cannot be met with ports in disguise. Basis: 02, 03, 06 (R1). Measure: leap share per call; reclassification rate.
+
+**D2. Leap operators as rotating cards, disjoint within a part.** Each sketch context gets one operator; contexts of the same part get different ones; the operator id is logged on every sketch for credit. The eight, each an instruction with its inputs from our materials and its output schema:
+- RULEBREAK: list eight rules of this part as testable sentences, rank by how much depends on each, drop or invert exactly one, say what must change to stay trainable (02 item 1; Knoblich).
+- SUBTRACT: for each component, "remove it or freeze it at identity"; keep the two removals you can defend from the measurements; reinvest the freed parameters or steps in one named alternative (03 operator 1; the only controlled result).
+- LITERALIZE: find "behaves like" or "analogous to" in the brief, the findings or the script's comments; set the two sides equal; derive one consequence the source did not state; name the code change that tests it (01 move 1; Feynman, Darwin).
+- REMEASURE: list the constants inherited from another scale (learning-rate rule, warmup, init scale, clipping, softcap, rotary base); derive or measure the value at ours from the diagnostics; propose the correction or a learned replacement (01 move 4, 03 operator 9; the Wrights).
+- REREPRESENT: rewrite the training step in a different form (optimiser as descent under a norm; attention as a kernel smoother; residual stream as a differential equation; loss as code length); list the edit that is natural in that form and awkward in the code's own (03 operator 8, 01 move 5).
+- LIMIT: push one quantity to its limit (one-token context, depth one, vocabulary two, learning rate zero, infinite width); say what breaks first and which diagnostic cell shows it; if the baseline already shows the symptom, propose the fix (03 operator 11).
+- IMPORT: keep the recipe unchanged and add one mechanism from an assigned far field aimed at a stuck or unexplained measurement; write the shared schema first, then the instantiation and a named break (02 item 2; Uzzi's core-plus-tail).
+- EXISTENCE: given the measured headroom (parameters, step time, memory against the rules), "a change exists that recovers a third of this at no more than 2 percent step time; give three mechanisms and what would have to be true at the first rung" (04 item 4; AlphaEvolve's hint effect).
+Measure: new-cluster share, rung-3 pass and wins per operator; retire an operator after eight builds without a hit (03).
+
+**D3. Set-level generation inside the leap part of a call.** Before writing its leaps, the agent lists twelve terse one-line seeds across at least four different rules, keeps the three farthest from the brief, the findings and each other, and writes only those in full. Never "make it bolder" per item. Basis: 04 item 2 (list-then-different gave the highest diversity; per-item bolder collapsed it). Measure: distinct leap clusters per call against a no-seeding control.
+
+**D4. Leaps are protected in selection.** Leap clusters are eligible for the long-shot lane; the lane rises to 30 percent of build slots with a floor of two builds in every round (today it rounds to one and to zero in round two); one overnight slot in five is reserved for the best lane candidate even when it ranks below safe ones. The lane keeps its lenient first learning gate (it must run, the loss must fall, the named cell must move). Basis: 06 (R2, R3), 02 item 7. Measure: lane builds per run; lane false-reject rate from the hedge lane.
+
+**D5. Separate accounting, by counts.** The report gains a "Leaps" section: sketches, clusters, built, checked, stackable and verified by operator; the maximum and the 90th percentile of the lane's extrapolated gain beside the main lane's; near-misses (mechanism moved as named, gain below the margin). Agents are never ranked by leap hits. Basis: 06 (R4). Review at 40 pooled lane builds; shrink the lane to 10 percent only if the mechanism-valid rate is under half or near-misses run under a third of the main lane's.
+
+**D6. Anomaly seeds with a firewall.** The diagnosis card gets residuals against a smooth expectation in seed-spread units, kept only when they replicate across seeds and survive a false-discovery filter; the agent sees the top five rows with a one-line restatement task, three rival causes including an artifact, and a five-minute probe; one in ten anomaly prompts carries a sham to measure chasing. Basis: 07 (N1, N2, N9). Measure: sham-chase rate under 5 percent; wins from anomaly-seeded leaps.
+
+**D7. Near-misses become a family.** A leap that moved its named cell without reaching the margin gets up to three variants (another layer range, another token class, relaxed or strengthened) as one batch outside the quota; a lane win's cluster gets two follow-up builds. Basis: 05 rule 10, 06 (R5d), 02 item 5 (explore then exploit).
+
+**D8. Interrogation delivers leaps too.** The questioning stage's new ideas carry the same KIND lines and at least one must be a leap; the questions aimed at a leap ask what would have to be true, not whether it is known.
+
+**D9. The owner's seeds.** A pre-run file of expert-written seed mechanisms, one per part, enters the lane as an IMPORT card source. Basis: 05 rule 7 (humans supplied the leap in every documented case).
+
+Not worth doing, on the evidence: novelty judged by a model, personas, "be creative", per-item "bolder", random stimuli, far sources without a schema, stopping the lane on a dry spell, counting a port that works as a leap.
+
+## 3. What a good leap looks like here
+
+A test of the definition against the one-agent run of this morning: of its eight attention sketches, the key token-shift (keys mix the current and previous token) breaks the rule "a key is a function of one position" and keeps the softmax core, so it is a leap by D1 even though it rediscovers a 2021 mechanism; the sink slot and the low-rank queries drop no rule and are ports or parameter moves; the learnable rotation speed per head is a parameter move. By the retrieval test, the token-shift would be reclassified as a port of Primer's depthwise-convolution heads. That is the right outcome: the quota is for rule breaks that retrieval cannot find, and the loop should expect one to three of every hundred such builds to pay.
+
+## 4. Open questions only runs can settle
+
+Whether leaps from these operators clear the first learning rung at a rate above a few percent; which operators yield anything at 21M parameters; whether anomaly seeds beat prior seeds; the lane's false-reject rate at the lenient gate; the right lane share once forty lane builds exist.

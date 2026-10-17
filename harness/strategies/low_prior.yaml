@@ -1,0 +1,17 @@
+# Section 3 /generate, P0 card "low_prior": schema view with domain nouns replaced (REP-02, Pr5).
+name: low_prior
+version: 1
+description: The low_prior view, in which domain nouns are neutral tokens; no domain cues.
+role: generate
+view: low_prior
+data_style: compact
+operator_choices: [none]
+applies_to: [arc, bt]
+steps:
+  - id: generate
+    template: low_prior.generate
+    inputs: [facts, resources, goal, constraints, format]
+    max_tokens: null
+    n: null
+    parser: candidates
+    emit: true

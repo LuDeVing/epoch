@@ -1,0 +1,19 @@
+{{facts}}
+
+Resources:
+{{resources}}
+
+Goal: {{goal}}
+
+Hard constraints:
+{{constraints}}
+
+Candidates written for a transformed version of this problem:
+{{parent}}
+
+Feedback record:
+{{feedback}}
+
+Operator: {{operator}}
+
+{{format}}

@@ -1,0 +1,19 @@
+{{facts}}
+
+Resources:
+{{resources}}
+
+Goal: {{goal}}
+
+Hard constraints:
+{{constraints}}
+
+Parent:
+{{parent}}
+
+Feedback record:
+{{feedback}}
+
+Operator: {{operator}}
+
+{{format}}
