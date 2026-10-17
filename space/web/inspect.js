@@ -57,9 +57,9 @@ function ClusterDetail({ v, key }) {
 }
 
 // Where the panel opens: next to the clicked card or bubble, inside its pane; it can then be dragged by its head.
-function placeNear(box, pane, target, scale = 1) {
+function placeNear(box, pane, target) {
   const pr = pane.getBoundingClientRect();
-  const W = (box.offsetWidth || 320) * scale, H = Math.min((box.offsetHeight || 240) * scale, pr.height - 20);
+  const W = box.offsetWidth || 320, H = Math.min(box.offsetHeight || 240, pr.height - 20);
   let left = 12, top = 34;
   if (target) {
     const r = target.getBoundingClientRect();
@@ -70,19 +70,8 @@ function placeNear(box, pane, target, scale = 1) {
   }
   top = Math.max(8, Math.min(top, pr.height - H - 8));
   left = Math.max(8, Math.min(left, pr.width - W - 8));
-  // the CSS zoom scales the panel's own coordinates, so the offsets are divided back
-  box.style.left = `${Math.round(left / scale)}px`;
-  box.style.top = `${Math.round(top / scale)}px`;
-}
-
-// The zoom factor of a pane's world: the tree's div carries scale() in its style, the clusters' g in its attribute.
-function zoomOf(pane) {
-  const w = pane.querySelector('.tree__world, .clusters__world');
-  if (!w) return 1;
-  const t = (w.getAttribute && w.getAttribute('transform')) || w.style.transform || '';
-  const m = /scale\(([\d.]+)/.exec(t);
-  const k = m ? parseFloat(m[1]) : 1;
-  return Number.isFinite(k) && k > 0 ? k : 1;
+  box.style.left = `${Math.round(left)}px`;
+  box.style.top = `${Math.round(top)}px`;
 }
 
 export function mountInspector(treePane, clustersPane, api, bus) {
@@ -91,25 +80,7 @@ export function mountInspector(treePane, clustersPane, api, bus) {
   box.style.display = 'none';
   let open = null;                 // {type, id}
   let moved = false;               // once dragged, the panel stays where the person put it until it closes
-  let target = null;               // the card or bubble the panel is anchored to
-  let raf = 0, lastKey = '';
-  const close = () => { open = null; moved = false; target = null; box.style.display = 'none'; render(null, box); if (raf) { cancelAnimationFrame(raf); raf = 0; } };
-  // follow the anchor: when the view zooms or pans, the panel moves with its card and scales a little with the zoom
-  const follow = () => {
-    raf = 0;
-    if (!open || !box.parentNode) return;
-    const pane = box.parentNode;
-    const k = zoomOf(pane);
-    const scale = Math.max(0.8, Math.min(1.3, 0.85 + (k - 1) * 0.35));
-    const r = target && target.isConnected ? target.getBoundingClientRect() : null;
-    const key = `${k.toFixed(3)}|${r ? `${Math.round(r.left)},${Math.round(r.top)}` : '-'}|${moved}`;
-    if (key !== lastKey) {
-      lastKey = key;
-      box.style.zoom = String(scale);
-      if (!moved) placeNear(box, pane, target && target.isConnected ? target : null, scale);
-    }
-    raf = requestAnimationFrame(follow);
-  };
+  const close = () => { open = null; moved = false; box.style.display = 'none'; render(null, box); };
   const hueOf = (v) => {
     if (!open) return 'team';
     const n = open.type === 'node' ? v.nodes.get(open.id) : null;
@@ -135,10 +106,11 @@ export function mountInspector(treePane, clustersPane, api, bus) {
     open = { type: sel.type, id };
     box.style.display = '';
     paint();
-    const esc = (x) => (window.CSS && CSS.escape ? CSS.escape(x) : String(x).replace(/"/g, '\\"'));
-    target = sel.type === 'node' ? pane.querySelector(`.card[data-id="${esc(id)}"]`) : pane.querySelector(`.bubble[data-key="${esc(id)}"]`);
-    lastKey = '';
-    if (!raf) raf = requestAnimationFrame(follow);
+    if (!moved) {
+      const esc = (x) => (window.CSS && CSS.escape ? CSS.escape(x) : String(x).replace(/"/g, '\\"'));
+      const target = sel.type === 'node' ? pane.querySelector(`.card[data-id="${esc(id)}"]`) : pane.querySelector(`.bubble[data-key="${esc(id)}"]`);
+      placeNear(box, pane, target);
+    }
   });
   bus.on('state', () => paint());
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) close(); });
