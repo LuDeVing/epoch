@@ -726,7 +726,7 @@ def parse_slash(text, view):
         text = clean_text(a.get("text") or a["title"], 4000)
         data = {"title": title, "text": text, "kind": "note", "source": "own work", "part": part, "values": {}}
         ev = _ev("finding_posted", f"node:{part}" if part else "run:main", title, data)
-        where = view.node_name(part) if part and hasattr(view, "node_name") else (part or "the whole problem")
+        where = view.name_of(part) if part else "the whole problem"
         return [ev], f"Posted your finding on {where}. The team reads it at {at} and keeps it in the part's memory."
     if cmd == "go":
         ops = run_step_ops(view, 1)

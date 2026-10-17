@@ -18,7 +18,7 @@ LABEL_KEYS = {                                     # where a label comes from wh
     "test_result": ("cluster_name", "cand", "idea"), "objection_raised": ("cluster_name", "idea"),
     "reply_posted": ("cluster_name", "idea"), "objection_marked": ("cluster_name", "idea"),
     "question_vetoed": ("text", "question"), "question_unvetoed": ("text", "question"),
-    "question_chosen": ("text", "question"), "question_picked": ("text",),
+    "question_chosen": ("text", "question"), "question_picked": ("text",), "finding_posted": ("title",),
 }
 CLAIM_WHO = {"claim_granted": "owner", "claim_released": "owner", "claim_taken_over": "to"}
 SENTENCE_FIRST_WORDS = frozenset(v[4].split()[0] for v in KINDS.values() if v[4])
