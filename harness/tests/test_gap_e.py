@@ -45,7 +45,7 @@ def test_summary_reports_iqm_intervals_and_wlt(tmp_path):
     base = _rows([3, 4, 5, 3], [3.0, 4.0, 5.0, 3.0])
     meth = _rows([9, 9, 5, 2], [5.0, 4.0, 6.0, 2.0])
     _write(tmp_path / "x-plain" / "scores.jsonl", base)
-    _write(tmp_path / "x-method" / "scores.jsonl", meth + [{**meth[0], "distinct": 1}])   # a later duplicate is ignored
+    _write(tmp_path / "x-method" / "scores.jsonl", [{**meth[0], "distinct": 1}] + meth)   # an earlier row is replaced by the later one
     text = nb.summary([tmp_path / "x-plain", tmp_path / "x-method"], n_boot=500)
     assert "IQM distinct" in text and "| x-method | 4 |" in text
     row = next(l for l in text.splitlines() if l.startswith("| x-plain | 4 |") and "[" in l)

@@ -21,6 +21,9 @@ remaining inputs are not run (each gets a "timeout" error). Inputs come in a fix
 first), so the verifier and the portfolio control see the same result on the inputs they share,
 and a program slow only on extra inputs (augmented copies) keeps its earlier outputs. The parent
 kills the process tree only as a last resort, after STARTUP_S + (n + 1) wall-clock guards.
+The per-grid CPU timer cannot interrupt a C-level loop (sum(range(10**9)), regex backtracking), since
+the loop holds the GIL and the watching thread never runs. The parent's wall guard is the backstop then,
+and all outputs of that program are lost, the ones of inputs that finished included.
 
 Isolation at P0 is process isolation ONLY. The child can still read and write any file the
 user account can reach, open network sockets, spawn processes and allocate memory up to the

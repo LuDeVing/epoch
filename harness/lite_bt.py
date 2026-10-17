@@ -132,6 +132,38 @@ def bootstrap_diff(rows, a, b, n=2000):
     return sum(v for g in keys for v in groups[g]) / len(rows), stats[int(0.025 * n)], stats[int(0.975 * n)]
 
 
+def summary_lines(rows, arms):
+    """lite_summary.md lines; a cell whose mean has no rows (for example vote on a resumed batch without vote) is n/a."""
+    lines = [f"# Lite thinking test on BrainTeaser ({len(rows)} puzzles, {len({r['group'] for r in rows})} puzzle groups), model {config.DEFAULT_MODEL}", "",
+             "| arm | solved | tokens per puzzle |", "|---|---|---|"]
+    for a in arms:
+        rs = [r for r in rows if a in r]
+        if not rs:
+            lines.append(f"| {a} | n/a | n/a |")
+            continue
+        sol = sum(r[a] == r["key"] for r in rs) / len(rs)
+        tok = sum(r.get(f"{a}_tokens", 0) for r in rs) / len(rs)
+        lines.append(f"| {a} | {sol:.1%} | {tok:,.0f} |")
+    lines.append("")
+    pairs = [(b, "plain", f"{b} minus plain", " (bootstrap over puzzle groups)") for b in arms[1:]]
+    if "vote" in arms:
+        pairs.append(("lite", "vote", "lite minus vote", ""))
+    for a, b, label, tail in pairs:
+        rs = [r for r in rows if a in r and b in r]
+        if not rs:
+            lines.append(f"{label}: n/a (no puzzle has both)")
+            continue
+        d, lo, hi = bootstrap_diff(rs, a, b)
+        lines.append(f"{label}: {d * 100:+.1f} points, 95% interval [{lo * 100:+.1f}, {hi * 100:+.1f}]{tail}")
+    th = defaultdict(int)
+    for r in rows:
+        for k, v in (r.get("lite_thinkers") or {}).items():
+            th[k] += (v == r["key"])
+    lines.append("")
+    lines.append("each thinker alone: " + (", ".join(f"{k} {v / len(rows):.0%}" for k, v in th.items()) if rows else "n/a"))
+    return lines
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--items", type=int, default=48)
@@ -185,28 +217,7 @@ def main() -> int:
         list(ex.map(work, todo))
     rows = [done[it["id"]] for it in items if it["id"] in done]
     arms = ["plain", "lite"] + (["vote"] if args.vote else [])
-    lines = [f"# Lite thinking test on BrainTeaser ({len(rows)} puzzles, {len({r['group'] for r in rows})} puzzle groups), model {config.DEFAULT_MODEL}", "",
-             "| arm | solved | tokens per puzzle |", "|---|---|---|"]
-    for a in arms:
-        rs = [r for r in rows if a in r]
-        sol = sum(r[a] == r["key"] for r in rs) / len(rs)
-        tok = sum(r.get(f"{a}_tokens", 0) for r in rs) / len(rs)
-        lines.append(f"| {a} | {sol:.1%} | {tok:,.0f} |")
-    lines.append("")
-    for b in arms[1:]:
-        rs = [r for r in rows if b in r]
-        d, lo, hi = bootstrap_diff(rs, b, "plain")
-        lines.append(f"{b} minus plain: {d * 100:+.1f} points, 95% interval [{lo * 100:+.1f}, {hi * 100:+.1f}] (bootstrap over puzzle groups)")
-    if args.vote:
-        rs = [r for r in rows if "vote" in r]
-        d, lo, hi = bootstrap_diff(rs, "lite", "vote")
-        lines.append(f"lite minus vote: {d * 100:+.1f} points, 95% interval [{lo * 100:+.1f}, {hi * 100:+.1f}]")
-    th = defaultdict(int)
-    for r in rows:
-        for k, v in (r.get("lite_thinkers") or {}).items():
-            th[k] += (v == r["key"])
-    lines.append("")
-    lines.append("each thinker alone: " + ", ".join(f"{k} {v / len(rows):.0%}" for k, v in th.items()))
+    lines = summary_lines(rows, arms)
     (out_dir / "lite_summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0

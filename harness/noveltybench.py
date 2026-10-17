@@ -220,10 +220,17 @@ def judge_one(row, judge_model, out, seed=0, log_name="judge_calls"):
             "judge_model": judge_model}
 
 
-def run_rows(fn, rows, path, workers):
+def run_rows(fn, rows, path, workers, redo_unscored: bool = False):
+    """Run fn on every row whose id has no row in `path` yet. redo_unscored: an id whose last row is unscored counts
+    as not done; its new row is appended and replaces it (load_scores keeps the last row per id)."""
     done = set()
     if path.exists():
-        done = {json.loads(l)["id"] for l in path.read_text(encoding="utf-8").splitlines() if l.strip()}
+        last = {}
+        for l in path.read_text(encoding="utf-8").splitlines():
+            if l.strip():
+                r = json.loads(l)
+                last[r["id"]] = r
+        done = {i for i, r in last.items() if not (redo_unscored and r.get("unscored"))}
     todo = [r for r in rows if r["id"] not in done]
     print(f"[nb] {path.name}: {len(done)} done, {len(todo)} to go", flush=True)
 
@@ -246,12 +253,13 @@ def run_rows(fn, rows, path, workers):
 
 
 def load_scores(path) -> list[dict]:
-    """One row per prompt id (the first row written for it is kept)."""
+    """One row per prompt id: the last row written for it wins (a rejudged unscored prompt replaces its old row),
+    in the order the ids first appear."""
     rows = [json.loads(l) for l in Path(path).read_text(encoding="utf-8").splitlines() if l.strip()]
-    first: dict = {}
+    last: dict = {}
     for r in rows:
-        first.setdefault(r["id"], r)
-    return list(first.values())
+        last[r["id"]] = r
+    return list(last.values())
 
 
 def iqm(xs) -> float:
@@ -452,6 +460,8 @@ def main():
     ap.add_argument("--md", default=None, help="summary: also write the tables to this file")
     ap.add_argument("--seed", type=int, default=0, help="summary: bootstrap seed; rejudge: sample and shuffle seed")
     ap.add_argument("--n-boot", type=int, default=10_000)
+    ap.add_argument("--rejudge-unscored", action="store_true",
+                    help="judge: prompts whose score row is unscored are judged again and the new row replaces it")
     ap.add_argument("--suffix", default=None, help="rejudge: writes scores.<suffix>.jsonl (default: the judge model)")
     a = ap.parse_args()
     if a.cmd == "summary":
@@ -478,7 +488,8 @@ def main():
     else:
         a.workers = min(a.workers, 2)   # judge stage: at most 2 prompts x 3 score calls per arm in flight
         rows = [json.loads(l) for l in (out / "generations.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()][: a.limit]
-        run_rows(lambda r: judge_one(r, a.judge_model, out), rows, out / "scores.jsonl", a.workers)
+        run_rows(lambda r: judge_one(r, a.judge_model, out), rows, out / "scores.jsonl", a.workers,
+                 redo_unscored=a.rejudge_unscored)
 
 
 if __name__ == "__main__":

@@ -29,7 +29,8 @@ extended arm by arm; errored runs are retried. Reuse is decided after the matche
 a best-of-N run is reused only when its recorded budget_tokens equals the budget it would get
 now, else it is re-run at the new budget (a run made at another B is not matched cost). A run
 that raises gets a runs.jsonl row with status "error" (crash true), so it counts wrong and is
-retried next time instead of vanishing from the denominator.
+retried next time instead of vanishing from the denominator. The row keeps the tokens an
+llm.CallError carries; a plain run that raised after spending is a final plain failure instead.
 
 python -m harness.bench --benchmark arc --arm plain,bestofn_vote --split dev-tune --items 10
     --replicates 1 --backend mock --m 20 --batch dev0
@@ -45,7 +46,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from . import config, data, lint, score
+from . import config, data, lint, llm, score
 from .arms import run_arm
 from .arms.plain import run_id_for
 from .schemas import append_jsonl, now_ts, read_json, read_jsonl, strip_key, write_json
@@ -78,16 +79,21 @@ def existing_runs(batch: str, include_errors: bool = False) -> dict[str, dict]:
 def log_crash(batch: str, item: dict, arm: str, replicate: int, run_id: str, err: Exception,
               before: dict | None) -> None:
     """runs.jsonl row with status error for a run that raised, unless the run already wrote an
-    error row during this attempt (think() does on its own crashes)."""
+    error row during this attempt (think() does on its own crashes). The usage an llm.CallError
+    carries is the row's spent_tokens; a plain run that raised after spending is a final plain
+    failure (crash false), so it is not resampled and enters the cost median (B9). Returns the
+    row written, or None."""
     last = existing_runs(batch, include_errors=True).get(run_id)
     if last is not None and last != before and last.get("status") == "error":
-        return
+        return None
+    spent = int(err.usage.total_tokens) if isinstance(err, llm.CallError) else 0
     row = {"batch": batch, "benchmark": item["benchmark"], "item_id": item["id"], "arm": arm,
            "replicate": replicate, "run_id": run_id, "status": "error", "answer": None,
-           "spent_tokens": 0, "rounds": 0, "ts": now_ts(), "crash": True,
+           "spent_tokens": spent, "rounds": 0, "ts": now_ts(), "crash": not (arm == "plain" and spent > 0),
            "error": f"{type(err).__name__}: {str(err)[:800]}"}
     with _LOCK:
         append_jsonl(bdir(batch) / "runs.jsonl", row)
+    return row
 
 
 def log_error(batch: str, run_id: str, err: Exception) -> None:
@@ -153,9 +159,9 @@ def run_one(arm: str, item: dict, *, m: int, replicate: int, backend: str, batch
         return row
     except Exception as e:  # noqa: BLE001 - one failed run must not stop the batch
         log_error(batch, run_id, e)
-        log_crash(batch, item, arm, replicate, run_id, e, before)
+        row = log_crash(batch, item, arm, replicate, run_id, e, before)
         print(f"[bench] {run_id} failed: {e}", file=sys.stderr)
-        return None
+        return row if row is not None and final_failure(row) else None
 
 
 def run_arm_over(arm: str, items: list[dict], *, replicates: int, m: int, backend: str,

@@ -164,3 +164,74 @@ def test_dedup_vote_ties():
     assert (best["p"], k, n) == ([[2]], 1, 3)                  # aug support breaks the size-1 tie
     best, _, _ = DD.vote(xs, lambda x: x["p"], lambda x: x["n"])
     assert best["p"] == [[3]]                                  # then the shortest program
+
+
+# ---------------------------------------------------------------- lite_bt summary: empty arms print n/a
+def test_lite_summary_vote_arm_with_no_vote_rows_prints_na():
+    from harness import lite_bt as LB
+    rows = [{"id": "a", "group": "g1", "key": "A", "plain": "A", "lite": "B", "plain_tokens": 10, "lite_tokens": 20},
+            {"id": "b", "group": "g2", "key": "B", "plain": "B", "lite": "B", "plain_tokens": 10, "lite_tokens": 20}]
+    text = "\n".join(LB.summary_lines(rows, ["plain", "lite", "vote"]))
+    assert "| vote | n/a | n/a |" in text and "vote minus plain: n/a" in text and "lite minus vote: n/a" in text
+    empty = "\n".join(LB.summary_lines([], ["plain", "lite"]))
+    assert "| plain | n/a | n/a |" in empty and "lite minus plain: n/a" in empty
+
+
+# ---------------------------------------------------------------- crash rows keep the usage a CallError carries
+def _plain_raises_call_error(monkeypatch, arm_name):
+    real = bench.run_arm
+
+    def boom(arm, item, **kw):
+        if arm != arm_name:
+            return real(arm, item, **kw)
+        raise llm.CallError("API Error: output token maximum exceeded", usage=Usage(1000, 8000))
+    monkeypatch.setattr(bench, "run_arm", boom)
+
+
+def test_bestofn_crash_row_carries_call_error_tokens(lab, monkeypatch):
+    _plain_raises_call_error(monkeypatch, "bestofn_vote")
+    _bench("--benchmark", "bt", "--arm", "bestofn_vote", "--items", "1", "--batch", "ce")
+    rows = [json.loads(l) for l in (config.RESULTS_DIR / "ce" / "runs.jsonl").read_text(encoding="utf-8").splitlines()
+            if '"bestofn_vote"' in l]
+    assert rows and rows[-1]["crash"] and rows[-1]["spent_tokens"] == 9000
+
+
+def test_plain_crash_with_call_error_tokens_enters_the_cost_median(lab, monkeypatch):
+    _plain_raises_call_error(monkeypatch, "plain")
+    with pytest.raises(SystemExit):     # only failures: no budget can be set, but the spend is recorded
+        _bench("--benchmark", "bt", "--arm", "plain", "--items", "2", "--batch", "cp")
+    rows = [json.loads(l) for l in (config.RESULTS_DIR / "cp" / "runs.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert len(rows) == 2 and all(r["spent_tokens"] == 9000 and bench.final_failure(r) for r in rows)
+    cost = [json.loads(l) for l in (config.RESULTS_DIR / "cp" / "cost.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert sorted(c["tokens"] for c in cost) == [9000, 9000]
+
+
+# ---------------------------------------------------------------- noveltybench: --rejudge-unscored, last row wins
+def test_noveltybench_rejudge_unscored_replaces_the_row(tmp_path, monkeypatch):
+    from harness import noveltybench as nb
+    out = tmp_path / "x-plain"
+    _jsonl(out / "generations.jsonl", [{"id": "p1", "gen_tokens": 5}, {"id": "p2", "gen_tokens": 5}])
+    _jsonl(out / "scores.jsonl", [{"id": "p1", "gen_tokens": 5, "unscored": True, "distinct": None, "utility": None},
+                                  {"id": "p2", "gen_tokens": 5, "distinct": 3, "utility": 2.0}])
+    seen = []
+
+    def fake_judge(row, judge_model, out, seed=0, log_name="judge_calls"):
+        seen.append(row["id"])
+        return {**row, "distinct": 7, "utility": 6.0}
+    monkeypatch.setattr(nb, "judge_one", fake_judge)
+    monkeypatch.setattr(sys, "argv", ["nb", "judge", "--out", str(out)])
+    nb.main()
+    assert seen == []                                           # default: unscored counts as done
+    monkeypatch.setattr(sys, "argv", ["nb", "judge", "--out", str(out), "--rejudge-unscored"])
+    nb.main()
+    assert seen == ["p1"]
+    got = {r["id"]: r for r in nb.load_scores(out / "scores.jsonl")}
+    assert got["p1"]["distinct"] == 7 and not got["p1"].get("unscored") and got["p2"]["distinct"] == 3
+    assert "| x-plain | 2 | 0 |" in nb.summary([out], n_boot=50)
+
+
+# ---------------------------------------------------------------- arc_exec: the CPU timer limit is documented
+def test_arc_exec_docstring_names_the_c_level_loop_limit():
+    from harness import arc_exec as EX
+    doc = " ".join(EX.__doc__.split())
+    assert "C-level loop" in doc and "wall guard is the backstop" in doc
