@@ -1,0 +1,45 @@
+{
+ "reference": {
+  "cand_id": "nbcd037208c",
+  "metrics": {
+   "changed_symbols": [],
+   "build_score": 1.136774,
+   "learn_score": 1.081456,
+   "learn_base": 1.081456,
+   "learn_gap": 0.0,
+   "learn_sd": 0.009169,
+   "learn_z": 0.0,
+   "cost_ratio": 0.975,
+   "cost": {
+    "time_per_item_s": 2.3643750055271086e-06
+   },
+   "n_quick": 20,
+   "long_score": 1.042745,
+   "long_base": 1.042745,
+   "long_gap": 0.0,
+   "long_sd": 0.00045,
+   "long_z": 0.0,
+   "half_gap": 0.0,
+   "half_z": 0.0,
+   "trend": 0.0,
+   "extrap_gap": 0.0,
+   "extrap_z": 0.0,
+   "long_cost_ratio": 1.0
+  },
+  "round": 1,
+  "reason": "the first checked candidate",
+  "hypothesis": "best fit: the open bin left fullest by the item should use few bins.",
+  "set_at": "2026-10-17T19:33:45"
+ },
+ "log": [
+  {
+   "round": 1,
+   "action": "set",
+   "from": null,
+   "to": "nbcd037208c",
+   "reason": "the first checked candidate",
+   "gap": null,
+   "ts": "2026-10-17T19:33:45"
+  }
+ ]
+}

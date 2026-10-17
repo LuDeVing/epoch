@@ -1,0 +1,4340 @@
+{
+ "round": 2,
+ "clusters": [
+  {
+   "cluster_id": "choice-in-k00",
+   "name": "best fit",
+   "members": [
+    "se64461d933",
+    "s3febff7843",
+    "s5b2a85ff92"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "se64461d933",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "existence",
+    "limit"
+   ],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "choice known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.517
+  },
+  {
+   "cluster_id": "choice-in-k01",
+   "name": "worst fit",
+   "members": [
+    "s610265c9cd",
+    "sd8a5930bff",
+    "s3bbf5f89ab",
+    "s6702d2411c"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s610265c9cd",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "choice-in-k02",
+   "name": "next fit",
+   "members": [
+    "s8025bc1afc",
+    "s401188c45d",
+    "sd6e21314fb"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s8025bc1afc",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "rerepresent"
+   ],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "choice-in-k03",
+   "name": "harmonic classes",
+   "members": [
+    "s9fb6e98c63",
+    "s24dae5e74b",
+    "s3f61e7ea00",
+    "s86915353bb"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s9fb6e98c63",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "existence",
+    "limit"
+   ],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "choice known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.467
+  },
+  {
+   "cluster_id": "choice-in-k04",
+   "name": "reserve for large items",
+   "members": [
+    "s155bdaafe5",
+    "s1ec048799e",
+    "s4c3bf526bc"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s155bdaafe5",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "choice-in-k05",
+   "name": "first fit",
+   "members": [
+    "s0ee8e162f7",
+    "sd11f2db37b",
+    "s1bfa476a51"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s0ee8e162f7",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "rerepresent"
+   ],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "choice-in-k06",
+   "name": "offshoot choice 0",
+   "members": [
+    "s47a798d28d",
+    "s954b8ffff6",
+    "s7810d6d970",
+    "sd0dd0784e3",
+    "s3ea235015c",
+    "sb2495c17d7"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s47a798d28d",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "choice known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "choice-in-k07",
+   "name": "offshoot choice 1",
+   "members": [
+    "s58d3fa21cf",
+    "s7b6a232dce",
+    "sb4bcf87862",
+    "s5d035b50e6",
+    "sd80c156973",
+    "sd3781ed814"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s58d3fa21cf",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "choice-in-k08",
+   "name": "offshoot choice 2",
+   "members": [
+    "s0b751403e3",
+    "s1fe4ed875f",
+    "sf40cf5484a",
+    "sed890cb322",
+    "sdd3dfd7639",
+    "s5556a5b46a"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s0b751403e3",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "choice",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "choice-ou-k00",
+   "name": "worst fit",
+   "members": [
+    "s812dfffd5e",
+    "s6eba587ae0",
+    "s6472effa7a",
+    "sfecad8ae2a"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s812dfffd5e",
+   "n_angles": 2,
+   "selected": false,
+   "rank": null,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "rulebreak"
+   ],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "choice known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null
+  },
+  {
+   "cluster_id": "choice-ou-k01",
+   "name": "next fit",
+   "members": [
+    "s1729b4876d",
+    "see124631a6"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 2,
+   "representative": "s1729b4876d",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.817
+  },
+  {
+   "cluster_id": "choice-ou-k02",
+   "name": "harmonic classes",
+   "members": [
+    "se9f960d2e1",
+    "s2cffb9c506",
+    "see39fd85f6",
+    "sb5f9f0aeb2"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 4,
+   "representative": "se9f960d2e1",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "import",
+    "literalize"
+   ],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "choice-ou-k03",
+   "name": "reserve for large items",
+   "members": [
+    "s3d4b281609",
+    "s2684eb2839",
+    "s5525148369"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s3d4b281609",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "rulebreak"
+   ],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "choice known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.517
+  },
+  {
+   "cluster_id": "choice-ou-k04",
+   "name": "first fit",
+   "members": [
+    "s0a4c588572",
+    "sfe6e3a3e49",
+    "scf21d60314",
+    "s995a3e1eaf"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s0a4c588572",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "choice-ou-k05",
+   "name": "best fit",
+   "members": [
+    "s25ea8901aa",
+    "sfd31c26fb1",
+    "se39f766449"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s25ea8901aa",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "import",
+    "literalize"
+   ],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "choice-ou-k06",
+   "name": "offshoot choice 0",
+   "members": [
+    "sca29a72ed2",
+    "sd8de69470f",
+    "s44892e55f6",
+    "sa98eb84ce4",
+    "s1797053d52",
+    "sf3739d275f"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "sca29a72ed2",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "choice known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "choice-ou-k07",
+   "name": "offshoot choice 1",
+   "members": [
+    "s8e9d3f6d7a",
+    "s2a3cc6eaf6",
+    "s17552507bb",
+    "s40ff050454",
+    "sb2fc7a65b8",
+    "s01d0144882"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s8e9d3f6d7a",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "choice-ou-k08",
+   "name": "offshoot choice 2",
+   "members": [
+    "s9da32bc00c",
+    "s2af330c1bf",
+    "sef6b8afe42",
+    "s371db612e5",
+    "s203fb539ae",
+    "sca8b6513a5"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s9da32bc00c",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "choice",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "state-in-k00",
+   "name": "best fit",
+   "members": [
+    "s4f9dea8382",
+    "s11458b6c49",
+    "s1f635b94c6",
+    "s29954de16c"
+   ],
+   "cards": [
+    "formal",
+    "low_prior",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s4f9dea8382",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "existence",
+    "limit"
+   ],
+   "node": "state",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "state known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.467
+  },
+  {
+   "cluster_id": "state-in-k01",
+   "name": "worst fit",
+   "members": [
+    "sbd56890c4b",
+    "sa23d233930",
+    "sd1fb811268",
+    "sbefc0c21fc"
+   ],
+   "cards": [
+    "formal",
+    "low_prior",
+    "research"
+   ],
+   "n": 4,
+   "representative": "sbd56890c4b",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "state",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "state-in-k02",
+   "name": "next fit",
+   "members": [
+    "sfcc430a09d",
+    "sd1bee7b88a",
+    "s59f4cbcd97"
+   ],
+   "cards": [
+    "formal",
+    "low_prior",
+    "research"
+   ],
+   "n": 3,
+   "representative": "sfcc430a09d",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "rerepresent",
+    "rulebreak"
+   ],
+   "node": "state",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.767
+  },
+  {
+   "cluster_id": "state-in-k03",
+   "name": "harmonic classes",
+   "members": [
+    "s03cc83bfc5",
+    "s3b6506b1a0",
+    "s6abf5d503c",
+    "s77ba57d435"
+   ],
+   "cards": [
+    "formal",
+    "low_prior",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s03cc83bfc5",
+   "n_angles": 3,
+   "selected": false,
+   "rank": null,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "existence",
+    "limit"
+   ],
+   "node": "state",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "state known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null
+  },
+  {
+   "cluster_id": "state-in-k04",
+   "name": "reserve for large items",
+   "members": [
+    "sc525283392",
+    "s1a46997ab1"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 2,
+   "representative": "sc525283392",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "state",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.817
+  },
+  {
+   "cluster_id": "state-in-k05",
+   "name": "first fit",
+   "members": [
+    "s05adce7f6d",
+    "s432ce7d521",
+    "s517e5b7f26"
+   ],
+   "cards": [
+    "low_prior",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s05adce7f6d",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "rerepresent",
+    "rulebreak"
+   ],
+   "node": "state",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "state-in-k06",
+   "name": "offshoot state 0",
+   "members": [
+    "scf67181832",
+    "s9b2c78dfd6",
+    "scd67c896ad",
+    "s2ebe7be466",
+    "s9732ebd899",
+    "s1a4dd6c4b3",
+    "s2245ec2588",
+    "s935d2d3ce6",
+    "s689f228f78"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "scf67181832",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "state",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "state known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.05
+  },
+  {
+   "cluster_id": "state-in-k07",
+   "name": "offshoot state 1",
+   "members": [
+    "s2cd9056f80",
+    "s2cd729a4ab",
+    "s0af4f98018",
+    "s200fd6b8c9",
+    "sb70df58b56",
+    "s865352390b",
+    "s60ec1212a6",
+    "s399c8a28f4",
+    "s3843d8b876"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "s2cd9056f80",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "state",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.3
+  },
+  {
+   "cluster_id": "state-in-k08",
+   "name": "offshoot state 2",
+   "members": [
+    "s733c651f0f",
+    "s0e143b2793",
+    "s37f3ef090a",
+    "s6835311f65",
+    "sa59e057149",
+    "s602268fff2",
+    "s10f6a526d1",
+    "s12b3a5d7a0",
+    "se5ec147a87"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "s733c651f0f",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "state",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.3
+  },
+  {
+   "cluster_id": "state-ou-k00",
+   "name": "worst fit",
+   "members": [
+    "sdd4f6eab69",
+    "s3984fe0fd4",
+    "s71c37f5417"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 3,
+   "representative": "sdd4f6eab69",
+   "n_angles": 2,
+   "selected": true,
+   "rank": 4,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "existence",
+    "remeasure"
+   ],
+   "node": "state",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767,
+   "lane": "longshot",
+   "lane_propensity": 0.006,
+   "novelty_gate": {
+    "nearest": [
+     "n67b58279e0",
+     0.106
+    ],
+    "audit": false,
+    "built": true
+   }
+  },
+  {
+   "cluster_id": "state-ou-k01",
+   "name": "next fit",
+   "members": [
+    "se253d56fd0",
+    "s3a83694070",
+    "s463ff950c8",
+    "s78429ba397"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "se253d56fd0",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "literalize"
+   ],
+   "node": "state",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "state known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.467
+  },
+  {
+   "cluster_id": "state-ou-k02",
+   "name": "harmonic classes",
+   "members": [
+    "s30a82c33dc",
+    "s6fdd324192",
+    "s605f2456be"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s30a82c33dc",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "state",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.767
+  },
+  {
+   "cluster_id": "state-ou-k03",
+   "name": "reserve for large items",
+   "members": [
+    "s1ccaa02f40",
+    "sc401e6f44d",
+    "s56d767fcce",
+    "sf61bed335c"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s1ccaa02f40",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "existence",
+    "remeasure"
+   ],
+   "node": "state",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "state-ou-k04",
+   "name": "first fit",
+   "members": [
+    "s44133caefe",
+    "sb0314aa60c",
+    "s068cdf1069"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s44133caefe",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "literalize"
+   ],
+   "node": "state",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "state known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.517
+  },
+  {
+   "cluster_id": "state-ou-k05",
+   "name": "best fit",
+   "members": [
+    "sfeedb4f389",
+    "s573da1a90e",
+    "s24636454ae"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "sfeedb4f389",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "state",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "state-ou-k06",
+   "name": "offshoot state 0",
+   "members": [
+    "s55526f6491",
+    "sca1a9a6d72",
+    "s5f4b834db7",
+    "sb293716710",
+    "s391899fce2",
+    "sba17725c86"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s55526f6491",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "state",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "state known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "state-ou-k07",
+   "name": "offshoot state 1",
+   "members": [
+    "sbaa42807ff",
+    "se330743593",
+    "s1ea4394be0",
+    "s72b1969a8f",
+    "saa6bf4e518",
+    "s32afe4a1ca"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "sbaa42807ff",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "state",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "state-ou-k08",
+   "name": "offshoot state 2",
+   "members": [
+    "s37dcde77fa",
+    "s2c609ceecb",
+    "s1319523f37",
+    "s684e0fd062",
+    "sffc38ea05f",
+    "s2413eda884"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s37dcde77fa",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "state",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "open-in-k00",
+   "name": "next fit",
+   "members": [
+    "s6fb862ae34",
+    "s5e58fa4ac4",
+    "s0b3ab93d07"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s6fb862ae34",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "open",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "open known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.517
+  },
+  {
+   "cluster_id": "open-in-k01",
+   "name": "harmonic classes",
+   "members": [
+    "s94c63f48f8",
+    "seecb09603a",
+    "s40664a09c2",
+    "sebe0bcab53"
+   ],
+   "cards": [
+    "formal",
+    "research",
+    "seeded"
+   ],
+   "n": 4,
+   "representative": "s94c63f48f8",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "remeasure",
+    "rerepresent"
+   ],
+   "node": "open",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "open-in-k02",
+   "name": "reserve for large items",
+   "members": [
+    "sb22d77156e",
+    "sb068dd5cef",
+    "s81efbe872c",
+    "s41882f69c8"
+   ],
+   "cards": [
+    "formal",
+    "research",
+    "seeded"
+   ],
+   "n": 4,
+   "representative": "sb22d77156e",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "rulebreak"
+   ],
+   "node": "open",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "open-in-k03",
+   "name": "first fit",
+   "members": [
+    "s5abf20e72e",
+    "s2a016c0583",
+    "sbdf8bef333"
+   ],
+   "cards": [
+    "formal",
+    "research",
+    "seeded"
+   ],
+   "n": 3,
+   "representative": "s5abf20e72e",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "open",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "open known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.517
+  },
+  {
+   "cluster_id": "open-in-k04",
+   "name": "best fit",
+   "members": [
+    "s7eaf84c33f",
+    "s802bb46e31",
+    "s6fa60763be"
+   ],
+   "cards": [
+    "formal",
+    "research",
+    "seeded"
+   ],
+   "n": 3,
+   "representative": "s7eaf84c33f",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "remeasure",
+    "rerepresent"
+   ],
+   "node": "open",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.767
+  },
+  {
+   "cluster_id": "open-in-k05",
+   "name": "worst fit",
+   "members": [
+    "sc8ac5f3de3",
+    "sadc9d72898",
+    "s3c1bcbd3e2"
+   ],
+   "cards": [
+    "research",
+    "seeded"
+   ],
+   "n": 3,
+   "representative": "sc8ac5f3de3",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "rulebreak"
+   ],
+   "node": "open",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "open-in-k06",
+   "name": "offshoot open 0",
+   "members": [
+    "sfb77728eba",
+    "s79166a10d9",
+    "s43f38b4d8d",
+    "s86aa7e1ebf",
+    "s8d15a24d72",
+    "s7d48495a3a",
+    "sccfcc6d194",
+    "sa9b92abb01",
+    "s1de560018f"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "sfb77728eba",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "open",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "open known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.05
+  },
+  {
+   "cluster_id": "open-in-k07",
+   "name": "offshoot open 1",
+   "members": [
+    "s23596f1dfb",
+    "s67984336a2",
+    "sc535da747b",
+    "s6c6bb6dfc6",
+    "s44d2281011",
+    "se0384eba0a",
+    "sd726e4adcf",
+    "se9f9d665a2",
+    "s64cbbc03e1"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "s23596f1dfb",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "open",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.3
+  },
+  {
+   "cluster_id": "open-in-k08",
+   "name": "offshoot open 2",
+   "members": [
+    "s2dd3ef2b3a",
+    "s7289365fc2",
+    "s4b9d5e18f9",
+    "s06bb3c6a1b",
+    "s4e15ce3fd5",
+    "s964a0e2e36",
+    "s4bf7780479",
+    "sc8b5b265db",
+    "s92d9e89ed9"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "s2dd3ef2b3a",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "open",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.3
+  },
+  {
+   "cluster_id": "open-ou-k00",
+   "name": "first fit",
+   "members": [
+    "s8c8033d75a",
+    "sd8da3ad82b",
+    "s78c1cd5e7b"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s8c8033d75a",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "import"
+   ],
+   "node": "open",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "open known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.517
+  },
+  {
+   "cluster_id": "open-ou-k01",
+   "name": "best fit",
+   "members": [
+    "sea218394f8",
+    "sab0defd26a",
+    "sfc3efc5918"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "sea218394f8",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "limit",
+    "subtract"
+   ],
+   "node": "open",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.767
+  },
+  {
+   "cluster_id": "open-ou-k02",
+   "name": "worst fit",
+   "members": [
+    "se9dd5d7c74",
+    "s796146d4e9",
+    "s46439bfdbb",
+    "s83a9057e09"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "se9dd5d7c74",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "existence"
+   ],
+   "node": "open",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "open-ou-k03",
+   "name": "next fit",
+   "members": [
+    "sf33130466e",
+    "sc4c33049c2",
+    "s0ff6364138"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 3,
+   "representative": "sf33130466e",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "import"
+   ],
+   "node": "open",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "open known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.517
+  },
+  {
+   "cluster_id": "open-ou-k04",
+   "name": "harmonic classes",
+   "members": [
+    "s929992c4e6",
+    "s6d89de3021",
+    "s42fe0b8516",
+    "s0b3b5e0288"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s929992c4e6",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "limit",
+    "subtract"
+   ],
+   "node": "open",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "open-ou-k05",
+   "name": "reserve for large items",
+   "members": [
+    "s6e3886d368",
+    "s77381e659c",
+    "sbe0c4584c8"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s6e3886d368",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "existence"
+   ],
+   "node": "open",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "open-ou-k06",
+   "name": "offshoot open 0",
+   "members": [
+    "sdeb9a6a8ca",
+    "s3577d5ee28",
+    "sd0210d7820",
+    "sa5692a5f92",
+    "sb83ce86458",
+    "sd3c469256b"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "sdeb9a6a8ca",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "open",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "open known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "open-ou-k07",
+   "name": "offshoot open 1",
+   "members": [
+    "seec5fdb781",
+    "sdfc61d04c3",
+    "sdfb0e20129",
+    "scfe39303da",
+    "s0fd4d5015f",
+    "s8975fbe2b7"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "seec5fdb781",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "open",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "open-ou-k08",
+   "name": "offshoot open 2",
+   "members": [
+    "s182cd5ffd6",
+    "s3c7c12cb56",
+    "s14846fd35e",
+    "s0ad95835c3",
+    "s34c785d227",
+    "s6d8229e887"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s182cd5ffd6",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "open",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "stats-in-k00",
+   "name": "first fit",
+   "members": [
+    "sdc1ea51d8a",
+    "s9eab6a6c53",
+    "s46e530933e",
+    "s7de114073d"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "sdc1ea51d8a",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "import",
+    "subtract"
+   ],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "stats known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.467
+  },
+  {
+   "cluster_id": "stats-in-k01",
+   "name": "best fit",
+   "members": [
+    "s5971b0e63c",
+    "sbe3d016f2c",
+    "s67df224c46",
+    "s6a3b138744"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s5971b0e63c",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "rulebreak"
+   ],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "stats-in-k02",
+   "name": "worst fit",
+   "members": [
+    "s9a1784796d",
+    "sd2ecf47674",
+    "sf19b7d4a17",
+    "s8c76b4f7eb"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s9a1784796d",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "literalize"
+   ],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "stats-in-k03",
+   "name": "next fit",
+   "members": [
+    "s3b4834fbc2",
+    "sf305363bf4",
+    "sc50b0fcb8c"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s3b4834fbc2",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "import",
+    "subtract"
+   ],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "stats known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.517
+  },
+  {
+   "cluster_id": "stats-in-k04",
+   "name": "harmonic classes",
+   "members": [
+    "s0ccf0b1352",
+    "s6fd5d155cf",
+    "sa4abe0d59c"
+   ],
+   "cards": [
+    "docs",
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s0ccf0b1352",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "rulebreak"
+   ],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.767
+  },
+  {
+   "cluster_id": "stats-in-k05",
+   "name": "reserve for large items",
+   "members": [
+    "s71b97a201b",
+    "s36e4c7ad6f"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 2,
+   "representative": "s71b97a201b",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "literalize"
+   ],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.817
+  },
+  {
+   "cluster_id": "stats-in-k06",
+   "name": "offshoot stats 0",
+   "members": [
+    "s737e6adc01",
+    "saebd0ae99a",
+    "s7e4a16be27",
+    "se08783d8d4",
+    "saa254e00bb",
+    "s92b39bf71a",
+    "s17d31644f7",
+    "s5ff0230e34",
+    "s70aee69685",
+    "s6249e35965",
+    "sbda0332e08",
+    "s186f580949"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 12,
+   "representative": "s737e6adc01",
+   "n_angles": 4,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "stats known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.9
+  },
+  {
+   "cluster_id": "stats-in-k07",
+   "name": "offshoot stats 1",
+   "members": [
+    "s71da0115fa",
+    "s8a58518ee6",
+    "s79ee85780f",
+    "s66140e239c",
+    "sabda603c79",
+    "sba70a729b5",
+    "s1a2573b15d",
+    "s6e6e2e5472",
+    "s670a4e1bc2",
+    "sc96ba032f0",
+    "s881e4c1b83",
+    "s690032e9da"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 12,
+   "representative": "s71da0115fa",
+   "n_angles": 4,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 3.15
+  },
+  {
+   "cluster_id": "stats-in-k08",
+   "name": "offshoot stats 2",
+   "members": [
+    "sdba1c8339b",
+    "s408dc0831d",
+    "s66180a0cbb",
+    "s5cebf613c4",
+    "s758baa6021",
+    "s0b7b9d9b98",
+    "sfde19607b9",
+    "s26a4958357",
+    "s3aa5ea2643",
+    "s3182fbf121",
+    "sc4af48c462",
+    "s2a87019b19"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 12,
+   "representative": "sdba1c8339b",
+   "n_angles": 4,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "stats",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 3.15
+  },
+  {
+   "cluster_id": "stats-ou-k00",
+   "name": "worst fit",
+   "members": [
+    "s3cbe96ec9b",
+    "sa929876deb",
+    "sfea215b4d2"
+   ],
+   "cards": [
+    "docs",
+    "low_prior",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s3cbe96ec9b",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "existence",
+    "rerepresent"
+   ],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "stats known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.517
+  },
+  {
+   "cluster_id": "stats-ou-k01",
+   "name": "next fit",
+   "members": [
+    "saad42ad1fa",
+    "s4c5c70c7c8",
+    "s444bf403fb"
+   ],
+   "cards": [
+    "docs",
+    "low_prior",
+    "research"
+   ],
+   "n": 3,
+   "representative": "saad42ad1fa",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "remeasure"
+   ],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.767
+  },
+  {
+   "cluster_id": "stats-ou-k02",
+   "name": "harmonic classes",
+   "members": [
+    "s1d5a4a9133",
+    "s1b41d49ccd",
+    "sb82143e4a8"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s1d5a4a9133",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "import"
+   ],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "stats-ou-k03",
+   "name": "reserve for large items",
+   "members": [
+    "sdfd3fe1320",
+    "sc7be62a878",
+    "sba6f90460e",
+    "s1b2f37d73c"
+   ],
+   "cards": [
+    "docs",
+    "low_prior",
+    "research"
+   ],
+   "n": 4,
+   "representative": "sdfd3fe1320",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "existence",
+    "rerepresent"
+   ],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "stats known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.467
+  },
+  {
+   "cluster_id": "stats-ou-k04",
+   "name": "first fit",
+   "members": [
+    "s4bcb836757",
+    "s157c17cd78",
+    "sbc70ed2457",
+    "sa422d7b781"
+   ],
+   "cards": [
+    "docs",
+    "low_prior",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s4bcb836757",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "remeasure"
+   ],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "stats-ou-k05",
+   "name": "best fit",
+   "members": [
+    "s8b3cae4cc2",
+    "s8337b0d1f1",
+    "se12dbfc4eb"
+   ],
+   "cards": [
+    "low_prior",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s8b3cae4cc2",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "import"
+   ],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "stats-ou-k06",
+   "name": "offshoot stats 0",
+   "members": [
+    "s73a2b51021",
+    "s4c5acb78c3",
+    "s8313a34df9"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 3,
+   "representative": "s73a2b51021",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "stats known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.35
+  },
+  {
+   "cluster_id": "stats-ou-k07",
+   "name": "offshoot stats 1",
+   "members": [
+    "sec22040d1c",
+    "sa46adc0ed5",
+    "s11169dd8ff"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 3,
+   "representative": "sec22040d1c",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.6
+  },
+  {
+   "cluster_id": "stats-ou-k08",
+   "name": "offshoot stats 2",
+   "members": [
+    "s8221184367",
+    "see27561288",
+    "sf151e7c38b"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 3,
+   "representative": "s8221184367",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "stats",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.6
+  },
+  {
+   "cluster_id": "ties-in-k00",
+   "name": "next fit",
+   "members": [
+    "s6456ed9196",
+    "sb6f4badf0d",
+    "sab528c0cae",
+    "sc8c9f1c930"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s6456ed9196",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "rulebreak"
+   ],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "ties known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.467
+  },
+  {
+   "cluster_id": "ties-in-k01",
+   "name": "harmonic classes",
+   "members": [
+    "s07fe31c33c",
+    "s2cba14ddaf",
+    "s99244c9931"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s07fe31c33c",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "ties-in-k02",
+   "name": "reserve for large items",
+   "members": [
+    "sed2fea86cb",
+    "s1d10e0a3ec",
+    "s4bad69ba0e",
+    "s1db549ed69"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "sed2fea86cb",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.75,
+   "leap_ops": [
+    "limit",
+    "remeasure",
+    "rerepresent"
+   ],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "ties-in-k03",
+   "name": "first fit",
+   "members": [
+    "s18e90974d8",
+    "s1628d9f954",
+    "sd179094ac9",
+    "sb2a5582de4"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s18e90974d8",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "rulebreak"
+   ],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "ties known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.467
+  },
+  {
+   "cluster_id": "ties-in-k04",
+   "name": "best fit",
+   "members": [
+    "sd440a93dd1",
+    "s67868e6a8f"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 2,
+   "representative": "sd440a93dd1",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.817
+  },
+  {
+   "cluster_id": "ties-in-k05",
+   "name": "worst fit",
+   "members": [
+    "s9fe7a660a3",
+    "s0293d29afd",
+    "s7927e27187"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s9fe7a660a3",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "limit",
+    "remeasure",
+    "rerepresent"
+   ],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "ties-in-k06",
+   "name": "offshoot ties 0",
+   "members": [
+    "s84cdbbaa89",
+    "seda69eb227",
+    "s80bdd2caa7",
+    "sabd25fad15",
+    "s9cd62ac9ae",
+    "sedbcbb28aa",
+    "s6c1b0a531d",
+    "s36f6b9e1a8",
+    "sff90162bc9"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "s84cdbbaa89",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "ties known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.05
+  },
+  {
+   "cluster_id": "ties-in-k07",
+   "name": "offshoot ties 1",
+   "members": [
+    "sb83de9a212",
+    "sf056e7fa32",
+    "s6e34f13b88",
+    "s909a6cdb79",
+    "sf15bcd7daa",
+    "s7302fa0790",
+    "s0c76b650da",
+    "sab34671ddc",
+    "s2d0d96871d"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "sb83de9a212",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.3
+  },
+  {
+   "cluster_id": "ties-in-k08",
+   "name": "offshoot ties 2",
+   "members": [
+    "sf5a13d71a2",
+    "sa2473b1a45",
+    "sb5a9e27f45",
+    "sf57f1354cb",
+    "s4b26f5fa35",
+    "s6450209a1a",
+    "scaec2ae268",
+    "s7f581836f8",
+    "s06c66830d0"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "sf5a13d71a2",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "ties",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.3
+  },
+  {
+   "cluster_id": "ties-ou-k00",
+   "name": "first fit",
+   "members": [
+    "se0cc0f4adf",
+    "sd74f87fe23",
+    "s097779cec6",
+    "sb5fd1dabf4"
+   ],
+   "cards": [
+    "docs",
+    "research",
+    "seeded"
+   ],
+   "n": 4,
+   "representative": "se0cc0f4adf",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "import"
+   ],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "ties-ou-k01",
+   "name": "best fit",
+   "members": [
+    "s8baa292fbe",
+    "sdfa33e45a7",
+    "s26430c8e92"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s8baa292fbe",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "existence"
+   ],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "ties known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.517
+  },
+  {
+   "cluster_id": "ties-ou-k02",
+   "name": "worst fit",
+   "members": [
+    "s3400e9be46",
+    "sd3cfe0f3c2",
+    "sf691552b9a",
+    "se9c2323eca"
+   ],
+   "cards": [
+    "docs",
+    "research",
+    "seeded"
+   ],
+   "n": 4,
+   "representative": "s3400e9be46",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "rulebreak",
+    "subtract"
+   ],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.717
+  },
+  {
+   "cluster_id": "ties-ou-k03",
+   "name": "next fit",
+   "members": [
+    "s6ce7f3a0f9",
+    "s0fc15a694e",
+    "s4e549072c9"
+   ],
+   "cards": [
+    "docs",
+    "research",
+    "seeded"
+   ],
+   "n": 3,
+   "representative": "s6ce7f3a0f9",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "import"
+   ],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.767
+  },
+  {
+   "cluster_id": "ties-ou-k04",
+   "name": "harmonic classes",
+   "members": [
+    "scf43087246",
+    "sfd2c1fa5c0",
+    "s9b3d010504"
+   ],
+   "cards": [
+    "docs",
+    "research",
+    "seeded"
+   ],
+   "n": 3,
+   "representative": "scf43087246",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "existence"
+   ],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "ties known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.517
+  },
+  {
+   "cluster_id": "ties-ou-k05",
+   "name": "reserve for large items",
+   "members": [
+    "s731d864e01",
+    "s1960e6f278",
+    "s2ab6a5db49"
+   ],
+   "cards": [
+    "research",
+    "seeded"
+   ],
+   "n": 3,
+   "representative": "s731d864e01",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "rulebreak",
+    "subtract"
+   ],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "ties-ou-k06",
+   "name": "offshoot ties 0",
+   "members": [
+    "s3a95d00581",
+    "s5ab0e57df3",
+    "sb9eeb52277",
+    "s1c5a8439fb",
+    "s42cf32cdb9",
+    "sc724bd917e"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s3a95d00581",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "ties known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "ties-ou-k07",
+   "name": "offshoot ties 1",
+   "members": [
+    "s12b6eefec7",
+    "sf10678bf6f",
+    "sda93f987c0",
+    "s107445704d",
+    "s2c6e6a516f",
+    "sbf8f51e4bf"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s12b6eefec7",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "ties-ou-k08",
+   "name": "offshoot ties 2",
+   "members": [
+    "s274fe9c105",
+    "s86adda1f4f",
+    "sdb1ffe440c",
+    "s68abfd2a8c",
+    "s2be79a5650",
+    "s61d47fdbf4"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s274fe9c105",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "ties",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "recipe-in-k00",
+   "name": "worst fit",
+   "members": [
+    "s3d38ac3fc3",
+    "s6357505417",
+    "sc606fc3e93",
+    "s617254dc4e"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s3d38ac3fc3",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "rerepresent"
+   ],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "recipe known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.467
+  },
+  {
+   "cluster_id": "recipe-in-k01",
+   "name": "next fit",
+   "members": [
+    "s75225f1995",
+    "sb05d774d33",
+    "s5a8986a2f5"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s75225f1995",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "existence",
+    "import"
+   ],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "recipe-in-k02",
+   "name": "harmonic classes",
+   "members": [
+    "s988755f656",
+    "s43ec666338",
+    "sffcc1e9383",
+    "s97050f6aba"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s988755f656",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "recipe-in-k03",
+   "name": "reserve for large items",
+   "members": [
+    "s63b8dca415",
+    "s4eb68681fe"
+   ],
+   "cards": [
+    "formal"
+   ],
+   "n": 2,
+   "representative": "s63b8dca415",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "rerepresent"
+   ],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "recipe known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.067
+  },
+  {
+   "cluster_id": "recipe-in-k04",
+   "name": "first fit",
+   "members": [
+    "s9ca4e786c6",
+    "saae8cdb452",
+    "s22fd996a57",
+    "se9963bab51"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s9ca4e786c6",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "existence",
+    "import"
+   ],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "recipe-in-k05",
+   "name": "best fit",
+   "members": [
+    "s6bad8f366a",
+    "sc4295f3235",
+    "s934f9ff47f"
+   ],
+   "cards": [
+    "formal",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s6bad8f366a",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "recipe-in-k06",
+   "name": "offshoot recipe 0",
+   "members": [
+    "s4b6f241de0",
+    "sd4dce8fd4e",
+    "s56aab685ea",
+    "sf9abf1e1f4",
+    "s93097db146",
+    "sa7d58959e5"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s4b6f241de0",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "recipe known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "recipe-in-k07",
+   "name": "offshoot recipe 1",
+   "members": [
+    "sd1ed76268e",
+    "s780ff61a55",
+    "s326c90a86b",
+    "s7610b2d8e8",
+    "s89b4d4fe96",
+    "s3b9b881543"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "sd1ed76268e",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "recipe-in-k08",
+   "name": "offshoot recipe 2",
+   "members": [
+    "s1d166f6a9d",
+    "s60639a66ec",
+    "s292d4080b1",
+    "s79ad856b1e",
+    "sf52f20efdb",
+    "s85f597f13b"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s1d166f6a9d",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "recipe",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.45
+  },
+  {
+   "cluster_id": "recipe-ou-k00",
+   "name": "worst fit",
+   "members": [
+    "s0f94503f86",
+    "s9aa0eaa10e",
+    "sa034fbead2"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s0f94503f86",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "remeasure",
+    "rerepresent",
+    "rulebreak"
+   ],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "recipe known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.517
+  },
+  {
+   "cluster_id": "recipe-ou-k01",
+   "name": "next fit",
+   "members": [
+    "s2bca54a3b7",
+    "s3c6bde0aba",
+    "s35d66bb830",
+    "s853e835ce2"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s2bca54a3b7",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "limit"
+   ],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "recipe-ou-k02",
+   "name": "harmonic classes",
+   "members": [
+    "s654b7e39d9",
+    "sd9d414d7a0",
+    "s89f870f38d"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s654b7e39d9",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.767
+  },
+  {
+   "cluster_id": "recipe-ou-k03",
+   "name": "reserve for large items",
+   "members": [
+    "s09e0b676e3",
+    "sfbe106c1b1",
+    "sf06c562d89",
+    "s5bd206794a"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s09e0b676e3",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.75,
+   "leap_ops": [
+    "remeasure",
+    "rerepresent",
+    "rulebreak"
+   ],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "recipe known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.467
+  },
+  {
+   "cluster_id": "recipe-ou-k04",
+   "name": "first fit",
+   "members": [
+    "sa428affb46",
+    "sc0958a83df",
+    "s34227cd63c",
+    "s04b2cf8b16"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 4,
+   "representative": "sa428affb46",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "limit"
+   ],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "recipe-ou-k05",
+   "name": "offshoot recipe 0",
+   "members": [
+    "sb7fb2870ca",
+    "s82c4d86a14",
+    "s2bbfb323bb",
+    "s92b5f2ce74",
+    "s3bdc65235d",
+    "s5c54b6cf5f",
+    "se380dd33b2",
+    "s00ae6e5257",
+    "s94891c648d"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "sb7fb2870ca",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "known",
+   "prior_match": "recipe known trick",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.05
+  },
+  {
+   "cluster_id": "recipe-ou-k06",
+   "name": "offshoot recipe 1",
+   "members": [
+    "sf5c7ddca7d",
+    "s969cb9677a",
+    "s1079ebc71a",
+    "s192a697de0",
+    "se4328f4465",
+    "s00db74a812",
+    "s2f72120f15",
+    "s92a234024a",
+    "s11efc481fe"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "sf5c7ddca7d",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.3
+  },
+  {
+   "cluster_id": "recipe-ou-k07",
+   "name": "offshoot recipe 2",
+   "members": [
+    "s24a7942f94",
+    "s72ae304150",
+    "s2f3608c55b",
+    "s1d68b8d6ef",
+    "sd17689540d",
+    "sf3d18b9eec",
+    "s0b42abc0f8",
+    "s0a2c36a3ff",
+    "scbe5fc7886"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "s24a7942f94",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.3
+  },
+  {
+   "cluster_id": "recipe-ou-k08",
+   "name": "best fit",
+   "members": [
+    "s0fd20d35ed",
+    "sef187535ab"
+   ],
+   "cards": [
+    "docs",
+    "research"
+   ],
+   "n": 2,
+   "representative": "s0fd20d35ed",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "recipe",
+   "direction": "outward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.817
+  },
+  {
+   "cluster_id": "offtree-in-k00",
+   "name": "best fit",
+   "members": [
+    "s6775285409",
+    "s744a553cc3",
+    "s5b4cd479be",
+    "s125cdeb7d3",
+    "s7d6391eac2",
+    "s2d2fbff187",
+    "s23ac5d28c3",
+    "s39b569f67a",
+    "s3a42cde5cf",
+    "sa0825e7a8e",
+    "s83a6cb8497",
+    "sb5bdb26e32",
+    "sdd58820f17",
+    "s5958a060d2",
+    "s5dc1dbddb1"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 15,
+   "representative": "s6775285409",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.53,
+   "leap_ops": [
+    "limit",
+    "literalize",
+    "remeasure",
+    "rerepresent"
+   ],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.417
+  },
+  {
+   "cluster_id": "offtree-in-k01",
+   "name": "worst fit",
+   "members": [
+    "sd21fb19ee0",
+    "s7a2dc46f7c",
+    "sb0b5915995",
+    "sb8da43586c",
+    "s178c6c41c1",
+    "s6105cd7509",
+    "seaace4e580",
+    "s13ff21f380",
+    "se765cc0e34",
+    "s83efd2ad1d",
+    "s2ec3287f55",
+    "s58c982bf94",
+    "s26cb63f847",
+    "s4a488c6bc7",
+    "sd5d289a012"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 15,
+   "representative": "sd21fb19ee0",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.27,
+   "leap_ops": [
+    "literalize",
+    "rerepresent"
+   ],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.417
+  },
+  {
+   "cluster_id": "offtree-in-k02",
+   "name": "next fit",
+   "members": [
+    "sd643bb85bc",
+    "s8e211269d1",
+    "s6c9e4f3808",
+    "s29174b1794",
+    "s637c8962d1",
+    "s9d3905f3ab",
+    "s9344f93923",
+    "s4194bd761e",
+    "s8e9370f02f",
+    "s92253562dd",
+    "s0913207c1e",
+    "s4e61e59c75",
+    "sd8d20f2098"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 13,
+   "representative": "sd643bb85bc",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.38,
+   "leap_ops": [
+    "limit",
+    "remeasure",
+    "rerepresent"
+   ],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.517
+  },
+  {
+   "cluster_id": "offtree-in-k03",
+   "name": "harmonic classes",
+   "members": [
+    "s171e161e6f",
+    "s6896f78046",
+    "s30617197b8",
+    "sec96924ae0",
+    "s76c56e12a8",
+    "s11f5af2916",
+    "scd6a6fea72",
+    "sbe815a2580",
+    "s032e3df61e",
+    "s9081f44cee",
+    "sc5959d90df",
+    "s4528765de1",
+    "sce502e1337",
+    "s1dce262a03",
+    "s4a334aa2a7"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 15,
+   "representative": "s171e161e6f",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.53,
+   "leap_ops": [
+    "limit",
+    "literalize",
+    "remeasure",
+    "rerepresent"
+   ],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.417
+  },
+  {
+   "cluster_id": "offtree-in-k04",
+   "name": "reserve for large items",
+   "members": [
+    "s558405ced5",
+    "sc7c0cc1bea",
+    "s4273bbd567",
+    "sfb87a947ec",
+    "s812576f460",
+    "s59b1367b3c",
+    "s0553588fb0",
+    "sefbd24610d",
+    "s1a403fa02d",
+    "s1b59507f22",
+    "s57e361d0aa",
+    "sf18311ade4",
+    "s78c7816a37",
+    "s5a010c52c5"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 14,
+   "representative": "s558405ced5",
+   "n_angles": 3,
+   "selected": false,
+   "rank": null,
+   "leap_share": 0.29,
+   "leap_ops": [
+    "literalize",
+    "rerepresent"
+   ],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null
+  },
+  {
+   "cluster_id": "offtree-in-k05",
+   "name": "first fit",
+   "members": [
+    "sa30b083779",
+    "s03033c335d",
+    "s545c4a460f",
+    "sad41ed1fd3",
+    "s348c3cb5c8",
+    "sb37fdd767e",
+    "sb51c2e07ca",
+    "s2782d4620f",
+    "s75d69f89db",
+    "s087ea6452e",
+    "sc2b700329a",
+    "sf62d1ce8c8",
+    "sa233567359"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 13,
+   "representative": "sa30b083779",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.38,
+   "leap_ops": [
+    "limit",
+    "remeasure",
+    "rerepresent"
+   ],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.517
+  },
+  {
+   "cluster_id": "offtree-in-k06",
+   "name": "offshoot offtree 0",
+   "members": [
+    "sff49f20796",
+    "s3ed38deab7",
+    "s558d76f62a",
+    "s3766172280",
+    "s968c26d36b",
+    "s1ba03bda4c",
+    "sa8ebed57b6",
+    "sd610655eb8",
+    "s2d0e5d6857"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "sff49f20796",
+   "n_angles": 3,
+   "selected": true,
+   "rank": 0,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.05,
+   "lane": "main",
+   "novelty_gate": {
+    "nearest": [
+     "n67b58279e0",
+     0.0
+    ],
+    "audit": false,
+    "built": true
+   }
+  },
+  {
+   "cluster_id": "offtree-in-k07",
+   "name": "offshoot offtree 1",
+   "members": [
+    "s01a8622574",
+    "s4d12b50d14",
+    "s4d0f90ddc7",
+    "s2056e3f16d",
+    "s8369d8ae2d",
+    "s6742d072df",
+    "se132ce26db",
+    "se5782bf3a0",
+    "se53cf71dad"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "s01a8622574",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.05
+  },
+  {
+   "cluster_id": "offtree-in-k08",
+   "name": "offshoot offtree 2",
+   "members": [
+    "s1906b7e903",
+    "s59a120643e",
+    "s2d3bab3bc0",
+    "s59851edccd",
+    "se62f9c2d04",
+    "s7400b8c0a0",
+    "se166c2d831",
+    "s30e1f98bb1",
+    "s87033dc8d5"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 9,
+   "representative": "s1906b7e903",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "offtree",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.05
+  },
+  {
+   "cluster_id": "offtree-ou-k00",
+   "name": "next fit",
+   "members": [
+    "s6e230980fb",
+    "s4630f9b488",
+    "s456714ee4f",
+    "s6588c06001",
+    "s93d8289c5d",
+    "s119897b3a3",
+    "s433335623f",
+    "s432958e73f",
+    "s333a730515",
+    "s4531778e4d",
+    "s17b419b947",
+    "s01bcf3bd8a",
+    "s18be98c923",
+    "sa9d0a81442",
+    "s0b07f5a134"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 15,
+   "representative": "s6e230980fb",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.53,
+   "leap_ops": [
+    "existence",
+    "import",
+    "rulebreak",
+    "subtract"
+   ],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.417
+  },
+  {
+   "cluster_id": "offtree-ou-k01",
+   "name": "harmonic classes",
+   "members": [
+    "s3c2b9decb9",
+    "se8805f23c7",
+    "s1e6d4458b4",
+    "s4424e2ff33",
+    "s50a9545c01",
+    "s87649aa048",
+    "s88a7fbf0dd",
+    "sabf43a0a81",
+    "s6995cd769a",
+    "s1a070fe5f2",
+    "sb3137e364c",
+    "s56a67350a1"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 12,
+   "representative": "s3c2b9decb9",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "rulebreak",
+    "subtract"
+   ],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.567
+  },
+  {
+   "cluster_id": "offtree-ou-k02",
+   "name": "reserve for large items",
+   "members": [
+    "sfa9aa05319",
+    "se7f061bf40",
+    "s6875a775c0",
+    "sea05afe93a",
+    "s5933616ffe",
+    "sbd57eaf83d",
+    "s298508c40a",
+    "sf26a1ad937",
+    "sca256a85ef",
+    "s6aae2a2da1",
+    "s10366727be",
+    "s6d674b8edf",
+    "sb9ba4ff558",
+    "s1689a701de",
+    "s6ccfabf3d1"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 15,
+   "representative": "sfa9aa05319",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "existence",
+    "subtract"
+   ],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.417
+  },
+  {
+   "cluster_id": "offtree-ou-k03",
+   "name": "first fit",
+   "members": [
+    "sc303023c1e",
+    "s317091580c",
+    "sd73728b070",
+    "sb06c67c870",
+    "s6b66951f39",
+    "s99a0fd4688",
+    "s2c9e419c6a",
+    "s13d6a3894d",
+    "s7135d51e5b",
+    "sd5add76f80",
+    "s0a98a61102",
+    "s7ddda5a2ed",
+    "s640017c6ce",
+    "s1ab0e4b242"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 14,
+   "representative": "sc303023c1e",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.57,
+   "leap_ops": [
+    "existence",
+    "import",
+    "rulebreak",
+    "subtract"
+   ],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.467
+  },
+  {
+   "cluster_id": "offtree-ou-k04",
+   "name": "best fit",
+   "members": [
+    "s4b8d02ee25",
+    "s1c5dc77cf0",
+    "sd004b4b6f2",
+    "s74f373a436",
+    "sf925c92692",
+    "s5ca0cf32b2",
+    "s67e4b88501",
+    "sf93a32ea33",
+    "sfe411ace3f",
+    "s235f1770a1",
+    "s6b5cbf0686",
+    "s93b7c4f39d",
+    "s29df5e753c",
+    "sf868bb3e0e",
+    "s68587b4be4"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 15,
+   "representative": "s4b8d02ee25",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.2,
+   "leap_ops": [
+    "rulebreak",
+    "subtract"
+   ],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.417
+  },
+  {
+   "cluster_id": "offtree-ou-k05",
+   "name": "worst fit",
+   "members": [
+    "s9ead940330",
+    "s5e98fec99e",
+    "s7cb64f7d10",
+    "s16330e6acf",
+    "sdc1ee874c9",
+    "s74228ae622",
+    "sc65512aca7",
+    "s954489d165",
+    "sd626907f85"
+   ],
+   "cards": [
+    "blank",
+    "doubt",
+    "gaps"
+   ],
+   "n": 9,
+   "representative": "s9ead940330",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.56,
+   "leap_ops": [
+    "existence",
+    "subtract"
+   ],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.717
+  },
+  {
+   "cluster_id": "offtree-ou-k06",
+   "name": "offshoot offtree 0",
+   "members": [
+    "sb34378ef43",
+    "s0b3fb1b868",
+    "se525cdc625",
+    "s355ce3db73",
+    "sefc1bc2cd3",
+    "scfdcb899cf"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "sb34378ef43",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "offtree-ou-k07",
+   "name": "offshoot offtree 1",
+   "members": [
+    "sb515adedfe",
+    "sf51e59e0c9",
+    "s3aefb94d70",
+    "s984a5f02e3",
+    "s92af1929ef",
+    "sb95d805a99"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "sb515adedfe",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "offtree-ou-k08",
+   "name": "offshoot offtree 2",
+   "members": [
+    "sa8ab060368",
+    "s502f72aedd",
+    "s110da83947",
+    "s67a2b0c703",
+    "s5c0466c5e7",
+    "s7e7523f5f7"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "sa8ab060368",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "offtree",
+   "direction": "outward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "root-in-k00",
+   "name": "first fit",
+   "members": [
+    "sf7d0000e4f",
+    "sebd75c1844"
+   ],
+   "cards": [
+    "focus"
+   ],
+   "n": 2,
+   "representative": "sf7d0000e4f",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "literalize"
+   ],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.067
+  },
+  {
+   "cluster_id": "root-in-k01",
+   "name": "best fit",
+   "members": [
+    "s8051d823d0",
+    "s2a5f6e62a5"
+   ],
+   "cards": [
+    "focus"
+   ],
+   "n": 2,
+   "representative": "s8051d823d0",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "rerepresent"
+   ],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.067
+  },
+  {
+   "cluster_id": "root-in-k02",
+   "name": "worst fit",
+   "members": [
+    "s6c630cb28d",
+    "s1ca457127c"
+   ],
+   "cards": [
+    "focus"
+   ],
+   "n": 2,
+   "representative": "s6c630cb28d",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 7,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.067
+  },
+  {
+   "cluster_id": "root-in-k03",
+   "name": "next fit",
+   "members": [
+    "s19c5b2a9e6"
+   ],
+   "cards": [
+    "focus"
+   ],
+   "n": 1,
+   "representative": "s19c5b2a9e6",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "literalize"
+   ],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.117
+  },
+  {
+   "cluster_id": "root-in-k04",
+   "name": "harmonic classes",
+   "members": [
+    "sdda425e5b5",
+    "sa74e1abc35"
+   ],
+   "cards": [
+    "focus"
+   ],
+   "n": 2,
+   "representative": "sdda425e5b5",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "rerepresent"
+   ],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.067
+  },
+  {
+   "cluster_id": "root-in-k05",
+   "name": "reserve for large items",
+   "members": [
+    "sfd263d6270"
+   ],
+   "cards": [
+    "focus"
+   ],
+   "n": 1,
+   "representative": "sfd263d6270",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.117
+  },
+  {
+   "cluster_id": "root-in-k06",
+   "name": "offshoot root 0",
+   "members": [
+    "s16fd606693",
+    "saeee413634",
+    "s444e0ef387",
+    "sfa5f1280e9",
+    "sca396a7432",
+    "sb316d2b425"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s16fd606693",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "root-in-k07",
+   "name": "offshoot root 1",
+   "members": [
+    "s79a8f87c3e",
+    "sd87df8faab",
+    "s3c5f20958b",
+    "s8b0b86da04",
+    "s9e17282e09",
+    "sd9a6ddd588"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s79a8f87c3e",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  },
+  {
+   "cluster_id": "root-in-k08",
+   "name": "offshoot root 2",
+   "members": [
+    "s28032cfa62",
+    "sc7edc71b02",
+    "s568d6009ba",
+    "sea9587b027",
+    "s6177b863ea",
+    "s7ed21b06b7"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 6,
+   "representative": "s28032cfa62",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "root",
+   "direction": "inward",
+   "prior": "unknown",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.2
+  }
+ ],
+ "n_sketches": 739
+}
