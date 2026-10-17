@@ -10,6 +10,7 @@ import { makeReducer, trivialLayout, chipText, whoText } from './reduce.mjs';
 import { mountRail } from './rail.js';
 import { PresenceChips, focusOf } from './presence.js';
 import { mountStart } from './start.js';
+import { mountInspector } from './inspect.js';
 
 const BEAT_MS = 5000, GO_LOCK_MS = 2000, OFFLINE_AFTER_MS = 10000, FOCUS_MIN_MS = 250;
 
@@ -405,6 +406,7 @@ async function mountViews() {
   catch (e) { console.warn('tree.js not available, showing a plain list', e); fallbackTree(tree); }
   try { const m = await import('./clusters.js'); m.mountClusters(clusters, viewApi, bus); }
   catch (e) { console.warn('clusters.js not available, showing a plain list', e); fallbackClusters(clusters); }
+  try { mountInspector(tree, clusters, viewApi, bus); } catch (e) { console.warn('inspector not mounted', e); }
 }
 
 // ---- main -------------------------------------------------------------------------------------------------------------
