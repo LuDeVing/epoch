@@ -49,6 +49,13 @@ def research_prompt(node: dict, goal_md: str, year: int = 2026) -> str:
             "source; 4 to 10 known entries, 0 to 5 failed, 0 to 5 open; no commentary outside the JSON.")
 
 
+def is_part_brief(path) -> bool:
+    """True for a part's brief file (<run>/research/<part>.json or a cache <key>.json); False for the analogy files
+    (<part>_analogy.json), the preread and anything else kept beside the briefs, so no reader lists them as briefs."""
+    p = Path(path)
+    return p.suffix == ".json" and not p.stem.endswith("_analogy") and not p.stem.startswith("preread")
+
+
 def _str_list(v, cap: int = 8) -> list[str]:
     """A model's "queries" value as a list of strings: a list, one string, or anything else (null, a number) as []."""
     if isinstance(v, str):

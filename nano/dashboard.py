@@ -99,7 +99,10 @@ def snapshot() -> dict:
     ptree = _read_json(RUN / "problem_tree.json", {"nodes": []})
     upward = _read_jsonl(RUN / "proposals_upward.jsonl")
     briefs = {}
+    from nano.research import is_part_brief      # analogy files sit beside the briefs and are not briefs
     for p in sorted((RUN / "research").glob("*.json")) if (RUN / "research").exists() else []:
+        if not is_part_brief(p):
+            continue
         b = _read_json(p, {})
         briefs[p.stem] = {"known": len(b.get("known", [])), "failed": len(b.get("failed", [])),
                           "open": len(b.get("open", [])), "source": b.get("source"),

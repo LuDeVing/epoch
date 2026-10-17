@@ -199,3 +199,15 @@ def test_run_dialogue_critic_out_of_budget_stops():
     out = deepen.run_dialogue(objs, author, lambda replies: None)
     assert out["stop"] == "budget" and len(calls) == 1
     assert [o["dialogue"]["verdict"] for o in out["objections"]] == ["standing", "standing"]
+
+
+def test_report_briefs_skip_analogy_files(tmp_path):
+    """S10 (seams agent): <part>_analogy.json beside the briefs was listed as an empty brief."""
+    from nano import report
+    run = tmp_path / "run"
+    (run / "research").mkdir(parents=True)
+    (run / "research" / "mix.json").write_text(json.dumps({"node": "mix", "known": [{"name": "k"}]}), encoding="utf-8")
+    (run / "research" / "mix_analogy.json").write_text(json.dumps({"node": "mix_analogy", "analogues": []}), encoding="utf-8")
+    (run / "state.json").write_text(json.dumps({"decisions": []}), encoding="utf-8")
+    assert set(report.collect(run)["briefs"]) == {"mix"}
+    assert research.is_part_brief("x/k__abc.json") and not research.is_part_brief("x/preread__abc.json")
