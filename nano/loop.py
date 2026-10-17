@@ -298,6 +298,7 @@ class NanoLoop:
         self.off_tree_share = 0.4               # share of idea contexts that work off the map (blank, gaps, doubt); 0 = off
         self.source_yield: list[dict] = []      # per round: yield per origin (tree / off) and the share chosen next
         self.promoted: set[str] = set()         # off-map winners already turned into branches
+        self.contexts_by_node: dict[int, dict[str, int]] = {}   # round -> idea contexts (inward/outward) per part; weights the build slots
         self.plan_with_model = True             # one planner call refines DEFAULT_TREE
         self.upward: list[dict] = []            # root-level reframing proposals (logged only)
         self.briefs: dict[str, dict] = {}       # web research briefs per node (nano/research.py)
@@ -550,6 +551,17 @@ class NanoLoop:
                            "built": len(built), "checked": len(checked), "wins": len(wins)}
             out[origin]["clusters_per_context"] = round(out[origin]["clusters"] / max(1, ctx), 3)
             out[origin]["wins_per_context"] = round(len(wins) / max(1, ctx), 3)
+        # shares of build slots (main and long-shot lanes) and of idea contexts dealt, per origin, over all rounds
+        off_id = tree.OFF_TREE_NODE["id"]
+        slots = Counter("off" if (c.extra or {}).get("node") == off_id else "tree" for c in self.cands
+                        if (c.extra or {}).get("lane") in ("main", "longshot"))
+        dealt = Counter()
+        for per in self.contexts_by_node.values():
+            for nid, v in per.items():
+                dealt["off" if nid == off_id else "tree"] += v
+        for origin in ("tree", "off"):
+            out[origin]["slot_share"] = round(slots[origin] / max(1, sum(slots.values())), 3)
+            out[origin]["context_share"] = round(dealt[origin] / max(1, sum(dealt.values())), 3)
         return out
 
     def _gain(self, c) -> float | None:
@@ -685,6 +697,8 @@ class NanoLoop:
             prio = {"owner": -1, "research": 0, "diagnosis": 1, "analogy": 2}   # the owner's seeds are never capped away
             specs = ideate.deal_by_part(specs, self.max_sketch_calls, lambda sp: prio.get(sp[0], 3), lambda sp: sp[2]["id"])
             self.decisions.append({"round": round_no, "step": "ideate", "capped_to": len(specs)})
+        # the contexts each part (and the off-map node) got this round: selection deals build slots in the same shares
+        self.contexts_by_node[round_no] = dict(Counter(sp[2]["id"] for sp in specs if sp[3] != "upward"))
 
         def _one(spec):
             card, seed, node, direction = spec
@@ -852,11 +866,20 @@ class NanoLoop:
         score, from step-outside, analogy, adapt and new clusters: novelty protected, not enforced."""
         k_long = (max(2, int(round(k * self.longshot_share))) if k >= 3 else (1 if k >= 2 else 0)) if self.longshot_share > 0 else 0
         built = Counter((c.extra or {}).get("node") for c in self.cands if (c.extra or {}).get("lane") in ("main", "longshot"))
+        ctx = self.contexts_by_node.get(self.round_now) or {}
+        if not ctx:                                   # resumed past ideation: rebuild from the round's sketches on disk
+            calls = {(s.get("node"), s.get("call_id")) for s in self.sketches if s.get("round") == self.round_now
+                     and s.get("direction") != "upward" and s.get("card") != "deepen" and s.get("call_id") and s.get("node")}
+            ctx = dict(Counter(n for n, _ in calls))
+            if ctx:
+                self.contexts_by_node[self.round_now] = ctx
         main = tree.split_select(by_node, k - k_long, self.inward_share, done, self.sketches, self._select, self.new_share,
-                                 counts=dict(built), order_seed=f"{self.run_id}:build:{len(self.cands)}")
+                                 counts=dict(built), order_seed=f"{self.run_id}:build:{len(self.cands)}",
+                                 weights=dict(ctx) or None)
         for c in main:
             c["lane"] = "main"
         if k_long <= 0:
+            self._log_slots_by_origin(main, ctx)
             return main
         taken = {c["cluster_id"] for c in main} | done
         cands = [c for c in self.clusters if c["cluster_id"] not in taken and
@@ -870,7 +893,16 @@ class NanoLoop:
             c["selected"], c["lane"] = True, "longshot"
             c["lane_propensity"] = round(weights.get(c["cluster_id"], 0.0) / wsum, 3)
         self._log_selection(by_node, main, picks, done, weights, wsum)
+        self._log_slots_by_origin(main + picks, ctx)
         return main + picks
+
+    def _log_slots_by_origin(self, picks: list, ctx: dict) -> None:
+        """Build slots vs idea contexts per origin this round, so the off-map share of each can be compared."""
+        off_id = tree.OFF_TREE_NODE["id"]
+        off = sum(1 for c in picks if c.get("node") == off_id)
+        self.decisions.append({"step": "slots_by_origin", "round": self.round_now, "tree": len(picks) - off, "off": off,
+                               "contexts_tree": sum(v for n, v in ctx.items() if n != off_id),
+                               "contexts_off": ctx.get(off_id, 0)})
 
     def cluster_sketches(self, round_no: int) -> None:
         """Blind clustering per part and direction, then one merge call across parts (the same change

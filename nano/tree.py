@@ -221,16 +221,28 @@ def promote_win(nodes: list[dict], cand_id: str, cluster_name: str, hypothesis: 
 
 def split_select(clusters_by_node: dict[str, list[dict]], k: int, inward_share: float, exclude: set[str],
                  sketches: list[dict], select_fn, new_share: float = 0.5, counts: dict[str, int] | None = None,
-                 order_seed: str = "") -> list[dict]:
+                 order_seed: str = "", weights: dict[str, float] | None = None) -> list[dict]:
     """Round-robin across nodes within each direction so one part cannot take every slot, with a
     quota: at least `new_share` of each direction's slots go to clusters tagged "new" against the
     research brief when enough of them exist.
 
     Every pass visits the parts in order of how many slots they have had so far (`counts`, which the
     caller may carry across directions and rounds; ties broken by a seeded shuffle), so the parts at
-    the end of the map are not starved when there are fewer slots than parts."""
+    the end of the map are not starved when there are fewer slots than parts.
+
+    `weights` (node id -> weight, e.g. the idea contexts each part got this round) switches to weighted
+    fairness: one slot at a time to the part with the smallest (counts + 0.5) / weight (Sainte-Lague
+    divisor; ties by the seeded shuffle), so a part with weight w gets about w / sum(weights) of the slots
+    and a light part is still reached. Parts missing from `weights` get the smallest given weight. With no
+    weights, or all equal, the old pass-by-pass order is used unchanged."""
     import random as _random
     counts = counts if counts is not None else {}
+    w = None
+    if weights:
+        floor = min((float(v) for v in weights.values() if float(v) > 0), default=1.0)
+        w = {nid: (float(weights[nid]) if float(weights.get(nid) or 0) > 0 else floor) for nid in clusters_by_node}
+        if len(set(w.values())) <= 1:
+            w = None                                   # equal weights: the unweighted order, byte for byte
     tie = list(clusters_by_node)
     _random.Random(order_seed or "split").shuffle(tie)
     tie_rank = {nid: i for i, nid in enumerate(tie)}
@@ -252,6 +264,19 @@ def split_select(clusters_by_node: dict[str, list[dict]], k: int, inward_share: 
         def take(pred) -> bool:
             nonlocal picked
             got = False
+            if w is not None:                          # weighted: one slot per call, lowest (counts + 0.5) / weight first
+                for nid in sorted(per_node, key=lambda n: ((counts.get(n, 0) + 0.5) / w[n], tie_rank.get(n, 0))):
+                    if picked >= kk:
+                        break
+                    idx = next((i for i, c in enumerate(per_node[nid]) if pred(c)), None)
+                    if idx is not None:
+                        c = per_node[nid].pop(idx)
+                        c["selected"] = True
+                        chosen.append(c)
+                        counts[nid] = counts.get(nid, 0) + 1
+                        picked += 1
+                        return True
+                return False
             for nid in sorted(per_node, key=lambda n: (counts.get(n, 0), tie_rank.get(n, 0))):
                 if picked >= kk:
                     break
