@@ -49,6 +49,20 @@ def research_prompt(node: dict, goal_md: str, year: int = 2026) -> str:
             "source; 4 to 10 known entries, 0 to 5 failed, 0 to 5 open; no commentary outside the JSON.")
 
 
+def is_part_brief(path) -> bool:
+    """True for a part's brief file (<run>/research/<part>.json or a cache <key>.json); False for the analogy files
+    (<part>_analogy.json), the preread and anything else kept beside the briefs, so no reader lists them as briefs."""
+    p = Path(path)
+    return p.suffix == ".json" and not p.stem.endswith("_analogy") and not p.stem.startswith("preread")
+
+
+def _str_list(v, cap: int = 8) -> list[str]:
+    """A model's "queries" value as a list of strings: a list, one string, or anything else (null, a number) as []."""
+    if isinstance(v, str):
+        v = [v]
+    return [str(q)[:200] for q in v][:cap] if isinstance(v, list) else []
+
+
 def parse_brief(text: str, node_id: str) -> dict | None:
     m = re.search(r"\{.*\}", text or "", flags=re.S)
     if not m:
@@ -57,11 +71,11 @@ def parse_brief(text: str, node_id: str) -> dict | None:
         d = json.loads(m.group(0))
     except Exception:  # noqa: BLE001
         return None
-    out = {"node": node_id, "ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "queries": [str(q)[:200] for q in d.get("queries", [])][:8]}
+    out = {"node": node_id, "ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "queries": _str_list(d.get("queries"))}
     for key, fields in (("known", ("name", "mechanism", "effect", "where", "url")),
                         ("failed", ("name", "why", "url")), ("open", ("direction", "why", "url"))):
         rows = []
-        for e in d.get(key, []) or []:
+        for e in (d.get(key) if isinstance(d.get(key), list) else []):
             if not isinstance(e, dict):
                 continue
             url = str(e.get("url", ""))
@@ -297,6 +311,54 @@ def merge_facts(cache_dir: Path, node_id: str, facts: list, run: str = "") -> in
     skipped. Dedup by URL + text. The brief must exist; nothing is ever rewritten. Returns rows added."""
     if not (cache_dir / f"{node_id}.json").exists():
         return 0
+    with _facts_lock(facts_path(cache_dir, node_id)):     # read, dedup and append as one step (threads and runs)
+        return _merge_facts_locked(cache_dir, node_id, facts, run)
+
+
+_merge_lock = threading.Lock()
+
+
+class _facts_lock:
+    """One writer at a time for a facts file: a thread lock plus a lock file beside it (O_EXCL) for concurrent runs.
+    A lock file older than 60 s is taken as left behind by a dead run; after 30 s of waiting the append goes ahead."""
+
+    def __init__(self, path: Path):
+        self.lock_path = Path(str(path) + ".lock")
+        self.held = False
+
+    def __enter__(self):
+        import os
+        _merge_lock.acquire()
+        t0 = time.time()
+        while True:
+            try:
+                os.close(os.open(str(self.lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+                self.held = True
+                return self
+            except FileExistsError:
+                try:
+                    if time.time() - self.lock_path.stat().st_mtime > 60:
+                        self.lock_path.unlink()
+                except OSError:
+                    pass
+                if time.time() - t0 > 30:
+                    return self
+                time.sleep(0.05)
+            except OSError:
+                return self
+
+    def __exit__(self, *exc):
+        try:
+            if self.held:
+                self.lock_path.unlink()
+        except OSError:
+            pass
+        finally:
+            _merge_lock.release()
+        return False
+
+
+def _merge_facts_locked(cache_dir: Path, node_id: str, facts: list, run: str) -> int:
     have = {(r.get("url"), str(r.get("text", ""))[:60]) for r in read_facts(cache_dir, node_id)}
     rows = []
     for f in facts:
@@ -316,8 +378,7 @@ def merge_facts(cache_dir: Path, node_id: str, facts: list, run: str = "") -> in
                      "check_quote": str(t.get("check_quote") or "")[:200], "source": "interrogation"})
     if rows:
         with facts_path(cache_dir, node_id).open("a", encoding="utf-8") as fh:
-            for r in rows:
-                fh.write(json.dumps(r) + "\n")
+            fh.write("".join(json.dumps(r) + "\n" for r in rows))
     return len(rows)
 
 
@@ -445,14 +506,14 @@ def parse_analogies(text: str, node_id: str) -> dict | None:
     except Exception:  # noqa: BLE001
         return None
     rows = []
-    for e in d.get("analogues", []) or []:
+    for e in (d.get("analogues") if isinstance(d.get("analogues"), list) else []):
         if not isinstance(e, dict) or not URL_RE.match(str(e.get("url", ""))):
             continue
         rows.append({k: str(e.get(k, ""))[:400] for k in ("field", "problem", "mechanism", "correspondence", "case", "url")})
     if not rows:
         return None
     return {"node": node_id, "ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "analogues": rows[:8],
-            "queries": [str(q)[:200] for q in d.get("queries", [])][:8]}
+            "queries": _str_list(d.get("queries"))}
 
 
 def analogy_text(an: dict) -> str:
@@ -559,8 +620,8 @@ def fetch_prompt(question: str, node: dict | None = None, year: int = 2026) -> s
 def parse_fetch(text: str, question: str) -> dict:
     """A fetch reply -> {question, answer, source_url, confidence, tag: "web"} or {question, answer: None, reason}."""
     t = str(text or "").replace("**", "")
-    a = re.search(r"ANSWER:\s*(.+?)(?=\n\s*(?:SOURCE|CONFIDENCE)\s*:|\Z)", t, flags=re.S | re.I)
-    s = re.search(r"SOURCE:\s*(\S+)", t, flags=re.I)
+    a = re.search(r"ANSWER:[ \t]*(.*?)(?=\n\s*(?:SOURCE|CONFIDENCE)\s*:|\Z)", t, flags=re.S | re.I)   # an empty one stays empty
+    s = re.search(r"SOURCE:[ \t]*(\S+)", t, flags=re.I)
     c = re.search(r"CONFIDENCE:\s*(high|medium|low)\b", t, flags=re.I)
     ans = " ".join(a.group(1).split())[:800] if a else ""
     url = s.group(1).strip("<>()[],;") if s else ""

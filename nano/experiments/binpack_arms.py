@@ -374,6 +374,9 @@ def _fmt(x, nd=4):
 
 def report(out: Path, run_planted: bool = True) -> str:
     from nano import profile as PF
+    for need in ("arms.json", "prereg.json"):
+        if not (out / need).exists():
+            raise SystemExit(f"no {need} in {out}: run the 'dry' or 'run' mode first (report reads their results)")
     man = json.loads((out / "arms.json").read_text(encoding="utf-8"))
     pre = json.loads((out / "prereg.json").read_text(encoding="utf-8"))
     lab, cap, margin = Path(man["lab_root"]), int(man["scorer_cap"]), float(pre["prediction"]["margin"])

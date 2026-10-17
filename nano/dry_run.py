@@ -371,6 +371,7 @@ def main() -> int:
                          "binpack_nobase (Mode 2) and review_process (Mode 3)")
     a, rest = ap.parse_known_args()
     _counter.clear()                          # every dry run sees the same reply sequence, also several in one process
+    _need_sent.clear()                        # and its first build asks for one fact again
     llm.set_mock(mock)
     sys.argv = ["loop", "--profile", a.profile, "--batch", a.batch, "--model", "fable", "--backend", "mock", "--budget", a.budget,
                 "--rounds", a.rounds, "--learn-steps", "12", "--long-steps", "30", "--per-node", "1", "--diag-steps", "30", "--tune-knobs", "lr_x1.4,wd_x3",

@@ -199,7 +199,9 @@ class Memory:
                 rest = m.group(2).strip()
                 if cur == "USED" and rest:
                     out["used"] += re.findall(r"\bm[0-9a-f]{6}\b", rest)
-                continue
+                if cur == "USED" or not re.match(r"^[-*]\s", rest):
+                    continue
+                line = rest                                     # a first bullet on the header line is an entry too
             if cur is None or not re.match(r"^[-*\d]", line):
                 continue
             body = re.sub(r"^(?:[-*]|\d+[.)])\s*", "", line).strip()

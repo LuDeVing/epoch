@@ -22,6 +22,7 @@ import argparse
 import json
 import math
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -341,8 +342,10 @@ def fidelity(target: str, cand: dict, base: dict) -> dict:
     if cv is None or bv is None:
         return {"checkable": False, "note": f"cell {cell} missing"}
     t = target.lower()
-    wants_down = any(w in t for w in ("lower", "reduce", "down", "less", "smaller", "decrease", "flatten"))
-    wants_up = any(w in t for w in ("raise", "increase", "up", "more", "higher", "sharpen"))
+    # whole words (a stem may take an ending): "up" inside "update", "down" inside "w_down" or "less" inside "unless"
+    # is no direction
+    wants_down = bool(re.search(r"\b(?:lower|reduc|down\b|less\b|smaller|decreas|flatten)", t))
+    wants_up = bool(re.search(r"\b(?:rais|increas|up\b|more\b|higher|sharpen)", t))
     moved = (cv - bv) / (abs(bv) + 1e-9)
     ok = None
     if wants_down:

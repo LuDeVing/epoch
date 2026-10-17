@@ -49,7 +49,9 @@ def collect(run: Path) -> dict:
     pool = [_json(p, {}) for p in sorted((run / "pool").glob("*.json"))] if (run / "pool").exists() else []
     rung5 = _json(run / "rung5" / "results.json", {})
     calls = [_json(p, {}) for p in (run / "calls").glob("*.json")] if (run / "calls").exists() else []
-    briefs = {p.stem: _json(p, {}) for p in (run / "research").glob("*.json")} if (run / "research").exists() else {}
+    from nano.research import is_part_brief      # analogy files sit beside the briefs and are not briefs
+    briefs = ({p.stem: _json(p, {}) for p in (run / "research").glob("*.json") if is_part_brief(p)}
+              if (run / "research").exists() else {})
 
     tokens = sum((c.get("total_tokens") or (c.get("usage") or {}).get("total_tokens") or 0) for c in calls)
     main_model = state.get("model")
