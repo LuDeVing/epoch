@@ -176,3 +176,13 @@ body.stage .chat__form, body.stage .switch { display: none; }
 .inspect__k { flex: 0 0 72px; color: var(--text-2, var(--text)); opacity: 0.75; }
 .inspect__v { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
 .inspect__v ul { margin: 0; padding-left: 14px; }
+
+/* People panel (people.js) */
+#people-panel { position: fixed; top: 6px; right: 150px; z-index: 40; }
+.people-panel { position: absolute; right: 0; top: 30px; width: 460px; max-width: calc(100vw - 24px); padding: 10px; }
+.people__list { list-style: none; margin: 6px 0; padding: 0; }
+.people__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 4px 0; border-top: 1px solid var(--line-subtle); }
+.people__add { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+.people__add input, .people__add select { padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-card, var(--bg)); color: inherit; font: inherit; }
+.people__made, .people__foot { margin-top: 6px; overflow-wrap: anywhere; }
+.tag--on { color: var(--ok); }

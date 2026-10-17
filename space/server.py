@@ -27,7 +27,7 @@ import traceback
 import urllib.parse
 from pathlib import Path
 
-from space import contract, control, digest, launch, snapshot
+from space import contract, control, digest, launch, people, snapshot
 from space.claims import Claims
 from space.presence import Presence
 from space.replay import Replayer
@@ -591,6 +591,7 @@ def make(db, port=contract.PORT, host=contract.HOST, web_dir=None, key="", memor
         raise
     httpd.space = sp
     launch.register(httpd)                                             # the /api/run/* routes (start a research)
+    people.register(httpd)                                             # the /api/people* routes (who is here, add a person)
     if replay:
         sp.start_replay(replay, speed, seek)
     return Running(sp, httpd, reap_s)

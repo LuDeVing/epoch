@@ -251,6 +251,9 @@ the stage recording and prints each beat as it lands.
 | POST /api/run/start | the page | start a run |
 | GET /api/run/status | the page | every run and its state |
 | POST /api/run/stop | the page | stop a run |
+| `GET /api/people` | who is in the space, whether each person's agent runs, their join links |
+| `POST /api/people/add` | `{name, model}`: starts a person-agent for that name (mock or sonnet) and returns the join link |
+| `POST /api/people/stop` | `{name}`: stops that person's agent |
 
 Errors are JSON `{"error": ...}`: 422 bad_envelope or unknown_kind; 409 claimed_by_other, claim_lost,
 subject_closed, id_taken; 415 bad_content_type; 413 too_big (64 KB per POST); 403 bad_key, humans_only;
@@ -326,3 +329,14 @@ runs, and from then on every idea agent, critic, author and builder working on t
 FACTS FROM PEOPLE with your words quoted, marked as evidence from people, not instructions. A whole-problem finding
 goes to the root part's memory and to every part's prompts. To correct one, press "correct this": the new finding
 replaces the old one, which stays visible, marked.
+
+## 13. Spaces and people from the page
+
+The hub lists the spaces on this PC and makes new ones: `python -m space.hub --open` serves it at
+http://127.0.0.1:8760/. "New space" starts a server for that name on the next free port (a checkbox opens it to
+other laptops with a key); type your name and press "Open as <name>". Stop and Start keep the space's log.
+
+Inside a space, the People button in the top bar shows everyone in the space and whether their agent runs. "Add
+person and start their agent" starts a person-agent for a name (canned replies, or Sonnet) and shows the link that
+person opens. Anyone can also just open the page with `?me=<name>`: a person without an agent still watches,
+votes, vetoes, adds findings and starts runs; the agent is what turns their chat into actions.

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTSA spaces</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { margin: 0; padding: 24px; max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .hub__sub { color: var(--text-2); margin-bottom: 18px; }
+  .hub__form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+  .hub__form input[type=text] { padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-card, var(--bg)); color: inherit; font: inherit; }
+  .space { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+  .space__head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .space__name { font-weight: 600; font-size: 15px; }
+  .space__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+  .space__row input[type=text] { padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-card, var(--bg)); color: inherit; font: inherit; width: 120px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+  .dot--on { background: var(--ok); }
+  .err { color: var(--bad); }
+</style>
+</head>
+<body>
+<div id="hub"></div>
+<script type="module">
+import { html, render, useState, useEffect } from './vendor/standalone.module.js';
+
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error ? `${j.error}${j.hint ? `: ${j.hint}` : ''}${j.detail ? `: ${j.detail}` : ''}` : `HTTP ${r.status}`);
+  return j;
+}
+
+function Space({ s, refresh }) {
+  const [me, setMe] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const act = async (fn) => { setBusy(true); setErr(''); try { await fn(); await refresh(); } catch (e) { setErr(e.message); } setBusy(false); };
+  const name = me.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-');
+  const join = s.alive && name ? s.join.replace('{name}', name) : null;
+  return html`<div class="space">
+    <div class="space__head"><span class=${`dot${s.alive ? ' dot--on' : ''}`}></span><span class="space__name">${s.name}</span>
+      <span class="muted">${s.alive ? `running on port ${s.port}` : (s.port ? 'stopped' : 'not started here')}${s.lan ? ' . open to the network' : ''}</span>
+      ${s.people.length ? html`<span class="muted">people: ${s.people.join(', ')}</span>` : null}
+      <span style="flex:1"></span>
+      ${s.alive ? html`<button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/stop', { name: s.name }))}>Stop</button>`
+        : html`<button class="btn btn--small" disabled=${busy} onClick=${() => act(() => api('/api/spaces/start', { name: s.name }))}>Start</button>`}
+    </div>
+    ${s.alive ? html`<div class="space__row">
+      <label class="muted">Your name <input type="text" value=${me} onInput=${(e) => setMe(e.target.value)} placeholder="ana" /></label>
+      ${join ? html`<a class="btn btn--small btn--primary" href=${join} target="_blank" rel="noopener">Open as ${name}</a>
+        <span class="mono muted" style="user-select:all">${join}</span>` : html`<span class="muted">type a name to get your link</span>`}
+      ${s.key ? html`<span class="muted">key for other laptops: <span class="mono" style="user-select:all">${s.key}</span></span>` : null}
+    </div>` : null}
+    ${err ? html`<div class="err">${err}</div>` : null}
+  </div>`;
+}
+
+function HubPage() {
+  const [data, setData] = useState({ spaces: [], hub: {} });
+  const [name, setName] = useState('');
+  const [lan, setLan] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const refresh = async () => { try { setData(await api('/api/spaces')); } catch (e) { setErr(e.message); } };
+  useEffect(() => { refresh(); const t = setInterval(refresh, 4000); return () => clearInterval(t); }, []);
+  const create = async (e) => {
+    e.preventDefault();
+    setBusy(true); setErr('');
+    try { const s = await api('/api/spaces', { name, lan }); setName(''); await refresh(); if (s.alive) window.open(`${s.url}/`, '_blank'); }
+    catch (ex) { setErr(ex.message); }
+    setBusy(false);
+  };
+  return html`<div>
+    <h1>HTSA spaces</h1>
+    <div class="hub__sub">A space is one shared research room: a problem tree, idea clusters, arguments, results and the people in it. Each runs on its own port on this PC.</div>
+    <form class="hub__form" onSubmit=${create}>
+      <input type="text" placeholder="new space name, like packing-2" value=${name} onInput=${(e) => setName(e.target.value)} />
+      <label class="muted"><input type="checkbox" checked=${lan} onChange=${(e) => setLan(e.target.checked)} /> open to other laptops (needs the firewall rule once)</label>
+      <button class="btn btn--small btn--primary" type="submit" disabled=${busy || !name.trim()}>New space</button>
+    </form>
+    ${err ? html`<div class="err">${err}</div>` : null}
+    ${data.spaces.length ? data.spaces.map((s) => html`<${Space} key=${s.name} s=${s} refresh=${refresh} />`) : html`<div class="muted">No spaces yet. Make one above.</div>`}
+    <div class="muted" style="margin-top:18px">Spaces live under ${data.hub.lab || ''}/spaces. A stopped space keeps everything and starts again with its log intact.</div>
+  </div>`;
+}
+render(html`<${HubPage} />`, document.getElementById('hub'));
+</script>
+</body>
+</html>

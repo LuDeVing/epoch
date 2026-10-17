@@ -11,6 +11,7 @@ import { mountRail } from './rail.js';
 import { PresenceChips, focusOf } from './presence.js';
 import { mountStart } from './start.js';
 import { mountInspector } from './inspect.js';
+import { mountPeople } from './people.js';
 
 const BEAT_MS = 5000, GO_LOCK_MS = 2000, OFFLINE_AFTER_MS = 10000, FOCUS_MIN_MS = 250;
 
@@ -416,6 +417,7 @@ async function main() {
   if (!flags.me && !flags.stage) askName();
   mountRail(document.getElementById('rail'), viewApi);
   mountStart(document.getElementById('start-run'), viewApi);
+  mountPeople(document.getElementById('people-panel'), viewApi);
   await mountViews();
   if (following) setFollow(following);
   publish();

@@ -75,7 +75,7 @@ def launch_routes(launch_src: str) -> set[str]:
 
 def check_routes(space_md: str, design_md: str, server_src: str, launch_src: str, routes: dict) -> list[str]:
     bad = []
-    code = server_src + "\n" + launch_src
+    code = server_src + "\n" + launch_src + "\n" + read(Path(__file__).resolve().parent.parent / "space" / "people.py")
     for name, text in (("docs/SPACE.md", space_md), ("docs/MULTIPLAYER_DESIGN.md", design_md)):
         for r in sorted(set(ROUTE_RE.findall(text))):
             if r not in code:
