@@ -114,8 +114,9 @@ def _train(script: Path, out: Path, seed: int, tokens: float, timeout_s: int, wa
     if r["timed_out"]:
         return {"error": "wall-clock cap", "wall_s": r["wall"]}
     m = C._metrics(out)
-    if m is None:
-        return {"error": f"no metrics (rc {r['rc']})", "stderr": r["stderr"][-800:], "wall_s": r["wall"]}
+    if m is None or r["rc"] != 0:                 # a failed run's metrics are not a result (and skip the token count)
+        return {"error": f"no metrics (rc {r['rc']})" if m is None else f"the run failed (rc {r['rc']})",
+                "stderr": r["stderr"][-800:], "wall_s": r["wall"]}
     if float(m.get("tokens", 0)) > tokens * 1.02:
         return {"error": f"trained on {m.get('tokens')} tokens, over the budget {tokens:.0f}", "wall_s": r["wall"]}
     e = _exam(script, out)

@@ -157,12 +157,14 @@ def _step_time(candidate: Path, out: Path) -> tuple[float | None, dict | None, d
     through this same function, so both sides are measured the same way."""
     r = _run(candidate, ["--smoke-steps", str(TIMING_STEPS), "--out", str(out)], out, 300, wall_cap=280)
     m = _metrics(out)
-    if not (r["rc"] == 0 and m is not None and m.get("steps", 0) >= TIMING_STEPS and m.get("wall_s") is not None):
+    if not (r["rc"] == 0 and m is not None and (m.get("steps") or 0) >= TIMING_STEPS and m.get("wall_s") is not None):
         return None, m, r
     steps, wall = m["steps"], float(m["wall_s"])
     first = _first_step_s(r.get("stdout", ""), float(m.get("tokens") or 0) / max(1, steps))
     if first is None or not 0 < first < wall:
         r1 = _run(candidate, ["--smoke-steps", "1", "--out", str(out / "warmup")], out / "warmup", 300, wall_cap=280)
+        if r1.get("violations"):                        # the warm-up run is a candidate run too
+            r = {**r, "violations": list(r.get("violations") or []) + list(r1["violations"])}
         m1 = _metrics(out / "warmup")
         first = float(m1["wall_s"]) if r1["rc"] == 0 and m1 and m1.get("wall_s") is not None else None
     if first is not None and 0 < first < wall:
@@ -264,7 +266,10 @@ def check(candidate: Path, out: Path, baseline: dict, *, learn_steps: int = LEAR
     if base_step and step_s > STEP_TIME_TOL * base_step:
         # a slow first measurement is often the card, not the code: measure both sides once more and keep each
         # side's faster time, so candidate and baseline are measured the same number of times
-        step_s2, m2, _ = _step_time(candidate, out / "steps2")
+        step_s2, m2, r2 = _step_time(candidate, out / "steps2")
+        if _integrity_fail(rec, 2, r2):                 # the re-timing run is a candidate run too
+            rec["rungs"].append({"rung": 2, "ok": False, "wall": r2["wall"]})
+            return rec
         base_step2, _, _ = _step_time(BASELINE, out / "base_steps2")
         detail.update({"step_s_first": round(step_s, 2), "base_step_first": round(base_step, 2)})
         if step_s2 is not None and step_s2 < step_s:
@@ -282,7 +287,7 @@ def check(candidate: Path, out: Path, baseline: dict, *, learn_steps: int = LEAR
     rec["rungs"].append(detail)
     rec["rung_reached"] = 2
     rec["partial_score"] = 2 / 4
-    if m.get("peak_vram_gb", 0) > VRAM_CAP_GB:
+    if (m.get("peak_vram_gb") or 0) > VRAM_CAP_GB:
         rec["feedback"] = {"rung": 2, "reason": f"peak VRAM {m['peak_vram_gb']} GB exceeds cap {VRAM_CAP_GB} GB"}
         return rec
     if rec["metrics"]["step_ratio"] is not None and step_s > STEP_TIME_TOL * base_step:
@@ -298,7 +303,7 @@ def check(candidate: Path, out: Path, baseline: dict, *, learn_steps: int = LEAR
     r = _run(candidate, ["--smoke-steps", str(learn_steps), "--seed", str(PROFILE_SEED), "--out", str(out / "learn")],
              out / "learn", int(cap) + 120, wall_cap=cap)
     m = _metrics(out / "learn")
-    ok = r["rc"] == 0 and m is not None and m.get("steps", 0) >= learn_steps
+    ok = r["rc"] == 0 and m is not None and (m.get("steps") or 0) >= learn_steps
     detail = {"rung": 3, "ok": ok, "wall": r["wall"]}
     if _integrity_fail(rec, 3, r):
         rec["rungs"].append(detail)
@@ -353,7 +358,7 @@ def long_run(candidate: Path, out: Path, baseline: dict, *, long_steps: int = LO
     r = _run(candidate, ["--smoke-steps", str(long_steps), "--seed", str(PROFILE_SEED), "--out", str(out / "long")],
              out / "long", int(cap) + 120, wall_cap=cap)
     m = _metrics(out / "long")
-    ok = r["rc"] == 0 and m is not None and m.get("steps", 0) >= long_steps
+    ok = r["rc"] == 0 and m is not None and (m.get("steps") or 0) >= long_steps
     if r.get("violations"):
         return {"ok": False, "reason": "integrity", "violations": r["violations"][:8], "wall": r["wall"]}
     if not ok:

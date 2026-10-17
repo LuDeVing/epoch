@@ -69,9 +69,12 @@ class LLMChecker:
         runs = []
         for s in seeds:
             runs.append(BV.train(Path(candidate), Path(out) / f"seed{s}", int(s), tokens, timeout_s, wall_cap=wall_cap))
-        cand_vals = [r["val_loss"] for r in runs if r.get("val_loss") is not None]
-        base_vals = [r["val_loss"] for r in BV.baseline_runs(baseline_version(), tokens)]
+        ok = [(int(s), r["val_loss"]) for s, r in zip(seeds, runs) if r.get("val_loss") is not None]
+        cand_vals = [v for _, v in ok]
+        base = BV.baseline_runs(baseline_version(), tokens)
+        base_vals = [r["val_loss"] for r in base]
         v = V.sequential_verdict(cand_vals, base_vals, margin=margin, alpha=alpha,
-                                 min_seeds=score.get("min_seeds", 3))
+                                 min_seeds=score.get("min_seeds", 3),     # seed s meets baseline seed s
+                                 cand_seeds=[s for s, _ in ok], base_seeds=[r.get("seed") for r in base])
         return {"status": v["status"], "cand_vals": cand_vals, "base_vals": base_vals, "verdict": v,
                 "errors": [r.get("error") for r in runs if r.get("error")]}

@@ -206,7 +206,7 @@ def e_value(diffs: list[float], sigma: float, margin: float = 0.0, tau: float | 
     if n == 0:
         return 1.0
     sigma = max(sigma, 1e-4)                      # a floor: five identical seeds do not mean zero noise
-    tau = sigma if tau is None else tau
+    tau = sigma if tau is None else max(tau, 1e-4)
     S = sum(d - margin for d in diffs)
     a = n / (sigma * sigma) + 1.0 / (tau * tau)
     b = S / (sigma * sigma)
@@ -277,7 +277,19 @@ def sequential_verdict(cand_vals: list[float], base_vals: list[float], *, margin
     if not cand_vals or len(base_vals) < 2:
         out.update({"status": "error", "gain": None, "e": None, "e_stack": None, "p": None})
         return out
+    if not all(math.isfinite(v) for v in base_vals):
+        out.update({"status": "error", "gain": None, "e": None, "e_stack": None, "p": None,
+                    "reason": "a baseline value is not a finite number"})
+        return out
+    if not all(math.isfinite(v) for v in cand_vals):    # a diverged run (NaN loss) is a failed run
+        out.update({"status": "fail", "gain": None, "e": None, "e_stack": None, "p": None,
+                    "reason": "a candidate value is not a finite number"})
+        return out
     sd, sd_up, df = baseline_sigma(base_vals)
+    if sd_up <= 0:                                # identical baseline runs: the noise is unknown, not zero
+        out.update({"status": "error", "gain": None, "e": None, "e_stack": None, "p": None, "df": df,
+                    "reason": "the baseline runs have no spread, so the noise cannot be bounded"})
+        return out
     sigma_d = math.sqrt(2.0) * sd_up              # effect prior tau = 1.5 x this (calibration note above)
     diffs = paired_diffs(cand_vals, base_vals, cand_seeds, base_seeds)
     gain = statistics.mean(diffs) if diffs else 0.0

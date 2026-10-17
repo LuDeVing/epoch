@@ -70,19 +70,19 @@ def val_windows(data: np.ndarray, seq_len: int = EXAM_SEQ_LEN, n_tokens: int = E
 
 
 def nonembed_params(model: torch.nn.Module) -> int:
-    """The harness's own count: every distinct parameter tensor, minus the token-embedding tables
-    (nn.Embedding weights); a head tied to the embedding is the same tensor and counts once."""
+    """The harness's own count: every distinct parameter tensor, minus the token-embedding table (model.tok, as
+    train.py's param_counts; else the largest nn.Embedding); a head tied to it is the same tensor and counts
+    once, and any other embedding table (a bigram table) is counted, as rung 1 counts it."""
     seen, total = set(), 0
     for p in model.parameters():
         if id(p) not in seen:
             seen.add(id(p))
             total += p.numel()
-    emb = set()
-    for m in model.modules():
-        if isinstance(m, torch.nn.Embedding) and id(m.weight) not in emb:
-            emb.add(id(m.weight))
-            total -= m.weight.numel()
-    return total
+    tok = getattr(getattr(model, "tok", None), "weight", None)    # the token table, as train.py's param_counts
+    if not isinstance(tok, torch.nn.Parameter):          # (protected) counts it; any other table is counted
+        tables = [m.weight for m in model.modules() if isinstance(m, torch.nn.Embedding)]
+        tok = max(tables, key=lambda w: w.numel()) if tables else None
+    return total - (tok.numel() if tok is not None else 0)
 
 
 def baseline_params(path: Path = BASELINE) -> int:
@@ -134,6 +134,9 @@ def run_exam(candidate: Path, ckpt: Path, params_base: int | None = None) -> dic
     if not losses:
         return {"error": "no validation windows"}
     val = float(np.mean(losses))
+    if not math.isfinite(val):                # a NaN loss would also slip past the self-report comparison
+        return {"error": f"the validation loss is {val} (not a finite number)", "params_nonembed": recount,
+                "params_base": params_base}
     return {"val_loss": round(val, 4), "val_bpb": round(val / math.log(2) * BYTES_PER_TOKEN, 4),
             "n_tokens": n, "seq_len": EXAM_SEQ_LEN, "batches": len(losses), "params_nonembed": recount,
             "params_base": params_base}
