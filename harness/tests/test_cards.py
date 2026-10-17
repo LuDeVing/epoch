@@ -101,8 +101,9 @@ def test_lint_fail_and_warn_patterns():
     warns = {x["pattern"] for x in f if x["severity"] == "warn"}
     assert {"persona_you_are", "persona_world_class", "persona_act_as", "persona_as_expert",
             "bodily_breath", "stakes_job", "stakes_lives", "hidden_subconscious",
-            "hidden_free_associate", "hidden_secretly_thinking"} <= fails
-    assert {"creative_be_creative", "creative_outside_box"} <= warns
+            "hidden_free_associate", "hidden_secretly_thinking",
+            "creative_be_creative", "creative_outside_box"} <= fails      # Pr10: creativity nudges fail
+    assert not {"creative_be_creative", "creative_outside_box"} & warns
     assert lint.lint_text("If you are able, write the list. Exact as given.") == []
 
 
@@ -179,7 +180,7 @@ def test_parse_bt_letters_and_choice_text():
             "4. Whatever colour your eyes are\n5. no letter here")
     out = run_card.parse_candidates(text, "bt", BT_ITEM["choices"])
     assert [c["pred"] for c in out] == ["B", "C", "A", "B"]
-    assert out[0]["text"] == "B. The driver is the reader because the question says so."
+    assert out[0]["text"] == "B. The driver is the reader."     # A9: first-sentence rationale stripped
     assert out[1]["text"] == "C" and out[0]["program"] is None
 
 

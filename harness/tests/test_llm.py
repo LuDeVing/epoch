@@ -54,11 +54,19 @@ def test_timeout_is_charged_by_estimate(monkeypatch):
     def fn(prompt, role, meta):
         raise llm.CallError("Timeout after 1s (process tree killed)", estimated=True)
     llm.set_mock(fn)
-    res = llm.call("x" * 400, role="judge", backend="mock", max_tokens=1200, retries=1)
+    res = llm.call("x" * 400, role="judge", backend="mock", max_tokens=1200, retries=2)
     assert res.error and res.usage_estimated
-    # mock backend: no CLI overhead; two attempts each charged prompt/4 + max_tokens
+    # a timeout is retried once, not twice, and each retry decision is logged
+    assert res.attempts == 2 and len(res.retry_reasons) == 2
+    assert "timeout" in res.retry_reasons[0] and "not retried" in res.retry_reasons[1]
+    # mock backend: no CLI overhead, output cap = max_tokens; each attempt charged prompt/4 + cap
     assert res.usage.total_tokens == 2 * (100 + 1200)
     assert res.max_tokens == 1200
+    # cli_json: a timed-out call is charged the real CLI output cap, not max_tokens
+    est = llm.timeout_estimate("x" * 400, 1200, "cli_json")
+    assert est.output_tokens == llm.output_cap(1200, "cli_json") == 32000
+    assert est.input_tokens == 100 + config.CLI_OVERHEAD_TOKENS_EST
+    assert llm.timeout_estimate("x" * 400, 10000, "cli_json").output_tokens == 40000
 
 
 def test_parse_cli_json_takes_last_result_object():
@@ -100,6 +108,8 @@ def test_cli_command_has_no_shell_and_passes_output_cap(monkeypatch):
     assert text == "ok" and usage.total_tokens == 4
     assert seen["kw"]["shell"] is False and seen["input"] == "prompt"
     assert seen["kw"]["env"]["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] == "32000"     # the cap sits well above max_tokens: no continuations
+    assert seen["kw"]["env"]["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] == str(llm.output_cap(777, "cli_json"))   # = timeout charge
+    assert seen["kw"]["cwd"] and Path(seen["kw"]["cwd"]).resolve() != Path.cwd().resolve()   # never the repo
     assert "--tools" in seen["cmd"] and all(a in seen["cmd"] for a in config.CLI_EXTRA_ARGS)
 
 

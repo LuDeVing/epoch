@@ -8,8 +8,9 @@ docstrings, EVL-16), cards, seeds, generator identity or serial position. Batche
 pointwise. p_raw is logged and steers nothing at P0 (EVL-08).
 
 The prompt is strategies/templates/judge.txt, rendered and linted through run_card.render_prompt
-(prompts/<call_id>.txt and a routing.jsonl row per call). est_cost() gives the driver the
-token estimate it reserves before judging (section 4 Spend accounting).
+(prompts/<call_id>.txt and a routing.jsonl row per call). Each call runs with its own
+sandbox calls/<call_id>/in/ as cwd (Pr1: no repo or git context reaches the judge). est_cost()
+gives the driver the token estimate it reserves before judging (section 4 Spend accounting).
 """
 from __future__ import annotations
 
@@ -18,6 +19,7 @@ import json
 import math
 import random
 import re
+import tempfile
 from pathlib import Path
 
 from . import config, llm
@@ -144,9 +146,11 @@ def n_calls(n: int) -> int:
 
 
 def est_cost(cands: list[Candidate], problem, backend: str | None = None) -> int:
-    """Tokens one judge round is expected to cost: per call the prompt (problem.md, item data
-    and the capped candidate texts of its batch) at chars / 4, the judge max_tokens, and the
-    CLI overhead on cli_json (section 4 Spend accounting; reserved before judging)."""
+    """Tokens one judge round may cost: per call the prompt (problem.md, item data and the
+    capped candidate texts of its batch) at chars / 4, the output cap the backend is really
+    given (llm.output_cap: on cli_json max(4 x max_tokens.judge, 32000), the same bound a
+    timed-out call is charged), and the CLI overhead on cli_json (section 4 Spend accounting;
+    reserved before judging, so the reserve covers the largest charge a call can make)."""
     n = len(cands)
     if n == 0:
         return 0
@@ -160,7 +164,8 @@ def est_cost(cands: list[Candidate], problem, backend: str | None = None) -> int
     for i in range(k):
         size = len(range(n)[i::k])
         prompt_chars = fixed + size * mean_cand
-        per_call = int(prompt_chars // 4) + config.PARAMS["max_tokens"]["judge"] + overhead
+        per_call = (int(prompt_chars // 4) + overhead
+                    + llm.output_cap(config.PARAMS["max_tokens"]["judge"], backend or "cli_json"))
         total += per_call * (1 if size == 1 else 2)
     return int(total)
 
@@ -240,11 +245,23 @@ def parse_reply(text: str, aliases: list[str]) -> dict[str, dict]:
 
 
 # ---------------------------------------------------------------- calls
-def _call_specs(problem, benchmark, cands, aliases, batches, backend, log_dir):
+def resolve_run_dir(run_dir: Path | None, log_dir: Path | None) -> Path | None:
+    """The run folder for prompts/ and calls/<id>/in/: the explicit run_dir, else the parent
+    of a log_dir named "calls" (the layout think.py uses), else None (no run files)."""
+    if run_dir is not None:
+        return Path(run_dir)
+    if log_dir is not None and Path(log_dir).name == "calls":
+        return Path(log_dir).parent
+    return None
+
+
+def _call_specs(problem, benchmark, cands, aliases, batches, backend, log_dir, run_dir=None):
     """One call spec per (batch, permutation); pointwise (one call) for a batch of one.
-    Prompts are rendered through run_card.render_prompt into runs/<id>/prompts/ and linted."""
-    from .run_card import render_prompt
-    run_dir = Path(log_dir).parent if log_dir is not None else None
+    Prompts are rendered through run_card.render_prompt into runs/<id>/prompts/ and linted;
+    each call's cwd is its own sandbox calls/<call_id>/in/ (an empty temp folder when there
+    is no run folder), never the repo."""
+    from .run_card import render_prompt, write_sandbox
+    run_dir = resolve_run_dir(run_dir, log_dir)
     specs, plan = [], []
     for bi, batch in enumerate(batches):
         perms = [("a", batch)] if len(batch) == 1 else [("a", batch), ("b", second_perm(batch))]
@@ -257,11 +274,13 @@ def _call_specs(problem, benchmark, cands, aliases, batches, backend, log_dir):
             if run_dir is not None:
                 prompt = render_prompt(TEMPLATE, values, role="judge", run_dir=run_dir, call_id=cid,
                                        meta=meta)
+                cwd = write_sandbox(run_dir / "calls", cid, values)
             else:
                 prompt = build_prompt(problem, benchmark, views)
+                cwd = Path(tempfile.mkdtemp(prefix="htsa_judge_"))
             specs.append(dict(prompt=prompt, role="judge", call_id=cid, backend=backend,
                               log_dir=log_dir, max_tokens=config.PARAMS["max_tokens"]["judge"],
-                              meta=meta))
+                              meta=meta, cwd=cwd))
             plan.append((bi, tag, order))
     return specs, plan
 
@@ -280,16 +299,17 @@ def _judgment(cand: Candidate, res_a: dict, res_b: dict | None, call_ids: list[s
 
 
 def judge(cands: list[Candidate], problem, *, backend: str, log_dir: Path,
-          replicate: int) -> tuple[list[Judgment], Usage]:
+          replicate: int, run_dir: Path | None = None) -> tuple[list[Judgment], Usage]:
     """Score candidates blind (section 3 /judge steps 1-2). Returns Judgments in input order and
-    the summed usage of every judge call. The caller writes judgments.jsonl."""
+    the summed usage of every judge call. The caller writes judgments.jsonl. run_dir is the
+    run folder; when omitted it is derived from a log_dir named "calls" (resolve_run_dir)."""
     if not cands:
         return [], Usage()
     benchmark = problem.benchmark
     rng = random.Random(f"{problem.item_id}:{ARM}:{replicate}:judge")
     aliases = make_aliases(cands, rng)
     batches = make_batches(len(cands), rng)
-    specs, plan = _call_specs(problem, benchmark, cands, aliases, batches, backend, log_dir)
+    specs, plan = _call_specs(problem, benchmark, cands, aliases, batches, backend, log_dir, run_dir)
     results = llm.call_many(specs)
     usage = Usage()
     parsed: dict[tuple[int, str], dict] = {}

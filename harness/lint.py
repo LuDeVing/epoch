@@ -1,9 +1,14 @@
 """Prompt and view lint (ARCHITECTURE.md section 1, Pr10 and Pr5; section 3 /encode step 5).
 
 Patterns live in harness/lint_patterns.yaml: "fail" (personas, stakes, bodily imperatives,
-hidden-reasoning wording) and "warn" (be-creative wording). `lint_text` scans any text,
-`lint_templates` scans every file in strategies/templates, and `lint_domain` checks a
-low_prior view against a per-item domain-noun list.
+hidden-reasoning wording, creativity instructions) and "warn" (step-by-step boilerplate).
+`lint_text` scans any text, `lint_templates` scans every file in strategies/templates, and
+`lint_domain` checks a low_prior view or prompt against the original item's domain nouns.
+
+The domain lint does not share its matcher with encode.neutralize: neutralize generates the
+surface forms of each noun and substitutes them; the lint splits the rendered text into words
+and maps each word back to its candidate base forms (regular and irregular plurals,
+possessives), so a form or a text field that neutralize missed is still caught.
 """
 from __future__ import annotations
 
@@ -53,18 +58,100 @@ def lint_templates(templates_dir: Path | None = None) -> dict:
     return {"fails": fails, "warns": warns}
 
 
+# irregular plurals (singular -> plural); "-man" compounds and the f/fe/y rules are handled by rule
+IRREGULAR_PLURALS = {
+    "man": "men", "woman": "women", "child": "children", "person": "people", "foot": "feet",
+    "tooth": "teeth", "mouse": "mice", "goose": "geese", "ox": "oxen", "louse": "lice",
+    "die": "dice", "cactus": "cacti", "fungus": "fungi", "nucleus": "nuclei", "radius": "radii",
+    "criterion": "criteria", "phenomenon": "phenomena", "index": "indices", "matrix": "matrices",
+    "vertex": "vertices", "analysis": "analyses", "axis": "axes", "crisis": "crises",
+    "thesis": "theses", "medium": "media", "bacterium": "bacteria",
+}
+_SINGULAR_OF = {v: k for k, v in IRREGULAR_PLURALS.items()}
+_VOWELS = set("aeiou")
+_WORD = re.compile(r"[A-Za-z]+")
+
+
+def plural_forms(word: str) -> set[str]:
+    """Lower-case surface forms of one noun: itself, regular plurals and irregular plurals."""
+    w = word.lower()
+    forms = {w, w + "s", w + "es"}
+    if w in IRREGULAR_PLURALS:
+        forms.add(IRREGULAR_PLURALS[w])
+    if w.endswith("man"):
+        forms.add(w[:-3] + "men")
+    if len(w) > 1 and w.endswith("y") and w[-2] not in _VOWELS:
+        forms.add(w[:-1] + "ies")
+    if w.endswith("fe"):
+        forms.add(w[:-2] + "ves")
+    elif w.endswith("f"):
+        forms.add(w[:-1] + "ves")
+    return forms
+
+
+def base_forms(token: str) -> set[str]:
+    """Candidate base forms of one word as written (the inverse direction of plural_forms)."""
+    t = token.lower()
+    out = {t}
+    if t in _SINGULAR_OF:
+        out.add(_SINGULAR_OF[t])
+    if t.endswith("men"):
+        out.add(t[:-3] + "man")
+    if t.endswith("ies"):
+        out.add(t[:-3] + "y")
+    if t.endswith("ves"):
+        out |= {t[:-3] + "f", t[:-3] + "fe"}
+    if t.endswith("es"):
+        out.add(t[:-2])
+    if t.endswith("s") and not t.endswith("ss"):
+        out.add(t[:-1])
+    return out
+
+
+def noun_forms(noun: str) -> set[str]:
+    """Surface forms of a (possibly multi-word) noun; only the last word is inflected. A noun
+    listed in a plural form ("cities") also yields its singular and the singular's plurals."""
+    words = noun.lower().split()
+    if not words:
+        return set()
+    head, last = words[:-1], words[-1]
+    lasts: set[str] = set()
+    for b in (base_forms(last) if len(last) > 3 else {last}):
+        lasts |= plural_forms(b)
+    return {" ".join(head + [x]) for x in lasts}
+
+
 def noun_regex(noun: str) -> re.Pattern:
-    """Word-boundary, case-insensitive match of a noun and its simple plural (REP-02)."""
-    return re.compile(r"\b" + re.escape(noun) + r"(?:s|es)?\b", re.IGNORECASE)
+    """Word-boundary, case-insensitive match of every surface form of a noun (REP-02). Used by
+    encode.neutralize to substitute; lint_domain checks by base forms instead."""
+    alts = sorted(noun_forms(noun), key=len, reverse=True)
+    body = "|".join(r"\s+".join(re.escape(p) for p in a.split()) for a in alts)
+    return re.compile(r"\b(?:" + body + r")\b", re.IGNORECASE)
 
 
 def lint_domain(text: str, nouns: list[str]) -> list[dict]:
-    """Domain nouns still present in a low_prior view (Pr5: no domain cues, script-linted)."""
+    """Domain nouns still present in a low_prior view or prompt (Pr5: no domain cues,
+    script-linted). Single-word nouns: each word of the text is mapped to its base forms and
+    compared with the noun's base forms. Multi-word nouns: phrase match."""
     found = []
+    single: dict[str, str] = {}
     for noun in nouns:
-        for m in noun_regex(noun).finditer(text or ""):
-            found.append({"pattern": f"domain_noun:{noun}", "severity": "fail",
+        n = " ".join(str(noun).lower().split())
+        if not n:
+            continue
+        if " " in n:
+            for m in noun_regex(n).finditer(text or ""):
+                found.append({"pattern": f"domain_noun:{n}", "severity": "fail",
+                              "span": [m.start(), m.end()], "match": m.group(0)})
+            continue
+        for b in base_forms(n) if len(n) > 3 else {n}:
+            single.setdefault(b, n)
+    for m in _WORD.finditer(text or ""):
+        hit = next((single[b] for b in sorted(base_forms(m.group(0))) if b in single), None)
+        if hit:
+            found.append({"pattern": f"domain_noun:{hit}", "severity": "fail",
                           "span": [m.start(), m.end()], "match": m.group(0)})
+    found.sort(key=lambda f: f["span"][0])
     return found
 
 

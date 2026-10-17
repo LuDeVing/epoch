@@ -42,8 +42,18 @@ _PH = re.compile(r"\{\{\s*([a-z_]+)\s*\}\}")
 # Fenced code blocks: any info string (python, python3, Python, py, none), the rest of the
 # fence line ignored; a final fence left unclosed (a reply cut at max_tokens) ends at the text end.
 _CODE = re.compile(r"```[ \t]*[A-Za-z0-9_+.-]*[^\n]*\r?\n(.*?)(?:```|\Z)", re.DOTALL)
-_LETTER = re.compile(r"^[\s*_(\[]*(?:(?:option|answer|choice)\s*[:\-]?\s*)?\(?([A-D])\)?(?=$|[\s.):,\-*\]])",
-                     re.IGNORECASE)
+# Option letter at the start of a list item. "A man carries..." starts with an article, not
+# option A (the probe parser makes the same choice: no first-word fallback). So a bare letter
+# needs a delimiter (". ) : , - * ]" or the end), except B, C and D (never English words) and
+# a capital A followed by a capitalised word or a justification word ("A The ...",
+# "A because ..."). After an "option/answer/choice" prefix, or inside "(A)" / "[A]", a space
+# may follow. An item equal to one option's text is matched to that option first.
+_LETTER = re.compile(
+    r"^[\s*_]*(?:(?i:option|answer|choice)\s*[:\-]?\s*\(?([A-Da-d])\)?(?=$|[\s.):,\-*\]])"
+    r"|\(([A-Da-d])\)|\[([A-Da-d])\]"
+    r"|([A-Da-d])(?=$|[.):,*\]]|\s*[-:]\s)"
+    r"|([B-D])(?=\s)"
+    r"|(A)(?=\s+(?:[A-Z]|(?i:because|since|as|therefore|which)\b)))")
 _TRANSFORMED = re.compile(r"TRANSFORMED PROBLEM\s*\**\s*:?\s*\**", re.IGNORECASE)
 
 
@@ -185,18 +195,38 @@ def code_blocks(text: str) -> list[str]:
     return list(_CODE.findall(text or ""))
 
 
+def lint_domain_prompt(prompt: str, spans: list[tuple[int, int, str]], nouns: list[str]) -> list[dict]:
+    """Pr5 domain lint of a rendered low_prior prompt: the original item's domain nouns
+    searched in every routed input span (template and harness text are fixed wording, not
+    item cues). Every finding blocks."""
+    out = []
+    for a, b, k in spans:
+        if k in TRUSTED_KEYS:
+            continue
+        for f in lint.lint_domain(prompt[a:b], nouns):
+            s, e = f["span"]
+            out.append(dict(f, span=[a + s, a + e], input=k, in_input=False))
+    return out
+
+
 def render_prompt(template: str, values: dict, *, role: str, run_dir: Path, call_id: str,
-                  meta: dict | None = None) -> str:
+                  meta: dict | None = None, domain_nouns: list[str] | None = None) -> str:
     """Render a template from strategies/templates, write prompts/<call_id>.txt, lint it
     (blocking on template text, logged on inlined input), and append the routing row.
     Used by every role that is not a card step (judge, probe, plain) so the Pr10 lint and the
-    section 3 routing audit cover them too."""
+    section 3 routing audit cover them too. With domain_nouns (a low_prior step) the routed
+    inputs are also linted against the original item's domain nouns, and a hit blocks (Pr5).
+    A prompt over config.MAX_PROMPT_CHARS is cut by llm.fit_prompt before the file is
+    written, so prompts/<call_id>.txt is exactly what is sent; the cut is logged."""
     run_dir = Path(run_dir)
     prompt, spans = render(load_template(template), {k: str(v) for k, v in values.items()})
+    findings = lint_prompt(prompt, spans)
+    if domain_nouns:
+        findings += lint_domain_prompt(prompt, spans, domain_nouns)
+    sent, truncated = llm.fit_prompt(prompt)
     pdir = run_dir / "prompts"
     pdir.mkdir(parents=True, exist_ok=True)
-    (pdir / f"{call_id}.txt").write_text(prompt, encoding="utf-8")
-    findings = lint_prompt(prompt, spans)
+    (pdir / f"{call_id}.txt").write_text(sent, encoding="utf-8")
     blocking = [f for f in findings if f["severity"] == "fail" and not f["in_input"]]
     if findings:
         append_jsonl(pdir / "lint.jsonl", {"call_id": call_id, "template": template,
@@ -204,12 +234,24 @@ def render_prompt(template: str, values: dict, *, role: str, run_dir: Path, call
     if blocking:
         raise LintError(f"{template}: {[f['pattern'] for f in blocking]}")
     append_jsonl(run_dir / "routing.jsonl", {"call_id": call_id, "template": template, "role": role,
-                                             "inputs": sorted(values), "meta": meta or {}})
-    return prompt
+                                             "inputs": sorted(values), "meta": meta or {},
+                                             **({"prompt_truncated": truncated} if truncated else {})})
+    return sent
+
+
+def write_sandbox(calls_dir: Path, call_id: str, values: dict) -> Path:
+    """calls/<call_id>/in/ with one file per routed input: the call's cwd, so the model sees
+    only its routed inputs and never the repo (Pr1, section 3 /generate)."""
+    in_dir = Path(calls_dir) / call_id / "in"
+    in_dir.mkdir(parents=True, exist_ok=True)
+    for k, v in values.items():
+        (in_dir / f"{k}.txt").write_text(str(v), encoding="utf-8")
+    return in_dir
 
 
 def dispatch(template: str, values: dict, *, role: str, run_dir: Path, log_dir: Path | None,
-             backend: str, meta: dict, max_tokens: int | None = None) -> llm.CallResult:
+             backend: str, meta: dict, max_tokens: int | None = None,
+             domain_nouns: list[str] | None = None) -> llm.CallResult:
     """Render, write prompts/<call_id>.txt, lint, write the sandbox in/, log routing, call.
     A private role (config.PRIVATE_ROLES, the defaults call) keeps its call record, sandbox
     and reply under runs/<id>/private/calls/ (Pr5: default answers live only in private/)."""
@@ -220,11 +262,9 @@ def dispatch(template: str, values: dict, *, role: str, run_dir: Path, log_dir: 
     if private and log_dir is not None:
         log_dir = calls_dir
     prompt = render_prompt(template, values, role=role, run_dir=run_dir, call_id=call_id,
-                           meta=dict(meta, private=True) if private else meta)
-    in_dir = calls_dir / call_id / "in"
-    in_dir.mkdir(parents=True, exist_ok=True)
-    for k, v in values.items():
-        (in_dir / f"{k}.txt").write_text(str(v), encoding="utf-8")
+                           meta=dict(meta, private=True) if private else meta,
+                           domain_nouns=domain_nouns)
+    in_dir = write_sandbox(calls_dir, call_id, values)
     res = llm.call(prompt, role=role, call_id=call_id, max_tokens=max_tokens, cwd=in_dir,
                    backend=backend, log_dir=log_dir, meta=meta)
     append_jsonl(calls_dir / call_id / "out.jsonl",
@@ -234,8 +274,10 @@ def dispatch(template: str, values: dict, *, role: str, run_dir: Path, log_dir: 
 
 # ---------------------------------------------------------------- parsing and post-check
 def post_check(text: str, benchmark: str) -> str | None:
-    """Deterministic post-check (EVL-16). BT: keep the first sentence, drop later sentences
-    with justification markers, cap the length. ARC: reject programs over the cap."""
+    """Deterministic post-check (EVL-16). BT: keep the first sentence cut before any
+    justification marker in it ("The driver is the reader because ..." keeps "The driver is
+    the reader"), drop later sentences with justification markers, cap the length. ARC: reject
+    programs over the cap."""
     text = (text or "").strip()
     if benchmark == "arc":
         return text if text and len(text) <= MAX_PROGRAM_CHARS else None
@@ -244,7 +286,11 @@ def post_check(text: str, benchmark: str) -> str | None:
         sents.pop(0)
     if not sents:
         return ""
-    kept = [sents[0]] + [s for s in sents[1:] if not JUSTIFICATION.search(s)]
+    m = JUSTIFICATION.search(sents[0])
+    first = sents[0][:m.start()].rstrip(" ,;:-") if m else sents[0]
+    if m and first and first[-1] not in ".!?":
+        first += "."
+    kept = [first] + [s for s in sents[1:] if not JUSTIFICATION.search(s)]
     out = " ".join(kept)
     if len(out) > MAX_BT_CHARS:
         out = out[:MAX_BT_CHARS].rsplit(" ", 1)[0].rstrip(" ,;:")
@@ -254,15 +300,16 @@ def post_check(text: str, benchmark: str) -> str | None:
 def _bt_item(item: str, choices: list[str] | None) -> dict | None:
     """One BT list item -> {text, program, pred}; letter first, else exact choice text."""
     item = item.replace("**", "").strip()
-    m = _LETTER.match(item)
-    if m:
-        letter, rest = m.group(1).upper(), item[m.end():].lstrip(" .):-").strip()
-    else:
-        norm = encode.norm_item(item)
-        hits = [i for i, c in enumerate(choices or []) if encode.norm_item(str(c)) == norm]
-        if len(hits) != 1:
-            return None
+    norm = encode.norm_item(item)
+    hits = [i for i, c in enumerate(choices or []) if encode.norm_item(str(c)) == norm]
+    m = None if len(hits) == 1 else _LETTER.match(item)
+    if len(hits) == 1:
         letter, rest = "ABCD"[hits[0]], ""
+    elif m:
+        letter = next(g for g in m.groups() if g).upper()
+        rest = item[m.end():].lstrip(" .):-]").strip()
+    else:
+        return None
     rest = post_check(rest, "bt") if rest else ""
     return {"text": f"{letter}. {rest}" if rest else letter, "program": None, "pred": letter}
 
@@ -293,9 +340,16 @@ def _rng(problem, replicate: int, purpose: str) -> random.Random:
     return random.Random(f"{problem.item_id}:scaffold:{replicate}:{purpose}")
 
 
+def read_seed_file(path: Path) -> tuple[str, ...]:
+    """Seed words, one per line; blank lines and "#" comment lines are skipped. The one
+    reader for the card runner and the probe."""
+    lines = (w.strip() for w in Path(path).read_text(encoding="utf-8").splitlines())
+    return tuple(w for w in lines if w and not w.startswith("#"))
+
+
 @lru_cache(maxsize=1)
 def load_seeds() -> tuple[str, ...]:
-    return tuple(w.strip() for w in config.SEEDS_PATH.read_text(encoding="utf-8").splitlines() if w.strip())
+    return read_seed_file(config.SEEDS_PATH)
 
 
 def pick_operator(card: dict, spec: CardSpec, problem, replicate: int, round_no: int) -> str:
@@ -332,11 +386,18 @@ def resolve_view(card: dict, spec: CardSpec, problem, flags: dict | None = None)
     return variant, perm
 
 
-def format_text(benchmark: str, n: int) -> str:
-    ta = os.environ.get("HTSA_THINK_ALOUD", "")
+def format_text(benchmark: str, n: int, flags: dict | None = None) -> str:
+    """The format instruction. flags.experimental_think_aloud_self_check ("1" or "2", env
+    HTSA_THINK_ALOUD) swaps in format_think[2].arc, written reasoning before the code that
+    includes checking the rule against the examples: generator self-checking, which Pr1 bans
+    for generators, so it is an experimental arm only, off by default and recorded in the run
+    header and every call record."""
+    flags = flags if flags is not None else config.FLAGS
+    ta = str(flags.get("experimental_think_aloud_self_check") or "off")
+    on = ta not in ("off", "0", "", "False", "false")
     name = ((f"format_think2.{benchmark}" if ta == "2" else f"format_think.{benchmark}")
-            if (ta and benchmark == "arc") else f"format.{benchmark}")
-    return render(load_template(name), {"n": str(n)})[0].strip()   # HTSA_THINK_ALOUD: written reasoning before the code
+            if (on and benchmark == "arc") else f"format.{benchmark}")
+    return render(load_template(name), {"n": str(n)})[0].strip()
 
 
 def cand_block(texts: list[str], benchmark: str) -> str:
@@ -358,12 +419,13 @@ def feedback_text(feedback: dict | None) -> str:
 
 
 def build_context(card: dict, problem, *, variant: str, perm: int, operator: str, seed: str,
-                  parent: Candidate | None, feedback: dict | None, n: int) -> dict[str, str]:
+                  parent: Candidate | None, feedback: dict | None, n: int,
+                  flags: dict | None = None) -> dict[str, str]:
     """Every value a step may route; built only from the Problem, the spec, the one parent
     and its feedback record (routing table, section 6)."""
     ctx = encode.view_parts(problem, variant, perm, card.get("data_style", "compact"))
     ctx.update(operator=OPERATOR_TEXT[operator], seed=seed, parent=parent_text(parent, problem.benchmark),
-               feedback=feedback_text(feedback), format=format_text(problem.benchmark, n),
+               feedback=feedback_text(feedback), format=format_text(problem.benchmark, n, flags),
                transformed="")
     return ctx
 
@@ -438,10 +500,12 @@ def run_card(spec: CardSpec, problem, run_dir: Path, *, backend: str, round_no: 
     """Execute one card (section 3 /generate). Writes cands/<id>.jsonl and returns the
     candidates plus the return contract {id, path, n_cands} (REP-16).
 
-    `flags` is the run's flag dict (shuffle_facts is read here). Errors before the first model
-    call raise (CardError, LintError); an error after a call returned is not raised but
-    reported in contract["error"], with the candidates, usage and call ids of the completed
-    steps, so the driver can charge the spend (section 4: every call is charged)."""
+    `flags` is the run's flag dict (shuffle_facts and experimental_think_aloud_self_check are
+    read here). Errors before the first model call raise (CardError, LintError); an error after
+    a call returned is not raised but reported in contract["error"], with the usage and call
+    ids of the completed steps, so the driver can charge the spend (section 4: every call is
+    charged). Other errors keep the completed steps' candidates; a LintError drops them all
+    (contract["lint_blocked"]), so a blocking lint blocks the card at any step."""
     card, run_dir, b = load_card(spec.card), Path(run_dir), problem.benchmark
     if b not in card["applies_to"]:
         raise CardError(f"card {spec.card} does not apply to {b}")
@@ -455,10 +519,12 @@ def run_card(spec: CardSpec, problem, run_dir: Path, *, backend: str, round_no: 
     variant, perm = resolve_view(card, spec, problem, flags)
     n_default = int(os.environ.get("HTSA_CANDS_PER_GEN") or config.BENCHMARKS[b]["cands_per_generator"])
     ctx = build_context(card, problem, variant=variant, perm=perm, operator=operator, seed=seed,
-                        parent=parent, feedback=feedback, n=n_default)
+                        parent=parent, feedback=feedback, n=n_default, flags=flags)
+    # Pr5: a low_prior step is linted against the original item's domain nouns
+    nouns = list((problem.meta or {}).get("domain_nouns") or []) if variant == "low_prior" else None
     usage, call_ids, cands, root = Usage(), [], [], None
     parents = [parent] if parent else []
-    error = None
+    error, lint_blocked = None, False
     try:
         for step in card["steps"]:
             if any(k in ("parent", "transformed") and not ctx[k].strip() for k in step["inputs"]):
@@ -468,14 +534,15 @@ def run_card(spec: CardSpec, problem, run_dir: Path, *, backend: str, round_no: 
             n = step.get("n") or n_default
             values = {k: ctx[k] for k in step["inputs"]}
             if "format" in values:
-                values["format"] = format_text(b, n)
+                values["format"] = format_text(b, n, flags)
             if step.get("operator"):
                 values["operator"] = OPERATOR_TEXT[step["operator"]]
             role = step.get("role", card["role"])
             meta = {"benchmark": b, "item_id": problem.item_id, "card": card["name"], "step": step["id"],
                     "round": round_no, "operator": operator}
             res = dispatch(step["template"], values, role=role, run_dir=run_dir, log_dir=log_dir,
-                           backend=backend, meta=meta, max_tokens=_max_tokens(step, role, b))
+                           backend=backend, meta=meta, max_tokens=_max_tokens(step, role, b),
+                           domain_nouns=nouns)
             root = root or res.call_id
             call_ids.append(res.call_id)
             usage = usage.add(res.usage)
@@ -503,9 +570,17 @@ def run_card(spec: CardSpec, problem, run_dir: Path, *, backend: str, round_no: 
         if not call_ids:
             raise
         error = f"{type(e).__name__}: {str(e)[:300]}"
+        if isinstance(e, LintError):
+            # A blocking lint stays blocking mid-card: the failed step is never called and the
+            # card emits no candidates, while the spend of the calls already made is still
+            # returned so the driver charges it (section 4: every call is charged).
+            lint_blocked = True
+            cands = []
     root = root or new_id("c")
     path = _write_cands(run_dir, root, cands)
     contract = {"id": root, "path": str(path), "n_cands": len(cands)}
     if error:
         contract["error"] = error
+    if lint_blocked:
+        contract["lint_blocked"] = True
     return CardRun(cands=cands, usage=usage, call_ids=call_ids, contract=contract)

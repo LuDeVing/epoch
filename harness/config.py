@@ -32,8 +32,14 @@ _DEFAULT_VENV_PYTHON = Path(r"D:\AGI-lab\.venv\Scripts\python.exe")
 VENV_PYTHON = Path(os.environ.get("HTSA_EXEC_PYTHON")
                    or (_DEFAULT_VENV_PYTHON if _DEFAULT_VENV_PYTHON.exists() else sys.executable))
 
-for _d in (RUNS_DIR, MEMORY_DIR, VIEWS_DIR, DATA_DIR, RESULTS_DIR):
-    _d.mkdir(parents=True, exist_ok=True)
+
+
+def ensure_lab_dirs() -> None:
+    """Create the lab folders on first use, never at import (an import must not need D:).
+    The JSON and JSONL writers in schemas.py create parent folders as well."""
+    for d in (RUNS_DIR, MEMORY_DIR, VIEWS_DIR, DATA_DIR, RESULTS_DIR):
+        d.mkdir(parents=True, exist_ok=True)
+
 
 # ---------------------------------------------------------------- models and backends
 # Logical model names map to backend-specific ids. All roles in all arms use the same logical model.
@@ -135,7 +141,16 @@ FLAGS = {
     "early_stop": True,                  # CTL-05 (pre-gate flag 2)
     "reset_on_stagnation": True,         # CTL-11 (pre-gate flag 1)
     "judge_when_verify_free": False,     # pilot-2: judge cost 114k/219k on ARC while steering nothing
+    # Environment toggles, recorded here so the run header (state.json) and every call record carry them.
+    "raw_view": bool(os.environ.get("HTSA_RAW_VIEW")),   # no decomposition: every view is the raw item
+    # EXPERIMENTAL, off in the gate configuration: "1" or "2" swaps format.arc for
+    # format_think[2].arc, which asks the generator to check its rule against the examples.
+    # That is generator self-checking, which Pr1 bans for generators; it exists only as a
+    # measured arm (research_notes/thinking_modes/00_SYNTHESIS.md), never as a default.
+    "experimental_think_aloud_self_check": os.environ.get("HTSA_THINK_ALOUD", "") or "off",
 }
+# The flags above that come from the environment; llm.call copies them into every call record.
+ENV_FLAGS = ("raw_view", "experimental_think_aloud_self_check")
 
 # ---------------------------------------------------------------- control parameters (section 5)
 PARAMS = {
@@ -175,4 +190,7 @@ if os.environ.get("HTSA_PARAMS"):
 # ---------------------------------------------------------------- roles (templates are tight or loose by role)
 ROLES = ("encode", "defaults", "generate", "transform", "judge", "probe", "verify", "plain", "converter")
 
-MAX_PROMPT_CHARS = 60000   # guard against runaway views; routed inputs are inlined into prompts
+# Guard against runaway views (routed inputs are inlined into prompts). A longer prompt is cut
+# in the middle with a visible marker by llm.fit_prompt, before prompts/<id>.txt is written, and
+# the cut is recorded in the call record (prompt_truncated); never silently.
+MAX_PROMPT_CHARS = int(os.environ.get("HTSA_MAX_PROMPT_CHARS", "60000"))

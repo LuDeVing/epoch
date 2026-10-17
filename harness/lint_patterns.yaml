@@ -53,12 +53,13 @@ fail:
     pattern: '\b(?:reveal\s+your\s+)?hidden\s+reasoning\b'
   - id: hidden_really_think
     pattern: '\bwhat\s+you\s+really\s+think\b'
-warn:
+  # creativity instructions (Pr10: diversity comes from inputs, never from creativity instructions)
   - id: creative_be_creative
     pattern: '\bbe\s+(?:very\s+)?creative\b'
   - id: creative_outside_box
     pattern: '\bthink\s+outside\s+(?:of\s+)?the\s+box\b'
   - id: creative_creatively
     pattern: '\bthink\s+creatively\b'
+warn:
   - id: boilerplate_step_by_step
     pattern: '\bthink\s+step\s+by\s+step\b'

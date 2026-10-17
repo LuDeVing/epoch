@@ -37,14 +37,12 @@ class ProbeResult:
 
 # ---------------------------------------------------------------- seeds and prompt
 def load_seeds() -> list[str]:
-    """Concept seeds from strategies/seeds/concepts.txt (cards owner), else a fixed fallback."""
+    """Concept seeds from strategies/seeds/concepts.txt (cards owner), read by the same
+    reader as the card runner (blank and "#" lines skipped), else a fixed fallback."""
+    from .run_card import read_seed_file
     p = Path(config.SEEDS_PATH)
-    if p.exists():
-        words = [w.strip() for w in p.read_text(encoding="utf-8").splitlines()]
-        words = [w for w in words if w and not w.startswith("#")]
-        if words:
-            return words
-    return list(FALLBACK_SEEDS)
+    words = list(read_seed_file(p)) if p.exists() else []
+    return words or list(FALLBACK_SEEDS)
 
 
 def probe_seeds(item_id: str, n: int, replicate: int) -> list[str]:
@@ -110,16 +108,20 @@ def parse_answer(text: str, problem) -> tuple[str, str | None, object] | None:
 
 # ---------------------------------------------------------------- probe
 def _specs(problem, seeds, backend, log_dir, run_dir) -> list[dict]:
-    from .run_card import render_prompt
+    """One call spec per seed; each call runs in its own sandbox calls/<call_id>/in/ (Pr1: no
+    repo or git context reaches the probe)."""
+    from .run_card import render_prompt, write_sandbox
     specs = []
     for i, seed in enumerate(seeds):
         cid = new_id("c")
         meta = {"benchmark": problem.benchmark, "item_id": problem.item_id, "probe_index": i,
                 "seed": seed}
-        prompt = render_prompt(template_for(problem.benchmark), prompt_values(problem, seed),
+        values = prompt_values(problem, seed)
+        prompt = render_prompt(template_for(problem.benchmark), values,
                                role="probe", run_dir=run_dir, call_id=cid, meta=meta)
+        cwd = write_sandbox(Path(run_dir) / "calls", cid, values)
         specs.append(dict(prompt=prompt, role="probe", call_id=cid, backend=backend, log_dir=log_dir,
-                          max_tokens=config.PARAMS["max_tokens"]["probe"], meta=meta))
+                          max_tokens=config.PARAMS["max_tokens"]["probe"], meta=meta, cwd=cwd))
     return specs
 
 
