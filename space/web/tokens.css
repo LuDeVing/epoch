@@ -1,0 +1,19 @@
+/* tokens.css: note 01 section 7.3 exactly. The only file of the page with hex colours. */
+:root {
+  color-scheme: dark;
+  /* neutrals: Radix slate dark steps 1 to 12 */
+  --bg-app: #111113;     --bg-panel: #18191b;   --bg-card: #212225;
+  --bg-hover: #272a2d;   --bg-active: #2e3135;
+  --line-subtle: #363a3f; --line: #43484e;       --line-strong: #5a6169;
+  --solid: #696e77;      --solid-hover: #777b84;
+  --text-2: #b0b4ba;     --text-1: #edeef0;
+  /* owners: validated dark slots 1 to 3 */
+  --owner-a: #3987e5;    --owner-b: #d95926;    --owner-c: #199e70;
+  --owner-team: #8b8d98; /* shared work, agents of nobody */
+  /* status: dataviz reserved scale, always with icon and label */
+  --ok: #0ca30c; --warn: #fab219; --serious: #ec835a; --bad: #d03b3b;
+  /* motion */
+  --t-hover: 120ms ease-out; --t-enter: 280ms cubic-bezier(.2,.9,.3,1.15); --t-exit: 200ms ease-in;
+  --font-ui: Inter, system-ui, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
