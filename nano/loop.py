@@ -598,9 +598,13 @@ class NanoLoop:
                            "implemented": sum(1 for c in impl if (c.extra or {}).get("direction") == d),
                            "checked": sum(1 for c in checked if (c.extra or {}).get("direction") == d)}
                        for d in n["directions"]}
-            stats.append({**n, "stats": per_dir})
+            ia = tree.idea_assumptions(n)
+            per_dir["n_idea_assumptions"] = len(ia)
+            stats.append({**{k: v for k, v in n.items() if k != "assumptions_added"}, "assumptions": list(n.get("assumptions", [])),
+                          "idea_assumptions": list(ia), "stats": per_dir})
         write_json(self.run_dir / "problem_tree.json", {"nodes": stats, "inward_share": self.inward_share,
-                                                         "off_tree_share": self.off_tree_share, "origins": self._origin_stats()})
+                                                         "off_tree_share": self.off_tree_share, "origins": self._origin_stats(),
+                                                         "stats": {"n_idea_assumptions": sum(len(s["idea_assumptions"]) for s in stats)}})
 
     def _skipped(self, node_id) -> bool:
         """A part the owner excluded (control.json skip_nodes) or outside the --only-nodes scope. The scope is
@@ -1031,13 +1035,13 @@ class NanoLoop:
                   "known_tagged": parsed.get("known_tagged") or [], "unknown_share": parsed.get("unknown_share", 0.0),
                   "chain_root": (parent.get("chain_root") or parent.get("chain")) if parent else (parsed.get("chain") or []),
                   "stop": deepen.stop_here(parsed, depth)}
-            if node and parsed["assumes"]:            # assumptions found by questioning feed the next outward sketches
-                with self.lock:
-                    have = {a.lower()[:60] for a in node["assumptions"]}
+            if node and parsed["assumes"]:            # what the idea silently assumed: context for later sketches on the
+                with self.lock:                       # part, kept apart from the part's design assumptions
+                    ia = node.setdefault("idea_assumptions", tree.idea_assumptions(node))
+                    have = {a.lower()[:60] for a in node["assumptions"]} | {x["text"].lower()[:60] for x in ia}
                     for a in parsed["assumes"]:
-                        if a.lower()[:60] not in have and len(node["assumptions"]) < 12:
-                            node["assumptions"].append(a)
-                            node.setdefault("assumptions_added", []).append({"from": cl["cluster_id"], "text": a})
+                        if a.lower()[:60] not in have:
+                            ia.append({"from": cl["cluster_id"], "text": a, "round": round_no, "kind": "silent"})
                             have.add(a.lower()[:60])
             if dn["root"] is None:
                 dn["root"] = dn["id"]
@@ -1163,7 +1167,7 @@ class NanoLoop:
         self.interrogated = set()
         pt = json.loads((rd / "problem_tree.json").read_text(encoding="utf-8")) if (rd / "problem_tree.json").exists() else {}
         if pt.get("nodes"):
-            self.tree = [{k: v for k, v in n.items() if k != "stats"} for n in pt["nodes"]]
+            self.tree = [tree.migrate_node({k: v for k, v in n.items() if k != "stats"}) for n in pt["nodes"]]
         for p in (rd / "research").glob("*.json") if (rd / "research").exists() else []:
             d = json.loads(p.read_text(encoding="utf-8"))
             if p.stem.endswith("_analogy"):
@@ -1808,7 +1812,9 @@ class NanoLoop:
                 nid = node_tag.get("node")
                 node_ = next((n for n in (self.tree or []) if n["id"] == nid), None)
                 if node_ is not None and parsed["fidelity"] == "cannot" and parsed.get("fidelity_note"):
-                    node_.setdefault("assumptions_added", []).append({"from": operator, "text": f"could not be built within the rules: {parsed['fidelity_note'][:120]}"})
+                    node_.setdefault("idea_assumptions", tree.idea_assumptions(node_)).append(
+                        {"from": operator if str(card).startswith("impl") else cid, "round": round_no, "kind": "could_not_build",
+                         "text": f"could not be built within the rules: {parsed['fidelity_note'][:120]}"})
             cand = Candidate(id=cid, text=f"{parsed['hypothesis']} | {parsed['change']}", card=card,
                              operator=operator, seed=seed, perm=0, round=round_no, call_id=r.call_id,
                              parent_ids=[parent.id] if parent else [],
@@ -2453,10 +2459,8 @@ class NanoLoop:
             prev = old_by_id.get(n["id"]) or old_by_name.get(n["name"].lower())
             if prev:
                 n["id"] = prev["id"]
-                have = {a.lower()[:60] for a in n["assumptions"]}
-                for a in prev.get("assumptions_added", []):
-                    if a["text"].lower()[:60] not in have:
-                        n["assumptions"].append(a["text"])
+                # what tested ideas assumed travels with the part by id; the new design assumptions stay as planned
+                n["idea_assumptions"] = list(tree.idea_assumptions(prev))
         self.tree = nodes
         self.decisions.append({"round": round_no, "step": "replan", "parts": [n["id"] for n in nodes], "ts": now_ts()})
         self._write_tree()
