@@ -164,7 +164,8 @@ def test_mock_run_with_memory(monkeypatch):
         seen.setdefault(part_of(m["node"]), []).append((m["memory"], M.BLOCK_HEAD in text))
     for part in r1_parts:
         states = seen.get(part, [])
-        assert sorted(s for s, _ in states) == ["block", "free"], (part, states)
+        kinds = [s for s, _ in states]            # exactly one ignores-memory context; focus contexts (question picking) may add more with the block
+        assert kinds.count("free") == 1 and kinds.count("block") >= 1, (part, states)
         assert all(has == (s == "block") for s, has in states)
     st = json.loads((run / "state.json").read_text(encoding="utf-8"))
     free = [d for d in st["decisions"] if d.get("step") == "memory_free"]
