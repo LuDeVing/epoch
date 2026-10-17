@@ -1,0 +1,30 @@
+{
+ "run_id": "mock-after-bugpass__nano__binpack_nobase__scaffold__r0",
+ "item_id": "binpack_nobase",
+ "benchmark": "nano",
+ "arm": "scaffold",
+ "backend": "mock",
+ "model": "fable",
+ "B": 3000000,
+ "aux_budget": 30000000,
+ "rounds": 2,
+ "lens": "parts",
+ "lens_design": "fixed",
+ "baseline_version": "v2",
+ "spent": 976090,
+ "spent_aux": 142243,
+ "spent_by_stage": {
+  "research": 1897,
+  "ideation": 455643,
+  "interrogation": 442979,
+  "other": 58380,
+  "build": 17191
+ },
+ "completed_rounds": 2,
+ "commitments_hash": "ca5548792ede",
+ "stage": {
+  "round": 2,
+  "step": "verified",
+  "ts": "2026-10-17T19:34:28"
+ }
+}
