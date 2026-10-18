@@ -89,6 +89,63 @@ The agents never decide what happens next.
 People sit inside this: they add facts and files the agents read as evidence, steer the next round, and each has an
 agent that reads what the team changed and explains it to them.
 
+## 3b. The ideation itself: what the research says, and what we built from it
+
+Before building the idea step we read twelve fields that study how new ideas arise: cognitive psychology, analogy,
+design methods, evolutionary search, scientific discovery, mathematics, collective intelligence, the science of
+science, LLM ideation, biological innovation, decision science and the practice of machine-learning research. The
+briefs and their synthesis are in `research_notes/idea_generation`. Nine findings held across fields, and each one
+became a rule of the schema.
+
+1. **Ideas from one model are a small set wearing many words.** Four thousand research ideas held about two hundred
+   unique ones [6]; models of one family converge on the same answers [19][20]; temperature, nucleus sampling and
+   "be creative" barely move it [21]. What moves it: disjoint inputs per agent, staged generation (many terse seeds,
+   each made bolder and different, then the survivors elaborated), and rejecting near-duplicates before anything is
+   spent on them. So every inventor gets its own card and its own part, and ideas are clustered by mechanism before
+   anyone judges them.
+2. **Nobody can rank ideas from their text.** The best LLM judge agreed with human reviewers 53 percent of the time,
+   against 56 percent between humans; ideation scores barely predict how the idea does when executed, and after a
+   hundred hours of execution the model-written ideas had lost their novelty edge [6][22]. So nothing is ranked by
+   its text. Where a test exists, the test ranks. Where none does, a blind panel ranks with people's votes at a
+   bounded weight, and the proposal must name the test that would settle it.
+3. **The verifier is the system, and everything that can game it will.** Verifier exploits in AlphaEvolve's
+   mathematics study [23], a speedup that shrank after decontamination, a silent no-op accepted as a speedrun record
+   [36]. So builds run in a sandbox with no network and no access to the exam; placebo candidates and known winners go
+   through the same ladder every run so the false-positive rate is measured; a neutralised change must reproduce the
+   baseline.
+4. **Simple baselines compete with clever search.** Flat best-of-N matched iterated search on speedrun tasks, and
+   greedy matched tree search; what evolutionary methods add, when they add anything, is parent diversity and shared
+   outcome lineage [25][26][23]. So every mechanism we add is run as an arm against the plain version at matched cost,
+   and the outcome lineage of builds is kept for selection.
+5. **Real improvements are mostly ports, repairs and recombinations found by measuring a pathology.** The median
+   speedrun record saves about one percent; at least eleven of ninety-two are explicit ports; agents told to be novel
+   did not improve the baseline [36]. So the baseline is measured and instrumented before any idea exists, one card
+   asks for a known technique adapted to this setting, and novelty is protected in a long-shot lane of build slots
+   rather than demanded of the main line.
+6. **Generate alone, then pool.** People who generate ideas independently and pool them afterwards produce more and
+   better ideas than an interacting group [10][27]; early exposure to others' ideas narrows the categories; what
+   matters is the best idea, not the average [28]. So inventors never see each other's output, and exposure comes
+   late, as measured outcomes.
+7. **Analogy transfers structure only when it is assigned and mapped explicitly.** People notice far analogies
+   unaided about 30 percent of the time; comparing two analogues and writing the shared schema doubles transfer
+   [9][29]; far sources raise the variance of ideas, not their mean [30]. So the analogy card assigns a distant
+   source, requires a typed mapping that a script checks, and goes to the long-shot lane.
+8. **Returns are fat-tailed, so selection is a "find the best" problem.** At Bing the top 2 percent of ideas gave
+   about 75 percent of the gains [11]; the right tools are successive halving and index ordering, not optimism
+   [31][32][33]. So ideas climb a ladder of cheap tests, many ideas get few samples each, and rejection is fast.
+9. **Method prompts do not beat plain ones.** Assessments of TRIZ and similar methods find no strong effect, and a
+   short "wild, outside the usual categories" prompt matched them [34][35]. So the structure went into the inputs
+   (the map, the measurements, the reading) and the verification, not into clever instruction wording. Each card is
+   one short push: change the main choice, flip an assumption, take an unusual but valid angle, borrow from a distant
+   field, change the viewpoint or form. Every inventor first writes the obvious answer down, then is asked to go
+   somewhere else.
+
+One more rule came from design fixation [8]: the map is a map, not a fence. About 60 percent of inventors work on
+a branch of the map with a card; about 40 percent work off it: with no map at all, on what the map missed, or on
+which of its facts is wrong. The yield of each source is logged, and the next round shifts the shares toward
+whatever produced the builds that survived. The off-map inventors are also how a wrong fact in the map gets
+disputed instead of steering everyone into the same dead end.
+
 ## 4. Did it make the thinking better? The benchmark
 
 We tested the thinking schema alone, without any building or training, on NoveltyBench [12], a public benchmark of
@@ -218,6 +275,35 @@ are building on.
 16. modded-nanogpt, the speedrun's hyper-connections port, PR 230. https://github.com/KellerJordan/modded-nanogpt/pull/230
 17. Yao et al., 2026: Thin keys, full values. https://arxiv.org/abs/2603.04427
 18. Gemma 2 technical report, 2024. https://arxiv.org/abs/2408.00118
+19. Wenger and Kenett, 2025: We're different, we're the same: creative homogeneity across LLMs.
+    https://arxiv.org/abs/2501.19361
+20. Deng et al., 2026: Barriers to diversity in LLM generation. https://arxiv.org/abs/2602.20408
+21. Peeperkorn et al., 2024: Is temperature the creativity parameter of large language models?
+    https://arxiv.org/abs/2405.00492
+22. Si, Hashimoto and Yang, 2025: The ideation-execution gap. https://arxiv.org/abs/2506.20803
+23. Novikov et al., 2025: AlphaEvolve. https://arxiv.org/abs/2506.13131
+24. Romera-Paredes et al., 2024: FunSearch (Nature). https://pmc.ncbi.nlm.nih.gov/articles/PMC10794145/
+25. Lehman and Stanley, 2011: Abandoning objectives: evolution through the search for novelty alone.
+    https://www.cs.swarthmore.edu/~meeden/cs81/f17/papers/lehman_ecj11.pdf
+26. Mouret and Clune, 2015: Illuminating search spaces by mapping elites. https://arxiv.org/abs/1504.04909
+27. Mullen, Johnson and Salas, 1991: Productivity loss in brainstorming groups, a meta-analytic integration.
+    https://doi.org/10.1207/s15324834basp1201_1
+28. Girotra, Terwiesch and Ulrich, 2010: Idea generation and the quality of the best idea.
+    https://doi.org/10.1287/mnsc.1090.1144
+29. Gentner, 1983: Structure-mapping, a theoretical framework for analogy.
+    https://groups.psych.northwestern.edu/gentner/papers/Gentner83.pdf
+30. Chan et al., 2011: On the benefits and pitfalls of analogies for innovative design: distance and commonness.
+    https://edrl.engr.wisc.edu/wp-content/uploads/sites/142/2022/02/2011-jmd-distancecommonness.pdf
+31. Azevedo et al., 2020: A/B testing with fat tails (Journal of Political Economy).
+    https://www.gwern.net/doc/statistics/decision/2019-azevedo.pdf
+32. Karnin, Koren and Somekh, 2013: Almost optimal exploration in multi-armed bandits (successive halving).
+    https://proceedings.mlr.press/v28/karnin13.html
+33. Li et al., 2018: Hyperband. https://jmlr.org/papers/v18/16-558.html
+34. Hernandez, Schmidt and Okudan Kremer, 2012: Experimental assessment of TRIZ effectiveness in idea generation.
+    https://peer.asee.org/experimental-assessment-of-triz-effectiveness-in-idea-generation.pdf
+35. Ge et al., 2025: Comparing TRIZ and brainstorming in human-agent design collaboration (AI EDAM).
+    https://www.cambridge.org/core/journals/ai-edam/article/comparing-triz-and-brainstorming-in-humanagent-design-collaboration-effects-on-cognitive-processes-and-perfor
+36. modded-nanogpt, the NanoGPT speedrun records. https://github.com/KellerJordan/modded-nanogpt
 
 The project's own reading on these fields, with many more sources, is in `research_notes/idea_generation`
 (twelve briefs and a synthesis), `research_notes/creative_genius` and `research_notes/How the brain generates new ideas`.
