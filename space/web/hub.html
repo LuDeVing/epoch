@@ -217,7 +217,7 @@ function SpaceCard({ s, me, act }) {
     </div>
     <div class="card__actions">
       ${s.alive ? html`<a class="btn btn--primary grow" href=${open}>Open</a>
-        <a class="btn" href=${`${s.url}/?stage=1`} target="_blank" rel="noopener" title="big read-only view for a projector">Projector</a>
+        <a class="btn" href=${`${open}&stage=1`} target="_blank" rel="noopener" title="a large read-only view of this space for a projector or a second screen; it opens in its own window and can follow a person">Big screen</a>
         <button class="btn btn--ghost btn--danger" onClick=${() => act('stop', s)} title="put the space to sleep; nothing is lost">Sleep</button>`
         : html`<button class="btn btn--primary grow" disabled=${s.waking} onClick=${() => act('open', s)}>${s.waking ? 'Waking up...' : 'Open'}</button>`}
     </div>
