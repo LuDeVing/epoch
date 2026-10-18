@@ -514,7 +514,7 @@ class NanoLoop:
             cached = research.load_cached(cache, self._research_key(node), self.research_max_age_days)
             if cached:
                 return node["id"], cached, "cache"
-            if not self._aux_ok("research brief: " + node["name"]):
+            if not self._aux_ok("research brief: " + node["name"], reserve=self.AUX_RESERVE):
                 return node["id"], None, "skipped"
             prompt = research.research_prompt(node, goal_md)
             cid = new_id("c")
@@ -562,7 +562,7 @@ class NanoLoop:
         cached = research.load_cached(cache, akey, self.research_max_age_days)
         if cached:
             return node["id"], cached, "cache"
-        if not self._aux_ok("analogies: " + node["name"]):
+        if not self._aux_ok("analogies: " + node["name"], reserve=self.AUX_RESERVE):
             return node["id"], None, "skipped"
         prompt = research.analogy_prompt(node, goal_md)
         r = self._call(prompt, "research", 4000, {"card": "analogy_research", "operator": node["id"],
@@ -640,7 +640,7 @@ class NanoLoop:
                                                self.baseline_version).split("__", 1)[1]
         pre, src = research.load_cached(cache, key, self.research_max_age_days), "cache"
         if pre is None:
-            if not self._aux_ok("reading before the map"):
+            if not self._aux_ok("reading before the map", reserve=self.AUX_RESERVE):
                 self.decisions.append({"round": round_no, "step": "preread", "result": "skipped (aux budget)", "ts": now_ts()})
                 return None
             r = self._call(research.preread_prompt(goal), "research", 4000,
@@ -1958,10 +1958,8 @@ class NanoLoop:
         if not by_part:
             return
         mem, arte = self.memory(), self._memory_artefacts()
-        for part, results in sorted(by_part.items()):
-            if not self._aux_ok("memory curator"):
-                break
-            node = next((n for n in self.tree if n["id"] == part), {"name": part})
+        for part, results in sorted(by_part.items()):     # never gated by the cheap meter: a few bounded calls, and
+            node = next((n for n in self.tree if n["id"] == part), {"name": part})   # the memory is what the next run reads
             brief = json.dumps(self.briefs.get(part) or {})
             urls = sorted(u for u in arte["urls"] if u in brief)
             prompt = MEM.curator_prompt(node.get("name", part), part, mem.read(part), results, urls)
@@ -2448,10 +2446,13 @@ class NanoLoop:
             else:
                 self.spent_aux += usage.total_tokens
 
-    def _aux_ok(self, note: str = "") -> bool:
+    AUX_RESERVE = 0.15                         # the share of the cheap meter the web search leaves for the clerical tail
+
+    def _aux_ok(self, note: str = "", reserve: float = 0.0) -> bool:
         """Room on the cheap model's meter for another web call? Past its cap the run stops searching and goes
-        on with what it has (logged once), instead of stopping."""
-        if self.aux_budget <= 0 or self.spent_aux < self.aux_budget:
+        on with what it has (logged once), instead of stopping. With `reserve`, the caller stops that share
+        early, so the memory curator and the fact checks after the search still have their room."""
+        if self.aux_budget <= 0 or self.spent_aux < self.aux_budget * (1.0 - reserve):
             return True
         with self.lock:
             if not self._aux_off_logged:
@@ -2975,7 +2976,7 @@ class NanoLoop:
     def fetch_fact(self, question: str, node: dict | None, round_no: int, operator: str = "") -> dict:
         """research.fetch_fact with the run's research model, ledger and per-run cache (facts_fetched.jsonl)."""
         def call(p: str) -> str:
-            if not self._aux_ok("fetch_fact"):
+            if not self._aux_ok("fetch_fact", reserve=self.AUX_RESERVE):
                 raise RuntimeError("the research meter is full")
             r = self._call(p, "research", 1500, {"card": "fetch_fact", "operator": operator, "note": "fetching: " + question[:60]},
                            model=self.research_model, tools=research.RESEARCH_TOOLS, max_turns=20, timeout=900)

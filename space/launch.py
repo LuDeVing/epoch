@@ -363,6 +363,12 @@ class Launcher:
                                                  "label": what.replace("_", " "), "data": data})
         except Exception:                                   # a closing server never fails the run
             pass
+        if what == "run_finished":
+            try:                                            # the knowledge folder on disk follows the log (the tab rebuilds too)
+                from space.knowledge import Knowledge
+                Knowledge(Path(sp.store.path).parent).rebuild(sp.store.events())
+            except Exception:  # noqa: BLE001
+                pass
 
     # ---- start
     def start(self, preset, profile, mode="mock", confirm=False, problem=None, overrides=None) -> dict:
