@@ -218,7 +218,7 @@ export function mountStart(el, api = {}) {
           ${S.problem.goal ? html`<div class="start-problem__sum"><strong>${S.problem.title || 'Your problem'}</strong><div class="muted start-problem__goal">${S.problem.goal.slice(0, 220)}${S.problem.goal.length > 220 ? '...' : ''}</div>
               <div class="muted">${(S.problem.criteria || []).length} criteria . ${(S.problem.facts || []).length + (S.problem.files || []).length} known . ${(S.problem.limits || []).length} limits</div>
               <button class="btn btn--small" onClick=${describe}>Edit</button></div>`
-            : html`<div class="start-problem__sum"><div class="muted">Six short steps: the goal, what good looks like, what is known, the limits, the shape, a review.</div>
+            : html`<div class="start-problem__sum"><div class="muted">Pick your research folder and Claude drafts the problem from it; you correct the draft step by step.</div>
               <button class="btn btn--primary" onClick=${describe}>Describe the problem</button></div>`}
           <div class="muted start-hint">No scorer exists for a described problem, so a blind panel of judges ranks the proposals on your criteria. People's opinions count at a bounded weight.</div>
         </div>` : null}
