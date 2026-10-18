@@ -149,6 +149,7 @@ export function mountStart(el, api = {}) {
   function toggle() {
     S.open = !S.open;
     S.runOpen = false;
+    if (S.open) window.dispatchEvent(new Event('htsa-close-people'));
     S.confirming = false;
     S.error = '';
     if (S.open && !S.loaded) loadProfiles();
@@ -161,7 +162,7 @@ export function mountStart(el, api = {}) {
     if (!c) return null;
     return html`<span class=${c.cls} title=${`${run.batch} . ${run.profile || ''}${run.run_dir ? ` . ${run.run_dir}` : ''}`}>
       <span class="run-chip__dot" aria-hidden="true"></span>
-      <button class="run-chip__text" title="open the run: status, log, files, report" onClick=${() => { S.runOpen = !S.runOpen; S.open = false; draw(); }}>${c.text}</button>
+      <button class="run-chip__text" title="open the run: status, log, files, report" onClick=${() => { S.runOpen = !S.runOpen; S.open = false; if (S.runOpen) window.dispatchEvent(new Event('htsa-close-people')); draw(); }}>${c.text}</button>
     </span>`;
   }
 
@@ -343,6 +344,7 @@ export function mountStart(el, api = {}) {
       ${!S.open ? html`<${RunPanel} run=${run} />` : null}`;
   }
 
+  window.addEventListener('htsa-close-run', () => { if (S.runOpen || S.open) { S.runOpen = false; S.open = false; draw(); } });
   let lastState = null;
   function draw() {
     render(html`<${Root} />`, el);

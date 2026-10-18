@@ -90,9 +90,10 @@ export function mountPeople(el, api = {}) {
   if (!el) return null;
   let open = false;
   const paint = () => render(html`<div class="people">
-    <button class="btn btn--small" type="button" onClick=${() => { open = !open; paint(); }}>${open ? 'Close people' : 'People'}</button>
+    <button class="btn btn--small" type="button" onClick=${() => { open = !open; if (open) window.dispatchEvent(new Event('htsa-close-run')); paint(); }}>${open ? 'Close people' : 'People'}</button>
     ${open ? html`<${PeoplePanel} api=${api} onClose=${() => { open = false; paint(); }} />` : null}
   </div>`, el);
   paint();
+  window.addEventListener('htsa-close-people', () => { if (open) { open = false; paint(); } });
   return { close: () => { open = false; paint(); } };
 }

@@ -297,6 +297,8 @@ function runText(run) {
     if (typeof document !== 'undefined' && document.body.dataset.run === 'running') return 'Research starting';
     return 'No research running';
   }
+  if (typeof document !== 'undefined' && document.body.dataset.run === 'finished' && !run.waiting) return `Finished after round ${run.round}`;
+  if (typeof document !== 'undefined' && (document.body.dataset.run === 'failed' || document.body.dataset.run === 'stopped') && !run.waiting) return `Stopped in round ${run.round}`;
   const paused = run.pausedBy.length ? `, paused by ${run.pausedBy.map((p) => whoText({ cls: 'person', owner: p })).join(' and ')}` : '';
   if (run.waiting) return `Round ${run.round}: ${STAGE_DONE[run.stage] || run.stage}. Waiting for Go${paused}`;
   return `Round ${run.round}: ${STAGE_RUNNING[run.stage] || run.stage}${paused}`;
