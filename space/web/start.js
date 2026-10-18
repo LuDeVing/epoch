@@ -18,16 +18,23 @@ export function fmtTokens(n) {
   return String(v);
 }
 
-export function estimateLine(e) {
+export function estimateLine(e, rounds) {                // the estimate for the rounds chosen (the preset's when none)
   if (!e) return '';
-  return `${e.calls} calls, ${fmtTokens(e.tokens)} tokens${e.capped ? ' (budget cap)' : ''}, about ${e.minutes} min`;
+  const r = Math.max(1, Number(rounds) || e.rounds || 1);
+  const perCalls = e.rounds ? (e.calls - 2) / e.rounds : e.calls;
+  const perTokens = e.rounds ? (e.tokens_uncapped || e.tokens) / e.rounds : e.tokens;
+  const calls = Math.round(2 + perCalls * r);
+  const raw = Math.round(perTokens * r);
+  const capped = e.budget ? raw > e.budget : false;
+  const tokens = capped ? e.budget : raw;
+  const minutes = Math.max(1, Math.round((e.minutes || 1) * r / Math.max(1, e.rounds || 1)));
+  return `${calls} calls, ${fmtTokens(tokens)} tokens${capped ? ' (budget cap)' : ''}, about ${minutes} min`;
 }
 
-export function presetLine(p) {
+export function presetLine(p) {                           // what a size means per round; the rounds are chosen below
   if (!p) return '';
-  const r = p.rounds === 1 ? '1 round' : `${p.rounds} rounds`;
-  const s = p.max_sketch_calls ? `${p.max_sketch_calls} idea agents` : 'no idea cap';
-  return `${r}, ${p.implement} builds, ${s} per round`;
+  const s = p.max_sketch_calls ? `${p.max_sketch_calls} idea agents` : 'no cap on idea agents';
+  return `${p.implement} build${p.implement === 1 ? '' : 's'}, ${s} per round`;
 }
 
 // The chip of one run: { state, cls, text }.
@@ -296,14 +303,14 @@ export function mountStart(el, api = {}) {
             <input type="radio" name="start-size" value=${k} checked=${S.preset === k}
               onChange=${() => { S.preset = k; S.confirming = false; draw(); }} />
             <span class="start-size__name">${SIZE_TEXT[k] || k}${k === 'demo' ? html` <span class="tag tag--demo">for demos</span>` : null}</span>
-            <span class="muted start-size__what">${k === 'demo' ? '1 round, 1 build, 4 idea agents, all on Haiku' : presetLine(S.presets[k])}</span>
-            <span class="mono start-size__est">${k === 'demo' ? `${S.presets[k].estimate.calls} calls, about ${S.presets[k].estimate.minutes} min, cheap` : estimateLine(S.presets[k].estimate)}</span>
+            <span class="muted start-size__what">${k === 'demo' ? '1 build, 4 idea agents per round, all on Haiku' : presetLine(S.presets[k])}</span>
+            <span class="mono start-size__est">${k === 'demo' ? `${estimateLine(S.presets[k].estimate, S.rounds).replace(/, [^,]*tokens[^,]*/, '')}, cheap` : estimateLine(S.presets[k].estimate, S.rounds)}</span>
           </label>`)}
         </fieldset>
         <div class="start-rounds">
           <label class="start-field"><span class="start-field__name">Rounds</span>
-            <input type="number" min="1" max="12" class="start-rounds__n" value=${S.rounds || (S.presets[S.preset] ? S.presets[S.preset].rounds : '')} onInput=${(e) => { S.rounds = e.target.value; S.confirming = false; }} />
-            <span class="muted start-hint">each round: ideas, grouping, critics, builds, tests. The size sets the default.</span></label>
+            <input type="number" min="1" max="12" class="start-rounds__n" value=${S.rounds || (S.presets[S.preset] ? S.presets[S.preset].rounds : '')} onInput=${(e) => { S.rounds = e.target.value; S.confirming = false; draw(); }} />
+            <span class="muted start-hint">each round: ideas, grouping, critics, builds, tests. The size suggests a number; the estimates above follow what you type.</span></label>
           <label class="start-field"><span class="start-field__name">Pause</span>
             <select value=${String(S.pauseEvery || 0)} onChange=${(e) => { S.pauseEvery = Number(e.target.value); S.confirming = false; draw(); }}>
               <option value="0">never: run to the end</option>
