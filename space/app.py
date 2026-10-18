@@ -90,15 +90,47 @@ def browser() -> str | None:
     return None
 
 
-def open_window(url: str, profile: str = "app-profile"):
-    """An app window: no address bar, its own profile and taskbar entry; returns its process (None when the default
-    browser had to be used). Another `profile` is another browser identity: a second account can be signed in there."""
+def running_profiles() -> set:
+    """The browser identities Epoch windows are open on right now (their --user-data-dir values)."""
+    if os.name != "nt":
+        return set()
+    try:
+        out = subprocess.run(["wmic", "process", "where", "CommandLine like '%--app=http://127.0.0.1:%'", "get", "CommandLine"],
+                             capture_output=True, text=True, timeout=15, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
+    except (OSError, subprocess.SubprocessError):
+        return set()
+    found = set()
+    for line in out.splitlines():
+        low = line.lower()
+        if "msedge.exe" not in low and "chrome.exe" not in low:   # a browser, not a script that mentions the flag
+            continue
+        i = line.find("--user-data-dir=")
+        if i >= 0:
+            found.add(line[i + len("--user-data-dir="):].split(" --")[0].strip().strip('"').lower())
+    return found
+
+
+def free_profile() -> str:
+    """The first browser identity no Epoch window is using: app-profile, then app-profile-2, 3, ... Each launch
+    of the shortcut gets its own, so two windows can hold two accounts."""
+    busy = running_profiles()
+    for n in range(1, 10):
+        name = "app-profile" if n == 1 else "app-profile-%d" % n
+        if str(lab_root() / name).lower() not in busy:
+            return name
+    return "app-profile-%d" % (len(busy) + 1)
+
+
+def open_window(url: str, profile: str | None = None):
+    """An app window: no address bar, its own identity and taskbar entry; returns its process (None when the default
+    browser had to be used). Without `profile`, the first identity not in use, so each launch is a separate window
+    that can hold its own account."""
     b = browser()
     if not b:
         import webbrowser
         webbrowser.open(url)
         return None
-    profile = lab_root() / profile
+    profile = lab_root() / (profile or free_profile())
     profile.mkdir(parents=True, exist_ok=True)
     args = [b, f"--app={url}", f"--user-data-dir={profile}", "--window-size=1500,920", "--no-first-run",
             "--no-default-browser-check", "--disable-features=TranslateUI"]
@@ -236,7 +268,7 @@ def main(argv=None) -> int:
         proc = open_window(a.url or "http://127.0.0.1:%d/" % a.port)
         if proc is not None:
             proc.wait()
-            if time.time() - t0 > 5:                 # a quick exit is a hand-off to a window already open
+            if time.time() - t0 > 5 and not running_profiles():   # the last Epoch window closed: ask; others stay silent
                 ask_shutdown(a.port)
     return 0
 
