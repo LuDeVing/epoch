@@ -41,6 +41,44 @@ in the pieces:
 
 The research behind each rule, with sources, is in `research_notes/`.
 
+## How the ideas are made
+
+We read twelve fields that study where new ideas come from and kept what held across them. Six findings shaped the
+idea step more than anything else.
+
+- **One model is one voice in many costumes.** Four thousand research ideas from a model collapsed to about two
+  hundred distinct ones, and asking it to "be creative" barely moves the count
+  ([Si, Yang and Hashimoto, 2024](https://arxiv.org/abs/2409.04109); [Peeperkorn et al., 2024](https://arxiv.org/abs/2405.00492)).
+  So no inventor sees another's output, each gets its own part and its own card, and ideas are grouped by mechanism
+  before anyone counts them.
+- **Invent alone, pool later.** People who generate ideas on their own and pool them afterwards beat a group
+  talking, every time it has been measured ([Diehl and Stroebe, 1987](https://doi.org/10.1037/0022-3514.53.3.497);
+  [Mullen, Johnson and Salas, 1991](https://doi.org/10.1207/s15324834basp1201_1)). Exposure to others' ideas comes late,
+  and only as measured outcomes.
+- **An example seen first is a cage.** Designers shown a sample solution copied its features, flaws included
+  ([Jansson and Smith, 1991](https://scholarhub.vn/publication/Design-fixation/7e0675c7-19b8-42c9-96c3-7bcb6e636812)).
+  So the reading step reports structure and weak spots, never fixes, and 40 percent of inventors work with no map at
+  all, so a wrong fact in it gets disputed instead of followed.
+- **Analogy works only when the mapping is written down.** Unaided, people notice a far analogy about a third of the
+  time; comparing two analogues and writing the shared schema doubles transfer
+  ([Gick and Holyoak, 1983](https://www.gwern.net/doc/psychology/1983-gick.pdf); [Gentner, 1983](https://groups.psych.northwestern.edu/gentner/papers/Gentner83.pdf)).
+  The analogy card assigns a distant source and demands a typed mapping that a script checks.
+- **Nobody can rank ideas from their text.** The best model judge agreed with human reviewers 53 percent of the
+  time, against 56 percent between the humans, and ideation scores barely predict what happens when the idea is
+  executed ([Si et al., 2025](https://arxiv.org/abs/2506.20803)). So tests rank; where no test exists, a blind panel
+  does, and every proposal must name the test that would settle it.
+- **Returns are fat-tailed, and the verifier will be gamed.** At Bing, 2 percent of ideas produced 75 percent of
+  the gains ([Kohavi et al., 2014](https://www.exp-platform.com/Documents/2014%20experimentersRulesOfThumb.pdf)), and
+  every automated search that reports its failures reports verifier exploits
+  ([AlphaEvolve, 2025](https://arxiv.org/abs/2506.13131)). So ideas climb a ladder of cheap tests, many get few samples
+  each, and placebo candidates and known winners go through the same ladder so a false positive has a measured rate.
+
+One more thing the field agrees on: clever prompting does not beat plain prompting
+([Hernandez et al., 2012](https://peer.asee.org/experimental-assessment-of-triz-effectiveness-in-idea-generation.pdf)).
+So the structure went into what the agents are given and how their output is tested, not into the wording of their
+instructions. Each card is one short push, and every inventor writes the obvious answer first, then is asked to go
+somewhere else.
+
 ## Does it work?
 
 **The thinking alone.** On NoveltyBench, a public benchmark where a model answers each creative prompt ten times and
