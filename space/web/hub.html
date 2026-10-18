@@ -80,6 +80,9 @@
   .new:hover { color: var(--text-1); border-color: var(--owner-a); }
   .new__plus { font-size: 28px; line-height: 1; }
   .empty { text-align: center; padding: 60px 20px; color: var(--text-2); }
+  .empty--loading { display: grid; justify-items: center; gap: 10px; }
+  .loading__ring { width: 30px; height: 30px; border-radius: 50%; box-sizing: border-box; border: 4px solid var(--owner-a); border-top-color: transparent; animation: loading-spin 0.9s linear infinite; }
+  @keyframes loading-spin { to { transform: rotate(360deg); } }
   .section { margin-top: 36px; }
   .section__title { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); margin: 0 0 10px; }
 
@@ -223,14 +226,14 @@ function SpaceCard({ s, me, act }) {
 
 function HubPage() {
   const [me, setMe] = useState(undefined);
-  const [data, setData] = useState({ spaces: [] });
+  const [data, setData] = useState({ spaces: null });        // null: not answered yet (a loading line, not "no spaces")
   const [modal, setModal] = useState(false);
   const [off, setOff] = useState(false);
   const [toast, setToast] = useState('');
   const say = (t) => { setToast(t); setTimeout(() => setToast(''), 2600); };
   const refresh = async (msg) => {
     if (typeof msg === 'string') say(msg);
-    try { const j = await api('/api/me'); setMe(j.name); } catch (e) { setMe(null); setData({ spaces: [] }); return; }
+    try { const j = await api('/api/me'); setMe(j.name); } catch (e) { setMe(null); setData({ spaces: null }); return; }
     try { setData(await api('/api/spaces')); } catch (e) { if (e.status === 401) setMe(null); }
   };
   useEffect(() => { refresh(); }, []);
@@ -238,7 +241,7 @@ function HubPage() {
   const act = async (what, s) => {
     try {
       if (what === 'open') {                       // a sleeping space wakes up, then opens as you
-        setData((d) => ({ ...d, spaces: d.spaces.map((x) => (x.name === s.name ? { ...x, waking: true } : x)) }));
+        setData((d) => ({ ...d, spaces: (d.spaces || []).map((x) => (x.name === s.name ? { ...x, waking: true } : x)) }));
         const r = await api('/api/spaces/start', { name: s.name });
         await refresh();
         if (r.alive) location.href = r.join.replace('{name}', me); else say(`${s.name} did not answer yet; try again in a moment`);
@@ -248,8 +251,8 @@ function HubPage() {
     } catch (ex) { say(ex.message); await refresh(); }
   };
   if (me === undefined) return html`<div class="login"><div class="muted">...</div></div>`;
-  const mine = data.spaces.filter((s) => !s.open_to_all);
-  const openRooms = data.spaces.filter((s) => s.open_to_all);
+  const mine = (data.spaces || []).filter((s) => !s.open_to_all);
+  const openRooms = (data.spaces || []).filter((s) => s.open_to_all);
   return html`<div>
     <header class="top"><div class="brand"><span class="brand__mark"></span>Epoch <span class="muted" style="font-weight:400">spaces</span></div><div class="top__spacer"></div>
       ${me ? html`<button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button><button class="btn" title="stop every space and the hub on this PC" onClick=${() => setOff(true)}>Turn off</button><${AccountMenu} me=${me} onChange=${refresh} />` : null}</header>
@@ -258,6 +261,7 @@ function HubPage() {
       <div class="page__head"><h1 class="page__title">Your spaces</h1><span class="muted">${mine.length ? `${mine.length} you are part of` : ''}</span></div>
       ${mine.length ? html`<div class="grid">${mine.map((s) => html`<${SpaceCard} key=${s.name} s=${s} me=${me} act=${act} />`)}
           <div class="card new" onClick=${() => setModal(true)}><span class="new__plus">+</span><span>New space</span></div></div>`
+        : data.spaces === null ? html`<div class="empty empty--loading"><span class="loading__ring"></span><div>Loading your spaces</div></div>`
         : html`<div class="empty"><div style="font-size:16px;color:var(--text-1);margin-bottom:6px">No spaces yet</div><div>Make your first one, or open an invitation link someone sent you.</div><div style="margin-top:16px"><button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button></div></div>`}
       ${openRooms.length ? html`<div class="section"><h2 class="section__title">Open rooms on this PC</h2><div class="grid">${openRooms.map((s) => html`<${SpaceCard} key=${s.name} s=${s} me=${me} act=${act} />`)}</div></div>` : null}
     </main>`}
