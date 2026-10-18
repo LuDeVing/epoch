@@ -1,0 +1,5 @@
+Questions we could not answer from our own data:
+- How much of the 25-minute wait is the form, and how much is the phone?
+- Would a form sent by email the day before get filled? By whom?
+- Can appointments before 9:00 be spread by five minutes without upsetting the doctors' schedule?
+- What does the queue look like minute by minute between 8:00 and 9:30? We only have daily averages.

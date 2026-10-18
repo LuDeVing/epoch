@@ -1,0 +1,11 @@
+From: the clinic director
+To: front desk team
+Subject: morning waiting time
+
+The complaints are about the morning queue. I want the average wait at check-in before 10:00 under 10 minutes.
+
+Rules: no hiring this year, the two receptionists stay as they are, and no new software before the next budget
+(January). Paper, signs, a changed form, a changed order of steps, appointment times: all fine. Anything that can
+be tried for two weeks and measured gets my approval.
+
+I would like a proposal by the end of the month, with a way to measure whether it worked.
