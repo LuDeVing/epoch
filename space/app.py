@@ -88,19 +88,58 @@ def browser() -> str | None:
     return None
 
 
-def open_window(url: str) -> None:
-    """An app window: no address bar, its own profile and taskbar entry. Falls back to the default browser."""
+def open_window(url: str):
+    """An app window: no address bar, its own profile and taskbar entry; returns its process (None when the default
+    browser had to be used)."""
     b = browser()
     if not b:
         import webbrowser
         webbrowser.open(url)
-        return
+        return None
     profile = lab_root() / "app-profile"
     profile.mkdir(parents=True, exist_ok=True)
     args = [b, f"--app={url}", f"--user-data-dir={profile}", "--window-size=1500,920", "--no-first-run",
             "--no-default-browser-check", "--disable-features=TranslateUI"]
-    subprocess.Popen(args, cwd=str(REPO), stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                     creationflags=getattr(subprocess, "DETACHED_PROCESS", 0) if os.name == "nt" else 0)
+    return subprocess.Popen(args, cwd=str(REPO), stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                            creationflags=getattr(subprocess, "DETACHED_PROCESS", 0) if os.name == "nt" else 0)
+
+
+def hub_json(port: int, path: str, post: bool = False) -> dict:
+    import json
+    import urllib.request
+    req = urllib.request.Request("http://127.0.0.1:%d%s" % (port, path), data=b"{}" if post else None,
+                                 headers={"Content-Type": "application/json"}, method="POST" if post else "GET")
+    try:
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return json.loads(r.read().decode("utf-8", "replace"))
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def ask_shutdown(port: int) -> None:
+    """The window closed: ask whether to turn Epoch off. Yes stops every space and the hub (a run stops where it is
+    and can be continued later); No keeps them running in the background, the shortcut opens the window again."""
+    busy = hub_json(port, "/api/busy")
+    if not busy:
+        return                                     # no hub answering: nothing to turn off
+    spaces, runs = busy.get("spaces") or [], busy.get("runs") or []
+    lines = ["Turn Epoch off?", ""]
+    if runs:
+        lines.append("%d research run%s still going:" % (len(runs), "" if len(runs) == 1 else "s"))
+        lines += ["  - %s in %s (%s)" % (r.get("batch"), r.get("space"), r.get("preset")) for r in runs[:6]]
+        lines.append("")
+    lines.append("%d space%s open." % (len(spaces), "" if len(spaces) == 1 else "s"))
+    lines += ["", "Yes: stop everything. A run stops where it is and can be continued later.",
+              "No: keep running in the background. The Epoch shortcut opens the window again."]
+    text = "\n".join(lines)
+    yes = True
+    if os.name == "nt":
+        import ctypes
+        MB_YESNO, MB_ICONQUESTION, MB_TOPMOST, MB_DEFBUTTON2 = 0x4, 0x20, 0x40000, 0x100
+        flags = MB_YESNO | MB_ICONQUESTION | MB_TOPMOST | (MB_DEFBUTTON2 if runs else 0)
+        yes = ctypes.windll.user32.MessageBoxW(0, text, "Epoch", flags) == 6
+    if yes:
+        hub_json(port, "/api/shutdown", post=True)
 
 
 def main(argv=None) -> int:
@@ -113,7 +152,12 @@ def main(argv=None) -> int:
         print("the hub did not answer on port %d; see %s" % (a.port, lab_root() / "spaces" / "hub.log"), file=sys.stderr)
         return 1
     if not a.no_window:
-        open_window(a.url or "http://127.0.0.1:%d/" % a.port)
+        t0 = time.time()
+        proc = open_window(a.url or "http://127.0.0.1:%d/" % a.port)
+        if proc is not None:
+            proc.wait()
+            if time.time() - t0 > 5:                 # a quick exit is a hand-off to a window already open
+                ask_shutdown(a.port)
     return 0
 
 

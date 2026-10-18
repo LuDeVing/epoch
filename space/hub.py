@@ -212,6 +212,37 @@ class Hub:
         except Exception:  # noqa: BLE001
             pass
 
+    def busy(self) -> dict:
+        """What would be interrupted by a shutdown: the spaces that are up and the research runs still going
+        (a run is a process recorded in <space>/runs/runs.json; alive by pid and creation time)."""
+        live = self._live_ports()
+        spaces, runs = [], []
+        for r in self._load():
+            up = pid_alive(r.get("pid"), r.get("created")) or r["name"] in live
+            if up:
+                spaces.append(r["name"])
+            try:
+                rows = json.loads((Path(r["db"]).parent / "runs" / "runs.json").read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                rows = []
+            for run in rows if isinstance(rows, list) else []:
+                if pid_alive(run.get("pid"), run.get("created")):
+                    runs.append({"space": r["name"], "batch": run.get("batch"), "preset": run.get("preset"), "started": run.get("started")})
+        return {"spaces": spaces, "runs": runs}
+
+    def stop_all(self) -> dict:
+        """Stop every space server this hub started (their runs and agents go with them: taskkill /T)."""
+        stopped = []
+        with self.lock:
+            rows = self._load()
+            for r in rows:
+                if pid_alive(r.get("pid"), r.get("created")):
+                    if kill_tree(r.get("pid")):
+                        stopped.append(r["name"])
+                    r["stopped"] = _now()
+            self._save(rows)
+        return {"stopped": stopped}
+
     def stop(self, raw_name) -> dict:
         name = clean_name(raw_name)
         with self.lock:
@@ -271,6 +302,8 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if u.path in ("/", "/index.html"):
                 return self._send(200, (WEB / "hub.html").read_bytes(), "text/html; charset=utf-8")
+            if u.path == "/api/busy" and self.client_address[0] == "127.0.0.1":   # the local launcher asks before a shutdown
+                return self._send(200, hub.busy())
             if u.path in ("/api/me", "/api/invites"):
                 if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
                     return None
@@ -304,6 +337,11 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(n) or b"{}") if n else {}
             if not isinstance(body, dict):
                 raise Reject(422, "bad_envelope")
+            if u.path == "/api/shutdown" and self.client_address[0] == "127.0.0.1":   # the local launcher: stop everything
+                out = hub.stop_all()
+                self._send(200, dict(out, hub="stopping"))
+                threading.Thread(target=self.server.shutdown, daemon=True).start()
+                return None
             if self._auth(u.path, body):
                 return None
             if u.path == "/api/spaces":
