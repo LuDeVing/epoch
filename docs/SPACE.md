@@ -257,6 +257,7 @@ the stage recording and prints each beat as it lands.
 | POST /api/run/stop | the page | stop a run |
 | `POST /api/run/structure` | `{file_ids, notes}`: one model call reads the shared files and drafts the problem (title, goal, criteria, facts, limits, parts) for the person to edit |
 | `GET /api/knowledge` | the space's knowledge folder: without `path`, rebuilds it from the log and lists its Markdown files; with `?path=` returns one file |
+| `POST /api/run/resume` | `{batch}`: continues a failed or stopped run from its last saved stage (the same command with `--resume`) |
 | `GET /api/run/files` | `?batch=`: every text file the run wrote (ideas, builds, tests, prompts, report); with `&path=` one file |
 | `GET /api/run/cand` | `?batch=&cand=`: the built artifact of one candidate, its record, and every test record about it |
 | `GET /api/run/plan` | `?batch=`: how the map was drawn: the reading, the planner's prompt and reply, the tree |

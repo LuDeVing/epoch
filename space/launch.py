@@ -519,6 +519,48 @@ class Launcher:
                     r["stopped"] = value
             self._save(rows)
 
+    def resume(self, batch) -> dict:
+        """Continue a failed or stopped run from its last saved stage: the same command with --resume, the same
+        run folder. The loop redoes the interrupted round from its first incomplete stage; nothing done is lost."""
+        with self.lock:
+            rows = self._load()
+            rec = next((r for r in rows if r["batch"] == batch), None)
+            if rec is None:
+                raise Reject(404, "no_run", batch=batch)
+            if self._alive(rec):
+                raise Reject(409, "run_alive", batch=batch)
+            if any(self._alive(r) for r in rows):
+                raise Reject(409, "run_alive", batch=next(r["batch"] for r in rows if self._alive(r)))
+            cmd = list(rec.get("cmd") or [])
+            if not cmd:
+                raise Reject(422, "no_command", batch=batch)
+            if "--resume" not in cmd:
+                cmd.append("--resume")
+            log = Path(rec.get("log") or (self.runs_dir / (batch + ".log")))
+            env = dict(os.environ, HTSA_LAB_ROOT=str(lab_root()), PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
+            if rec.get("mode") == "mock":
+                env["HTSA_BACKEND"] = "mock"
+            if not env.get("HTSA_EXEC_PYTHON"):
+                env["HTSA_EXEC_PYTHON"] = PYTHON if os.path.exists(PYTHON) else sys.executable
+            kw = ({"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW} if os.name == "nt"
+                  else {"start_new_session": True})
+            log.parent.mkdir(parents=True, exist_ok=True)
+            with open(log, "ab") as out:
+                out.write(("\n$ %s   (continued %s)\n" % (" ".join(cmd), _now())).encode("utf-8"))
+                out.flush()
+                try:
+                    proc = subprocess.Popen(cmd, cwd=str(REPO), env=env, stdin=subprocess.DEVNULL, stdout=out,
+                                            stderr=subprocess.STDOUT, **kw)
+                except OSError as e:
+                    raise Reject(500, "spawn_failed", detail=str(e)[:300])
+            rec.update({"pid": proc.pid, "created": proc_created(proc.pid), "cmd": cmd, "rc": None, "finished": None,
+                        "stopped": False, "resumed": int(rec.get("resumed") or 0) + 1, "resumed_at": _now()})
+            self._save(rows)
+            self.procs[batch] = proc
+        self._post("run_started", rec, "Run %s continues from its last saved stage." % batch)
+        threading.Thread(target=self._watch, args=(batch, proc), name="run-" + batch, daemon=True).start()
+        return self._view(rec)
+
     def stop(self, batch) -> dict:
         with self.lock:
             rec = next((r for r in self._load() if r["batch"] == batch), None)
@@ -734,12 +776,15 @@ def register(httpd) -> Launcher:
     def stop_route(b, q):
         return la.stop(str(body_of(b).get("batch") or ""))
 
+    def resume_route(b, q):
+        return la.resume(str(body_of(b).get("batch") or ""))
+
     routes = getattr(httpd, "routes", None)
     if routes is None:
         routes = httpd.routes = {}
     routes.update({("GET", "/api/run/profiles"): profiles_route, ("GET", "/api/run/estimate"): estimate_route,
                    ("POST", "/api/run/start"): start_route, ("GET", "/api/run/status"): status_route,
-                   ("POST", "/api/run/stop"): stop_route, ("GET", "/api/run/report"): report_route,
+                   ("POST", "/api/run/stop"): stop_route, ("POST", "/api/run/resume"): resume_route, ("GET", "/api/run/report"): report_route,
                    ("POST", "/api/run/structure"): structure_route, ("GET", "/api/knowledge"): knowledge_route,
                    ("GET", "/api/run/files"): files_route, ("GET", "/api/run/cand"): cand_route,
                    ("GET", "/api/run/plan"): plan_route})

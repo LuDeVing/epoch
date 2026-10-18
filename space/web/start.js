@@ -165,6 +165,15 @@ export function mountStart(el, api = {}) {
     </span>`;
   }
 
+  async function resume(run) {
+    S.busy = true; S.error = ''; draw();
+    const res = await postJson('/api/run/resume', { batch: run.batch }).catch(() => ({ ok: false, body: { error: 'server offline' } }));
+    if (!res.ok) S.error = `Could not continue: ${(res.body && (res.body.hint || res.body.error)) || 'server offline'}`;
+    else if (typeof api.toast === 'function') api.toast('Continuing from the last saved stage.');
+    S.busy = false;
+    await refresh();
+  }
+
   async function loadReport(run) {
     try { S.report = await getJson(`/api/run/report?batch=${encodeURIComponent(run.batch)}`); S.showReport = true; }
     catch (e) { S.error = `No report yet: ${e.message}`; }
@@ -211,7 +220,7 @@ export function mountStart(el, api = {}) {
   function Status({ run }) {
     if (!run) return null;
     const c = chipOf(run);
-    const failed = c && c.state === 'failed';
+    const failed = c && (c.state === 'failed' || c.state === 'stopped');
     const done = c && c.state === 'finished';
     const best = done && typeof api.view === 'function' ? (api.view().results || []).filter((r) => r.status === 'win' || r.status === 'preferred').slice(-1)[0] : null;
     return html`${done ? html`<div class="start-done" role="status">
@@ -220,6 +229,7 @@ export function mountStart(el, api = {}) {
       </div>` : null}
       ${failed ? html`<div class="start-error start-error--run" role="alert">
         <strong>The run stopped.</strong> ${run.error || 'No reason was logged.'}
+        ${canStart && !alive() ? html`<button class="btn btn--small btn--primary" disabled=${S.busy} onClick=${() => resume(run)}>Continue from the last save</button>` : null}
         <button class="btn btn--small" onClick=${() => { S.showLog = !S.showLog; draw(); }}>${S.showLog ? 'Hide log' : 'Show log'}</button>
       </div>` : null}
       ${c && c.state === 'running' && c.note ? html`<div class="muted start-note">${c.note}</div>` : null}
