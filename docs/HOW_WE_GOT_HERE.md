@@ -226,6 +226,16 @@ What went into the final model, and what it is:
   latent attention already allows; "Thin Keys, Full Values" (2026) shrinks keys the same way [17].
 - **Logit soft-cap**: known (Gemma 2 [18]).
 
+Where the ideas came from matters as much as the gain. Of the seven ideas with a measured gain across the two runs,
+the prior-art search found one that is new as far as it could tell (the gain-tied lookup, on the plain recipe), four
+that are the team's own variants of published mechanisms (the delay line, the signed reads, the depth buckets, the
+narrow keys), and two known techniques it arrived at from the measurements rather than by name (the value residual,
+the soft-cap). The variants were not copies: the team wrote them for this skeleton's four-stream design, from what
+the instrumented runs showed about streams sitting unused, and three of them are the largest single gains in the
+table. The largest of all, the delay line, came from a sketch the automatic selection had not picked, which is why
+the unpicked sketches are reviewed too. So the team did both things a researcher does: it produced positive ideas of
+its own, and it restructured existing methods into variants that beat the originals here.
+
 The result, at the same parameter count (21.24 million), the same tokens and the same data:
 
 | model | exam loss | change |
