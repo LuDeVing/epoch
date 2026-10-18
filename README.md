@@ -23,6 +23,8 @@ The space `agent-long-tasks` comes with the repository as an example: a finished
 long tasks, with its map, ideas, arguments, two judged proposals and the report. Its folder of inputs is
 `examples/agent-long-tasks`; what the team found is in `examples/RESULTS-agent-long-tasks-2026-10-18.md`.
 
+How we got here, with the benchmark and the model results: `docs/HOW_WE_GOT_HERE.md`.
+
 ## Where things are
 
 - `space/`: the shared space server, the hub (dashboard), the launcher of research runs, accounts, files, knowledge.
