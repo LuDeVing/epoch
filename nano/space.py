@@ -260,6 +260,7 @@ class LoopSpace:
         self.loop, self.url = loop, url.rstrip("/")
         self.actor = actor or ACTOR
         self.step, self.poll_s = bool(step), max(0.05, float(poll_s))
+        self.pause_every = 0                    # --pause-every-rounds N: a wait for Go after every Nth round (at verified)
         self.run_dir = Path(loop.run_dir)
         self.client = SpaceClient(self.actor, str(self.run_dir), base=self.url, kind="system")
         self._lock = threading.Lock()              # one push at a time (tick from worker threads, push_stage)
@@ -339,7 +340,7 @@ class LoopSpace:
                 evs += self._memory_rows(round_no, name)
                 if name == "verified":
                     evs += self._preview(round_no)
-                waiting = bool(self.step) and getattr(lp, "stop_after", None) != name
+                waiting = self.waits(round_no, name) and getattr(lp, "stop_after", None) != name
                 evs.append(self._ev("stage_entered", "run:main", f"{name} r{round_no}",
                                     {"round": round_no, "stage": name, "waiting": waiting, "step_mode": self.step,
                                      "mode": getattr(lp, "mode", "baseline")}, round_no, name))
@@ -670,7 +671,7 @@ class LoopSpace:
         prev = dict(getattr(lp, "_merged_control", {}) or {})
         try:
             step = None
-            if self.step and getattr(lp, "stop_after", None) != name:
+            if self.waits(round_no, name) and getattr(lp, "stop_after", None) != name:
                 res, step = self.wait_for_go(round_no, name)
                 if res is None:                              # the file asks to stop: fold nothing new
                     return self._overlay(prev, {**(file_ctl or {}), **self._file_ctl()}), [], None
@@ -825,6 +826,13 @@ class LoopSpace:
                                      "text": texts.get((role, None), next(iter(texts.values())))}, round_no, name))
         lp._peer_digests = cache
         return evs
+
+    def waits(self, round_no: int, name: str) -> bool:
+        """Does the loop wait for a Go here: every boundary in step mode, else the end of every Nth round."""
+        if self.step:
+            return True
+        n = int(self.pause_every or 0)
+        return bool(n > 0 and name == "verified" and round_no % n == 0)
 
     def digest_for(self, role: str, node_id) -> str:
         return (getattr(self.loop, "_peer_digests", {}) or {}).get((role, node_id), "")

@@ -95,3 +95,16 @@ body.stage .start-log { display: none; }
 .wz-drop--big { padding: 22px 14px; }
 .wz-row--files { grid-template-columns: auto; }
 .wz-draftnote { background: color-mix(in oklab, var(--owner-a) 16%, var(--bg-panel)); border: 1px solid var(--owner-a); border-radius: 8px; padding: 8px 10px; font-size: var(--fs-small); }
+
+.start-rounds { display: grid; gap: 6px; margin: 6px 0; }
+.start-rounds__n { width: 64px; background: var(--bg-card); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; color: inherit; font: inherit; }
+.start-rounds select { background: var(--bg-card); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; color: inherit; font: inherit; }
+.run-files { max-width: min(960px, calc(100vw - 40px)); max-height: 70vh; }
+.run-files__body { display: grid; grid-template-columns: 280px 1fr; gap: 10px; min-height: 0; }
+.run-files__list { overflow: auto; max-height: 60vh; display: grid; gap: 2px; align-content: start; }
+.run-files__group { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); margin-top: 6px; }
+.run-files__file { text-align: left; font: var(--fs-small) var(--font-mono); color: var(--text-2); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 2px 6px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run-files__file:hover, .run-files__file.is-on { color: var(--text-1); background: var(--bg-hover); border-color: var(--line-subtle); }
+.run-files__view { min-width: 0; }
+.run-files__text { max-height: 56vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 4px; }
+.run-files__hint { padding: 12px; }

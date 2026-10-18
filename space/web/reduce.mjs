@@ -378,7 +378,7 @@ export function makeReducer({ layoutTree, layoutClusters, anchorFor, contract } 
       const sk = mapOf(s, ctx, 'sketches');
       for (const it of items) {
         const who = it.owner || (it.card === 'owner' && s.seedOwners.get(d.node)) || 'team';
-        if (it.id && !sk.has(it.id)) sk.set(it.id, { owner: who, seq: ctx.seq });
+        if (it.id && !sk.has(it.id)) sk.set(it.id, { owner: who, seq: ctx.seq, idea: typeof it.idea === 'string' ? it.idea : '', card: it.card || null, node: d.node || null });
       }
       bumpCount(s, ctx, d.node, d.direction, 'sketches', d.count != null ? d.count : items.length);
     },

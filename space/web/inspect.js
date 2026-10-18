@@ -52,7 +52,7 @@ function ClusterDetail({ v, key }) {
     <${Row} k="prior" v=${c.prior} />
     <${Row} k="votes" v=${votes.length ? votes.map(([who, val]) => `${who}: ${val > 0 ? 'up' : 'down'}`) : null} />
     <${Row} k="results" v=${results.map((r) => `${r.status}${r.rung != null ? ` at rung ${r.rung}` : ''}${Object.keys(r.metrics || {}).length ? ` ${Object.entries(r.metrics).filter(([, x]) => typeof x === 'number').slice(0, 3).map(([k, x]) => `${k} ${fmt(x)}`).join(', ')}` : ''}${r.reason ? ` (${r.reason})` : ''}`)} />
-    <${Row} k="sketch ids" v=${(c.members || []).length ? html`<span class="mono">${(c.members || []).slice(0, 8).join(' ')}${(c.members || []).length > 8 ? ` +${c.members.length - 8}` : ''}</span>` : null} />
+    <${Row} k="the ideas" v=${(c.members || []).length ? (c.members || []).slice(0, 12).map((id) => { const s = v.sketches && v.sketches.get(id); return s && s.idea ? `${s.idea}${s.card ? ` (${s.card})` : ''}` : id; }).concat((c.members || []).length > 12 ? [`and ${c.members.length - 12} more`] : []) : null} />
   </div>`;
 }
 

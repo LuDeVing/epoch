@@ -4506,6 +4506,7 @@ def main() -> int:
                     "people's control at every boundary (docs/MULTIPLAYER_DESIGN.md section 7); off by default")
     ap.add_argument("--me", default="team.loop", help="the loop's actor id in the space")
     ap.add_argument("--step", action="store_true", help="with --space: wait for a Go (run_step) at every stage boundary")
+    ap.add_argument("--pause-every-rounds", type=int, default=0, help="with --space: wait for a Go after every Nth round (0: never)")
     ap.add_argument("--control-poll-seconds", type=float, default=10.0,
                     help="poll interval of the pause loop and of the step-mode wait (seconds)")
     ap.add_argument("--peer-digest-ideation", action="store_true",
@@ -4629,6 +4630,7 @@ def main() -> int:
     if a.space:
         from nano.space import LoopSpace
         loop.space = LoopSpace(loop, a.space, a.me, step=a.step, poll_s=loop.poll_s)
+        loop.space.pause_every = max(0, int(a.pause_every_rounds or 0))
     if a.dashboard:
         from nano import dashboard
         threading.Thread(target=dashboard.serve, args=(loop.run_dir, a.port, True), daemon=True).start()

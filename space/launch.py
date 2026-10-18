@@ -90,11 +90,11 @@ def _preset(preset) -> dict:
     return PRESETS[preset]
 
 
-def estimate(preset, profile=None) -> dict:
+def estimate(preset, profile=None, overrides=None) -> dict:
     """Calls, Fable tokens and minutes for one preset. Per round: `sketches` idea agents, min(6, sketches) critic
     chains of three calls and `builds` builds of two calls; plus two planning calls per run. Tokens stop at the
     preset's budget. Minutes: 2.5 per call with 6 calls in parallel."""
-    p = _preset(preset)
+    p = dict(_preset(preset), **(overrides or {}))
     rounds, builds = p["rounds"], p["implement"]
     sketches = p["max_sketch_calls"] or UNCAPPED_SKETCHES
     chains = min(MAX_CHAINS, sketches)
@@ -121,13 +121,28 @@ def estimate_words(e: dict) -> str:
                e["sketches"], e["builds"]))
 
 
+def clean_overrides(o) -> dict:
+    """{rounds, pause_every} from a request body: ints in range, or nothing."""
+    out = {}
+    if isinstance(o, dict):
+        r = o.get("rounds")
+        if isinstance(r, (int, float)) and not isinstance(r, bool) and 1 <= int(r) <= 12:
+            out["rounds"] = int(r)
+        pe = o.get("pause_every")
+        if isinstance(pe, (int, float)) and not isinstance(pe, bool) and 0 <= int(pe) <= 12:
+            out["pause_every"] = int(pe)
+    return out
+
+
 def command(preset, profile, mode, batch, space_url, overrides=None) -> list[str]:
-    """The exact argv of a run. Mock: nano.dry_run (no model, no spend). Real: nano.loop with the preset's budget."""
+    """The exact argv of a run. Mock: nano.dry_run (no model, no spend). Real: nano.loop with the preset's budget.
+    overrides: rounds (replaces the preset's) and pause_every (a wait for Go after every Nth round)."""
     p = dict(_preset(preset), **(overrides or {}))
+    pause = ["--pause-every-rounds", str(int(p["pause_every"]))] if p.get("pause_every") else []
     if mode == "mock":
         cap = p["max_sketch_calls"] or UNCAPPED_SKETCHES
         return [PYTHON, "-m", "nano.dry_run", "--profile", profile, "--batch", batch, "--implement", str(p["implement"]),
-                "--rounds", str(p["rounds"]), "--max-sketch-calls", str(cap), "--space", space_url]
+                "--rounds", str(p["rounds"]), "--max-sketch-calls", str(cap), "--space", space_url] + pause
     if mode == "real":
         cmd = [PYTHON, "-m", "nano.loop", "--profile", profile, "--batch", batch, "--implement", str(p["implement"]),
                "--rounds", str(p["rounds"])]
@@ -137,7 +152,7 @@ def command(preset, profile, mode, batch, space_url, overrides=None) -> list[str
         cmd += ["--model", model]
         if p.get("model"):                                   # a demo run: the cheap roles and the judges on it too
             cmd += ["--research-model", model, "--cheap-model", model, "--judge-model", model]
-        return cmd + ["--budget", str(p["budget"]), "--space", space_url]
+        return cmd + ["--budget", str(p["budget"]), "--space", space_url] + pause
     raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
 
 
@@ -346,7 +361,8 @@ class Launcher:
             pass
 
     # ---- start
-    def start(self, preset, profile, mode="mock", confirm=False, problem=None) -> dict:
+    def start(self, preset, profile, mode="mock", confirm=False, problem=None, overrides=None) -> dict:
+        overrides = clean_overrides(overrides)
         if isinstance(problem, dict) and str(problem.get("goal") or problem.get("title") or "").strip():
             from nano.profiles._custom import write_profile
             from space.knowledge import Knowledge
@@ -360,7 +376,7 @@ class Launcher:
                 profile = write_profile(spec)
             except OSError as e:
                 raise Reject(500, "profile_not_written", detail=str(e)[:200])
-        est = estimate(preset, profile)
+        est = estimate(preset, profile, overrides)
         if mode not in MODES:
             raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
         if profile not in profile_names():
@@ -373,7 +389,7 @@ class Launcher:
             if live:
                 raise Reject(409, "run_alive", batch=live[0])
             batch = self._new_batch(preset)
-            cmd = command(preset, profile, mode, batch, self.space_url, self.overrides)
+            cmd = command(preset, profile, mode, batch, self.space_url, dict(self.overrides or {}, **overrides))
             d = self.runs_dir
             d.mkdir(parents=True, exist_ok=True)
             log = d / (batch + ".log")
@@ -395,7 +411,7 @@ class Launcher:
                 except OSError as e:                    # the server re-raises OSError: answer here, not with silence
                     raise Reject(500, "spawn_failed", detail=str(e)[:300])
             rec = {"batch": batch, "pid": proc.pid, "created": proc_created(proc.pid), "preset": preset,
-                   "profile": profile, "mode": mode, "cmd": cmd, "started": _now(), "log": str(log),
+                   "profile": profile, "mode": mode, "cmd": cmd, "started": _now(), "log": str(log), "overrides": overrides,
                    "run_dir": None, "rc": None, "finished": None, "stopped": False, "estimate": est}
             rows = self._load()
             rows.append(rec)
@@ -553,19 +569,65 @@ def register(httpd) -> Launcher:
                             for k in PRESET_ORDER}}
 
     def estimate_route(b, q):
-        e = estimate(_one(q, "preset", "small"), _one(q, "profile"))
+        ov = {}
+        for k in ("rounds", "pause_every"):
+            v = _one(q, k)
+            if v not in (None, ""):
+                try:
+                    ov[k] = int(v)
+                except ValueError:
+                    pass
+        e = estimate(_one(q, "preset", "small"), _one(q, "profile"), clean_overrides(ov))
         return dict(e, words=estimate_words(e))
 
     def start_route(b, q):
         b = body_of(b)
         return la.start(b.get("preset", "small"), b.get("profile") or DEFAULT_PROFILE, b.get("mode", "mock"),
-                        b.get("confirm") is True, b.get("problem") if isinstance(b.get("problem"), dict) else None)
+                        b.get("confirm") is True, b.get("problem") if isinstance(b.get("problem"), dict) else None,
+                        b.get("overrides") if isinstance(b.get("overrides"), dict) else None)
 
     def status_route(b, q):
         return la.status()
 
     def report_route(b, q):
         return la.report(str(_one(q, "batch") or ""))
+
+    TEXT_OK = (".md", ".txt", ".jsonl", ".json", ".py", ".log", ".csv", ".yaml", ".yml", ".toml", ".ini", ".html")
+
+    def files_route(b, q):
+        batch = str(_one(q, "batch") or "")
+        with la.lock:
+            rec = next((r for r in la._load() if r["batch"] == batch), None)
+        if rec is None:
+            raise Reject(404, "no_run", batch=batch)
+        rd = rec.get("run_dir") or la._run_dir(batch)
+        if not rd or not os.path.isdir(rd):
+            raise Reject(404, "no_run_dir", batch=batch)
+        root = Path(rd).resolve()
+        rel = str(_one(q, "path") or "").replace("\\", "/").lstrip("/")
+        if rel:
+            p = (root / rel).resolve()
+            if root not in p.parents or not p.is_file():
+                raise Reject(404, "no_file")
+            if p.suffix.lower() not in TEXT_OK:
+                raise Reject(415, "not_text")
+            try:
+                text = p.read_text(encoding="utf-8", errors="replace")
+            except OSError as e:
+                raise Reject(500, "unreadable", detail=str(e)[:200])
+            return {"batch": batch, "path": rel, "bytes": p.stat().st_size, "text": text[:400_000], "cut": len(text) > 400_000}
+        out = []
+        skip = {"private", "__pycache__"}
+        for p in sorted(root.rglob("*")):
+            parts = p.relative_to(root).parts
+            if any(x in skip for x in parts) or not p.is_file():
+                continue
+            if p.suffix.lower() not in TEXT_OK:
+                continue
+            out.append({"path": p.relative_to(root).as_posix(), "bytes": p.stat().st_size})
+            if len(out) >= 2000:
+                break
+        return {"batch": batch, "run_dir": str(root), "files": out}
 
     def knowledge_route(b, q):
         from space.knowledge import Knowledge
@@ -595,7 +657,8 @@ def register(httpd) -> Launcher:
     routes.update({("GET", "/api/run/profiles"): profiles_route, ("GET", "/api/run/estimate"): estimate_route,
                    ("POST", "/api/run/start"): start_route, ("GET", "/api/run/status"): status_route,
                    ("POST", "/api/run/stop"): stop_route, ("GET", "/api/run/report"): report_route,
-                   ("POST", "/api/run/structure"): structure_route, ("GET", "/api/knowledge"): knowledge_route})
+                   ("POST", "/api/run/structure"): structure_route, ("GET", "/api/knowledge"): knowledge_route,
+                   ("GET", "/api/run/files"): files_route})
     return la
 
 

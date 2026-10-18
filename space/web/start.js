@@ -60,6 +60,7 @@ export function mountStart(el, api = {}) {
     profile: '', preset: 'demo', mode: 'real', confirming: false, busy: false, error: '',
     runs: [], showLog: false, showReport: false, report: null,
     problem: { title: '', goal: '', success: '', known: '', fixed: '', parts: '', field: '' },
+    rounds: '', pauseEvery: 0, files: null, fileOpen: null, showFiles: false,
   };
   let timer = null, lastCheck = 0;
   const wizard = mountWizard(api);
@@ -119,7 +120,8 @@ export function mountStart(el, api = {}) {
     S.busy = true; S.error = ''; draw();
     const custom = S.profile === '__custom__';
     if (custom && !S.problem.goal.trim() && !S.problem.title.trim()) { S.error = 'Describe the problem first.'; S.busy = false; draw(); return; }
-    const res = await postJson('/api/run/start', { preset: S.preset, profile: custom ? '' : S.profile, mode: S.mode, confirm: S.mode === 'real' && S.confirming, problem: custom ? S.problem : undefined })
+    const overrides = {}; if (S.rounds) overrides.rounds = Number(S.rounds); if (S.pauseEvery) overrides.pause_every = Number(S.pauseEvery);
+    const res = await postJson('/api/run/start', { preset: S.preset, profile: custom ? '' : S.profile, mode: S.mode, confirm: S.mode === 'real' && S.confirming, problem: custom ? S.problem : undefined, overrides })
       .catch(() => ({ ok: false, body: { error: 'server offline' } }));
     if (res.ok && typeof api.toast === 'function') api.toast('Research started. The team is planning; the map appears in a minute or two.');
     S.busy = false;
@@ -169,6 +171,43 @@ export function mountStart(el, api = {}) {
     draw();
   }
 
+  async function loadFiles(run) {
+    try { S.files = await getJson(`/api/run/files?batch=${encodeURIComponent(run.batch)}`); S.showFiles = true; S.fileOpen = null; }
+    catch (e) { S.error = `No files yet: ${e.message}`; }
+    draw();
+  }
+  async function openFile(run, path) {
+    try { S.fileOpen = await getJson(`/api/run/files?batch=${encodeURIComponent(run.batch)}&path=${encodeURIComponent(path)}`); }
+    catch (e) { S.error = `Could not read ${path}: ${e.message}`; }
+    draw();
+  }
+  const FILE_GROUPS = [
+    ['Ideas', (p) => p.startsWith('ideas') || p.startsWith('idea_clusters') || p.startsWith('selection')],
+    ['What was built', (p) => p.startsWith('cands/')],
+    ['Tests', (p) => p.startsWith('verify') || p.startsWith('pool/')],
+    ['Arguments', (p) => p.startsWith('deepen') || p.startsWith('dialogue')],
+    ['Map and questions', (p) => p.startsWith('problem_tree') || p.startsWith('next_questions') || p.startsWith('questions')],
+    ['Prompts sent to the agents', (p) => p.startsWith('prompts/')],
+    ['Report and state', (p) => p.startsWith('REPORT') || p.startsWith('report') || p.startsWith('state') || p.startsWith('live') || p.startsWith('commitments') || p.startsWith('constraints')],
+    ['Everything else', () => true],
+  ];
+  function RunFiles({ run }) {
+    if (!S.showFiles || !S.files) return null;
+    const used = new Set();
+    const groups = FILE_GROUPS.map(([name, test]) => [name, (S.files.files || []).filter((f) => { if (used.has(f.path)) return false; if (test(f.path)) { used.add(f.path); return true; } return false; })]).filter(([, fs]) => fs.length);
+    const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)} MB` : n >= 1e3 ? `${Math.round(n / 1e3)} kB` : `${n} B`);
+    const text = S.fileOpen ? (S.fileOpen.path.endsWith('.jsonl') ? S.fileOpen.text.split('\n').filter(Boolean).map((l) => { try { return JSON.stringify(JSON.parse(l), null, 1); } catch (e) { return l; } }).join('\n\n') : S.fileOpen.text) : '';
+    return html`<div class="start-log run-files">
+      <div class="start-log__head"><span>Everything this run wrote <span class="mono muted">${S.files.run_dir}</span></span>
+        <button class="btn btn--small" onClick=${() => { S.showFiles = false; S.fileOpen = null; draw(); }}>Hide</button></div>
+      <div class="run-files__body">
+        <div class="run-files__list">${groups.map(([name, fs]) => html`<div class="run-files__group">${name} <span class="muted">${fs.length}</span></div>
+          ${fs.slice(0, 400).map((f) => html`<button class=${`run-files__file${S.fileOpen && S.fileOpen.path === f.path ? ' is-on' : ''}`} title=${f.path} onClick=${() => openFile(run, f.path)}>${f.path.split('/').slice(-2).join('/')} <span class="muted">${fmt(f.bytes)}</span></button>`)}`)}</div>
+        ${S.fileOpen ? html`<div class="run-files__view"><div class="mono muted">${S.fileOpen.path}${S.fileOpen.cut ? ' (first 400 kB)' : ''}</div><pre class="start-log__text run-files__text">${text}</pre></div>` : html`<div class="muted run-files__hint">Pick a file. Ideas are in ideas.jsonl, each build under cands/, each test in verify.jsonl, every prompt under prompts/.</div>`}
+      </div>
+    </div>`;
+  }
+
   function Status({ run }) {
     if (!run) return null;
     const c = chipOf(run);
@@ -184,6 +223,8 @@ export function mountStart(el, api = {}) {
         <button class="btn btn--small" onClick=${() => { S.showLog = !S.showLog; draw(); }}>${S.showLog ? 'Hide log' : 'Show log'}</button>
       </div>` : null}
       ${c && c.state === 'running' && c.note ? html`<div class="muted start-note">${c.note}</div>` : null}
+      ${run.run_dir ? html`<div class="start-report"><button class="btn btn--small" onClick=${() => (S.showFiles ? (S.showFiles = false, draw()) : loadFiles(run))}>${S.showFiles ? 'Hide run files' : 'Browse run files'}</button></div>` : null}
+      <${RunFiles} run=${run} />
       ${run.report ? html`<div class="start-report"><button class="btn btn--small" onClick=${() => (S.showReport ? (S.showReport = false, draw()) : loadReport(run))}>${S.showReport ? 'Hide report' : 'Read the report'}</button>
         ${S.showReport && S.report ? html`<a class="btn btn--small" download=${`${run.batch}-REPORT.md`} href=${`data:text/markdown;charset=utf-8,${encodeURIComponent(S.report.text)}`}>Download</a>` : null}</div>` : null}
       ${S.showReport && S.report ? html`<pre class="start-log__text start-report__text">${S.report.text}</pre>` : null}`;
@@ -232,12 +273,26 @@ export function mountStart(el, api = {}) {
             <span class="mono start-size__est">${k === 'demo' ? `${S.presets[k].estimate.calls} calls, about ${S.presets[k].estimate.minutes} min, cheap` : estimateLine(S.presets[k].estimate)}</span>
           </label>`)}
         </fieldset>
+        <div class="start-rounds">
+          <label class="start-field"><span class="start-field__name">Rounds</span>
+            <input type="number" min="1" max="12" class="start-rounds__n" value=${S.rounds || (S.presets[S.preset] ? S.presets[S.preset].rounds : '')} onInput=${(e) => { S.rounds = e.target.value; S.confirming = false; }} />
+            <span class="muted start-hint">each round: ideas, grouping, critics, builds, tests. The size sets the default.</span></label>
+          <label class="start-field"><span class="start-field__name">Pause</span>
+            <select value=${String(S.pauseEvery || 0)} onChange=${(e) => { S.pauseEvery = Number(e.target.value); S.confirming = false; draw(); }}>
+              <option value="0">never: run to the end</option>
+              <option value="1">after every round</option>
+              <option value="2">after every 2 rounds</option>
+              <option value="3">after every 3 rounds</option>
+              <option value="5">after every 5 rounds</option>
+            </select>
+            <span class="muted start-hint">a pause waits for Go, so people can read the results and steer before the next round.</span></label>
+        </div>
         <div class="start-modes" role="group" aria-label="Spend">
           <span class=${S.preset === 'demo' ? 'start-warn start-hint' : 'muted start-hint'}>${S.preset === 'demo' ? 'Demo only: the whole team on Haiku, fast and cheap, not research quality. Use Small or bigger for real results.' : 'Runs the real team: ideas on Fable, critics and builders on Opus, research on Sonnet. Spends tokens.'}</span>
         </div>
         ${S.confirming ? html`<div class="start-confirm" role="alert">
             <div>${words}</div>
-            <div>Start this real run on ${S.profile === '__custom__' ? (S.problem.title || 'your problem') : S.profile}?</div>
+            <div>Start this real run on ${S.profile === '__custom__' ? (S.problem.title || 'your problem') : S.profile}?${S.rounds ? ` ${S.rounds} round${Number(S.rounds) === 1 ? '' : 's'}.` : ''}${S.pauseEvery ? ` A pause for review after every ${S.pauseEvery === 1 ? 'round' : `${S.pauseEvery} rounds`}.` : ''}</div>
             <div class="start-actions">
               <button class="btn btn--primary" disabled=${S.busy} onClick=${start}>Yes, start the real run</button>
               <button class="btn" onClick=${() => { S.confirming = false; draw(); }}>Back</button>

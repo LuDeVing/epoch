@@ -257,6 +257,7 @@ the stage recording and prints each beat as it lands.
 | POST /api/run/stop | the page | stop a run |
 | `POST /api/run/structure` | `{file_ids, notes}`: one model call reads the shared files and drafts the problem (title, goal, criteria, facts, limits, parts) for the person to edit |
 | `GET /api/knowledge` | the space's knowledge folder: without `path`, rebuilds it from the log and lists its Markdown files; with `?path=` returns one file |
+| `GET /api/run/files` | `?batch=`: every text file the run wrote (ideas, builds, tests, prompts, report); with `&path=` one file |
 | `GET /api/run/report` | `?batch=`: the run's REPORT.md as text, once the run wrote it |
 | `POST /api/upload` | raw file body with X-Space-Filename: stores a shared file under the space's files folder and returns its id, kind and readable excerpt |
 | `GET /api/files/<id>` | serves a shared file back |
