@@ -539,6 +539,9 @@ class Launcher:
                 raise Reject(422, "no_command", batch=batch)
             if "--resume" not in cmd:
                 cmd.append("--resume")
+            if "nano.loop" in cmd and "--judge-model" not in cmd and "--model" in cmd:   # a run recorded before the judge flag
+                gen = cmd[cmd.index("--model") + 1]
+                cmd += ["--judge-model", JUDGE_MODEL if gen != JUDGE_MODEL else "sonnet"]
             log = Path(rec.get("log") or (self.runs_dir / (batch + ".log")))
             env = dict(os.environ, HTSA_LAB_ROOT=str(lab_root()), PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
             if rec.get("mode") == "mock":
