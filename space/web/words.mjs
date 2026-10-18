@@ -11,7 +11,7 @@ export const GO_NEXT = {
   deepened: 'build the best', built: 'test the builds', verified: 'start the next round',
 };
 export const STAGE_RUNNING = {
-  planned: 'planning', ideated: 'inventing', clustered: 'grouping', deepened: 'arguing', built: 'building', verified: 'testing',
+  planned: 'reading up before the ideas', ideated: 'inventing', clustered: 'grouping', deepened: 'arguing', built: 'building', verified: 'testing',
 };
 
 // test outcomes

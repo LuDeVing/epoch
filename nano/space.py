@@ -349,6 +349,23 @@ class LoopSpace:
         except Exception as e:  # noqa: BLE001
             self._warn("push_stage", e)
 
+    def push_map(self, round_no: int) -> None:
+        """The map as soon as it is drawn: its parts, and a planned stage_entered that waits for nobody. The real
+        planned boundary follows after the research step and repeats stage_entered with its own waiting flag."""
+        try:
+            self.client.reset_down()
+            self.client.flush_outbox()
+            with self._lock:
+                evs = self._nodes(round_no, "planned")
+                evs.append(self._ev("stage_entered", "run:main", f"planned r{round_no}",
+                                    {"round": round_no, "stage": "planned", "waiting": False, "step_mode": self.step,
+                                     "mode": getattr(self.loop, "mode", "baseline"), "note": "the map is drawn; the team reads up before the ideas"},
+                                    round_no, "planned"))
+                self._post(evs)
+                self._save_state()
+        except Exception as e:  # noqa: BLE001
+            self._warn("push_map", e)
+
     def tick(self) -> None:
         """Push only: sketches, objections, replies, marks, builds and test results that appeared since the last push.
         Cheap; called after each interrogation chain (worker threads) and after each verify. Never reads loop.tree."""

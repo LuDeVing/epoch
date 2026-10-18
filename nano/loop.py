@@ -1106,6 +1106,8 @@ class NanoLoop:
         over the push types so every part is seen from several framings."""
         if self.tree is None:
             self.plan_tree(round_no)
+            if self.space:                             # the page shows the map now, not after the research step
+                self.space.push_map(round_no)
             (self.run_dir / "research").mkdir(exist_ok=True)
             if self.do_research and round_no == 1:
                 self._live(f"round {round_no}: researching", "web search per part, newest sources first")
@@ -2396,7 +2398,7 @@ class NanoLoop:
         finally:
             with self.lock:
                 self.inflight.pop(cid, None)
-        self._account(model, meta, r.usage)
+        self._account(model, meta, r.usage, role)
         self._live()
         return r
 
@@ -2428,13 +2430,18 @@ class NanoLoop:
                      self.round_now, "verify")
         return r.text or ""
 
-    def _account(self, model: str | None, meta: dict, usage) -> None:
-        """Only the inventing model's tokens count against the budget. The cheap model's retrieval and clerical
-        calls run on their own meter: one web-research call reads its pages again on every search turn and
-        counts about half a million tokens, which would otherwise empty the budget before a single build."""
+    AUX_ROLES = frozenset({"research", "judge", "encode", "defaults", "memory_curator", "cluster"})
+    AUX_CARDS = frozenset({"research", "preread", "plan", "plan_repair", "replan", "cluster", "curator", "fetch", "prior", "panel"})
+
+    def _account(self, model: str | None, meta: dict, usage, role: str | None = None) -> None:
+        """Only the inventing model's tokens count against the budget. Retrieval and clerical calls (research,
+        reading, planning, clustering, curating, judging) run on their own meter, whatever model they use: one
+        web-research call reads its pages again on every search turn and counts about half a million tokens,
+        which would otherwise empty the budget before a single build."""
         main = self.model or config.DEFAULT_MODEL
+        clerical = (str(role or "") in self.AUX_ROLES) or (str(meta.get("card", "")) in self.AUX_CARDS)
         with self.lock:
-            if (model or main) == main:
+            if (model or main) == main and not clerical:
                 self.spent += usage.total_tokens
                 st_ = budget_mod.stage_of(str(meta.get("card", "")))
                 self.spent_by_stage[st_] = self.spent_by_stage.get(st_, 0) + usage.total_tokens
