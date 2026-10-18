@@ -162,7 +162,10 @@ def mk(tmp_path):
         kw.setdefault("web_dir", str(tmp_path / "web"))
         kw.setdefault("reap_s", 0.1)
         kw.setdefault("ping_s", 0.3)
-        r = S.make(db or str(tmp_path / "sp" / "space.db"), **kw).start()
+        open_mode = kw.pop("open", True)              # these tests predate sign-in: humans post without a session
+        r = S.make(db or str(tmp_path / "sp" / "space.db"), **kw)
+        r.httpd.open_mode = open_mode
+        r = r.start()
         running.append(r)
         return r
 
