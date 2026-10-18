@@ -41,7 +41,7 @@ TAIL_BYTES = 32768
 # rounds, builds per round, idea agents per round (None: no cap), the inventing model's token budget
 PRESETS = {
     # demo: the whole loop on Haiku in a few minutes, to show the team at work; not research quality
-    "demo": {"rounds": 1, "implement": 1, "max_sketch_calls": 4, "budget": 150_000, "model": "haiku",
+    "demo": {"rounds": 1, "implement": 1, "max_sketch_calls": 4, "budget": 300_000, "model": "haiku",
              "note": "Demo only: every role runs on Haiku, one round, four idea agents, one build. Fast and cheap; "
                      "the ideas and the judging are not research quality. Use it on stage, not for results."},
     "small": {"rounds": 1, "implement": 2, "max_sketch_calls": 8, "budget": 600_000},
