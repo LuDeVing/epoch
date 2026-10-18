@@ -91,6 +91,7 @@
   .modal { width: 440px; max-width: calc(100vw - 32px); background: var(--bg-panel); border: 1px solid var(--line-strong); border-radius: 16px; padding: 24px; display: grid; gap: 14px; animation: pop var(--t-enter); }
   .modal__title { margin: 0; font-size: 18px; font-weight: 700; }
   .off__runs { margin: 0; padding-left: 18px; } .btn--danger { border-color: var(--bad); color: var(--bad); }
+  .btn--icon { padding: 6px 8px; display: inline-flex; align-items: center; color: var(--text-2); } .btn--icon:hover { color: var(--bad); border-color: var(--bad); }
   .switch { display: flex; align-items: center; gap: 10px; cursor: pointer; }
   .switch input { width: 18px; height: 18px; }
   .modal__actions { display: flex; justify-content: flex-end; gap: 8px; }
@@ -204,6 +205,32 @@ function TurnOff({ onClose }) {
   </div></div>`;
 }
 
+const BinIcon = () => html`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /></svg>`;
+
+// Remove: the question. The person types delete, then Yes removes the space from this PC (its folder goes to the
+// lab's trash, so a mistake can be undone by hand).
+function RemoveSpace({ s, onClose, onDone }) {
+  const [typed, setTyped] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const ok = typed.trim().toLowerCase() === 'delete';
+  const go = async (e) => {
+    e.preventDefault();
+    if (!ok) return;
+    setBusy(true); setErr('');
+    try { await api('/api/spaces/remove', { name: s.name }); onDone(); } catch (ex) { setErr(ex.message); setBusy(false); }
+  };
+  return html`<div class="backdrop" onClick=${(e) => { if (e.target === e.currentTarget && !busy) onClose(); }}><form class="modal" onSubmit=${go}>
+    <h2 class="modal__title">Remove ${s.name}?</h2>
+    <p class="muted">This takes the space off this PC: its server stops${s.alive ? ' (it is running now)' : ''}, and its log, shared files, knowledge folder and run records leave the dashboard. People's links to it stop working.</p>
+    <p class="muted">The folder is moved to the lab's trash folder, not wiped, so a mistake can be undone by hand.</p>
+    <div class="field"><label>Type <strong>delete</strong> to confirm</label><input class="input" value=${typed} onInput=${(e) => setTyped(e.target.value)} placeholder="delete" autofocus autocomplete="off" /></div>
+    ${err ? html`<div class="err">${err}</div>` : null}
+    <div class="modal__actions"><button type="button" class="btn btn--ghost" onClick=${onClose} disabled=${busy}>No, keep it</button><button class="btn btn--danger" type="submit" disabled=${!ok || busy}>${busy ? 'Removing...' : 'Yes, remove it'}</button></div>
+  </form></div>`;
+}
+
 function SpaceCard({ s, me, act }) {
   const open = s.join.replace('{name}', me);
   const n = (s.members || []).length;
@@ -217,9 +244,9 @@ function SpaceCard({ s, me, act }) {
     </div>
     <div class="card__actions">
       ${s.alive ? html`<a class="btn btn--primary grow" href=${open}>Open</a>
-        <a class="btn" href=${`${open}&stage=1`} target="_blank" rel="noopener" title="a large read-only view of this space for a projector or a second screen; it opens in its own window and can follow a person">Big screen</a>
-        <button class="btn btn--ghost btn--danger" onClick=${() => act('stop', s)} title="put the space to sleep; nothing is lost">Sleep</button>`
+        <button class="btn btn--ghost" onClick=${() => act('stop', s)} title="put the space to sleep; nothing is lost">Sleep</button>`
         : html`<button class="btn btn--primary grow" disabled=${s.waking} onClick=${() => act('open', s)}>${s.waking ? 'Waking up...' : 'Open'}</button>`}
+      <button class="btn btn--ghost btn--icon" onClick=${() => act('remove', s)} title="remove this space from this PC" aria-label="remove this space"><${BinIcon} /></button>
     </div>
   </div>`;
 }
@@ -229,6 +256,7 @@ function HubPage() {
   const [data, setData] = useState({ spaces: null });        // null: not answered yet (a loading line, not "no spaces")
   const [modal, setModal] = useState(false);
   const [off, setOff] = useState(false);
+  const [removing, setRemoving] = useState(null);         // the space whose remove question is open
   const [toast, setToast] = useState('');
   const say = (t) => { setToast(t); setTimeout(() => setToast(''), 2600); };
   const refresh = async (msg) => {
@@ -240,6 +268,7 @@ function HubPage() {
   useEffect(() => { if (!me) return undefined; const t = setInterval(refresh, 5000); return () => clearInterval(t); }, [me]);
   const act = async (what, s) => {
     try {
+      if (what === 'remove') { setRemoving(s); return; }
       if (what === 'open') {                       // a sleeping space wakes up, then opens as you
         setData((d) => ({ ...d, spaces: (d.spaces || []).map((x) => (x.name === s.name ? { ...x, waking: true } : x)) }));
         const r = await api('/api/spaces/start', { name: s.name });
@@ -257,6 +286,7 @@ function HubPage() {
     <header class="top"><div class="brand"><span class="brand__mark"></span>Epoch <span class="muted" style="font-weight:400">spaces</span></div><div class="top__spacer"></div>
       ${me ? html`<button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button><button class="btn" title="stop every space and the hub on this PC" onClick=${() => setOff(true)}>Turn off</button><${AccountMenu} me=${me} onChange=${refresh} />` : null}</header>
     ${off ? html`<${TurnOff} onClose=${() => setOff(false)} />` : null}
+    ${removing ? html`<${RemoveSpace} s=${removing} onClose=${() => setRemoving(null)} onDone=${() => { setRemoving(null); say(`${removing.name} removed`); refresh(); }} />` : null}
     ${!me ? html`<${Login} onDone=${refresh} />` : html`<main class="page">
       <div class="page__head"><h1 class="page__title">Your spaces</h1><span class="muted">${mine.length ? `${mine.length} you are part of` : ''}</span></div>
       ${mine.length ? html`<div class="grid">${mine.map((s) => html`<${SpaceCard} key=${s.name} s=${s} me=${me} act=${act} />`)}

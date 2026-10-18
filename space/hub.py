@@ -36,6 +36,26 @@ def clean_name(raw) -> str:
     return n
 
 
+def _pids_on_port(port: int) -> list[int]:
+    """The processes listening on a local port (netstat), for a server the hub did not start itself."""
+    if os.name != "nt":
+        return []
+    try:
+        out = subprocess.run(["netstat", "-ano", "-p", "tcp"], capture_output=True, text=True, timeout=10,
+                             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
+    except (OSError, subprocess.SubprocessError):
+        return []
+    pids = []
+    for line in out.splitlines():
+        parts = line.split()
+        if len(parts) >= 5 and parts[3] == "LISTENING" and parts[1].endswith(":%d" % port):
+            try:
+                pids.append(int(parts[4]))
+            except ValueError:
+                pass
+    return pids
+
+
 def free_port(start: int = contract.PORT) -> int:
     for p in range(start, start + 40):
         with socket.socket() as s:
@@ -243,6 +263,43 @@ class Hub:
             self._save(rows)
         return {"stopped": stopped}
 
+    def remove(self, raw_name, me=None) -> dict:
+        """Remove a space from this PC: its server is stopped, its folder (log, files, knowledge, run records) moves
+        to <lab>/trash/<name>-<time> and its record goes. The hub's owner or the space's first member may do it."""
+        name = clean_name(raw_name)
+        members = auth.members_of(name) or []
+        if me and me != auth.owner_name() and (members and members[0] != me):
+            raise Reject(403, "not_yours", hint="only the owner of this PC or the person who made the space can remove it")
+        with self.lock:
+            rows = self._load()
+            hit = [r for r in rows if r["name"] == name]
+            folder = self.dir / name
+            if not hit and not folder.exists():
+                raise Reject(404, "no_space", name=name)
+            for r in hit:
+                if pid_alive(r.get("pid"), r.get("created")):
+                    kill_tree(r.get("pid"))
+            live = self._live_ports()
+            if name in live:                                   # started outside the hub: stop it through its port owner
+                for pid in _pids_on_port(live[name]):
+                    kill_tree(pid)
+            moved = None
+            if folder.exists():
+                import shutil
+                trash = lab_root() / "trash"
+                trash.mkdir(parents=True, exist_ok=True)
+                moved = trash / f"{name}-{time.strftime('%Y%m%d-%H%M%S')}"
+                for _ in range(20):                            # the server lets go of the database within a moment
+                    try:
+                        shutil.move(str(folder), str(moved))
+                        break
+                    except OSError:
+                        time.sleep(0.25)
+                else:
+                    raise Reject(500, "folder_busy", hint="the space's files are still in use; try again in a moment")
+            self._save([r for r in rows if r["name"] != name])
+        return {"name": name, "moved_to": str(moved) if moved else None}
+
     def stop(self, raw_name) -> dict:
         name = clean_name(raw_name)
         with self.lock:
@@ -350,6 +407,8 @@ class Handler(BaseHTTPRequestHandler):
             if u.path == "/api/spaces/stop":
                 self._user()
                 return self._send(200, hub.stop(body.get("name")))
+            if u.path == "/api/spaces/remove":
+                return self._send(200, hub.remove(body.get("name"), me=self._user()))
             if u.path == "/api/spaces/start":
                 return self._send(200, hub.start(body.get("name"), me=self._user()))
             self._send(404, {"error": "no_route"})
