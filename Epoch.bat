@@ -14,5 +14,5 @@ if not defined PYW (
   pause
   exit /b 1
 )
-start "" "%PYW%" "%REPO%spacepp.py" %*
+start "" "%PYW%" "%REPO%space\app.py" %*
 endlocal
