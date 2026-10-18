@@ -652,6 +652,23 @@ def make(db, port=contract.PORT, host=contract.HOST, web_dir=None, key="", memor
     return Running(sp, httpd, reap_s)
 
 
+def lan_key(db_path) -> str:
+    """The LAN key of a space, kept in lan_key.txt next to its database so a restart keeps the key and the pages
+    already open (their links carry it) reconnect instead of going offline."""
+    kp = Path(db_path).resolve().parent / "lan_key.txt"
+    try:
+        key = kp.read_text(encoding="utf-8").strip()
+    except OSError:
+        key = ""
+    if not key:
+        key = secrets.token_urlsafe(6)
+        try:
+            kp.write_text(key, encoding="utf-8")
+        except OSError:
+            pass
+    return key
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="python -m space.server", description="HTSA shared space server")
     ap.add_argument("--db", default=os.path.join(_lab_root(), "spaces", "demo", "space.db"))
@@ -674,7 +691,7 @@ def main(argv=None) -> int:
         write_ndjson(a.dump, rows)
         print("dumped %d events to %s" % (len(rows), a.dump), flush=True)
         return 0
-    key = secrets.token_urlsafe(6) if a.lan else ""
+    key = lan_key(a.db) if a.lan else ""
     host = "0.0.0.0" if a.lan else contract.HOST
     run = make(a.db, port=a.port, host=host, web_dir=a.web, key=key, memory_dir=a.memory_dir, space_id=a.space_id,
                replay=a.replay, speed=a.speed, seek=a.seek)
