@@ -238,6 +238,14 @@ One seed; the gap is about twenty times the seed-to-seed spread measured on the 
 recipe, an earlier combination from the same method gave 0.0089 nats, about 0.9 percent lower perplexity, verified
 over four seeds.
 
+For a language model, 1.8 percent lower loss at the same parameters, the same tokens and the same data is a large
+step, not a tweak. The numbers that calibrate it: in the NanoGPT speedrun, where hundreds of people compete on one
+recipe, the median record saves about 1.1 percent of training time and most records are single-digit percent gains
+[36]; a published architecture change such as value residual reports reaching the same loss with about 16 percent
+fewer parameters or 20 percent less data [15]; and the baseline here is not a toy recipe but the dense skeleton of
+the strongest open models, on which the easy gains have already been taken. One architecture paper's worth of gain,
+found in two days on a laptop, is what the number means.
+
 What the team learned about the architecture is itself a finding: every clear winner restructured the four residual
 streams or the flow between layers; ideas that changed the inside of one layer were mostly neutral. The skeleton's
 four streams were nearly unused at initialisation, and giving them a job is where the room was. Known speedrun tricks
