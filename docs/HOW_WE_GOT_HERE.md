@@ -227,7 +227,10 @@ What went into the final model, and what it is:
 - **Logit soft-cap**: known (Gemma 2 [18]).
 
 Where the ideas came from matters as much as the gain. Of the seven ideas with a measured gain across the two runs,
-the prior-art search found one that is new as far as it could tell (the gain-tied lookup, on the plain recipe), four
+the prior-art search found one that is new as far as it could tell (the gain-tied input lookup, on the plain recipe:
+the input embedding is multiplied by the final norm's own gain, so the shared embedding table is an exact transpose
+of the output head in both directions, at zero extra parameters; it is part of the four-seed gain on the plain
+recipe and did not carry over to the skeleton), four
 that are the team's own variants of published mechanisms (the delay line, the signed reads, the depth buckets, the
 narrow keys), and two known techniques it arrived at from the measurements rather than by name (the value residual,
 the soft-cap). The variants were not copies: the team wrote them for this skeleton's four-stream design, from what
