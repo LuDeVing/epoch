@@ -287,3 +287,12 @@ body[data-run="running"] .empty--running { display: inline; }
 .feed__line.hue-team .feed__who { color: var(--text-2); }
 .feed__line--agent { border-left: 2px solid var(--line); }
 .strip__digest strong { font-weight: 600; }
+
+/* the knowledge folder (memory.js) */
+.know__files { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.know__file { font: inherit; font-size: var(--fs-small); color: var(--text-2); background: var(--bg-card); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+.know__file:hover, .know__file.is-on { color: var(--text-1); border-color: var(--owner-a); }
+.know__group { width: 100%; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); margin-top: 4px; }
+.know__view { background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: 10px; padding: 8px 10px; }
+.know__text { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 50vh; overflow: auto; margin: 6px 0 0; font: var(--fs-small)/1.5 var(--font-ui); }
+.know__dir { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

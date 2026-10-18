@@ -19,6 +19,41 @@ function Entry({ e }) {
   </li>`;
 }
 
+function Knowledge({ api, head }) {
+  const [files, setFiles] = useState([]);
+  const [open, setOpen] = useState('');
+  const [text, setText] = useState('');
+  const [dir, setDir] = useState('');
+  const q = api.flags && api.flags.key ? `&key=${encodeURIComponent(api.flags.key)}` : '';
+  const load = async () => {
+    try {
+      const r = await fetch(`${api.base}/api/knowledge?x=1${q}`, { credentials: 'same-origin', cache: 'no-store' });
+      if (!r.ok) return;
+      const j = await r.json(); setFiles(j.files || []); setDir(j.dir || '');
+    } catch (e) { /* offline */ }
+  };
+  const show = async (path) => {
+    if (open === path) { setOpen(''); setText(''); return; }
+    try {
+      const r = await fetch(`${api.base}/api/knowledge?path=${encodeURIComponent(path)}${q}`, { credentials: 'same-origin', cache: 'no-store' });
+      const j = await r.json(); setOpen(path); setText(j.text || '');
+    } catch (e) { setText('Could not read the file.'); }
+  };
+  useEffect(() => { load(); }, [head]);
+  const group = (pre) => files.filter((f) => f.path.startsWith(pre));
+  const top = files.filter((f) => !f.path.includes('/'));
+  return html`<div class="know">
+    <div class="caption">What is known, as Markdown files in the space's knowledge folder. The researchers read facts.md; you can open any file here or in a text editor.${dir ? html` <span class="mono muted know__dir" title=${dir}>${dir}</span>` : null}</div>
+    <div class="know__files">
+      ${top.map((f) => html`<button class=${`know__file${open === f.path ? ' is-on' : ''}`} onClick=${() => show(f.path)}>${f.title}</button>`)}
+      ${group('findings/').length ? html`<div class="know__group">Findings</div>${group('findings/').map((f) => html`<button class=${`know__file${open === f.path ? ' is-on' : ''}`} onClick=${() => show(f.path)}>${f.title}</button>`)}` : null}
+      ${group('parts/').length ? html`<div class="know__group">Parts</div>${group('parts/').map((f) => html`<button class=${`know__file${open === f.path ? ' is-on' : ''}`} onClick=${() => show(f.path)}>${f.title}</button>`)}` : null}
+      ${!files.length ? html`<div class="muted">No files yet. Describe a problem or share a finding and they appear here.</div>` : null}
+    </div>
+    ${open ? html`<div class="know__view"><div class="card__head">${open} <a class="btn btn--small" style="float:right" download=${open.split('/').pop()} href=${`data:text/markdown;charset=utf-8,${encodeURIComponent(text)}`}>Download</a></div><pre class="know__text">${text}</pre></div>` : null}
+  </div>`;
+}
+
 export function MemoryTab({ view, api }) {
   const parts = [...view.nodes.values()].filter((n) => n.kind !== 'root');
   const [part, setPart] = useState(api.selected && api.selected() ? api.selected() : (parts[0] && parts[0].id) || '');
@@ -43,7 +78,8 @@ export function MemoryTab({ view, api }) {
     return () => { live = false; };
   }, [part, added.length]);
   return html`<div class="tab-body memory">
-    <div class="caption">What the team has learned about each part, kept across runs: facts, what was tried, what to expect, dead ends, and what people shared. Every entry names its evidence. Read only.</div>
+    <${Knowledge} api=${api} head=${view.head} />
+    <div class="caption" style="margin-top:12px">What the team has learned about each part, kept across runs: facts, what was tried, what to expect, dead ends, and what people shared. Every entry names its evidence. Read only.</div>
     <label class="muted">Part <select value=${part} onChange=${(e) => setPart(e.target.value)}>
       ${parts.map((n) => html`<option value=${n.id}>${n.name}</option>`)}</select></label>
     <span class="tag">read only</span>

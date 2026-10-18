@@ -349,8 +349,15 @@ class Launcher:
     def start(self, preset, profile, mode="mock", confirm=False, problem=None) -> dict:
         if isinstance(problem, dict) and str(problem.get("goal") or problem.get("title") or "").strip():
             from nano.profiles._custom import write_profile
+            from space.knowledge import Knowledge
+            spec = {k: str(problem.get(k) or "")[:6000] for k in ("title", "goal", "success", "known", "fixed", "parts", "field")}
             try:
-                profile = write_profile({k: str(problem.get(k) or "")[:6000] for k in ("title", "goal", "success", "known", "fixed", "parts", "field")})
+                kn = Knowledge(Path(self.db_path).parent) if getattr(self, "db_path", None) else None
+                if kn is not None:
+                    paths = kn.write_problem(problem)
+                    spec["knowledge_facts"] = paths["facts"]
+                    spec["knowledge_problem"] = paths["problem"]
+                profile = write_profile(spec)
             except OSError as e:
                 raise Reject(500, "profile_not_written", detail=str(e)[:200])
         est = estimate(preset, profile)
@@ -560,6 +567,16 @@ def register(httpd) -> Launcher:
     def report_route(b, q):
         return la.report(str(_one(q, "batch") or ""))
 
+    def knowledge_route(b, q):
+        from space.knowledge import Knowledge
+        if sp is None:
+            raise Reject(503, "no_space")
+        kn = Knowledge(Path(sp.store.path).parent)
+        rel = _one(q, "path")
+        if rel:
+            return kn.read(rel)
+        return kn.rebuild(sp.store.events())
+
     def structure_route(b, q):
         b = body_of(b)
         from space import files as filestore, structure as structurer
@@ -578,7 +595,7 @@ def register(httpd) -> Launcher:
     routes.update({("GET", "/api/run/profiles"): profiles_route, ("GET", "/api/run/estimate"): estimate_route,
                    ("POST", "/api/run/start"): start_route, ("GET", "/api/run/status"): status_route,
                    ("POST", "/api/run/stop"): stop_route, ("GET", "/api/run/report"): report_route,
-                   ("POST", "/api/run/structure"): structure_route})
+                   ("POST", "/api/run/structure"): structure_route, ("GET", "/api/knowledge"): knowledge_route})
     return la
 
 

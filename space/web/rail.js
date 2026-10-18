@@ -11,7 +11,7 @@ import { ChatTab } from './chat.js';
 import { plainStatus, STATUS_WORDS } from './words.mjs';
 import { FindingsTab } from './findings.js';
 
-export const TABS = [['feed', 'Feed'], ['args', 'Arguments'], ['results', 'Results'], ['findings', 'Findings'], ['memory', 'Memory'], ['agent', 'Agent']];
+export const TABS = [['feed', 'Feed'], ['args', 'Arguments'], ['results', 'Results'], ['findings', 'Findings'], ['memory', 'Knowledge'], ['agent', 'Agent']];
 const FEED_CAP = 200;
 const cap = (s) => (s ? String(s)[0].toUpperCase() + String(s).slice(1) : '');
 const STATUS_ICON = { pending: 'clock', queued: 'clock', applied: 'check', rejected: 'x', not_in_top3: 'x', overwritten: 'x', withdrawn: 'x' };

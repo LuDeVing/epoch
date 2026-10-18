@@ -256,6 +256,7 @@ the stage recording and prints each beat as it lands.
 | GET /api/run/status | the page | every run and its state |
 | POST /api/run/stop | the page | stop a run |
 | `POST /api/run/structure` | `{file_ids, notes}`: one model call reads the shared files and drafts the problem (title, goal, criteria, facts, limits, parts) for the person to edit |
+| `GET /api/knowledge` | the space's knowledge folder: without `path`, rebuilds it from the log and lists its Markdown files; with `?path=` returns one file |
 | `GET /api/run/report` | `?batch=`: the run's REPORT.md as text, once the run wrote it |
 | `POST /api/upload` | raw file body with X-Space-Filename: stores a shared file under the space's files folder and returns its id, kind and readable excerpt |
 | `GET /api/files/<id>` | serves a shared file back |
@@ -348,3 +349,11 @@ Inside a space, the People button in the top bar shows everyone in the space and
 person and start their agent" starts a person-agent for a name (canned replies, or Sonnet) and shows the link that
 person opens. Anyone can also just open the page with `?me=<name>`: a person without an agent still watches,
 votes, vetoes, adds findings and starts runs; the agent is what turns their chat into actions.
+
+## 14. The knowledge folder
+
+Every space keeps what is known as plain Markdown under `<space folder>/knowledge/`: `problem.md` (the problem
+as described), `facts.md` (every fact with its source, numbered for citing), `questions.md`, `results.md`, one
+file per shared finding under `findings/`, and one file per part under `parts/`. `problem.md` and `facts.md` are
+written when a described problem is used; the rest is rebuilt from the event log when the Knowledge tab opens.
+The generated profile points the researchers' document card at `facts.md`, so the team reads the same file.

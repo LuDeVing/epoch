@@ -100,6 +100,7 @@ def make_profile(spec: dict) -> dict:
                  + f"It describes something that can be done for: {title}.")
     parts_phrase = ", ".join(p["name"] for p in parts) if parts else "the parts the map draws from the goal"
     vocab = {
+        "reference_what": f"the facts the people collected for this problem (knowledge/facts.md){' and practices from ' + field if field else ''}",
         "artifact": "proposal", "artifact_file": "proposal.md", "language": "markdown",
         "run": "panel review", "score_phrase": f"a better answer on {crit_names}",
         "parts": f"parts of {title}", "recipe": "proposal",
@@ -116,7 +117,6 @@ def make_profile(spec: dict) -> dict:
         "system": "the problem", "narrow_examples": "one part, one case, one step",
         "planner_hint": "boundaries name the parts of the problem a proposal may change",
         "boundary_rules": "", "identity_rule": "",
-        "reference_what": f"practices and results from {field}",
         "reference_use": "adapt a practice only if it fits this setting",
         "gain_phrase": "the panel score", "field": field,
         "observables": "what can be measured, counted or shown about the result",
@@ -177,7 +177,8 @@ def make_profile(spec: dict) -> dict:
                      "output_format": OUTPUT_FORMAT, "entry": "a markdown proposal"},
         "checker": "panel",
         "checker_args": {"criteria": criteria, "judges": 3, "people_weight": 0.25, "min_score": 4.0},
-        "docs": {},
+        "docs": ({"reference": spec["knowledge_facts"], "reference_note": "reads the facts the people collected"}
+                 if spec.get("knowledge_facts") else {}),
         "diagnostics": "",
     }
 
