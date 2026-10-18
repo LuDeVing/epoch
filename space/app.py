@@ -50,8 +50,15 @@ def port_open(port: int, host: str = "127.0.0.1") -> bool:
 
 
 def python_exe() -> str:
-    venv = lab_root() / ".venv" / "Scripts" / "python.exe"
-    return str(venv) if venv.exists() else sys.executable
+    """The Python the hub runs on: the lab's venv when there is one, else a portable build under the lab's
+    python folder, else the Python running this launcher. Everything Epoch needs is in the standard library."""
+    lab = lab_root()
+    venv = lab / ".venv" / "Scripts" / "python.exe"
+    if venv.exists():
+        return str(venv)
+    for p in sorted((lab / "python").glob("*/python.exe")):
+        return str(p)
+    return sys.executable
 
 
 def start_hub(port: int) -> bool:

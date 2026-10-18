@@ -3,8 +3,10 @@
 # opens in its own app window. Run once:  powershell -ExecutionPolicy Bypass -File scripts\install_shortcut.ps1
 $repo = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $pyw = "D:\AGI-lab\.venv\Scripts\pythonw.exe"
-if (-not (Test-Path $pyw)) { $pyw = (Get-Command pythonw -ErrorAction SilentlyContinue).Source }
-if (-not $pyw) { Write-Error "pythonw.exe not found"; exit 1 }
+if (-not (Test-Path $pyw)) { $pyw = Join-Path (Split-Path -Parent $repo) "AGI-lab\.venv\Scripts\pythonw.exe" }
+if (-not (Test-Path $pyw)) { $pyw = (Get-Command pyw -ErrorAction SilentlyContinue).Source }
+if (-not $pyw) { $pyw = (Get-Command pythonw -ErrorAction SilentlyContinue).Source }
+if (-not $pyw) { Write-Error "Python 3.12 or newer is needed (python.org, with Add to PATH ticked)"; exit 1 }
 $icon = Join-Path $repo "space\web\epoch.ico"
 $shell = New-Object -ComObject WScript.Shell
 foreach ($dir in @([Environment]::GetFolderPath("Desktop"), (Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs"))) {
