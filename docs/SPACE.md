@@ -345,6 +345,11 @@ replaces the old one, which stays visible, marked.
 
 ## 13. Spaces and people from the page
 
+As a Windows application: `HTSA.bat` (or the shortcut `scripts\install_shortcut.ps1` puts on the Desktop and in the
+Start Menu) runs `python -m space.app`, which starts the hub when it is not running and opens the dashboard in its own
+app window (Edge or Chrome, no address bar, its own profile under the lab folder); spaces open in that window and the
+top bar's Dashboard button comes back. The hub stays up after the window closes.
+
 The hub lists the spaces on this PC and makes new ones: `python -m space.hub --open` serves it at
 http://127.0.0.1:8760/. "New space" starts a server for that name on the next free port (a checkbox opens it to
 other laptops with a key); type your name and press "Open as <name>". Stop and Start keep the space's log.

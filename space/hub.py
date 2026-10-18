@@ -26,7 +26,7 @@ WEB = Path(__file__).resolve().parent / "web"
 NAME_RE = re.compile(r"^[a-z0-9][a-z0-9_-]{0,31}$")
 KEY_RE = re.compile(r"lan key: (\S+)")
 STATIC_TYPES = {".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
-                ".mjs": "text/javascript; charset=utf-8", ".json": "application/json", ".woff2": "font/woff2", ".svg": "image/svg+xml"}
+                ".mjs": "text/javascript; charset=utf-8", ".json": "application/json", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".ico": "image/x-icon"}
 
 
 def clean_name(raw) -> str:
