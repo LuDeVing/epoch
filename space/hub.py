@@ -102,21 +102,26 @@ class Hub:
         """space_id -> port for every space server answering on the usual ports (spaces started outside the hub)."""
         import urllib.request
         out = {}
-        for port in range(contract.PORT, contract.PORT + 40):
+
+        def probe(port):
             with socket.socket() as s:
                 s.settimeout(0.05)
                 try:
                     s.connect(("127.0.0.1", port))
                 except OSError:
-                    continue
+                    return None
             try:
                 with urllib.request.urlopen("http://127.0.0.1:%d/api/people" % port, timeout=0.5) as r:
                     d = json.loads(r.read().decode("utf-8", "replace"))
                 sid = d.get("space_id") if isinstance(d, dict) else None
-                if sid:
-                    out[str(sid)] = port
+                return (str(sid), port) if sid else None
             except Exception:  # noqa: BLE001
-                continue
+                return None
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=40) as ex:          # all ports at once: a closed port costs its timeout
+            for hit in ex.map(probe, range(contract.PORT, contract.PORT + 40)):
+                if hit:
+                    out[hit[0]] = hit[1]
         return out
 
     def _row(self, r: dict, live: dict | None = None) -> dict:

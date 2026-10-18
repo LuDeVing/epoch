@@ -121,22 +121,24 @@ def hub_json(port: int, path: str, post: bool = False) -> dict:
 def ask_shutdown(port: int) -> None:
     """The window closed: ask whether to turn Epoch off. Yes stops every space and the hub (a run stops where it is
     and can be continued later); No keeps them running in the background, the shortcut opens the window again."""
-    busy = hub_json(port, "/api/busy")
-    if not busy:
-        return                                     # no hub answering: nothing to turn off
-    spaces, runs = busy.get("spaces") or [], busy.get("runs") or []
-    lines = ["Turn Epoch off?", ""]
-    if runs:
-        lines.append("%d research run%s still going:" % (len(runs), "" if len(runs) == 1 else "s"))
-        lines += ["  - %s in %s (%s)" % (r.get("batch"), r.get("space"), r.get("preset")) for r in runs[:6]]
-        lines.append("")
-    lines.append("%d space%s open." % (len(spaces), "" if len(spaces) == 1 else "s"))
-    lines += ["", "Yes: stop everything. A run stops where it is and can be continued later.",
-              "No: keep running in the background. The Epoch shortcut opens the window again."]
-    text = "\n".join(lines)
-    yes = styled_question(lines, bool(runs))
-    if yes is None and os.name == "nt":            # no tkinter on this Python: the plain Windows box
+    if not port_open(port):
+        return                                     # no hub: nothing to turn off
+    import threading
+    box = {}
+
+    def fetch():
+        box["busy"] = hub_json(port, "/api/busy") or {"spaces": [], "runs": []}
+    threading.Thread(target=fetch, daemon=True).start()
+    yes = styled_question(box)
+    if yes is None and os.name == "nt":            # no tkinter on this Python: the plain Windows box, after the answer
         import ctypes
+        for _ in range(60):
+            if "busy" in box:
+                break
+            time.sleep(0.1)
+        busy = box.get("busy") or {}
+        runs = busy.get("runs") or []
+        text = "Turn Epoch off?\n\n" + busy_words(busy) + "\n\nYes: stop everything. A run stops where it is and can be continued later.\nNo: keep running in the background. The Epoch shortcut opens the window again."
         MB_YESNO, MB_ICONQUESTION, MB_TOPMOST, MB_DEFBUTTON2 = 0x4, 0x20, 0x40000, 0x100
         flags = MB_YESNO | MB_ICONQUESTION | MB_TOPMOST | (MB_DEFBUTTON2 if runs else 0)
         yes = ctypes.windll.user32.MessageBoxW(0, text, "Epoch", flags) == 6
@@ -144,8 +146,22 @@ def ask_shutdown(port: int) -> None:
         hub_json(port, "/api/shutdown", post=True)
 
 
-def styled_question(lines: list, runs_going: bool):
-    """A small dark window in Epoch's colours with Keep running and Turn off; True, False, or None without tkinter."""
+def busy_words(busy: dict) -> str:
+    """What is running, in a few lines."""
+    spaces, runs = busy.get("spaces") or [], busy.get("runs") or []
+    lines = []
+    if runs:
+        lines.append("%d research run%s still going:" % (len(runs), "" if len(runs) == 1 else "s"))
+        lines += ["  - %s in %s (%s)" % (r.get("batch"), r.get("space"), r.get("preset")) for r in runs[:6]]
+    else:
+        lines.append("No research is running.")
+    lines.append("%d space%s open." % (len(spaces), "" if len(spaces) == 1 else "s"))
+    return "\n".join(lines)
+
+
+def styled_question(box: dict):
+    """A small dark window in Epoch's colours with Keep running and Turn off; it opens at once and shows what is
+    running as soon as box["busy"] arrives. True, False, or None without tkinter."""
     try:
         import tkinter as tk
     except Exception:  # noqa: BLE001
@@ -169,8 +185,8 @@ def styled_question(lines: list, runs_going: bool):
     ring.create_arc(3, 3, 19, 19, start=100, extent=320, style="arc", outline=TEAL, width=4)
     ring.pack(side="left", padx=(0, 8))
     tk.Label(head, text="Turn Epoch off?", bg=PANEL, fg=TEXT, font=("Segoe UI", 13, "bold")).pack(side="left")
-    body = "\n".join(lines[2:-3]).strip()          # what is running (the title and the two explanations are drawn apart)
-    tk.Label(frame, text=body, bg=PANEL, fg=MUTED, justify="left", font=("Segoe UI", 10), wraplength=420).pack(anchor="w", pady=(10, 4))
+    body = tk.Label(frame, text="Checking what is running...", bg=PANEL, fg=MUTED, justify="left", font=("Segoe UI", 10), wraplength=420)
+    body.pack(anchor="w", pady=(10, 4))
     tk.Label(frame, text="Turn off stops every space; a run stops where it is and can be continued later.\nKeep running leaves it all in the background; the shortcut opens the window again.",
              bg=PANEL, fg=MUTED, justify="left", font=("Segoe UI", 9), wraplength=420).pack(anchor="w", pady=(0, 14))
     row = tk.Frame(frame, bg=PANEL)
@@ -187,7 +203,17 @@ def styled_question(lines: list, runs_going: bool):
         out["yes"] = True
         root.destroy()
     btn("Keep running", TEXT, LINE, root.destroy)
-    btn("Turn off", BAD if runs_going else TEAL, BAD if runs_going else TEAL, yes)
+    off = btn("Turn off", TEAL, TEAL, yes)
+
+    def fill():                                    # the hub's answer lands: the words, and red when a run would stop
+        if "busy" not in box:
+            root.after(100, fill)
+            return
+        busy = box["busy"]
+        body.configure(text=busy_words(busy))
+        if busy.get("runs"):
+            off.configure(fg=BAD, highlightbackground=BAD, activeforeground=BAD)
+    root.after(100, fill)
     root.bind("<Escape>", lambda e: root.destroy())
     root.update_idletasks()
     w, hgt = root.winfo_width(), root.winfo_height()

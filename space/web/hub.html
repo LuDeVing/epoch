@@ -223,7 +223,7 @@ function TurnOff({ onClose }) {
           <ul class="off__runs">${runs.map((r) => html`<li><strong>${r.space}</strong> <span class="muted">${r.batch}${r.preset ? ` . ${r.preset}` : ''}</span></li>`)}</ul>` : html`<p class="muted">No research is running.</p>`}
         <p class="muted">${spaces.length} space${spaces.length === 1 ? '' : 's'} open${spaces.length ? `: ${spaces.join(', ')}` : ''}. Nothing is deleted; Open wakes a space again.</p>`}
       <div class="modal__actions"><button type="button" class="btn btn--ghost" onClick=${onClose} disabled=${state === 'stopping'}>Keep running</button>
-        <button type="button" class=${`btn ${runs.length ? 'btn--danger' : 'btn--primary'}`} onClick=${off} disabled=${!busy || state === 'stopping'}>${state === 'stopping' ? 'Stopping...' : 'Turn off'}</button></div>`}
+        <button type="button" class=${`btn ${runs.length ? 'btn--danger' : 'btn--primary'}`} onClick=${off} disabled=${state === 'stopping'}>${state === 'stopping' ? 'Stopping...' : 'Turn off'}</button></div>`}
   </div></div>`;
 }
 
