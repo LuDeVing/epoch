@@ -61,10 +61,13 @@ def python_exe() -> str:
     return sys.executable
 
 
-def start_hub(port: int) -> bool:
-    """Start the hub as a detached, windowless process; True once its port answers (up to 15 s)."""
+def start_hub(port: int, splash=None) -> bool:
+    """Start the hub as a detached, windowless process; True once its port answers (up to 60 s: a first start also
+    installs the bundled example space before the port opens)."""
     if port_open(port):
         return True
+    if splash:
+        splash.step("Starting the hub", 0.15)
     env = dict(os.environ, HTSA_LAB_ROOT=str(lab_root()), PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
     log = lab_root() / "spaces" / "hub.log"
     log.parent.mkdir(parents=True, exist_ok=True)
@@ -76,9 +79,13 @@ def start_hub(port: int) -> bool:
     with open(log, "ab") as out:
         subprocess.Popen([pyw if os.path.exists(pyw) else py, "-m", "space.hub", "--port", str(port)], cwd=str(REPO), env=env,
                          stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT, creationflags=flags)
-    for _ in range(150):
+    for i in range(600):
         if port_open(port):
             return True
+        if splash:
+            if i == 30:
+                splash.step("First start: preparing the example space", 0.35)
+            splash.pulse()
         time.sleep(0.1)
     return False
 
@@ -90,23 +97,46 @@ def browser() -> str | None:
     return None
 
 
-def running_profiles() -> set:
-    """The browser identities Epoch windows are open on right now (their --user-data-dir values)."""
+def _exe_of(pid: int) -> str:
+    """The executable name of a running process, lower case, or "" when it does not run (Windows API, no shell)."""
     if os.name != "nt":
-        return set()
+        return ""
+    import ctypes
+    from ctypes import wintypes
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    k32.OpenProcess.restype = wintypes.HANDLE
+    k32.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
+    k32.QueryFullProcessImageNameW.argtypes = (wintypes.HANDLE, wintypes.DWORD, wintypes.LPWSTR, ctypes.POINTER(wintypes.DWORD))
+    k32.GetExitCodeProcess.argtypes = (wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD))
+    k32.CloseHandle.argtypes = (wintypes.HANDLE,)
+    h = k32.OpenProcess(0x1000, False, int(pid))              # PROCESS_QUERY_LIMITED_INFORMATION
+    if not h:
+        return ""
     try:
-        out = subprocess.run(["wmic", "process", "where", "CommandLine like '%--app=http://127.0.0.1:%'", "get", "CommandLine"],
-                             capture_output=True, text=True, timeout=15, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
-    except (OSError, subprocess.SubprocessError):
-        return set()
+        code = wintypes.DWORD()
+        if not k32.GetExitCodeProcess(h, ctypes.byref(code)) or code.value != 259:   # STILL_ACTIVE
+            return ""
+        buf = ctypes.create_unicode_buffer(1024)
+        n = wintypes.DWORD(1024)
+        if not k32.QueryFullProcessImageNameW(h, 0, buf, ctypes.byref(n)):
+            return ""
+        return os.path.basename(buf.value).lower()
+    finally:
+        k32.CloseHandle(h)
+
+
+def running_profiles() -> set:
+    """The browser identities Epoch windows are open on right now. Each identity folder keeps the pid of the
+    browser launched on it (epoch.pid); the identity is in use while that process runs and is a browser."""
     found = set()
-    for line in out.splitlines():
-        low = line.lower()
-        if "msedge.exe" not in low and "chrome.exe" not in low:   # a browser, not a script that mentions the flag
+    lab = lab_root()
+    for d in lab.glob("app-profile*"):
+        try:
+            pid = int((d / "epoch.pid").read_text(encoding="utf-8").strip())
+        except (OSError, ValueError):
             continue
-        i = line.find("--user-data-dir=")
-        if i >= 0:
-            found.add(line[i + len("--user-data-dir="):].split(" --")[0].strip().strip('"').lower())
+        if _exe_of(pid) in ("msedge.exe", "chrome.exe"):
+            found.add(str(d).lower())
     return found
 
 
@@ -134,8 +164,74 @@ def open_window(url: str, profile: str | None = None):
     profile.mkdir(parents=True, exist_ok=True)
     args = [b, f"--app={url}", f"--user-data-dir={profile}", "--window-size=1500,920", "--no-first-run",
             "--no-default-browser-check", "--disable-features=TranslateUI"]
-    return subprocess.Popen(args, cwd=str(REPO), stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    proc = subprocess.Popen(args, cwd=str(REPO), stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                             creationflags=getattr(subprocess, "DETACHED_PROCESS", 0) if os.name == "nt" else 0)
+    try:
+        (profile / "epoch.pid").write_text(str(proc.pid), encoding="utf-8")   # this identity is in use while that runs
+    except OSError:
+        pass
+    return proc
+
+
+class Splash:
+    """What the launcher is doing, while it does it: a small dark card in Epoch's colours with a status line and a
+    progress bar. Non-blocking (the launcher drives it with step and pulse); a no-op without tkinter."""
+
+    def __init__(self):
+        self.root = None
+        try:
+            import tkinter as tk
+        except Exception:  # noqa: BLE001
+            return
+        BG, PANEL, TEXT, MUTED, LINE, TEAL = "#141619", "#1c1f24", "#edeef0", "#b0b4ba", "#43484e", "#24b0a4"
+        self.tk, self.TEAL, self.LINE = tk, TEAL, LINE
+        root = tk.Tk()
+        root.overrideredirect(True)                       # no title bar: a card, not a window
+        root.configure(bg=BG)
+        root.attributes("-topmost", True)
+        frame = tk.Frame(root, bg=PANEL, highlightbackground=LINE, highlightthickness=1, padx=26, pady=20)
+        frame.pack(padx=14, pady=14)
+        head = tk.Frame(frame, bg=PANEL)
+        head.pack(anchor="w")
+        ring = tk.Canvas(head, width=26, height=26, bg=PANEL, highlightthickness=0)
+        ring.create_arc(3, 3, 23, 23, start=100, extent=320, style="arc", outline=TEAL, width=5)
+        ring.pack(side="left", padx=(0, 10))
+        tk.Label(head, text="Epoch", bg=PANEL, fg=TEXT, font=("Segoe UI", 15, "bold")).pack(side="left")
+        self.status = tk.Label(frame, text="Starting", bg=PANEL, fg=MUTED, font=("Segoe UI", 10), anchor="w", width=46)
+        self.status.pack(anchor="w", pady=(12, 8))
+        self.bar = tk.Canvas(frame, width=380, height=6, bg=BG, highlightthickness=0)
+        self.bar.pack(anchor="w")
+        self.fill = self.bar.create_rectangle(0, 0, 0, 6, fill=TEAL, width=0)
+        self.frac, self.phase = 0.0, 0
+        root.update_idletasks()
+        w, h = root.winfo_width(), root.winfo_height()
+        root.geometry("+%d+%d" % ((root.winfo_screenwidth() - w) // 2, (root.winfo_screenheight() - h) // 2))
+        root.update()
+        self.root = root
+
+    def step(self, text: str, frac: float) -> None:
+        if not self.root:
+            return
+        self.status.configure(text=text)
+        self.frac = frac
+        self.bar.coords(self.fill, 0, 0, int(380 * frac), 6)
+        self.root.update()
+
+    def pulse(self) -> None:                               # a wait with no measure: the bar creeps toward the next step
+        if not self.root:
+            return
+        self.phase += 1
+        creep = min(self.frac + 0.3, self.frac + 0.3 * (1 - 0.97 ** self.phase))
+        self.bar.coords(self.fill, 0, 0, int(380 * creep), 6)
+        self.root.update()
+
+    def close(self) -> None:
+        if self.root:
+            try:
+                self.root.destroy()
+            except Exception:  # noqa: BLE001
+                pass
+            self.root = None
 
 
 def hub_json(port: int, path: str, post: bool = False) -> dict:
@@ -260,16 +356,30 @@ def main(argv=None) -> int:
     ap.add_argument("--url", default="", help="open this page instead of the dashboard")
     ap.add_argument("--no-window", action="store_true", help="start the hub only")
     a = ap.parse_args(argv)
-    if not start_hub(a.port):
-        print("the hub did not answer on port %d; see %s" % (a.port, lab_root() / "spaces" / "hub.log"), file=sys.stderr)
-        return 1
-    if not a.no_window:
+    splash = Splash() if not a.no_window else None
+    try:
+        if not start_hub(a.port, splash):
+            if splash:
+                splash.step("The hub did not answer; see spaces\\hub.log in the lab folder", 1.0)
+                time.sleep(4)
+            print("the hub did not answer on port %d; see %s" % (a.port, lab_root() / "spaces" / "hub.log"), file=sys.stderr)
+            return 1
+        if a.no_window:
+            return 0
+        splash.step("Opening the window", 0.8)
         t0 = time.time()
         proc = open_window(a.url or "http://127.0.0.1:%d/" % a.port)
-        if proc is not None:
-            proc.wait()
-            if time.time() - t0 > 5 and not running_profiles():   # the last Epoch window closed: ask; others stay silent
-                ask_shutdown(a.port)
+        splash.step("Ready", 1.0)
+        for _ in range(12):                                # the browser takes a moment to show its window
+            splash.pulse()
+            time.sleep(0.1)
+    finally:
+        if splash:
+            splash.close()
+    if proc is not None:
+        proc.wait()
+        if time.time() - t0 > 5 and not running_profiles():   # the last Epoch window closed: ask; others stay silent
+            ask_shutdown(a.port)
     return 0
 
 

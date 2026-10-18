@@ -435,15 +435,15 @@ def main(argv=None) -> int:
     ap.add_argument("--spaces", default=str(lab_root() / "spaces"))
     ap.add_argument("--open", action="store_true", help="open the hub page in the default browser")
     a = ap.parse_args(argv)
-    httpd = ThreadingHTTPServer(("127.0.0.1", a.port), Handler)
-    httpd.daemon_threads = True
-    try:                                                   # spaces that travel with the repository (space/bundle.py)
-        from space import bundle
+    try:                                                   # spaces that travel with the repository (space/bundle.py),
+        from space import bundle                           # before the port opens: the launcher's wait covers the install
         got = bundle.install_all()
         if got:
             print("installed bundled spaces: %s" % ", ".join(got), flush=True)
     except Exception as e:  # noqa: BLE001
         print("bundles: %s" % str(e)[:200], flush=True)
+    httpd = ThreadingHTTPServer(("127.0.0.1", a.port), Handler)
+    httpd.daemon_threads = True
     httpd.hub = Hub(Path(a.spaces))
     print("hub on http://127.0.0.1:%d/  spaces in %s" % (a.port, a.spaces), flush=True)
     if a.open:
