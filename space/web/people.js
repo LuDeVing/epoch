@@ -14,7 +14,8 @@ function PeoplePanel({ api, onClose }) {
   const [err, setErr] = useState('');
   const [made, setMade] = useState(null);
   const base = api.base || '';
-  const headers = () => ({ 'Content-Type': 'application/json', ...(api.flags && api.flags.key ? { 'X-Space-Key': api.flags.key } : {}) });
+  const headers = () => ({ 'Content-Type': 'application/json', 'X-Space-Actor': api.me || '', 'X-Space-Kind': 'human',   // a POST says who sends it: the session must match
+    ...(api.flags && api.flags.key ? { 'X-Space-Key': api.flags.key } : {}) });
   const refresh = async () => {
     try {
       const r = await fetch(`${base}/api/people${api.flags && api.flags.key ? `?key=${api.flags.key}` : ''}`, { cache: 'no-store' });
