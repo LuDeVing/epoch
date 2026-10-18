@@ -19,6 +19,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 #topbar { background: var(--bg-panel); border-bottom: 1px solid var(--line-subtle); padding: 6px 12px; display: grid; gap: 4px; }
 .topbar__line { display: flex; align-items: center; gap: var(--gap); flex-wrap: wrap; min-height: 26px; }
 .brand { font-weight: 600; }
+.brand--link { color: inherit; text-decoration: none; } .brand--link:hover { text-decoration: underline; }
+.topbar__back { text-decoration: none; }
 .dot-sep { color: var(--solid); }
 .conn--live { color: var(--ok); } .conn--reconnecting { color: var(--warn); } .conn--offline { color: var(--bad); } .conn--rejected { color: var(--bad); } .conn--connecting { color: var(--text-2); }
 .hash-chip { color: var(--text-2); border: 1px solid var(--line-subtle); border-radius: 4px; padding: 0 6px; }

@@ -282,6 +282,13 @@ async function pressGo() {
 }
 
 // ---- top bar, banners, strip -----------------------------------------------------------------------------------------
+// the dashboard (space/hub.py) on the same host, port 8760 unless the page was opened with ?hub=<url>
+function hubUrl() {
+  try {
+    if (params.get('hub')) return params.get('hub');
+    return `${location.protocol}//${location.hostname}:8760/`;
+  } catch (e) { return 'http://127.0.0.1:8760/'; }
+}
 function connText() {
   if (net.status === 'live') return `Live #${current ? current.head : 0}`;
   if (net.status === 'offline') return 'Offline';
@@ -312,7 +319,8 @@ function Topbar({ v }) {
   const space = v.spaceId || net.spaceId || 'space';
   const others = [...v.people.keys()].filter((p) => p !== flags.me);
   return html`<div class="topbar__line">
-      <span class="brand" title=${`layout ${v.layout.hash} (${layoutName}); every window showing this log draws the same`}>HTSA</span><span class="dot-sep">.</span><span class="space-name">${space}</span>
+      <a class="brand brand--link" href=${hubUrl()} title="back to the dashboard: all your spaces">HTSA</a><span class="dot-sep">.</span><span class="space-name">${space}</span>
+      <a class="btn btn--small topbar__back" href=${hubUrl()} title="all your spaces">Dashboard</a>
       <span class="dot-sep">.</span><span class=${`runstate${run.waiting ? ' runstate--waiting' : ''}`} title=${run.stage ? `stage ${run.stage}, event #${v.head}` : ''}>${runText(run)}</span>
       ${!g.hidden ? html`<button class="btn btn--primary btn--go" disabled=${g.disabled} title=${g.title || ''} onClick=${pressGo}>${g.label}</button>` : null}
       <span class=${`conn conn--${net.status}`} title=${`connection: ${connText()}`}>${net.status === 'live' ? '' : connText()}</span>
