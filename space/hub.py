@@ -73,8 +73,8 @@ class Hub:
         if not rec.get("lan"):
             return ""
         try:
-            m = KEY_RE.search(Path(rec["log"]).read_text(encoding="utf-8", errors="replace"))
-            return m.group(1) if m else ""
+            keys = KEY_RE.findall(Path(rec["log"]).read_text(encoding="utf-8", errors="replace"))
+            return keys[-1] if keys else ""                      # the log keeps every start: the latest key is the live one
         except OSError:
             return ""
 
