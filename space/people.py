@@ -55,6 +55,7 @@ class People:
     def __init__(self, space_dir: Path, space_url: str, space_id: str | None, key: str = ""):
         self.dir = Path(space_dir) / "agents"
         self.url, self.space_id, self.key = space_url, space_id, key
+        self._ensured: dict = {}                   # name -> when ensure_agent last looked
         self.lock = threading.Lock()
 
     # ---- registry
@@ -120,6 +121,21 @@ class People:
         return {"url": self.url, "space_id": self.space_id, "lan": bool(self.key), "models": list(MODELS),
                 "me_default": me_default(), "invite_url": invite,
                 "people": [{"name": n, "join_url": self.join_url(n), "agent": by.get(n)} for n in names]}
+
+    def ensure_agent(self, raw_name) -> None:
+        """A person who shows up in the space gets their agent (Sonnet, canned fallback) if none is running;
+        checked at most once a minute per person, so a presence beat stays cheap. Never raises."""
+        import time as _t
+        name = clean_name(raw_name)
+        now = _t.time()
+        last = self._ensured.get(name, 0)
+        if now - last < 60:
+            return
+        self._ensured[name] = now
+        try:
+            self.add(name, "sonnet")
+        except Exception:  # noqa: BLE001
+            pass
 
     def add(self, raw_name, model) -> dict:
         name = clean_name(raw_name)

@@ -466,6 +466,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
                 if not isinstance(d, dict):
                     raise Reject(422, "bad_envelope")
                 sp.presence.beat(by, by_kind, d)
+                if by_kind == "human" and not getattr(self.server, "open_mode", False):   # a member present: their agent runs
+                    pe = getattr(self.server, "people", None)
+                    if pe is not None:
+                        pe.ensure_agent(by)
                 interrupts = sp.claims.renew_listed(by, d.get("claims"))
                 return self._send(200, {"head": sp.head(), "interrupts": interrupts,
                                         "claims_ok": not any(i["type"] == "claim_lost" for i in interrupts)})
