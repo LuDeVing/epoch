@@ -24,7 +24,7 @@ context: 2 to 5 sentences on the situation: what is done today, who is involved,
 criteria: 3 to 6 objects {name, how}: how to tell a good answer; name is one or two words, how is one sentence a judge can check.
 facts: up to 25 objects {text, source}: concrete facts, numbers, results and claims found in the files; source is the file name and where in it.
 limits: up to 8 strings: what must stay fixed, what must never happen, limits on time, money, people, tools.
-parts: 3 to 8 strings: the parts the problem naturally splits into.
+parts: 3 to 8 strings of two to five words each: the parts the problem naturally splits into (names, like "the paper forms" or "queue order", not sentences).
 field: the field in two or three words.
 scope: one sentence: what is in and what is out.
 open_questions: up to 6 strings: what the files leave unanswered, the questions the team should chase first.
@@ -81,6 +81,15 @@ def parse_json(text: str) -> dict:
     return d
 
 
+def _short(t: str, n: int) -> str:
+    """Cut at a word boundary, never mid-word."""
+    t = " ".join(str(t).split())
+    if len(t) <= n:
+        return t
+    cut = t[:n].rsplit(" ", 1)[0]
+    return (cut or t[:n]).rstrip(",;:")
+
+
 def to_spec(d: dict) -> dict:
     """The draft in the shape the wizard and space/launch.py use."""
     def lst(x):
@@ -94,7 +103,7 @@ def to_spec(d: dict) -> dict:
         "criteria": crit[:8],
         "facts": facts[:40],
         "limits": [{"text": t[:400]} for t in lst(d.get("limits"))[:12]],
-        "partsList": [{"name": t[:60]} for t in lst(d.get("parts"))[:9]],
+        "partsList": [{"name": _short(t, 48)} for t in lst(d.get("parts"))[:9]],
         "field": str(d.get("field") or "")[:80],
         "scope": str(d.get("scope") or "")[:400],
         "open_questions": lst(d.get("open_questions"))[:8],
