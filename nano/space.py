@@ -262,7 +262,8 @@ class LoopSpace:
         self.step, self.poll_s = bool(step), max(0.05, float(poll_s))
         self.pause_every = 0                    # --pause-every-rounds N: a wait for Go after every Nth round (at verified)
         self.run_dir = Path(loop.run_dir)
-        self.client = SpaceClient(self.actor, str(self.run_dir), base=self.url, kind="system")
+        self.client = SpaceClient(self.actor, str(self.run_dir), base=self.url, kind="system",
+                                  key=os.environ.get("HTSA_SPACE_KEY", ""))   # a --lan space refuses posts without its key
         self._lock = threading.Lock()              # one push at a time (tick from worker threads, push_stage)
         self.pending_cands: list = []              # this round's kept builds before the loop adds them to cands
         self.people: list[dict] = []               # person and delegate events seen so far (for the v2 blocks)

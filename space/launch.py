@@ -323,6 +323,7 @@ class Launcher:
 
     def __init__(self, db_path, space_url: str, space=None):
         self.db_path, self.space_url, self.space = str(db_path), space_url, space
+        self.key = ""                                     # the server's LAN key, handed to every run it spawns
         self.lock = threading.RLock()
         self.procs: dict[str, subprocess.Popen] = {}
         self.overrides: dict = {}          # tests only, e.g. {"implement": 1, "max_sketch_calls": 4}
@@ -397,6 +398,8 @@ class Launcher:
             d.mkdir(parents=True, exist_ok=True)
             log = d / (batch + ".log")
             env = dict(os.environ, HTSA_LAB_ROOT=str(lab_root()), PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
+            if self.key:
+                env["HTSA_SPACE_KEY"] = self.key
             if mode == "mock":
                 env["HTSA_BACKEND"] = "mock"
             if not env.get("HTSA_EXEC_PYTHON"):                # candidate scripts: a temp lab root has no venv
@@ -546,6 +549,8 @@ class Launcher:
                 cmd += ["--judge-model", JUDGE_MODEL if gen != JUDGE_MODEL else "sonnet"]
             log = Path(rec.get("log") or (self.runs_dir / (batch + ".log")))
             env = dict(os.environ, HTSA_LAB_ROOT=str(lab_root()), PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8")
+            if self.key:
+                env["HTSA_SPACE_KEY"] = self.key
             if rec.get("mode") == "mock":
                 env["HTSA_BACKEND"] = "mock"
             if not env.get("HTSA_EXEC_PYTHON"):
@@ -605,6 +610,7 @@ def register(httpd) -> Launcher:
     url = "http://%s:%d" % ("127.0.0.1" if host in ("0.0.0.0", "") else host, port)
     sp = getattr(httpd, "space", None)
     la = Launcher(sp.store.path if sp is not None else "space.db", url, sp)
+    la.key = getattr(httpd, "key", "") or ""
     httpd.launcher = la
 
     def body_of(b) -> dict:
