@@ -529,6 +529,12 @@ async function main() {
   [contract, layout] = await Promise.all([loadContract(), loadLayout()]);
   start();
   if (!flags.me && !flags.stage) { if (params.get('switch') !== '1' && await autoJoin()) return; askLogin(); return; }
+  if (flags.me && !flags.stage) {                            // a link with a name but no session behind it: sign in first
+    try {
+      const r = await fetch(`${base}/api/me${flags.key ? `?key=${encodeURIComponent(flags.key)}` : ''}`, { cache: 'no-store', credentials: 'same-origin' });
+      if (r.status === 401) { flags.me = ''; askLogin(); return; }   // the top bar then leaves the form alone
+    } catch (e) { /* offline: the page says so itself */ }
+  }
   if (flags.me) ls.set('htsa.me', flags.me);
   mountRail(document.getElementById('rail'), viewApi);
   mountStart(document.getElementById('start-run'), viewApi);

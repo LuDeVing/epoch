@@ -1,15 +1,34 @@
 // accounts.js: the accounts this browser has signed into, [{name, token}], so a person can switch between them
 // without typing a password again. Shared by the space page, the People panel and the hub. The token is the
 // session the server issued at sign-in; switching asks the server to set its cookie to that session.
+// The list lives in a cookie, not localStorage: a cookie is shared by every port of this host, so the dashboard and
+// each space server see the same saved accounts (localStorage is per origin, and every space is another port).
+const COOKIE = 'htsa_accounts';
+function readCookie() {
+  try {
+    const m = document.cookie.split(';').map((c) => c.trim()).find((c) => c.startsWith(COOKIE + '='));
+    if (!m) return null;
+    const v = JSON.parse(decodeURIComponent(m.slice(COOKIE.length + 1)));
+    return Array.isArray(v) ? v : null;
+  } catch (e) { return null; }
+}
+function writeCookie(rows) {
+  try { document.cookie = `${COOKIE}=${encodeURIComponent(JSON.stringify(rows))}; path=/; max-age=${60 * 60 * 24 * 180}; SameSite=Lax`; } catch (e) { /* ignore */ }
+  try { localStorage.setItem('htsa.accounts', JSON.stringify(rows)); } catch (e) { /* storage blocked */ }
+}
 export const accounts = {
-  list() { try { const v = JSON.parse(localStorage.getItem('htsa.accounts') || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } },
+  list() {
+    const c = readCookie();
+    if (c) return c;
+    try { const v = JSON.parse(localStorage.getItem('htsa.accounts') || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }   // older browsers' list
+  },
   save(name, token) {
     if (!name || !token) return;
     const rows = this.list().filter((a) => a.name !== name);
     rows.unshift({ name, token });
-    try { localStorage.setItem('htsa.accounts', JSON.stringify(rows.slice(0, 8))); } catch (e) { /* storage blocked */ }
+    writeCookie(rows.slice(0, 8));
   },
-  drop(name) { try { localStorage.setItem('htsa.accounts', JSON.stringify(this.list().filter((a) => a.name !== name))); } catch (e) { /* ignore */ } },
+  drop(name) { writeCookie(this.list().filter((a) => a.name !== name)); },
 };
 
 function keyQuery() {
