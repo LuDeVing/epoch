@@ -560,6 +560,15 @@ def register(httpd) -> Launcher:
     def report_route(b, q):
         return la.report(str(_one(q, "batch") or ""))
 
+    def structure_route(b, q):
+        b = body_of(b)
+        from space import files as filestore, structure as structurer
+        fs = filestore.Files(Path(sp.store.path).parent) if sp is not None else None
+        if fs is None:
+            raise Reject(503, "no_space")
+        ids = b.get("file_ids") if isinstance(b.get("file_ids"), list) else []
+        return structurer.structure(fs, [str(x) for x in ids][:40], str(b.get("notes") or ""))
+
     def stop_route(b, q):
         return la.stop(str(body_of(b).get("batch") or ""))
 
@@ -568,7 +577,8 @@ def register(httpd) -> Launcher:
         routes = httpd.routes = {}
     routes.update({("GET", "/api/run/profiles"): profiles_route, ("GET", "/api/run/estimate"): estimate_route,
                    ("POST", "/api/run/start"): start_route, ("GET", "/api/run/status"): status_route,
-                   ("POST", "/api/run/stop"): stop_route, ("GET", "/api/run/report"): report_route})
+                   ("POST", "/api/run/stop"): stop_route, ("GET", "/api/run/report"): report_route,
+                   ("POST", "/api/run/structure"): structure_route})
     return la
 
 

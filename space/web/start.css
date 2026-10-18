@@ -91,3 +91,7 @@ body.stage .start-log { display: none; }
 .wz-nudge { margin: 6px 18px 0; padding: 8px 10px; border-radius: 8px; background: color-mix(in oklab, var(--warn) 14%, var(--bg-panel)); color: var(--warn); font-size: var(--fs-small); }
 .wz-foot { display: flex; align-items: center; gap: 10px; padding: 12px 18px 14px; border-top: 1px solid var(--line-subtle); margin-top: 8px; }
 .wz-count { margin-left: auto; margin-right: 6px; }
+
+.wz-drop--big { padding: 22px 14px; }
+.wz-row--files { grid-template-columns: auto; }
+.wz-draftnote { background: color-mix(in oklab, var(--owner-a) 16%, var(--bg-panel)); border: 1px solid var(--owner-a); border-radius: 8px; padding: 8px 10px; font-size: var(--fs-small); }

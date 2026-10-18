@@ -4,7 +4,7 @@
 // findings right away. mountWizard(api) returns open(initialSpec, onDone).
 import { html, render, useState, useEffect, useRef } from './vendor/standalone.module.js';
 
-const STEPS = ['The problem', 'What good looks like', 'What is known', 'Limits', 'Shape', 'Review'];
+const STEPS = ['Your material', 'The problem', 'What good looks like', 'What is known', 'Limits', 'Shape', 'Review'];
 const CRITERIA_IDEAS = [
   ['Correctness', 'the answer follows from the facts and does not contradict them'],
   ['Cost', 'cheaper in money, time or effort than what is done today'],
@@ -48,6 +48,12 @@ function Wizard({ api, initial, onDone, onClose }) {
   const [field, setField] = useState(initial.field || '');
   const [scope, setScope] = useState(initial.scope || '');
   const [files, setFiles] = useState([]);
+  const [material, setMaterial] = useState(initial.material || []);
+  const [notes, setNotes] = useState(initial.notes || '');
+  const [drafting, setDrafting] = useState(false);
+  const [draftNote, setDraftNote] = useState(initial.draftNote || '');
+  const [openQs, setOpenQs] = useState(initial.open_questions || []);
+  const folderInput = useRef(null);
   const [busy, setBusy] = useState(0);
   const [err, setErr] = useState('');
   const fileInput = useRef(null);
@@ -57,15 +63,58 @@ function Wizard({ api, initial, onDone, onClose }) {
   const goalOk = goal.trim().length >= MIN_GOAL;
   const titleOk = title.trim().length >= 3;
   const checks = [
+    true,
     titleOk && goalOk,
     true, true, true, true, true,
   ];
   const nudges = [
+    material.length || notes.trim() ? '' : 'Pick the folder with your research, or drop the files that matter. Claude reads them and drafts the whole problem; you only correct it. Or skip ahead and write it yourself.',
     !titleOk ? 'Give it a title.' : !goalOk ? `Say more about the goal: ${Math.max(0, MIN_GOAL - goal.trim().length)} more characters. A few sentences give the team far more to work with than one line.` : '',
     criteria.length ? '' : 'Without criteria the judges fall back to correctness, usefulness, feasibility and clarity. One or two of your own are better.',
-    facts.length || files.length ? '' : 'Nothing known yet: the team will start from the goal alone. Even two facts or one file help a lot.',
+    facts.length || files.length || material.length ? '' : 'Nothing known yet: the team will start from the goal alone. Even two facts or one file help a lot.',
     '', '', '',
   ];
+
+  const uploadMaterial = async (list) => {
+    const arr = Array.from(list || []).filter((f) => f.size > 0 && f.size <= 8 * 1024 * 1024).slice(0, 40);
+    if (!arr.length) { setErr('No files of a usable size (up to 8 MB each, 40 files at most).'); return; }
+    if (!api.me) { setErr('Sign in to share files.'); return; }
+    setBusy((b) => b + 1); setErr('');
+    const got = [];
+    for (const file of arr) {
+      try {
+        const h = { 'X-Space-Actor': api.me, 'X-Space-Kind': 'human', 'Content-Type': file.type || 'application/octet-stream', 'X-Space-Filename': encodeURIComponent(file.webkitRelativePath || file.name) };
+        if (api.flags && api.flags.key) h['X-Space-Key'] = api.flags.key;
+        const r = await fetch(`${base}/api/upload`, { method: 'POST', credentials: 'same-origin', headers: h, body: file });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok) got.push(j); else if (r.status !== 415) setErr(`${file.name}: ${j.hint || j.error || r.status}`);
+      } catch (ex) { setErr(`${file.name}: ${ex.message}`); }
+    }
+    setMaterial((m) => [...m, ...got]);
+    setBusy((b) => b - 1);
+  };
+
+  const draft = async () => {
+    setDrafting(true); setErr('');
+    try {
+      const h = { 'Content-Type': 'application/json', 'X-Space-Actor': api.me || '', 'X-Space-Kind': 'human' };
+      if (api.flags && api.flags.key) h['X-Space-Key'] = api.flags.key;
+      const r = await fetch(`${base}/api/run/structure`, { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify({ file_ids: material.map((m) => m.id), notes }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.hint || j.error || `HTTP ${r.status}`);
+      const sp = j.spec || {};
+      setTitle(sp.title || title); setGoal(sp.goal || goal); setContext(sp.context || context);
+      setCriteria(sp.criteria && sp.criteria.length ? sp.criteria : criteria);
+      setFacts(sp.facts && sp.facts.length ? sp.facts : facts);
+      setLimits(sp.limits && sp.limits.length ? sp.limits : limits);
+      setParts(sp.partsList && sp.partsList.length ? sp.partsList : parts);
+      setField(sp.field || field); setScope(sp.scope || scope); setOpenQs(sp.open_questions || []);
+      const readable = (j.manifest || []).filter((m) => m.used > 0).length;
+      setDraftNote(`Drafted by Claude from ${readable} readable file${readable === 1 ? '' : 's'} of ${(j.manifest || []).length}. Check every line; it marks guesses with "(guess)".`);
+      setStep(STEPS.length - 1);
+    } catch (ex) { setErr(`Could not draft: ${ex.message}`); }
+    setDrafting(false);
+  };
 
   const upload = async (file) => {
     if (!api.me) { setErr('Sign in to share files.'); return; }
@@ -86,16 +135,16 @@ function Wizard({ api, initial, onDone, onClose }) {
     const known = [...facts.filter((f) => f.text.trim()).map((f) => `${f.text.trim()}${f.source && f.source.trim() ? ` (source: ${f.source.trim()})` : ''}`),
       ...files.map((f) => `File ${f.name}${f.excerpt ? `: ${f.excerpt.slice(0, 300).replace(/\s+/g, ' ')}` : ''}`)].join('\n');
     const fixed = limits.filter((l) => l.text.trim()).map((l) => l.text.trim()).join('\n');
-    const goalText = [goal.trim(), context.trim() ? `Situation: ${context.trim()}` : '', scope.trim() ? `Scope: ${scope.trim()}` : ''].filter(Boolean).join(' ');
+    const goalText = [goal.trim(), context.trim() ? `Situation: ${context.trim()}` : '', scope.trim() ? `Scope: ${scope.trim()}` : '', openQs.length ? `Open questions: ${openQs.join('; ')}` : ''].filter(Boolean).join(' ');
     return { title: title.trim(), goal: goalText, success: succ, known, fixed, parts: parts.map((p) => p.name.trim()).filter(Boolean).join(', '), field: field.trim(),
       // kept for editing
-      context, criteria, facts, limits, partsList: parts, scope, files: files.map((f) => f.name) };
+      context, criteria, facts, limits, partsList: parts, scope, files: [...material, ...files].map((f) => f.name), material, notes, draftNote, open_questions: openQs };
   };
 
   const finish = async () => {
     const sp = spec();
     // files become findings now, so the team reads them from the first step
-    for (const f of files) {
+    for (const f of [...material, ...files]) {
       try { await api.post('finding_posted', { title: f.name.slice(0, 120), text: `Shared when describing the problem: ${title.trim()}`.slice(0, 400), kind: f.kind || 'data', source: f.name, values: {}, part: null, excerpt: f.excerpt || '', file: { id: f.id, name: f.name, bytes: f.bytes, type: f.type, lines: f.lines ?? null, text: !!f.text } }, { subject: 'run:main' }); }
       catch (e) { /* the file stays uploaded; the finding can be shared from the tab */ }
     }
@@ -107,6 +156,22 @@ function Wizard({ api, initial, onDone, onClose }) {
   const Step = () => {
     switch (step) {
       case 0: return html`<div class="wz-step">
+        <p class="wz-why">Most of what the team needs is already in your research folder: notes, data, drafts, results, the papers you work from. Pick that folder, or drop the files that matter, and Claude reads them and drafts the problem for you. You then correct it, step by step.</p>
+        <div class="wz-drop wz-drop--big" onClick=${() => folderInput.current && folderInput.current.click()}
+          onDragOver=${(e) => e.preventDefault()} onDrop=${(e) => { e.preventDefault(); uploadMaterial(e.dataTransfer.files); }}>
+          <input ref=${folderInput} type="file" multiple webkitdirectory style="display:none" onChange=${(e) => { uploadMaterial(e.target.files); e.target.value = ''; }} />
+          <strong>Pick your research folder</strong><div class="muted">or drop files here. Text, Markdown, CSV, JSON and code are read in full; PDFs and images by name for now. Up to 40 files, 8 MB each.</div>
+          ${busy ? html`<div class="muted">uploading...</div>` : null}
+        </div>
+        <div class="wz-row wz-row--files"><button class="btn btn--small" type="button" onClick=${(e) => { e.stopPropagation(); if (fileInput.current) fileInput.current.click(); }}>+ single files</button>
+          <input ref=${fileInput} type="file" multiple style="display:none" onChange=${(e) => { uploadMaterial(e.target.files); e.target.value = ''; }} /></div>
+        ${material.length ? html`<ul class="wz-files">${material.map((f) => html`<li><span>${f.name}</span><span class="muted">${f.lines ? `${f.lines} lines` : f.text ? `${f.bytes} B` : 'name only'}</span><button class="btn btn--small" type="button" onClick=${() => setMaterial(material.filter((x) => x.id !== f.id))}>x</button></li>`)}</ul>` : null}
+        <label class="wz-label">Anything the files do not say <span class="muted">optional: what you want, in a few words</span></label>
+        <textarea class="wz-input" rows="2" value=${notes} onInput=${(e) => setNotes(e.target.value)} placeholder="We want to cut the morning wait without hiring; the spreadsheet has last month's arrival times."></textarea>
+        <div class="wz-row"><button class="btn btn--primary" type="button" disabled=${drafting || busy || (!material.length && !notes.trim())} onClick=${draft}>${drafting ? 'Claude is reading...' : 'Let Claude draft the problem'}</button>
+          <button class="btn" type="button" onClick=${() => setStep(1)}>Write it myself</button></div>
+      </div>`;
+      case 1: return html`<div class="wz-step">
         <p class="wz-why">Say what you want to find out or improve, and the situation it lives in. The team plans from this text alone, so a short paragraph beats a line. Write it the way you would explain it to a colleague who does not know your work.</p>
         <label class="wz-label">Title <span class="muted">a few words</span></label>
         <input class="wz-input" value=${title} onInput=${(e) => setTitle(e.target.value)} maxlength="120" placeholder="Cut waiting time at the clinic front desk" autofocus />
@@ -115,13 +180,13 @@ function Wizard({ api, initial, onDone, onClose }) {
         <label class="wz-label">The situation <span class="muted">optional: what is done today, who is involved, what has been tried</span></label>
         <textarea class="wz-input" rows="3" value=${context} onInput=${(e) => setContext(e.target.value)} placeholder="Today every patient fills a paper form at the desk and the receptionist types it in. We tried a second desk last year; it helped a little but we could not staff it."></textarea>
       </div>`;
-      case 1: return html`<div class="wz-step">
+      case 2: return html`<div class="wz-step">
         <p class="wz-why">How will the team know a proposal is good? Each line here becomes something the judges score. Name it, then say how to tell. Pick from the list or write your own.</p>
         <div class="wz-chips">${CRITERIA_IDEAS.filter(([n]) => !criteria.some((c) => c.name === n)).map(([n, how]) => html`<button class="wz-chip" type="button" onClick=${() => setCriteria([...criteria, { name: n, how }])}>+ ${n}</button>`)}</div>
         <${Rows} rows=${criteria} setRows=${setCriteria} addLabel="criterion" empty="No criteria yet."
           fields=${[{ key: 'name', placeholder: 'Name, like Shorter wait' }, { key: 'how', placeholder: 'How to tell, like the average wait at check-in drops below 10 minutes', multi: true }]} />
       </div>`;
-      case 2: return html`<div class="wz-step">
+      case 3: return html`<div class="wz-step">
         <p class="wz-why">Facts, numbers, past results, what the literature says. The inventors reason from these, the critics check against them, and they are cited by number in every proposal. Files are shared with the team as findings right away.</p>
         <${Rows} rows=${facts} setRows=${setFacts} addLabel="fact" empty="No facts yet."
           fields=${[{ key: 'text', placeholder: 'A fact, like: mornings are the busiest, 60 percent of arrivals come before 10', multi: true }, { key: 'source', placeholder: 'Source (optional): a measurement, a paper, own observation' }]} />
@@ -133,12 +198,12 @@ function Wizard({ api, initial, onDone, onClose }) {
         </div>
         ${files.length ? html`<ul class="wz-files">${files.map((f) => html`<li><span>${f.name}</span><span class="muted">${f.lines ? `${f.lines} lines` : `${f.bytes} B`}</span><button class="btn btn--small" type="button" onClick=${() => setFiles(files.filter((x) => x.id !== f.id))}>x</button></li>`)}</ul>` : null}
       </div>`;
-      case 3: return html`<div class="wz-step">
+      case 4: return html`<div class="wz-step">
         <p class="wz-why">What must stay as it is, what must never happen, and the limits on time, money and people. Every proposal is checked against these, so a limit written here saves a wasted idea later.</p>
         <${Rows} rows=${limits} setRows=${setLimits} addLabel="limit" empty="No limits yet."
           fields=${[{ key: 'text', placeholder: 'A limit, like: the two receptionists stay; no new software this year; results within a month', multi: true }]} />
       </div>`;
-      case 4: return html`<div class="wz-step">
+      case 5: return html`<div class="wz-step">
         <p class="wz-why">Optional shape. If you already see the parts of the problem, name them and the map starts from yours; otherwise the mapper draws them. The field tells the research step where to look. Scope says what is in and out.</p>
         <label class="wz-label">Parts <span class="muted">optional</span></label>
         <${Rows} rows=${parts} setRows=${setParts} addLabel="part" empty="The mapper will draw the parts from the goal."
@@ -152,6 +217,7 @@ function Wizard({ api, initial, onDone, onClose }) {
         const sp = spec();
         return html`<div class="wz-step">
           <p class="wz-why">This is what the team gets. Go back to any step to change it. Then choose a size in the panel and start.</p>
+          ${draftNote ? html`<div class="wz-draftnote">${draftNote}</div>` : null}
           <div class="wz-review">
             <div class="wz-review__k">Title</div><div>${sp.title || html`<span class="muted">none</span>`}</div>
             <div class="wz-review__k">Goal</div><div class="wz-review__v">${sp.goal}</div>
@@ -160,6 +226,8 @@ function Wizard({ api, initial, onDone, onClose }) {
             <div class="wz-review__k">Limits</div><div>${limits.length ? html`<ul>${limits.map((l) => html`<li>${l.text}</li>`)}</ul>` : html`<span class="muted">none</span>`}</div>
             <div class="wz-review__k">Parts</div><div>${parts.length ? parts.map((p) => p.name).join(', ') : html`<span class="muted">drawn by the mapper</span>`}</div>
             ${field ? html`<div class="wz-review__k">Field</div><div>${field}</div>` : null}
+            ${openQs.length ? html`<div class="wz-review__k">Open questions</div><div><ul>${openQs.map((q) => html`<li>${q}</li>`)}</ul></div>` : null}
+            ${material.length ? html`<div class="wz-review__k">Material</div><div>${material.length} file${material.length === 1 ? '' : 's'} shared with the team</div>` : null}
           </div>
         </div>`;
       }
@@ -169,7 +237,7 @@ function Wizard({ api, initial, onDone, onClose }) {
   return html`<div class="wz-backdrop" onClick=${(e) => { if (e.target === e.currentTarget) onClose(); }}>
     <div class="wz" role="dialog" aria-label="Describe your problem">
       <div class="wz-head"><div class="wz-title">Describe your problem</div><button class="btn btn--small" type="button" onClick=${onClose}>x</button></div>
-      <ol class="wz-steps">${STEPS.map((s, i) => html`<li class=${`wz-stepname${i === step ? ' is-on' : ''}${i < step ? ' is-done' : ''}`} onClick=${() => { if (i <= step || checks[0]) setStep(i); }}>${i + 1}. ${s}</li>`)}</ol>
+      <ol class="wz-steps">${STEPS.map((s, i) => html`<li class=${`wz-stepname${i === step ? ' is-on' : ''}${i < step ? ' is-done' : ''}`} onClick=${() => { if (i <= 1 || i <= step || checks[1]) setStep(i); }}>${i + 1}. ${s}</li>`)}</ol>
       <div class="wz-body">${Step()}</div>
       ${nudges[step] ? html`<div class="wz-nudge">${nudges[step]}</div>` : null}
       ${err ? html`<div class="error">${err}</div>` : null}
@@ -178,7 +246,7 @@ function Wizard({ api, initial, onDone, onClose }) {
         <span class="muted wz-count">${step + 1} of ${STEPS.length}</span>
         ${step < STEPS.length - 1
           ? html`<button class="btn btn--primary" type="button" disabled=${!checks[step]} onClick=${() => setStep(step + 1)}>Next</button>`
-          : html`<button class="btn btn--primary" type="button" disabled=${!checks[0] || busy} onClick=${finish}>Use this problem</button>`}
+          : html`<button class="btn btn--primary" type="button" disabled=${!checks[1] || busy} onClick=${finish}>Use this problem</button>`}
       </div>
     </div>
   </div>`;
