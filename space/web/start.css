@@ -119,3 +119,6 @@ body.stage .start-log { display: none; }
 .run-panel .start-error--run, .run-panel .start-done, .run-panel .start-note, .run-panel .start-report { max-width: none; text-align: left; justify-content: flex-start; }
 .run-panel .start-log, .run-panel .run-files { position: static; max-width: none; }
 .run-chip__text { cursor: pointer; }
+
+.wz-check { display: flex; align-items: flex-start; gap: 8px; margin: 4px 0 8px; cursor: pointer; }
+.wz-check input { margin-top: 3px; }

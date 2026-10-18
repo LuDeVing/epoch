@@ -21,11 +21,11 @@ function words(s) { return String(s || '').trim().split(/\s+/).filter(Boolean).l
 
 // ---- list editors ------------------------------------------------------------------------------------------------
 // the parts as one line for the profile: "part > sub one | sub two, part two" (nano/profiles/_custom.py reads it back)
-export function partsText(rows) {
+export function partsText(rows, deep = true) {
   return (rows || []).map((p) => {
     const name = String(p.name || '').trim().replace(/[,>|]/g, ' ');
     if (!name) return '';
-    const subs = String(p.sub || '').split(',').map((s) => s.trim().replace(/[>|]/g, ' ')).filter(Boolean);
+    const subs = deep ? String(p.sub || '').split(',').map((s) => s.trim().replace(/[>|]/g, ' ')).filter(Boolean) : [];
     return subs.length ? `${name} > ${subs.join(' | ')}` : name;
   }).filter(Boolean).join(', ');
 }
@@ -55,6 +55,7 @@ function Wizard({ api, initial, onDone, onClose }) {
   const [facts, setFacts] = useState(initial.facts || []);
   const [limits, setLimits] = useState(initial.limits || []);
   const [parts, setParts] = useState(initial.partsList || []);
+  const [deep, setDeep] = useState(!!initial.deep);            // two-level map: off by default, so research keeps its one-level map
   const [field, setField] = useState(initial.field || '');
   const [scope, setScope] = useState(initial.scope || '');
   const [files, setFiles] = useState([]);
@@ -146,7 +147,7 @@ function Wizard({ api, initial, onDone, onClose }) {
       ...files.map((f) => `File ${f.name}${f.excerpt ? `: ${f.excerpt.slice(0, 300).replace(/\s+/g, ' ')}` : ''}`)].join('\n');
     const fixed = limits.filter((l) => l.text.trim()).map((l) => l.text.trim()).join('\n');
     const goalText = [goal.trim(), context.trim() ? `Situation: ${context.trim()}` : '', scope.trim() ? `Scope: ${scope.trim()}` : '', openQs.length ? `Open questions: ${openQs.join('; ')}` : ''].filter(Boolean).join(' ');
-    return { title: title.trim(), goal: goalText, success: succ, known, fixed, parts: partsText(parts), field: field.trim(),
+    return { title: title.trim(), goal: goalText, success: succ, known, fixed, parts: partsText(parts, deep), deep, field: field.trim(),
       // kept for editing
       context, criteria, facts, limits, partsList: parts, scope, files: [...material, ...files].map((f) => f.name), material, notes, draftNote, open_questions: openQs };
   };
@@ -216,8 +217,10 @@ function Wizard({ api, initial, onDone, onClose }) {
       case 5: return html`<div class="wz-step">
         <p class="wz-why">Optional shape. If you already see the parts of the problem, name them and the map starts from yours; otherwise the mapper draws them. The field tells the research step where to look. Scope says what is in and out.</p>
         <label class="wz-label">Parts <span class="muted">optional</span></label>
+        <label class="wz-check"><input type="checkbox" checked=${deep} onChange=${(e) => setDeep(e.target.checked)} />
+          Two-level map: keep the sub-parts under each part <span class="muted">(for demonstrations; off, the map is the parts only and the sub-parts are ignored)</span></label>
         <${Rows} rows=${parts} setRows=${setParts} addLabel="part" empty="The mapper will draw the parts from the goal."
-          fields=${[{ key: 'name', placeholder: 'A part, like: the forms' }, { key: 'sub', placeholder: 'its sub-parts, separated by commas, like: which fields to drop, who fills it in' }]} />
+          fields=${deep ? [{ key: 'name', placeholder: 'A part, like: the forms' }, { key: 'sub', placeholder: 'its sub-parts, separated by commas, like: which fields to drop, who fills it in' }] : [{ key: 'name', placeholder: 'A part, like: the forms; the queue order; the desk layout' }]} />
         <label class="wz-label">Field <span class="muted">optional</span></label>
         <input class="wz-input" value=${field} onInput=${(e) => setField(e.target.value)} maxlength="80" placeholder="clinic operations, compiler design, event organisation..." />
         <label class="wz-label">Scope <span class="muted">optional: what is in, what is out</span></label>
@@ -234,7 +237,7 @@ function Wizard({ api, initial, onDone, onClose }) {
             <div class="wz-review__k">Judged on</div><div>${criteria.length ? html`<ul>${criteria.map((c) => html`<li><strong>${c.name}</strong>${c.how ? `: ${c.how}` : ''}</li>`)}</ul>` : html`<span class="muted">the default four: correctness, usefulness, feasibility, clarity</span>`}</div>
             <div class="wz-review__k">Known</div><div>${facts.length || files.length ? html`<ul>${facts.map((f) => html`<li>${f.text}${f.source ? html` <span class="muted">(${f.source})</span>` : null}</li>`)}${files.map((f) => html`<li>file ${f.name}</li>`)}</ul>` : html`<span class="muted">nothing yet</span>`}</div>
             <div class="wz-review__k">Limits</div><div>${limits.length ? html`<ul>${limits.map((l) => html`<li>${l.text}</li>`)}</ul>` : html`<span class="muted">none</span>`}</div>
-            <div class="wz-review__k">Parts</div><div>${parts.length ? parts.map((p) => p.sub ? `${p.name} (${p.sub})` : p.name).join('; ') : html`<span class="muted">drawn by the mapper</span>`}</div>
+            <div class="wz-review__k">Parts</div><div>${parts.length ? parts.map((p) => deep && p.sub ? `${p.name} (${p.sub})` : p.name).join('; ') : html`<span class="muted">drawn by the mapper</span>`}${deep ? html` <span class="muted">two-level map</span>` : null}</div>
             ${field ? html`<div class="wz-review__k">Field</div><div>${field}</div>` : null}
             ${openQs.length ? html`<div class="wz-review__k">Open questions</div><div><ul>${openQs.map((q) => html`<li>${q}</li>`)}</ul></div>` : null}
             ${material.length ? html`<div class="wz-review__k">Material</div><div>${material.length} file${material.length === 1 ? '' : 's'} shared with the team</div>` : null}
