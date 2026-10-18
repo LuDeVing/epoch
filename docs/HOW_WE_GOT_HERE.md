@@ -44,15 +44,17 @@ The agents that invent ideas for that part see this before they write anything.
 
 ## 2. The real problem: thinking in a line
 
-Why does an AI not come up with new ideas? Our answer: its thinking is linear. It talks to itself in tokens, one after
-another, and each next token is the most likely continuation of what came before. The most likely continuation of an
-idea is the obvious idea. Ask again and you get the same idea in different words. A 2024 study of research ideation
-had a model produce four thousand ideas; they collapsed to about two hundred distinct ones [6]. Our own notes on this
-are in `research_notes/idea_generation`.
+Why does an AI not come up with new ideas? The measured fact is that its ideas are few and repeated: a 2024 study of
+research ideation had a model produce four thousand ideas, and they collapsed to about two hundred distinct ones
+[6]. Our working explanation, which we have not proved, is that its thinking is linear: it talks to itself in tokens,
+one after another, each a likely continuation of what came before, and the likely continuation of an idea is the
+obvious idea. Ask again and you get the same idea in different words. Our own notes on this are in
+`research_notes/idea_generation`.
 
-People who are good at inventing do not think in a line. They have schemas: habits of directing thought that were
-learned, named and studied. Experts represent a problem by its deep structure, not its surface (Chi, Feltovich and
-Glaser, 1981 [7]). Seeing an example first narrows what people produce (Jansson and Smith, 1991: design fixation
+People who invent well have something a single line of tokens does not: schemas, habits of directing thought that
+were learned, named and studied. The studies below are about people, and whether their findings transfer to a model
+is an assumption; section 4 is the test of it. Experts represent a problem by its deep structure, not its surface
+(Chi, Feltovich and Glaser, 1981 [7]). Seeing an example first narrows what people produce (Jansson and Smith, 1991: design fixation
 [8]). Comparing two analogues and writing down the shared schema roughly doubles the chance of transferring it to a
 new problem (Gick and Holyoak, 1983 [9]). People who generate ideas alone and pool them afterwards produce more and
 better ideas than a group talking (Diehl and Stroebe, 1987 [10], and the meta-analyses since). The returns on ideas
@@ -73,9 +75,11 @@ The agents never decide what happens next.
 2. **Map the problem.** One call draws a tree of parts, each with a frame (how it works today), its assumptions (the
    design choices a different approach could remove) and a boundary. Experts represent a problem by its deep
    structure, so the map is the first thing every later agent sees.
-3. **Invent per part, alone.** Each part gets its own idea agents, each on a different card: a different way to look
-   (remove, invert, port a known technique and adapt it, analogy with a typed mapping, doubt the map). They work
-   independently and never see each other's output, so the pool is wide before anyone judges.
+3. **Invent per part, alone.** Each part gets its own idea agents, each on a different card, a short push in a
+   different direction: change the main choice; flip an assumption; take an unusual but valid angle; borrow from a
+   distant field through an explicit mapping; port a known technique and adapt it; remove a component and see what
+   the measurements say it bought; doubt the map. They work independently and never see each other's output, so the
+   pool is wide before anyone judges.
 4. **Group.** Ideas are clustered by mechanism, not wording. Many words for one idea become one dot; what is left is
    the real spread.
 5. **Argue.** Critics attack the chosen ideas three levels deep; the idea's author answers once, with a fact, a change
@@ -109,8 +113,8 @@ became a rule of the schema.
    its text. Where a test exists, the test ranks. Where none does, a blind panel ranks with people's votes at a
    bounded weight, and the proposal must name the test that would settle it.
 3. **The verifier is the system, and everything that can game it will.** Verifier exploits in AlphaEvolve's
-   mathematics study [23], a speedup that shrank after decontamination, a silent no-op accepted as a speedrun record
-   [36]. So builds run in a sandbox with no network and no access to the exam; placebo candidates and known winners go
+   mathematics study [23], a kernel "speedup" of 3.13x that fell to 1.49x once the benchmark was decontaminated [37],
+   a silent no-op accepted as a speedrun record [36]. So builds run in a sandbox with no network and no access to the exam; placebo candidates and known winners go
    through the same ladder every run so the false-positive rate is measured; a neutralised change must reproduce the
    baseline.
 4. **Simple baselines compete with clever search.** Flat best-of-N matched iterated search on speedrun tasks, and
@@ -118,8 +122,8 @@ became a rule of the schema.
    outcome lineage [25][26][23]. So every mechanism we add is run as an arm against the plain version at matched cost,
    and the outcome lineage of builds is kept for selection.
 5. **Real improvements are mostly ports, repairs and recombinations found by measuring a pathology.** The median
-   speedrun record saves about one percent; at least eleven of ninety-two are explicit ports; agents told to be novel
-   did not improve the baseline [36]. So the baseline is measured and instrumented before any idea exists, one card
+   speedrun record saves about one percent; at least eleven of ninety-two are explicit ports [36]; the 2026 research
+   agents tune, stack and port, and did not originate a gain on their own [38][39]. So the baseline is measured and instrumented before any idea exists, one card
    asks for a known technique adapted to this setting, and novelty is protected in a long-shot lane of build slots
    rather than demanded of the main line.
 6. **Generate alone, then pool.** People who generate ideas independently and pool them afterwards produce more and
@@ -136,9 +140,8 @@ became a rule of the schema.
 9. **Method prompts do not beat plain ones.** Assessments of TRIZ and similar methods find no strong effect, and a
    short "wild, outside the usual categories" prompt matched them [34][35]. So the structure went into the inputs
    (the map, the measurements, the reading) and the verification, not into clever instruction wording. Each card is
-   one short push: change the main choice, flip an assumption, take an unusual but valid angle, borrow from a distant
-   field, change the viewpoint or form. Every inventor first writes the obvious answer down, then is asked to go
-   somewhere else.
+   one short push in a direction (the list in section 3), and every inventor first writes the obvious answer down,
+   then is asked to go somewhere else.
 
 One more rule came from design fixation [8]: the map is a map, not a fence. About 60 percent of inventors work on
 a branch of the map with a card; about 40 percent work off it: with no map at all, on what the map missed, or on
@@ -166,7 +169,10 @@ baseline: +1.35 distinct (0.87 to 1.88), utility within noise (-0.26, interval -
 percent above plain and 3 percent above in-context; the arms were not capped to equal tokens.
 
 So the same small model, with its thoughts organised by the schema, gave three times as many distinct answers of
-nearly twice the quality, for about one eighth more tokens. Two honest notes: the judges were Opus through the
+nearly twice the judged usefulness as plain sampling, for about one eighth more tokens; against the strongest
+prompting baseline it gave more distinct answers at the same usefulness. What the benchmark measures is the spread
+and judged usefulness of answers to creative prompts. It does not measure discovery; that is what section 5 is for.
+Two honest notes: the judges were Opus through the
 Claude CLI rather than the benchmark's official judge, and the CLI's sampling settings differ from the official
 protocol, so the absolute numbers are not comparable with the published table; the paired differences are what we
 stand on. The full tables are in `D:\AGI-lab\results\nb` on the lab machine.
@@ -188,9 +194,13 @@ no training script ever reads. Only the architecture could change. Training ran 
 subprocesses, no access to the exam data.
 
 The team read the skeleton's code and three instrumented runs of its behaviour, drew its map, and ran 24 idea
-contexts: 275 sketches, 98 clusters, 10 questioned three levels deep, 19 chosen for building. Each idea was built as
-its own file and trained 300 steps on the same seed and data (18 quick tests). Clear winners were combined; anything
-neutral, worse, bigger or slower was left out. A prior-art search then judged each winner by mechanism, not name.
+contexts: 275 sketches, 98 clusters, 10 questioned three levels deep, 19 chosen for building. The division of labour
+from there should be stated plainly. The agents produced, grouped and argued the ideas, and the unpicked sketches
+were reviewed too (the delay line came from there). People, with a coding assistant, wrote each idea as its own
+file, trained it 300 steps on the same seed and data (18 quick tests), combined the clear winners and left out
+anything neutral, worse, bigger or slower. The team's own build-and-test ladder, which does this automatically, was
+not used for these runs: the loop was stopped after the critics and the builds were done by hand. A prior-art
+search then judged each winner by mechanism, not name.
 
 What was tested, gap to the skeleton at 300 steps (lower is better):
 
@@ -241,9 +251,9 @@ next step. Of the ideas with a measured gain, one is new as far as the prior-art
 published work, two are known.
 
 What it does show: a team of agents whose thinking is organised by a schema taken from the sciences of human
-invention produced a measured improvement to the strongest open architecture, found some of it by restructuring
-existing methods and some of it from ideas of its own, filtered out the ideas that hurt, and explained what it
-learned. The same team, pointed at a folder of notes about a clinic's front desk or a coding agent's failures,
+invention produced the ideas behind a measured improvement to the strongest open architecture at this scale, some
+by restructuring existing methods and some of its own; people then built and tested them and kept what helped. The
+ideas that hurt were caught by the tests, not by anyone's judgement of the text, which is the point of the schema. The same team, pointed at a folder of notes about a clinic's front desk or a coding agent's failures,
 produces ranked proposals with the facts they rest on and the test that would settle each. That is the potential we
 are building on.
 
@@ -304,6 +314,9 @@ are building on.
 35. Ge et al., 2025: Comparing TRIZ and brainstorming in human-agent design collaboration (AI EDAM).
     https://www.cambridge.org/core/journals/ai-edam/article/comparing-triz-and-brainstorming-in-humanagent-design-collaboration-effects-on-cognitive-processes-and-perfor
 36. modded-nanogpt, the NanoGPT speedrun records. https://github.com/KellerJordan/modded-nanogpt
+37. Lange et al., 2025: robust-kbench (Sakana AI), the decontaminated kernel benchmark. https://arxiv.org/abs/2509.14279
+38. Karpathy, 2026: autoresearch. https://github.com/karpathy/autoresearch/blob/master/program.md
+39. Prime Intellect, 2026: auto-nanogpt. https://www.primeintellect.ai/auto-nanogpt
 
 The project's own reading on these fields, with many more sources, is in `research_notes/idea_generation`
 (twelve briefs and a synthesis), `research_notes/creative_genius` and `research_notes/How the brain generates new ideas`.
