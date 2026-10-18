@@ -191,21 +191,23 @@ class Hub:
                     time.sleep(0.1)
         if me:
             auth.add_member(name, me)
-        self._start_my_agent(port, me)
+        self._start_my_agent(port, me, self._key_of(rec) if lan else "")
         return self._row(rec)
 
     @staticmethod
-    def _start_my_agent(port: int, me: str | None = None) -> None:
+    def _start_my_agent(port: int, me: str | None = None, key: str = "") -> None:
         """The person who made the space gets their agent as soon as it exists (Sonnet, canned fallback). The agent
-        is a local process, so the request goes as the agent itself, which needs no session."""
+        is a local process, so the request goes as the agent itself, which needs no session. A --lan space wants
+        its key on the request, or it refuses and the person has no agent."""
         import urllib.request
         from space.people import me_default
         me = me or me_default()
         try:
             body = json.dumps({"name": me, "model": "sonnet"}).encode("utf-8")
-            req = urllib.request.Request("http://127.0.0.1:%d/api/people/add" % port, data=body,
-                                         headers={"Content-Type": "application/json", "X-Space-Actor": f"{me}.agent",
-                                                  "X-Space-Kind": "agent"}, method="POST")
+            h = {"Content-Type": "application/json", "X-Space-Actor": f"{me}.agent", "X-Space-Kind": "agent"}
+            if key:
+                h["X-Space-Key"] = key
+            req = urllib.request.Request("http://127.0.0.1:%d/api/people/add" % port, data=body, headers=h, method="POST")
             urllib.request.urlopen(req, timeout=5).read()
         except Exception:  # noqa: BLE001
             pass
