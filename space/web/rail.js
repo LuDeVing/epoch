@@ -168,8 +168,56 @@ export function summaryMarkdown(view) {
   return L.join('\n');
 }
 
-function ResultsTab({ view }) {
+async function latestBatch(api) {
+  try {
+    const q = api.flags && api.flags.key ? `?key=${encodeURIComponent(api.flags.key)}` : '';
+    const r = await fetch(`${api.base}/api/run/status${q}`, { credentials: 'same-origin', cache: 'no-store' });
+    const j = await r.json();
+    const runs = (j.runs || []);
+    return runs.length ? runs[0].batch : null;
+  } catch (e) { return null; }
+}
+
+function CandDetail({ api, cand }) {
+  const [data, setData] = useState(null);
+  const [err, setErr] = useState('');
+  const [showArt, setShowArt] = useState(true);
+  useEffect(() => {
+    let live = true;
+    (async () => {
+      const batch = await latestBatch(api);
+      if (!batch) { if (live) setErr('No run started from this page yet; use Browse run files on the run chip.'); return; }
+      try {
+        const q = api.flags && api.flags.key ? `&key=${encodeURIComponent(api.flags.key)}` : '';
+        const r = await fetch(`${api.base}/api/run/cand?batch=${encodeURIComponent(batch)}&cand=${encodeURIComponent(cand)}${q}`, { credentials: 'same-origin', cache: 'no-store' });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.hint || j.error || r.status);
+        if (live) setData(j);
+      } catch (e) { if (live) setErr(`Could not load: ${e.message}`); }
+    })();
+    return () => { live = false; };
+  }, [cand]);
+  if (err) return html`<div class="muted cand__err">${err}</div>`;
+  if (!data) return html`<div class="muted">loading...</div>`;
+  const art = data.artifacts && data.artifacts[0];
+  return html`<div class="cand">
+    ${data.record && data.record.hypothesis ? html`<div class="cand__hyp"><strong>Claim:</strong> ${data.record.hypothesis}${data.record.change ? html`<div class="muted">Changes: ${data.record.change}</div>` : null}</div>` : null}
+    ${art ? html`<div class="cand__head">What was built <span class="mono muted">${art.path}</span> <button class="btn btn--small" onClick=${() => setShowArt(!showArt)}>${showArt ? 'hide' : 'show'}</button></div>
+      ${showArt ? html`<pre class="cand__text">${art.text}</pre>` : null}` : html`<div class="muted">No built file found for this candidate.</div>`}
+    ${data.tests && data.tests.length ? html`<div class="cand__head">How it was tested</div>
+      <ul class="cand__tests">${data.tests.map((t) => html`<li>
+        <span class=${`tag ${t.status === 'pass' || t.status === 'win' ? 'tag--ok' : 'tag--warn'}`}>${t.status}${t.rung != null ? ` . level ${t.rung}` : ''}</span>
+        ${t.reason ? html` <span>${t.reason}</span>` : null}
+        ${Object.keys(t.metrics || {}).length ? html` <span class="mono muted">${Object.entries(t.metrics).filter(([, v]) => typeof v === 'number').map(([k, v]) => `${k} ${Math.round(v * 1000) / 1000}`).join(', ')}</span>` : null}
+        ${t.stderr ? html`<pre class="cand__log">${t.stderr}</pre>` : null}
+        ${t.stdout ? html`<pre class="cand__log">${t.stdout}</pre>` : null}
+      </li>`)}</ul>` : html`<div class="muted">No test record yet.</div>`}
+  </div>`;
+}
+
+function ResultsTab({ view, api }) {
   const list = useAutoAnimate();
+  const [openCand, setOpenCand] = useState(null);
   const winner = (view.winnerWord && view.winnerWord[view.run.mode]) || WINNER_WORD[view.run.mode] || 'won';
   const rows = view.results.slice().reverse();
   const metrics = (m) => Object.entries(m || {}).filter(([, v]) => typeof v === 'number').slice(0, 3)
@@ -196,6 +244,8 @@ function ResultsTab({ view }) {
         <span class="result__name">${r.name || r.key || r.cand}</span>
         <${Rungs} rung=${r.rung} />
         <span class="mono metrics" title="the test's numbers">${metrics(r.metrics) || r.reason || ''}</span>
+        <button class="btn btn--small" onClick=${() => setOpenCand(openCand === r.cand ? null : r.cand)} title="what was built, and how the test went">${openCand === r.cand ? 'close' : 'open'}</button>
+        ${openCand === r.cand ? html`<${CandDetail} api=${api} cand=${r.cand} />` : null}
         <span class="voters">${Object.entries(r.voters || {}).map(([who, hm]) => html`<span class=${`tok hue-${hueOf(view, who)} vote--${hm}`}>${cap(who)}: ${hm}</span>`)}</span>
       </li>`; })}</ul>
   </div>`;
@@ -210,7 +260,7 @@ function Rail({ api }) {
       class=${`tab${tab === k ? ' tab--on' : ''}`} onClick=${() => { setTab(k); api.setView && api.setView(k); }}>${label}</button>`)}</nav>
     ${tab === 'feed' ? html`<${FeedTab} view=${view} api=${api} />` : null}
     ${tab === 'args' ? html`<${ArgsTab} view=${view} />` : null}
-    ${tab === 'results' ? html`<${ResultsTab} view=${view} />` : null}
+    ${tab === 'results' ? html`<${ResultsTab} view=${view} api=${api} />` : null}
     ${tab === 'findings' ? html`<${FindingsTab} view=${view} api=${api} />` : null}
     ${tab === 'memory' ? html`<${MemoryTab} view=${view} api=${api} />` : null}
     ${tab === 'agent' ? html`<${ChatTab} view=${view} api=${api} />` : null}`;

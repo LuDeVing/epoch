@@ -296,3 +296,16 @@ body[data-run="running"] .empty--running { display: inline; }
 .know__view { background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: 10px; padding: 8px 10px; }
 .know__text { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 50vh; overflow: auto; margin: 6px 0 0; font: var(--fs-small)/1.5 var(--font-ui); }
 .know__dir { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* what was built and how it was tested (rail.js), how the map was drawn (memory.js) */
+.cand { grid-column: 1 / -1; width: 100%; background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: 8px; padding: 8px 10px; margin-top: 6px; display: grid; gap: 6px; }
+.cand__head { font-weight: 600; display: flex; gap: 8px; align-items: center; }
+.cand__text, .cand__log { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 40vh; overflow: auto; margin: 0; font: var(--fs-small)/1.45 var(--font-mono); background: var(--bg-app); border-radius: 6px; padding: 6px 8px; }
+.cand__log { max-height: 22vh; color: var(--text-2); }
+.cand__tests { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cand__hyp { white-space: pre-wrap; }
+.tag--ok { color: var(--ok); border-color: var(--ok); }
+.result { flex-wrap: wrap; }
+.mapstory { margin-top: 10px; }
+.mapstory__sec { margin-top: 8px; }
+.mapstory__title { font-weight: 600; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }

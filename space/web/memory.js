@@ -19,6 +19,39 @@ function Entry({ e }) {
   </li>`;
 }
 
+function MapStory({ api }) {
+  const [data, setData] = useState(null);
+  const [err, setErr] = useState('');
+  const [showPrompt, setShowPrompt] = useState(false);
+  const load = async () => {
+    setErr('');
+    try {
+      const q = api.flags && api.flags.key ? `?key=${encodeURIComponent(api.flags.key)}` : '';
+      const r0 = await fetch(`${api.base}/api/run/status${q}`, { credentials: 'same-origin', cache: 'no-store' });
+      const runs = ((await r0.json()).runs || []);
+      if (!runs.length) { setErr('No run started from this page yet.'); return; }
+      const q2 = api.flags && api.flags.key ? `&key=${encodeURIComponent(api.flags.key)}` : '';
+      const r = await fetch(`${api.base}/api/run/plan?batch=${encodeURIComponent(runs[0].batch)}${q2}`, { credentials: 'same-origin', cache: 'no-store' });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.hint || j.error || r.status);
+      setData(j);
+    } catch (e) { setErr(`Could not load: ${e.message}`); }
+  };
+  return html`<div class="mapstory">
+    ${!data ? html`<button class="btn btn--small" onClick=${load}>How the map was drawn</button>` : null}
+    ${err ? html`<span class="muted"> ${err}</span>` : null}
+    ${data ? html`<div class="card">
+      <div class="card__head">How the map was drawn <button class="btn btn--small" style="float:right" onClick=${() => setData(null)}>close</button></div>
+      ${data.preread ? html`<div class="mapstory__sec"><div class="mapstory__title">The reading before the map <span class="muted">(${data.preread.model})</span></div><pre class="know__text">${data.preread.reply}</pre></div>` : null}
+      ${data.plan ? html`<div class="mapstory__sec"><div class="mapstory__title">The planner's answer <span class="muted">(${data.plan.model})</span>
+          <button class="btn btn--small" onClick=${() => setShowPrompt(!showPrompt)}>${showPrompt ? 'hide what it was asked' : 'what it was asked'}</button></div>
+        ${showPrompt ? html`<pre class="know__text">${data.plan.prompt}</pre>` : null}
+        <pre class="know__text">${data.plan.reply}</pre></div>` : html`<div class="muted">No planner call in this run (the default map was used).</div>`}
+      ${data.repair ? html`<div class="mapstory__sec"><div class="mapstory__title">A repair pass</div><pre class="know__text">${data.repair.reply}</pre></div>` : null}
+    </div>` : null}
+  </div>`;
+}
+
 function Knowledge({ api, head }) {
   const [files, setFiles] = useState([]);
   const [open, setOpen] = useState('');
@@ -51,6 +84,7 @@ function Knowledge({ api, head }) {
       ${!files.length ? html`<div class="muted">No files yet. Describe a problem or share a finding and they appear here.</div>` : null}
     </div>
     ${open ? html`<div class="know__view"><div class="card__head">${open} <a class="btn btn--small" style="float:right" download=${open.split('/').pop()} href=${`data:text/markdown;charset=utf-8,${encodeURIComponent(text)}`}>Download</a></div><pre class="know__text">${text}</pre></div>` : null}
+    <${MapStory} api=${api} />
   </div>`;
 }
 

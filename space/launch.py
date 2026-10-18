@@ -629,6 +629,89 @@ def register(httpd) -> Launcher:
                 break
         return {"batch": batch, "run_dir": str(root), "files": out}
 
+    def _run_root(batch: str) -> Path:
+        with la.lock:
+            rec = next((r for r in la._load() if r["batch"] == batch), None)
+        if rec is None:
+            raise Reject(404, "no_run", batch=batch)
+        rd = rec.get("run_dir") or la._run_dir(batch)
+        if not rd or not os.path.isdir(rd):
+            raise Reject(404, "no_run_dir", batch=batch)
+        return Path(rd).resolve()
+
+    def cand_route(b, q):
+        """The built artifact of one candidate and every test record about it."""
+        batch, cand = str(_one(q, "batch") or ""), re.sub(r"[^A-Za-z0-9_-]", "", str(_one(q, "cand") or ""))
+        root = _run_root(batch)
+        if not cand:
+            raise Reject(422, "no_cand")
+        arts = []
+        for pth in sorted((root / "cands").rglob(f"*{cand}*")) if (root / "cands").is_dir() else []:
+            if pth.is_file() and pth.suffix.lower() in TEXT_OK and pth.suffix.lower() != ".jsonl":
+                try:
+                    arts.append({"path": pth.relative_to(root).as_posix(), "text": pth.read_text(encoding="utf-8", errors="replace")[:200_000]})
+                except OSError:
+                    continue
+        tests = []
+        vf = root / "verify.jsonl"
+        if vf.is_file():
+            for line in vf.read_text(encoding="utf-8", errors="replace").splitlines():
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    continue
+                if row.get("id") != cand:
+                    continue
+                fb = row.get("feedback_record") if isinstance(row.get("feedback_record"), dict) else {}
+                tests.append({"status": row.get("status"), "rung": fb.get("rung") if fb else row.get("rung"), "reason": fb.get("reason") or row.get("reason"),
+                              "rc": fb.get("rc"), "stderr": str(fb.get("stderr") or "")[-3000:], "stdout": str(fb.get("stdout") or "")[-3000:],
+                              "metrics": fb.get("metrics") or row.get("metrics") or {}, "partial_score": row.get("partial_score"),
+                              "attempts": row.get("attempts"), "ts": row.get("ts")})
+        hyp = None
+        for pth in (root / "cands").glob("*.jsonl") if (root / "cands").is_dir() else []:
+            try:
+                for line in pth.read_text(encoding="utf-8", errors="replace").splitlines():
+                    if cand in line:
+                        row = json.loads(line)
+                        hyp = {k: row.get(k) for k in ("hypothesis", "change", "fidelity", "node", "idea", "round", "lane") if row.get(k) is not None}
+                        break
+            except (OSError, ValueError):
+                continue
+            if hyp:
+                break
+        return {"batch": batch, "cand": cand, "artifacts": arts, "tests": tests, "record": hyp}
+
+    def plan_route(b, q):
+        """How the map was drawn: the planner's prompt and reply, and the reading before it."""
+        batch = str(_one(q, "batch") or "")
+        root = _run_root(batch)
+        out = {"batch": batch, "plan": None, "preread": None, "repair": None}
+        for pth in sorted((root / "calls").glob("*.json")) if (root / "calls").is_dir() else []:
+            try:
+                j = json.loads(pth.read_text(encoding="utf-8", errors="replace"))
+            except (OSError, ValueError):
+                continue
+            card = str((j.get("meta") or {}).get("card") or "")
+            key = {"plan": "plan", "preread": "preread", "plan_repair": "repair"}.get(card)
+            if not key or out[key] is not None:
+                continue
+            prompt = ""
+            pp = root / "prompts" / f"{j.get('call_id')}.txt"
+            if pp.is_file():
+                try:
+                    prompt = pp.read_text(encoding="utf-8", errors="replace")[:60_000]
+                except OSError:
+                    prompt = ""
+            out[key] = {"call_id": j.get("call_id"), "model": j.get("model"), "reply": str(j.get("text") or "")[:60_000], "prompt": prompt,
+                        "error": j.get("error"), "duration_ms": j.get("duration_ms")}
+        tree = root / "problem_tree.json"
+        if tree.is_file():
+            try:
+                out["tree"] = json.loads(tree.read_text(encoding="utf-8", errors="replace"))
+            except (OSError, ValueError):
+                out["tree"] = None
+        return out
+
     def knowledge_route(b, q):
         from space.knowledge import Knowledge
         if sp is None:
@@ -658,7 +741,8 @@ def register(httpd) -> Launcher:
                    ("POST", "/api/run/start"): start_route, ("GET", "/api/run/status"): status_route,
                    ("POST", "/api/run/stop"): stop_route, ("GET", "/api/run/report"): report_route,
                    ("POST", "/api/run/structure"): structure_route, ("GET", "/api/knowledge"): knowledge_route,
-                   ("GET", "/api/run/files"): files_route})
+                   ("GET", "/api/run/files"): files_route, ("GET", "/api/run/cand"): cand_route,
+                   ("GET", "/api/run/plan"): plan_route})
     return la
 
 
