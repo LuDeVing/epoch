@@ -132,6 +132,7 @@ def make_profile(spec: dict) -> dict:
         "goal_short": goal[:160],
         "system": "the problem", "narrow_examples": "one part, one case, one step",
         "planner_hint": "boundaries name the parts of the problem a proposal may change",
+        "map_depth": "2" if str(spec.get("deep") or "").strip().lower() in ("true", "1", "yes", "on") else "1",   # 2: the planner draws sub-parts under every part
         "boundary_rules": "", "identity_rule": "",
         "reference_use": "adapt a practice only if it fits this setting",
         "gain_phrase": "the panel score", "field": field,

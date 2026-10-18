@@ -366,7 +366,7 @@ class Launcher:
         if isinstance(problem, dict) and str(problem.get("goal") or problem.get("title") or "").strip():
             from nano.profiles._custom import write_profile
             from space.knowledge import Knowledge
-            spec = {k: str(problem.get(k) or "")[:6000] for k in ("title", "goal", "success", "known", "fixed", "parts", "field")}
+            spec = {k: str(problem.get(k) or "")[:6000] for k in ("title", "goal", "success", "known", "fixed", "parts", "field", "deep")}
             try:
                 kn = Knowledge(Path(self.db_path).parent) if getattr(self, "db_path", None) else None
                 if kn is not None:

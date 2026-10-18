@@ -183,6 +183,10 @@ def _default_parts_text() -> str:
         text += ("\nThe indented sub-parts stay in the map: return each one as its own node (same id, the name refined if "
                  "you see it better) with \"parent\" set to the id of your node that refines its part, and \"refines\" "
                  "set to its own id. You may add a sub-part the files call for; the map is at most two levels deep.")
+    elif PF.current().v("map_depth") == "2":                   # a two-level map was asked for, with no sub-parts given
+        text += ("\nDraw a two-level map: under every part, 2 or 3 sub-parts (the smaller questions inside it), each as "
+                 "its own node with \"parent\" set to the id of the part node in this reply and \"refines\" set to the "
+                 "same default part id as its parent. The map is at most two levels deep.")
     return text
 
 
