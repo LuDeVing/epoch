@@ -539,6 +539,8 @@ class Launcher:
                 raise Reject(422, "no_command", batch=batch)
             if "--resume" not in cmd:
                 cmd.append("--resume")
+            if "--space" in cmd and cmd.index("--space") + 1 < len(cmd):            # the space may have woken on another port
+                cmd[cmd.index("--space") + 1] = self.space_url
             if "nano.loop" in cmd and "--judge-model" not in cmd and "--model" in cmd:   # a run recorded before the judge flag
                 gen = cmd[cmd.index("--model") + 1]
                 cmd += ["--judge-model", JUDGE_MODEL if gen != JUDGE_MODEL else "sonnet"]

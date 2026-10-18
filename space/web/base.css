@@ -20,7 +20,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .topbar__line { display: flex; align-items: center; gap: var(--gap); flex-wrap: wrap; min-height: 26px; }
 .brand { font-weight: 600; }
 .dot-sep { color: var(--solid); }
-.conn--live { color: var(--ok); } .conn--reconnecting { color: var(--warn); } .conn--offline { color: var(--bad); } .conn--connecting { color: var(--text-2); }
+.conn--live { color: var(--ok); } .conn--reconnecting { color: var(--warn); } .conn--offline { color: var(--bad); } .conn--rejected { color: var(--bad); } .conn--connecting { color: var(--text-2); }
 .hash-chip { color: var(--text-2); border: 1px solid var(--line-subtle); border-radius: 4px; padding: 0 6px; }
 .me { margin-left: auto; color: var(--text-2); }
 .runstate { color: var(--text-2); } .runstate--waiting { color: var(--warn); }

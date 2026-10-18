@@ -121,9 +121,9 @@ function onReset() {
   start();
 }
 function onStatus(kind, info) {
-  if (kind === 'live') { net.status = 'live'; net.since = Date.now(); }
+  if (kind === 'live') { if (net.status !== 'rejected') { net.status = 'live'; net.since = Date.now(); } }
   else if (kind === 'reconnecting') {                         // Offline stays until the line is live again
-    if (net.status !== 'reconnecting' && net.status !== 'offline') { net.since = Date.now(); net.status = 'reconnecting'; }
+    if (net.status !== 'reconnecting' && net.status !== 'offline' && net.status !== 'rejected') { net.since = Date.now(); net.status = 'reconnecting'; }
   }
   else if (kind === 'hello') {
     net.epoch = info.epoch || net.epoch;
@@ -210,6 +210,8 @@ async function beat() {
   try {
     const r = await fetch(`${base}/api/presence`, { method: 'POST', headers: headers(), body: JSON.stringify(beatBody()) });
     const res = await r.json().catch(() => ({}));
+    if (r.status === 403 && res.error === 'bad_key') { if (net.status !== 'rejected') { net.status = 'rejected'; publish(); } return; }
+    if (net.status === 'rejected' && r.ok) { net.status = 'live'; publish(); }
     for (const it of res.interrupts || []) {
       if (it.type === 'claim_lost') { myClaims.delete(it.subject); toast(`You lost the claim on ${it.subject}.`); }
     }
@@ -283,6 +285,7 @@ async function pressGo() {
 function connText() {
   if (net.status === 'live') return `Live #${current ? current.head : 0}`;
   if (net.status === 'offline') return 'Offline';
+  if (net.status === 'rejected') return 'This link is out of date: open the space from the hub again';
   if (net.status === 'reconnecting') return 'Reconnecting';
   return 'Connecting';
 }
