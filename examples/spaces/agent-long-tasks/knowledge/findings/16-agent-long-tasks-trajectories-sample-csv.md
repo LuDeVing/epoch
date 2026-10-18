@@ -1,0 +1,46 @@
+# agent-long-tasks_trajectories_sample.csv
+
+_Shared by luka on 2026-10-18T01:32; part: the whole problem; kind: data; source: agent-long-tasks_trajectories_sample.csv._
+
+Shared when describing the problem: Harness fixes for long tasks
+
+## File
+
+- agent-long-tasks_trajectories_sample.csv (1478 bytes, 31 lines), kept as files/QNWlo87pbzfK-agent-long-tasks_trajectories_sample.csv
+
+## Readable start of the file
+
+```
+run_id,task_id,steps,tokens,outcome,failure_kind,task_text_in_context_at_end,repeated_cycles,files_over_300_lines_read,verify_step
+r001,t017,52,61000,fail,lost the goal,no,0,2,none
+r002,t017,44,52000,pass,,yes,0,2,real
+r003,t022,61,74000,fail,loop,yes,4,1,none
+r004,t022,58,70000,fail,loop,yes,3,1,none
+r005,t031,47,55000,pass,,yes,1,0,real
+r006,t031,49,57000,fail,stale context,yes,0,2,real
+r007,t040,38,44000,pass,,yes,0,1,real
+r008,t040,60,72000,fail,lost the goal,no,1,1,none
+r009,t045,55,66000,fail,wrong verification,yes,0,0,fake
+r010,t045,41,48000,pass,,yes,0,0,real
+r011,t052,60,71000,fail,loop,yes,5,2,none
+r012,t052,46,54000,pass,,yes,1,2,real
+r013,t058,57,69000,fail,lost the goal,no,0,3,none
+r014,t058,59,70000,fail,stale context,no,0,3,real
+r015,t063,43,50000,pass,,yes,0,1,real
+r016,t063,33,38000,fail,gave up early,yes,0,1,none
+r017,t070,60,73000,fail,lost the goal,no,2,2,none
+r018,t070,51,61000,fail,loop,no,3,2,none
+r019,t074,45,53000,pass,,yes,0,0,real
+r020,t074,48,56000,pass,,yes,0,0,real
+r021,t081,60,75000,fail,stale context,yes,0,4,real
+r022,t081,54,64000,fail,wrong verification,yes,0,4,fake
+r023,t088,42,49000,pass,,yes,0,1,real
+r024,t088,36,41000,fail,gave up early,yes,0,1,none
+r025,t093,60,74000,fail,tool misuse,yes,2,0,none
+r026,t093,47,55000,pass,,yes,0,0,real
+r027,t099,56,67000,fail,lost the goal,no,0,2,none
+r028,t099,53,63000,fail,wrong verification,no,0,2,fake
+r029,t104,40,46000,pass,,yes,0,1,real
+r030,t104,60,72000,fail,loop,yes,4,1,none
+
+```

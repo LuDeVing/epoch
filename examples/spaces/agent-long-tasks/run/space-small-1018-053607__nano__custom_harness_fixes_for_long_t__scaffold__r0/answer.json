@@ -1,0 +1,464 @@
+{
+ "status": "proposals",
+ "arm": "scaffold",
+ "baseline_version": "v2",
+ "lens": "parts",
+ "lens_design": "fixed",
+ "n_candidates": 2,
+ "n_checked": 2,
+ "controls": {},
+ "discovery": [
+  {
+   "round": 1,
+   "contexts": 7,
+   "sketches": 50,
+   "new_clusters": 28,
+   "new_per_context": 4.0,
+   "top2_share": 0.28,
+   "by_card": {
+    "research": {
+     "sketches": 50,
+     "distinct_clusters": 28,
+     "yield": 0.56
+    }
+   }
+  }
+ ],
+ "retired_cards": [],
+ "lanes": {
+  "longshot": {
+   "built": 1,
+   "checked": 1
+  },
+  "main": {
+   "built": 1,
+   "checked": 1
+  }
+ },
+ "origins": {
+  "tree": {
+   "contexts": 7,
+   "sketches": 86,
+   "clusters": 36,
+   "built": 2,
+   "checked": 2,
+   "wins": 0,
+   "clusters_per_context": 5.143,
+   "wins_per_context": 0.0,
+   "slot_share": 1.0,
+   "context_share": 1.0
+  },
+  "off": {
+   "contexts": 0,
+   "sketches": 0,
+   "clusters": 0,
+   "built": 0,
+   "checked": 0,
+   "wins": 0,
+   "clusters_per_context": 0.0,
+   "wins_per_context": 0.0,
+   "slot_share": 0.0,
+   "context_share": 0.0
+  }
+ },
+ "off_tree_share": 0.4,
+ "source_yield": [
+  {
+   "round": 1,
+   "final": true,
+   "tree": {
+    "contexts": 7,
+    "sketches": 86,
+    "clusters": 36,
+    "built": 2,
+    "checked": 2,
+    "wins": 0,
+    "clusters_per_context": 5.143,
+    "wins_per_context": 0.0,
+    "slot_share": 1.0,
+    "context_share": 1.0
+   },
+   "off": {
+    "contexts": 0,
+    "sketches": 0,
+    "clusters": 0,
+    "built": 0,
+    "checked": 0,
+    "wins": 0,
+    "clusters_per_context": 0.0,
+    "wins_per_context": 0.0,
+    "slot_share": 0.0,
+    "context_share": 0.0
+   },
+   "share_before": 0.4,
+   "share_next": 0.4
+  }
+ ],
+ "promoted_branches": [],
+ "ranked": [
+  {
+   "id": "n0e7e50894d",
+   "card": "impl:deepen+research",
+   "operator": "task_text_pinnin-in-k05",
+   "node": "task_text_pinnin",
+   "hypothesis": "Moving the task text from the first user message into the system prompt makes it immune to trimming and summarising, so lost-the-goal failures drop to near zero and the summariser from the third tried change can be re-run with its benefit kept and its harm removed, lifting long-task pass by 8 to 12 points at under 5 percent extra cost.",
+   "change": "System prompt layout, the trimming routine, the summariser prompt, and run-start assembly; tools and step cap untouched.",
+   "long_gap": null,
+   "long_z": null,
+   "extrap_z": null,
+   "trend": null,
+   "learn_gap": 0.0,
+   "learn_z": 0.0,
+   "smoke_drop": null,
+   "step_s": null
+  },
+  {
+   "id": "nbf8c55f7fa",
+   "card": "impl:deepen+research",
+   "operator": "task_text_pinnin-in-k07",
+   "node": "task_text_pinnin",
+   "hypothesis": "Asking the agent to restate the goal at each trim event and every 15 steps, and re-injecting the verbatim task text only when a requirement sentence is missing from the restatement, recovers most of the 9 goal-gone lost-the-goal runs for under 5 percent extra tokens, and the restatement log shows drift a few steps before failure.",
+   "change": "The trimming routine (a hook that fires after each trim), a step-count hook at 15, 30, 45, a short harness question and a requirement-sentence matcher, and a conditional verbatim re-injection of the task text; no change to tools, step cap, or the system prompt body.",
+   "long_gap": null,
+   "long_z": null,
+   "extrap_z": null,
+   "trend": null,
+   "learn_gap": 0.444,
+   "learn_z": 0.89,
+   "smoke_drop": null,
+   "step_s": null
+  }
+ ],
+ "generations": {
+  "0": {
+   "calls": 6,
+   "offshoots": 36,
+   "facts": 60,
+   "unsourced_dropped": 0
+  }
+ },
+ "n_sketches": 86,
+ "obvious_clusters": 1,
+ "upward_proposals": [
+  {
+   "id": "u24414d2aa7",
+   "proposal": "Measure the harness as a packing scheme: how much of the goal stays readable as the context condenses, not whether the run passed.",
+   "reframing": "DNA is compressed thousands of times yet promoters stay accessible; the harness compresses history too (trim at 100k, drop to 80k [F9]), but accessibility is never measured. Instead of six post-hoc failure labels [F3], model each run as a channel and measure, at fixed steps, whether the task text, acceptance criteria, and the last edit's intent are still present and still used. Lost-the-goal [F4], stale context [F6], and the summaries that shortened the task [F14] become one quantity: goal and state accessibility over time.",
+   "new_measure": "Goal-recall curve. At steps 20, 30, 40, 50 the harness injects a side probe (not shown to the agent's main trajectory, or run on a forked copy): \"restate the task and the acceptance criteria in two lines.\" Score against the original with exact-span match plus a rubric. Report area under the recall curve per harness variant, and the step at which recall first drops below 0.8. A harness change is good if it raises area under the curve; pass rate becomes a secondary check. Also log \"live fraction\": share of context tokens referenced by any later tool call.",
+   "why": "Pass rate at 31 percent with a 4-point seed spread [F18] needs 144 runs to detect a change; a recall curve shifts on every run and shows which step the harness loses the goal, so pinning, notes file, and summaries can be compared on 12 tasks. It also separates \"task text gone\" from \"task text present but ignored,\" which decides whether pinning alone fixes lost-the-goal, a listed open question.",
+   "cost": "Forked probe calls, about 400 tokens each, 4 per run, so under 5 percent extra. Code: a fork-and-probe hook in the harness and a scorer. Data: the original task texts. People: one person to write the rubric and spot-check 20 probes.",
+   "round": 1
+  },
+  {
+   "id": "ued74553d53",
+   "proposal": "Study continuations from a shared checkpoint, not whole runs, because the first 25 steps carry no signal.",
+   "reframing": "Passing and failing runs are indistinguishable until step 25 [F8], so most of a 65k-token run [F2] is a prefix that varies nothing. Like replication from a stored template, store the state at step 25 (context, repo snapshot, notes) and branch many continuations with different harness settings. The unit of study becomes the continuation, and harness changes are compared on the same prefix, which removes prefix noise from the comparison.",
+   "new_measure": "Continuation pass rate: for each of the 48 long tasks, one shared prefix per seed, then k continuations per harness variant. Report pass rate over continuations, paired difference per prefix (variant A minus variant B on the same prefix), and tokens spent after the branch point. The keep rule maps to a paired difference of 6 points or more with confidence interval excluding zero.",
+   "why": "The current plan spends 144 full runs per change [F17] and allows about 15 changes [F19]. Branching reuses the prefix, so the post-branch cost is roughly 40 percent of a run, and paired comparison on identical prefixes cuts the seed spread, so 3 to 4 times as many variants fit the 2,500-run budget. It also exposes whether a late-stage change (verification step, loop breaker) helps at all, since pr",
+   "cost": "Harness support for snapshot and restore of repo plus context (a tarball and a JSON message log). Prompt cache hits on the shared prefix lower token cost further. People: none beyond the existing failure-kind reader.",
+   "round": 1
+  },
+  {
+   "id": "ud978cc2b8a",
+   "proposal": "Replace pass rate under a keep rule with passes per fixed token budget, and compare every change at matched spend.",
+   "reframing": "The retry lifts the pair to 44 percent but doubles failed-task cost [F13]; the step cap to 100 gains 2 points for 45 percent more cost [F12]. Both are rejected or accepted by two separate thresholds [F18] that do not say which is the better use of 130k tokens. DNA packing is judged by information per unit volume; judge the harness by expected passes per 100k tokens, and let each change pick its own mix of retries, caps, and checkpoint restarts within that budget.",
+   "new_measure": "Pass-per-budget curve: for budgets B in 65k, 100k, 130k, 200k tokens per task, the pass rate achievable by the best policy under that budget (single run, run plus retry, run plus checkpoint resume, two short runs with a notes handoff). Compute by running each variant and recording cumulative tokens at the moment of stop, then reading pass rate at each budget cut. Rank changes by area between their curve and the baseline curve across the 65k to 130k band.",
+   "why": "The current framing cannot say whether a loop breaker that saves 15k tokens and gains 3 points beats a verification step that costs 8k tokens and gains 7 points, because cost and pass are separate gates. Budget-matched curves make the two commensurable and show which changes combine (notes handoff plus checkpoint resume) and which cancel (summaries plus pinning), another listed open question. It a",
+   "cost": "Only logging: cumulative tokens per step and stop point, already collected [F17]. Code: a curve script. Runs: the same 144 per variant, so no budget change, but variants that stop early return runs to the pool.",
+   "round": 1
+  }
+ ],
+ "fetched_facts": {
+  "enabled": true,
+  "requests": 0,
+  "answered": 0,
+  "reprompts": 0,
+  "logged_only": 0,
+  "ignored_after_reprompt": 0,
+  "over_cap": 0
+ },
+ "spent_tokens": 445101,
+ "budget": 600000,
+ "spent_aux_tokens": 7342435,
+ "aux_budget": 6000000,
+ "wall_s": 745,
+ "next": "read the ranked proposals in REPORT.md; add opinions to control.json and run again",
+ "mode": "no_check",
+ "reference": {
+  "cand_id": "n0e7e50894d",
+  "path": "D:\\AGI-lab\\runs\\space-small-1018-053607__nano__custom_harness_fixes_for_long_t__scaffold__r0\\cands\\src\\n0e7e50894d.py",
+  "metrics": {
+   "facts_named": [
+    "F14",
+    "F15",
+    "F17",
+    "F18",
+    "F19",
+    "F2",
+    "F22",
+    "F3",
+    "F4",
+    "F8",
+    "F9",
+    "F11",
+    "F12",
+    "F16",
+    "luka's note says the every-20-steps summ",
+    "Raising the step cap from 60 to 100 move",
+    "The trajectories CSV is synthetic and ca",
+    "Long-task pass baseline is 31 percent pe",
+    "Keep rule: long-task pass up 6 points or",
+    "Budget is 2,500 runs, about 15 full meas",
+    "The trajectories CSV is synthetic and ca",
+    "Long-task pass rate is 31 percent at a 6",
+    "One retry from scratch with a different ",
+    "Summarising every 20 steps dropped or sh",
+    "The trajectories CSV is synthetic and ma",
+    "Passing and failing runs are indistingui",
+    "The current step cap is 60; raising it t",
+    "Summarising every 20 steps dropped or sh",
+    "\"Making the agent write what it expects ",
+    "The trajectories CSV is synthetic and ca",
+    "The screen is 12 tasks by 3 seeds by 2 a",
+    "The agent must never see or change hidde",
+    "Baseline long-task pass is 31 percent; r",
+    "The prediction rule stays free text and ",
+    "The task text is the oldest message; tri",
+    "The tried summariser ran every 20 steps,"
+   ],
+   "sections": {
+    "CLAIM": 64,
+    "FROM THE FACTS TO THE IDEA": 296,
+    "FROM THE IDEA TO THE RESULT": 403,
+    "WEAK POINTS": 263,
+    "PROPOSED TEST": 202
+   },
+   "changed_symbols": [],
+   "panel_score": 6.722,
+   "panel_sd": 0.192,
+   "judge_mean": 6.722,
+   "judge_scores": [
+    6.5,
+    6.83,
+    6.83
+   ],
+   "judges_ok": 3,
+   "judges": 3,
+   "criteria": {
+    "Ranked list": 4.33,
+    "Failure link": 7.33,
+    "Testable": 7.67,
+    "Keep rule": 7.33,
+    "Model limits": 5.0,
+    "Fits budget": 8.67
+   },
+   "people_score": null,
+   "people_n": 0,
+   "people_weight": 0.0,
+   "people_notes": [],
+   "panel_notes": [
+    "The strongest point is the mechanism: the trimmer and summariser can only touch history, so putting the task in the system prompt fixes the cause, and the test can check this per run. The weakest point is scope: it covers only about 18 of the 40 failures, and its gain arithmetic is internally incons",
+    "The strongest point is the clean mechanism: the harness, not the model, deletes the goal in 9 of 11 runs, and that can be checked directly with a presence log and a refutation test. The weakest point is scope: this is a single change rather than a ranked list across failure kinds, and it never squar",
+    "Strongest: a clean mechanism (the trimmer cannot reach the system prompt) with an auditable presence flag and a falsification test that separates presence from influence. Weakest: the scope is narrow, and the claim that 65k-token runs reach the 100k trim threshold around step 25 is not reconciled wi"
+   ],
+   "panel_reasons": [
+    {
+     "K4": "Measures each arm against all three keep-rule limits and admits pinning alone sits near the +6 bar. The claim that the summariser keeps cost at or below baseline has no support in [F14].",
+     "K5": "It lists the four failure kinds it does not touch and gives a refutation path that would mark lost the goal as a model limit. But it only asserts that part of gave up early and tool misuse need a bett",
+     "K6": "Uses at most 612 runs and two full measurements, with a 12-task screen first, well within budget. A 2-point screen threshold on 36 runs is noisier than the 4-point seed spread, and the subset baseline",
+     "K3": "The test matches the plan: seeds 1-3, pass^3, tokens, failure kinds on 20 runs, a short-task check, and a cheap task-present log flag. It states clear pass, refute and kill conditions.",
+     "K1": "The ranked list is really one change, pinning alone versus pinning plus the old summariser. It ranks nothing for loop, verification, stale files or tool misuse, although the question asks for a ranked",
+     "K2": "The link from lost the goal to oldest-first trimming is well grounded in [F3], [F4], [F9], [F14] and [F22]. Two links are weak: \"falls from 19 to 6 percent\" does not match the stated +5 to +8 gain, an"
+    },
+    {
+     "K5": "It says plainly that the change leaves loop, wrong verification, gave up early and tool misuse alone, and it gives a refutation path that would mark lost-the-goal as a model limit, but it only repeats",
+     "K4": "Each arm is checked against all three parts of the keep rule, and it admits that pinning alone may fall short of +6 given the 4-point seed spread; the cost estimate is reasoned and well under 20%.",
+     "K2": "The lost-the-goal link is tight (F3, F4, F9, F14, F22), but the claim that step 25 is \"about where a 65k-token run approaches the trim threshold\" ignores that the trimmer only fires above 100k, and th",
+     "K6": "The plan uses at most 612 runs and two full measurements, with a 12-task screen first, far inside 2,500 runs and 15 measurements; it does not note that a 2-point screen threshold on 36 runs is about o",
+     "K1": "The \"ranked list\" is just two variants of one idea (pinning, and pinning plus summariser), each with a gain and cost; the other failure kinds and the untried changes in F15 get no ranked entries.",
+     "K3": "The test follows the measurement plan (seeds 1-3, 48 long tasks, pass^3, tokens, 20-run failure sample), adds an auditable task-present log field, and sets clear pass, refute and kill criteria plus a "
+    },
+    {
+     "K2": "Ties pinning tightly to the 11 lost-the-goal runs, the 9 of 11 with trimmed task text [F4], and oldest-first trimming [F9]; the summariser's stale-context gain is asserted from [F14]'s net +3 rather t",
+     "K5": "It lists which failure kinds it leaves untouched and gives a refutation path that would mark lost-the-goal as a model limit, but the claim that part of gave up early and tool misuse is a model limit i",
+     "K3": "It follows the plan's metrics and seeds, adds an audit log field, and states pass, refute and kill conditions; but a 2-point screen threshold on 36 runs sits inside the 4-point seed spread.",
+     "K6": "About 612 runs and two full measurements, with a 12-task screen first and a short-task check, is well inside 2,500 runs and 15 measurements.",
+     "K1": "Ranks only two variants of one idea with gains and costs; it gives no ranked list covering loop, verification or the other failure kinds.",
+     "K4": "Judges both arms against +6 points, the 20 percent cost cap and no short-task drop, and admits pinning alone may miss the bar; it never addresses how the kept retry interacts with the new arms or cost"
+    }
+   ],
+   "cost_ratio": 1.0,
+   "learn_score": 6.722,
+   "learn_gap": 0.0,
+   "learn_sd": 0.5,
+   "learn_z": 0.0,
+   "learn_base": 6.722
+  },
+  "round": 1,
+  "reason": "the first checked candidate",
+  "hypothesis": "Moving the task text from the first user message into the system prompt makes it immune to trimming and summarising, so lost-the-goal failures drop to near zero and the summariser from the third tried change can be re-run with its benefit kept and its harm removed, lifting long-task pass by 8 to 12 points at under 5 percent extra cost.",
+  "set_at": "2026-10-18T06:07:52"
+ },
+ "reference_changes": [
+  {
+   "round": 1,
+   "action": "set",
+   "from": null,
+   "to": "n0e7e50894d",
+   "reason": "the first checked candidate",
+   "gap": null,
+   "ts": "2026-10-18T06:07:52"
+  }
+ ],
+ "proposals": [
+  {
+   "id": "n0e7e50894d",
+   "node": "task_text_pinnin",
+   "cluster": "Task moved into system prompt",
+   "claim": "Put the task text in the system prompt at run start instead of the first user message, so neither oldest-first trimming nor the 20-step summariser can ever remove or shorten it. With the goal fixed in place, re-run the summariser from the third tried change unchanged. Predicted long-task pass: 31 to 39-43 percent, cost per run up 2 to 5 percent, short tasks unchanged.",
+   "from_facts": "Long tasks pass 31 percent against 78 for short ones, and the same task flips between pass and fail across runs [F1, F2].\nThe largest failure kind in the 40 read runs is lost the goal, 11 of 40 [F3].\nIn 9 of those 11 runs the task text was no longer in the context window [F4].\nThe harness trims oldest messages first once the window passes 100k, and the task text is the oldest message [F9].\nSo the harness itself deletes the goal in most lost-the-goal runs; the model is not forgetting, it is being blinded.\nPassing and failing runs look the same for 10 steps and diverge after step 25 [F8], which is about where a 65k-token run starts to approach the trim threshold.\nSummarising every 20 steps helped stale context but hurt lost the goal: in 6 of 10 summaries the model shortened or dropped the task text [F14].\nBoth the trimmer and the summariser can only touch history. Anything in the system prompt is outside their reach.\nLost in the Middle says models use the start of the context well [F22]; the system prompt is the start, and stays the start for the whole run.\nPinned task text is on the untried list [F15].\nSo: flip the rule that the task is a user message. The harness writes the task into a labelled TASK block at the end of the system prompt, the history begins empty, and the system prompt is rebuilt per run from a fixed template plus the task.\nThen re-run the ungated summariser from [F14] as is, with one line added to its prompt: \"The task is in the system prompt; summarise progress only, do not restate the task.\" This stops a shortened copy competing with the pinned one.",
+   "to_result": "Ranked list: pinning alone is predicted at +5 to +8 points for 2 to 5 percent cost; pinning plus the re-run summariser at +8 to +12 points for 0 to 5 percent cost. The second is the one to promote.\nFailure link: lost the goal was about 19 percent of all long runs (69 percent fail, 11 of 40 of those). Pinning fixes the 9 of 11 where the text was gone [F4]. If a third of those runs then hit a second failure kind, lost the goal falls from about 19 to about 6 percent of runs, giving +5 to +8 points. The summariser's stale-context gain from [F14] adds about +3 on top, now with no offsetting loss.\nMechanism: the trimmer cannot reach the system prompt, so the task is present at every step by construction, and the harness can log that as a per-run flag.\nCost: the task text stays in the window from the step where it would have been trimmed to the end, adding roughly task length times remaining steps. For a 300 to 800 token task that is 2 to 5 percent of a 65k run. The summariser shrinks history, so the pair should land at or below baseline cost. Both sit well inside the 20 percent limit [F18] and nowhere near the doubling ban.\nShort tasks: they never reach the trim threshold [F2], so the only change is the task sitting in the system prompt rather than the first message. Predicted effect: zero. The study checks this directly.\nKeep rule: pinning alone sits near the +6 bar with a 4-point seed spread, so it might fail the rule on its own. The combination is predicted to clear +6 with margin. The study measures both so the panel can see which earns the keep.\nTestable: pass rate on seeds 1-3, pass^3, tokens, wall time, and failure kinds on 20 runs, exactly as the plan lists [F17]. One extra harness log field, task text present at end, is cheap and makes the mechanism auditable.\nModel limits: this change touches only lost the goal and, through the summariser, stale context. It does nothing for loop (9), wrong verification (6), gave up early (4) or tool misuse (3) [F3]. Those need their own harness changes or, for part of gave up early and tool misuse, likely a better model.\nHidden tests: untouched; the agent sees nothing new except its own task.",
+   "weak_points": "Presence is not influence. The 2 of 11 lost-the-goal runs still had the task in view [F4], and the open question is whether others drift for another reason. If lost-the-goal stays near 11 of 40 while the log shows the task present in every run, the mechanism is wrong and the fix is the model's attention, not the trimmer.\nSystem-prompt placement may change how the model treats the text. It might read the task as a standing rule rather than the specific job, and over-generalise. The labelled TASK block at the end of the system prompt, right next to the start of history, is the mitigation. A short-task drop would be the signal.\nThe system prompt is no longer static across runs. Any prompt caching keyed on the system prompt loses its hit rate, which could raise wall time or cost on the provider side. The cost line in the measurement catches this.\nThe summariser may still write a conflicting shortened goal. The added prompt line reduces this but does not guarantee it. Reading the 20-run sample of summaries shows whether it happens.\nThe stale-context gain from [F14] may not survive the change. If pinning plus summariser scores no better than pinning alone, the summariser is dead weight and should be dropped from the ranked list.\nThe gain estimate rests on 40 hand-read runs by one person. The failure-kind split could be off by several runs, which moves the prediction by a few points. The synthetic CSV is not used as evidence here; its column set is only borrowed as the logging schema.",
+   "proposed_test": "Screen on the 12-task subset, seeds 1-3, 36 runs per arm, four arms: baseline (existing numbers), ungated summariser re-run as in [F14], pinning alone, pinning plus summariser. New runs: 108. Log per run: task text present at end, failure kind, tokens.\nPromote to the full 48 long tasks, seeds 1-3, 144 runs per arm, the one or two arms that beat the summariser arm by 2 points or more on the screen: at most 288 runs.\nRun the 72 short tasks on seeds 1-3 for the promoted arm to check no drop: 216 runs.\nTotal at most 612 runs and two full measurements, well inside 2,500 runs and 15 measurements [F19].\nPass if the promoted arm shows +6 or more on long tasks, cost per run up 20 percent or less, short-task pass not lower, and lost-the-goal falls to at most 2 of 20 in the read sample.\nRefuted if lost-the-goal is unchanged while the log shows the task present in every run; that confirms presence without influence and marks this failure kind as a model limit. Killed if the pinning arms do not beat the summariser arm by 2 points on the screen, or if short-task pass falls by any amount.",
+   "panel_score": 6.722,
+   "panel_sd": 0.192,
+   "judge_scores": [
+    6.5,
+    6.83,
+    6.83
+   ],
+   "criteria": {
+    "Ranked list": 4.33,
+    "Failure link": 7.33,
+    "Testable": 7.67,
+    "Keep rule": 7.33,
+    "Model limits": 5.0,
+    "Fits budget": 8.67
+   },
+   "people_score": null,
+   "people_n": 0,
+   "panel_notes": [
+    "The strongest point is the mechanism: the trimmer and summariser can only touch history, so putting the task in the system prompt fixes the cause, and the test can check this per run. The weakest point is scope: it covers only about 18 of the 40 failures, and its gain arithmetic is internally incons",
+    "The strongest point is the clean mechanism: the harness, not the model, deletes the goal in 9 of 11 runs, and that can be checked directly with a presence log and a refutation test. The weakest point is scope: this is a single change rather than a ranked list across failure kinds, and it never squar",
+    "Strongest: a clean mechanism (the trimmer cannot reach the system prompt) with an auditable presence flag and a falsification test that separates presence from influence. Weakest: the scope is narrow, and the claim that 65k-token runs reach the 100k trim threshold around step 25 is not reconciled wi"
+   ],
+   "facts_named": [
+    "F14",
+    "F15",
+    "F17",
+    "F18",
+    "F19",
+    "F2",
+    "F22",
+    "F3",
+    "F4",
+    "F8",
+    "F9",
+    "F11",
+    "F12",
+    "F16",
+    "luka's note says the every-20-steps summ",
+    "Raising the step cap from 60 to 100 move",
+    "The trajectories CSV is synthetic and ca",
+    "Long-task pass baseline is 31 percent pe",
+    "Keep rule: long-task pass up 6 points or",
+    "Budget is 2,500 runs, about 15 full meas",
+    "The trajectories CSV is synthetic and ca",
+    "Long-task pass rate is 31 percent at a 6",
+    "One retry from scratch with a different ",
+    "Summarising every 20 steps dropped or sh",
+    "The trajectories CSV is synthetic and ma",
+    "Passing and failing runs are indistingui",
+    "The current step cap is 60; raising it t",
+    "Summarising every 20 steps dropped or sh",
+    "\"Making the agent write what it expects ",
+    "The trajectories CSV is synthetic and ca",
+    "The screen is 12 tasks by 3 seeds by 2 a",
+    "The agent must never see or change hidde",
+    "Baseline long-task pass is 31 percent; r",
+    "The prediction rule stays free text and ",
+    "The task text is the oldest message; tri",
+    "The tried summariser ran every 20 steps,"
+   ],
+   "learn_gap": 0.0,
+   "learn_z": 0.0,
+   "reference": true,
+   "file": "pool/n0e7e50894d.md",
+   "rank": 1
+  },
+  {
+   "id": "nbf8c55f7fa",
+   "node": "task_text_pinnin",
+   "cluster": "Agent restatement handshake",
+   "claim": "Add a restatement handshake to the harness: after every trim event and at steps 15, 30 and 45, the harness asks the agent for a one-line restatement of the goal, splits the original task text into requirement sentences, and re-injects the verbatim task text at the end of the window only when a requirement is missing from the restatement. The agent proves it still holds the goal, injection is gated by that proof instead of a timer, and the restatement log turns \"lost the goal\" into a per-step measurement. Predicted long-task pass gain is +5 to +8 points at under 5 percent more tokens per run.",
+   "from_facts": "Long tasks pass 31 percent and short ones 78 percent, and the same task passes and fails across runs [F1], so the failures are mostly about what happens late in a run, not about what the model can do.\nLost the goal is the largest failure kind, 11 of 40 read runs [F3].\nIn 9 of those 11 the task text was no longer in the window, because the harness trims oldest first and the task text is oldest [F4], [F9].\nTrimming only happens past 100k tokens [F9], which is why passing and failing runs look alike for 25 steps and split after that [F8]; long runs cross the trim line, short runs never do.\nThe summariser experiment showed that a model rewriting its own context shortens or drops the task text in 6 of 10 summaries [F14], so any re-statement by the model must be checked against the original, not trusted as the new source.\nLost in the Middle says the model uses the start and end of the window best [F22]; once the start is trimmed, the end is the only strong position left, so an injection should go there.\nPinning the task text is untried [F15], and the open question is whether pinning alone fixes most lost-the-goal runs or whether those runs drift for another reason.\nA timer-based or trim-based copy of the task text answers the first half of that question but not the second: it cannot tell a run that forgot the goal from a run that held the goal and drifted anyway.\nThe handshake answers both: a wrong restatement is a goal-gone run and gets the verbatim text; a correct restatement that still ends in failure is drift for another reason, and that run is logged as a candidate model limit.\nThe check is cheap: the question is about 40 tokens, the answer about 60, and the full task text is injected only on a miss, so injected volume is lower than a copy on every trim.\nAir traffic control uses the same protocol: a short instruction given once over a lossy channel is read back by the actor before the actor acts on it, and the issuer corrects only on a wrong readback.",
+   "to_result": "Design in words: the task text is parsed once at run start into requirement sentences, each with its key tokens (file names, function names, numbers, named behaviours, test names); a requirement counts as present in the restatement if at least half of its key tokens appear, and the harness also accepts a verbatim quote.\nTrigger: a hook after each trim event, and a step hook at tool calls 15, 30 and 45; the harness appends a user-role message asking for one line that states the goal and the checks the agent will run.\nAction on a miss: the harness appends the verbatim task text as a new user message at the end of the window, prefixed with the names of the missing requirements; on a hit it appends nothing and the run continues.\nRanked list and gain: the 9 goal-gone runs are 9 of 40 failures, so about 22 percent of long-task failures, which is about 15 points of the 69 percent failure rate; if the injection recovers half of them, that is +7 to +8 points, and a conservative floor of one third gives +5; the 2 lost-the-goal runs with the text still present are not expected to move.\nToken cost: four to six checks per long run at about 100 tokens each is under 1k tokens in the window; if prompt tokens are billed on every later step, the checks cost about 3k billed tokens over the rest of the run; one injection of a task text of 300 to 600 tokens adds about the same; total stays under 5 percent of the 65k baseline [F2], well inside the 20 percent cost ceiling [F18].\nShort tasks: they end under 15 tool calls and never reach 100k tokens [F1], [F9], so neither trigger fires, and the short-task pass rate cannot fall by construction; the 12 short guard tasks in the screen check this empirically.\nStep cap: the restatement is a text turn, not a tool call, so it does not use any of the 60 calls and does not reproduce the step-cap failure where loops ran longer [F12].\nFailure link: the change targets lost the goal only; it does not claim to help loop, stale context or wrong verification, and the restatement log will show that directly because failures of those kinds should have correct restatements.\nModel limits: runs that fail as lost the goal with a correct final restatement, plus the 2 of 11 runs where the text was present and the goal was still lost [F4], are the candidate set where the goal was in words but not in action; if that set does not shrink with injection, it is the model's limit on this failure kind, and the answer can say so with a count rather than a guess.\nMeasurement: pass rate over seeds 1 to 3, pass^3, tokens and wall time, and failure kinds on a 20-run sample [F17], plus two new columns per run: number of handshakes, number of misses, and step of first miss.\nBudget: the screen uses 12 long tasks times 3 seeds times 3 arms, 108 runs, plus 12 short guard tasks times 3 seeds times 1 arm, 36 runs; the full measurement is 144 long runs plus 216 short runs for the no-drop check; total under 520 runs and one full measurement slot of about 15 [F19].\nCombination: the handshake composes with a notes file, with harness-run verification and with any later summariser, because it checks the agent's held goal against the original regardless of what else is in the window; it is the natural guard for the summariser failure in [F14].",
+   "weak_points": "Goal in words but not in action: the agent may restate the goal correctly and still edit the wrong thing, so pass gain can be lower than the goal-gone count suggests; the observe-only arm shows this if most lost-the-goal failures have correct restatements.\nParaphrase: a correct restatement in different words can fail the key-token match and trigger an unneeded injection; the harm is only cost, and a run with more than two injections flags the matcher as too strict.\nFalse hit: the agent can echo key tokens while dropping a constraint such as \"do not change the public API\"; a requirement sentence with few distinctive tokens is the weak case, and the panel should look at misses on such sentences in the 20-run sample.\nDistraction: a mid-edit question can break the agent's flow; the 12 short guard tasks will not show this because the trigger never fires there, so the check must be the tokens-per-step and wall-time columns on the 12 long screen tasks and the loop count in the failure-kind sample.\nThe injected text sits at the end of the window and can be trimmed again later; each trim fires another handshake, so the text is re-injected on the next miss, but a run that trims three or more times will carry two or three copies, and that cost should be counted in the full measurement.\nSynthetic CSV: the task-text-in-context flag in the sample CSV cannot support any of this [C9]; the only evidence is the 9 of 11 count in the hand-read runs [F4], and a sample of 11 has a wide margin, so the predicted +5 to +8 could be +3 on the full 48.\nWho can exploit it: nobody outside the run, but the agent itself can learn to answer the question with a safe quote without reading its own state; that is why the question asks for the checks it will run as well as the goal, which cannot be quoted from the task text alone.",
+   "proposed_test": "Screen on the 12-task long subset, seeds 1 to 3, three arms of 36 runs each.\nArm A, observe-only: ask the restatement at every trigger, log and score it, never inject; this measures whether misses precede lost-the-goal failures.\nArm B, handshake: same triggers, inject the verbatim task text on a miss; this measures the pass gain.\nArm C, trim-triggered copy: re-inject the verbatim text after every trim with no question; this is the comparison the handshake must at least match at lower injected volume.\nPlus 36 runs of 12 short guard tasks under arm B to confirm the triggers never fire and pass rate does not move.\nRecord for every run: pass, tokens, wall time, steps, number of handshakes, number of misses, step of first miss, failure kind by hand read for the failures.\nRefuted if, in arm A, a restatement miss precedes fewer than 6 of 9 failures labeled lost the goal with the task text gone at the end of the run; then the restatement is not a drift signal and the harness should use the plain trim-triggered copy instead.\nRefuted if arm B gains under +3 points over baseline on the screen, or gains less than arm C, or costs more tokens per run than arm C.\nRefuted if arm B shows a pass drop on the short guard tasks or a rise in loop failures on the long screen tasks, which would mean the question itself drags the agent off task.\nIf the screen passes, run the full 48 long tasks on seeds 1 to 3 under arm B, with the full short suite once, and keep the change only if long-task pass rises 6 points or more, cost rises under 20 percent, and short-task pass does not fall [F18].\nWhatever the outcome, report the count of long failures with a correct final restatement as the measured size of the part of lost the goal that this harness change cannot fix.",
+   "panel_score": 6.278,
+   "panel_sd": 0.536,
+   "judge_scores": [
+    5.67,
+    6.67,
+    6.5
+   ],
+   "criteria": {
+    "Ranked list": 2.67,
+    "Failure link": 8.0,
+    "Testable": 7.67,
+    "Keep rule": 6.33,
+    "Model limits": 5.0,
+    "Fits budget": 8.0
+   },
+   "people_score": null,
+   "people_n": 0,
+   "panel_notes": [
+    "The strongest point is the gated readback with an observe-only arm, which both tests the mechanism and measures the model-limit residue for lost the goal. The weakest point is that it covers one failure kind with a borderline predicted gain instead of the ranked, cross-taxonomy list the question ask",
+    "The strongest point is the readback design: arm A doubles as a diagnostic that answers the \"pinning alone vs. drift\" open question with counts, not guesses. The weakest point is that it is a single change whose predicted gain barely reaches the keep threshold, and it is not the ranked multi-change l",
+    "Strongest point: the readback design turns \"pinning alone vs. drift for another reason\" into a measurable observe-only arm with clean refutation rules. Weakest point: it covers one change for one failure kind, so it is not the ranked list the question asks for."
+   ],
+   "facts_named": [
+    "F1",
+    "F12",
+    "F14",
+    "F15",
+    "F17",
+    "F18",
+    "F19",
+    "F2",
+    "F22",
+    "F3",
+    "F4",
+    "F8",
+    "F9",
+    "F5",
+    "F6",
+    "F10",
+    "F11",
+    "F23",
+    "luka's note says the every-20-steps summ",
+    "Raising the step cap from 60 to 100 move",
+    "Sweep cost is about 144 runs, under 6 pe",
+    "Long-task pass baseline is 31 percent pe",
+    "Keep rule: long-task pass up 6 points or",
+    "Budget is 2,500 runs, about 15 full meas",
+    "The trajectories CSV is synthetic and ca",
+    "Long-task pass rate is 31 percent at a 6",
+    "Summarising every 20 steps dropped or sh",
+    "Passing and failing runs are indistingui",
+    "Summarising every 20 steps dropped or sh",
+    "\"Making the agent write what it expects ",
+    "The trajectories CSV is synthetic and ca",
+    "The screen is 12 tasks by 3 seeds by 2 a",
+    "The agent must never see or change hidde",
+    "The task text is the oldest message; tri",
+    "The tried summariser ran every 20 steps,"
+   ],
+   "learn_gap": 0.444,
+   "learn_z": 0.89,
+   "reference": false,
+   "file": "pool/nbf8c55f7fa.md",
+   "rank": 2
+  }
+ ]
+}

@@ -1,0 +1,1366 @@
+{
+ "run_id": "space-small-1018-053607__nano__custom_harness_fixes_for_long_t__scaffold__r0",
+ "item_id": "custom_harness_fixes_for_long_t",
+ "benchmark": "nano",
+ "arm": "scaffold",
+ "backend": "cli_json",
+ "model": "fable",
+ "B": 600000,
+ "aux_budget": 6000000,
+ "rounds": 1,
+ "lens": "parts",
+ "lens_design": "fixed",
+ "baseline_version": "v2",
+ "decisions": [
+  {
+   "step": "resume",
+   "completed_rounds": 0,
+   "cands": 0,
+   "sketches": 0,
+   "unverified": [],
+   "ts": "2026-10-18T05:37:34"
+  },
+  {
+   "step": "resume",
+   "completed_rounds": 0,
+   "cands": 0,
+   "sketches": 0,
+   "unverified": [],
+   "ts": "2026-10-18T05:38:09"
+  },
+  {
+   "step": "resume",
+   "completed_rounds": 0,
+   "cands": 0,
+   "sketches": 0,
+   "unverified": [],
+   "ts": "2026-10-18T05:43:30"
+  },
+  {
+   "step": "judge_model",
+   "judge_model": "opus",
+   "generator": "fable",
+   "ts": "2026-10-18T05:43:30"
+  },
+  {
+   "step": "baseline",
+   "mode": "no_check",
+   "note": "no baseline; the best checked candidate so far is the reference",
+   "ts": "2026-10-18T05:43:30"
+  },
+  {
+   "round": 1,
+   "step": "preread",
+   "source": "web",
+   "sourced_lines": 30,
+   "chars": 7863,
+   "ts": "2026-10-18T05:45:07"
+  },
+  {
+   "round": 0,
+   "step": "budget",
+   "refused": "web",
+   "why": "aux budget",
+   "spent_aux": 6072958,
+   "aux_budget": 6000000,
+   "note": "research brief: measurement and combining: screening order, stacking, and wh"
+  },
+  {
+   "step": "resume",
+   "completed_rounds": 0,
+   "cands": 0,
+   "sketches": 0,
+   "unverified": [],
+   "ts": "2026-10-18T05:55:44"
+  },
+  {
+   "step": "judge_model",
+   "judge_model": "opus",
+   "generator": "fable",
+   "ts": "2026-10-18T05:55:44"
+  },
+  {
+   "step": "baseline",
+   "mode": "no_check",
+   "note": "no baseline; the best checked candidate so far is the reference",
+   "ts": "2026-10-18T05:55:44"
+  },
+  {
+   "round": 1,
+   "step": "seeds",
+   "part": "loop_breaking",
+   "tag": "",
+   "picked": [
+    [
+     "footprint",
+     "memory",
+     "far"
+    ]
+   ]
+  },
+  {
+   "round": 1,
+   "step": "seeds",
+   "part": "measurement_and_",
+   "tag": "",
+   "picked": [
+    [
+     "starfish",
+     "symmetry",
+     "mid"
+    ]
+   ]
+  },
+  {
+   "round": 1,
+   "step": "seeds",
+   "part": "root",
+   "tag": "",
+   "picked": [
+    [
+     "DNA packing",
+     "compression",
+     "mid"
+    ]
+   ]
+  },
+  {
+   "round": 1,
+   "step": "seeds",
+   "part": "step_cap_and_giv",
+   "tag": "",
+   "picked": [
+    [
+     "ant trail",
+     "routing",
+     "mid"
+    ]
+   ]
+  },
+  {
+   "round": 1,
+   "step": "seeds",
+   "part": "verification_ste",
+   "tag": "",
+   "picked": [
+    [
+     "shorthand",
+     "compression",
+     "mid"
+    ]
+   ]
+  },
+  {
+   "round": 1,
+   "step": "ideate",
+   "capped_to": 8,
+   "upward": 1
+  },
+  {
+   "round": 1,
+   "step": "off_tree",
+   "on_map": 7,
+   "off_map": 0,
+   "share": 0.4
+  },
+  {
+   "round": 1,
+   "step": "doubt_cards",
+   "dealt": 0,
+   "reason": "briefs for 28 of 33 parts"
+  },
+  {
+   "round": 0,
+   "step": "budget",
+   "refused": "web",
+   "why": "aux budget",
+   "spent_aux": 7161337,
+   "aux_budget": 6000000,
+   "note": "sketch:seeded"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 17,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:35"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 16,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:35"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 15,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 14,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 13,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 12,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 11,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 10,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 9,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 8,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 7,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 6,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 5,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 4,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 3,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "finding",
+   "seq": 2,
+   "part": "root",
+   "by": "luka",
+   "ts": "2026-10-18T05:59:36"
+  },
+  {
+   "round": 1,
+   "step": "merge",
+   "groups": [
+    [
+     "task_text_pinnin-in-k00",
+     "task_text_pinnin-in-k02",
+     "pin_outside_trim-in-k04",
+     "re_state_goal_pe-in-k00",
+     "fix_summary_drop-in-k01"
+    ],
+    [
+     "task_text_pinnin-in-k01",
+     "fix_summary_drop-in-k00"
+    ],
+    [
+     "task_text_pinnin-in-k05",
+     "re_state_goal_pe-in-k03"
+    ],
+    [
+     "task_text_pinnin-in-k04",
+     "fix_summary_drop-in-k04"
+    ],
+    [
+     "task_text_pinnin-in-k03",
+     "re_state_goal_pe-in-k04"
+    ],
+    [
+     "loop_breaking-in-k00",
+     "rule_on_repeated-in-k01"
+    ],
+    [
+     "loop_breaking-in-k02",
+     "rule_on_repeated-in-k04"
+    ],
+    [
+     "loop_breaking-in-k03",
+     "rule_on_repeated-in-k05",
+     "prediction_befor-in-k02"
+    ],
+    [
+     "loop_breaking-in-k04",
+     "prediction_befor-in-k00",
+     "prediction_befor-in-k01"
+    ]
+   ]
+  },
+  {
+   "round": 1,
+   "for": "deepen",
+   "step": "split_shortfall",
+   "k": 12,
+   "short": {
+    "outward": 5
+   },
+   "refilled": 5,
+   "from": {
+    "inward": 5
+   },
+   "still_empty": 0
+  },
+  {
+   "round": 1,
+   "step": "dialogue",
+   "idea": "fix_summary_drop-in-k02",
+   "exchanges": 1,
+   "stop": "done",
+   "ts": "2026-10-18T06:03:58"
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 29616,
+   "spent": 352718,
+   "reserved": 0,
+   "note": "Token-triggered compaction"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "fix_summary_drop-in-k02",
+   "depth": 1
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 31120,
+   "spent": 352718,
+   "reserved": 0,
+   "note": "Trim threshold sweep / small recent window"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "pin_outside_trim-in-k02",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30992,
+   "spent": 352718,
+   "reserved": 0,
+   "note": "Goal-present attribution read of failed runs"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "task_text_pinnin-in-k03",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30616,
+   "spent": 352718,
+   "reserved": 0,
+   "note": "Goal-recall probe at fixed steps"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "pin_outside_trim-in-k03",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30858,
+   "spent": 352718,
+   "reserved": 0,
+   "note": "Pin a pointer to TASK.md instead of text"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "pin_outside_trim-in-k05",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30756,
+   "spent": 352718,
+   "reserved": 0,
+   "note": "Trim notice in reminder"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "re_state_goal_pe-in-k02",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 31160,
+   "spent": 352718,
+   "reserved": 0,
+   "note": "Requirement ledger reconciled across summaries"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "fix_summary_drop-in-k03",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 2081,
+   "spent": 363245,
+   "reserved": 0,
+   "note": "critic update"
+  },
+  {
+   "round": 1,
+   "step": "dialogue",
+   "idea": "re_state_goal_pe-in-k01",
+   "exchanges": 1,
+   "stop": "budget",
+   "ts": "2026-10-18T06:04:25"
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 29584,
+   "spent": 363245,
+   "reserved": 0,
+   "note": "Start-position reminder with eviction of old copies"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "re_state_goal_pe-in-k01",
+   "depth": 1
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 2169,
+   "spent": 374065,
+   "reserved": 0,
+   "note": "critic update"
+  },
+  {
+   "round": 1,
+   "step": "dialogue",
+   "idea": "rule_on_repeated-in-k00",
+   "exchanges": 1,
+   "stop": "budget",
+   "ts": "2026-10-18T06:04:29"
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 29492,
+   "spent": 374065,
+   "reserved": 0,
+   "note": "Offline replay validation of detector"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "rule_on_repeated-in-k00",
+   "depth": 1
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 2582,
+   "spent": 386034,
+   "reserved": 0,
+   "note": "critic update"
+  },
+  {
+   "round": 1,
+   "step": "dialogue",
+   "idea": "loop_breaking-in-k01",
+   "exchanges": 1,
+   "stop": "budget",
+   "ts": "2026-10-18T06:04:30"
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 29450,
+   "spent": 386034,
+   "reserved": 0,
+   "note": "Fixed step-25 reflection checkpoint"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "loop_breaking-in-k01",
+   "depth": 1
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 2288,
+   "spent": 399068,
+   "reserved": 0,
+   "note": "critic update"
+  },
+  {
+   "round": 1,
+   "step": "dialogue",
+   "idea": "prediction_befor-in-k03",
+   "exchanges": 1,
+   "stop": "budget",
+   "ts": "2026-10-18T06:04:38"
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 29350,
+   "spent": 399068,
+   "reserved": 0,
+   "note": "Diff view of repeated command output"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "prediction_befor-in-k03",
+   "depth": 1
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 4209,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "reply round"
+  },
+  {
+   "round": 1,
+   "step": "dialogue",
+   "idea": "task_text_pinnin-in-k01",
+   "exchanges": 0,
+   "stop": "budget",
+   "ts": "2026-10-18T06:04:42"
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 29452,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Verbatim-quote gate on summariser"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "task_text_pinnin-in-k01",
+   "depth": 1
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "gen": 0,
+   "chains": 12,
+   "nodes": 6,
+   "offshoots": 36,
+   "ts": "2026-10-18T06:04:42"
+  },
+  {
+   "round": 1,
+   "step": "merge",
+   "groups": [
+    [
+     "task_text_pinnin-in-k05",
+     "pin_outside_trim-in-k00",
+     "re_state_goal_pe-in-k02"
+    ],
+    [
+     "task_text_pinnin-in-k00",
+     "re_state_goal_pe-in-k03",
+     "fix_summary_drop-in-k00"
+    ],
+    [
+     "task_text_pinnin-in-k01",
+     "re_state_goal_pe-in-k08",
+     "pin_outside_trim-in-k04"
+    ],
+    [
+     "task_text_pinnin-in-k02",
+     "fix_summary_drop-in-k01"
+    ],
+    [
+     "task_text_pinnin-in-k06",
+     "re_state_goal_pe-in-k05"
+    ],
+    [
+     "task_text_pinnin-in-k07",
+     "loop_breaking-in-k02",
+     "fix_summary_drop-in-k03",
+     "pin_outside_trim-in-k03"
+    ],
+    [
+     "task_text_pinnin-in-k08",
+     "re_state_goal_pe-in-k06"
+    ],
+    [
+     "pin_outside_trim-in-k01",
+     "fix_summary_drop-in-k07"
+    ],
+    [
+     "loop_breaking-in-k05",
+     "rule_on_repeated-in-k04"
+    ],
+    [
+     "loop_breaking-in-k00",
+     "rule_on_repeated-in-k01",
+     "rule_on_repeated-in-k02"
+    ],
+    [
+     "rule_on_repeated-in-k03",
+     "prediction_befor-in-k04"
+    ],
+    [
+     "loop_breaking-in-k04",
+     "prediction_befor-in-k00"
+    ]
+   ]
+  },
+  {
+   "step": "slots_by_origin",
+   "round": 1,
+   "tree": 2,
+   "off": 0,
+   "contexts_tree": 7,
+   "contexts_off": 0
+  },
+  {
+   "round": 1,
+   "for": "deepen",
+   "step": "split_shortfall",
+   "k": 12,
+   "short": {
+    "outward": 5
+   },
+   "refilled": 5,
+   "from": {
+    "inward": 5
+   },
+   "still_empty": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30770,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Trim bulky tool results before old messages"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "pin_outside_trim-in-k01",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 31210,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Task moved into system prompt"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "task_text_pinnin-in-k05",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30402,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Notes-file recitation reminder"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "re_state_goal_pe-in-k07",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 31080,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Agent-chosen compaction points"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "fix_summary_drop-in-k08",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 31262,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "End run early and hand off to retry"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "rule_on_repeated-in-k05",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 32454,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Expectation required in tool call, graded against output"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "loop_breaking-in-k04",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30750,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Persist refuted hypotheses/reflections across trimming and retries"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "prediction_befor-in-k05",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 31338,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Trim-triggered verbatim re-copy at tail"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "task_text_pinnin-in-k00",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 31236,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Ephemeral tail reminder (not stored in history)"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "task_text_pinnin-in-k01",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30552,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Harness-prepended task text to summary"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "task_text_pinnin-in-k03",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 30608,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Mechanical FILES check on summary body"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "task_text_pinnin-in-k04",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "budget",
+   "refused": "interrogation",
+   "why": "build floor",
+   "est": 31500,
+   "spent": 413586,
+   "reserved": 0,
+   "note": "Agent-declared step budget"
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "budget_skip": "loop_breaking-in-k03",
+   "depth": 0
+  },
+  {
+   "round": 1,
+   "step": "deepen",
+   "gen": 1,
+   "chains": 12,
+   "nodes": 6,
+   "offshoots": 0,
+   "ts": "2026-10-18T06:06:05"
+  },
+  {
+   "step": "reference",
+   "round": 1,
+   "action": "set",
+   "from": null,
+   "to": "n0e7e50894d",
+   "reason": "the first checked candidate",
+   "gap": null,
+   "ts": "2026-10-18T06:07:52"
+  },
+  {
+   "round": 1,
+   "step": "relabel",
+   "reference": "n0e7e50894d",
+   "candidates": [
+    "n0e7e50894d"
+   ],
+   "ts": "2026-10-18T06:07:52"
+  },
+  {
+   "step": "families",
+   "parents": [
+    "n0e7e50894d",
+    "nbf8c55f7fa"
+   ],
+   "ts": "2026-10-18T06:08:09"
+  },
+  {
+   "round": 1,
+   "step": "cycle",
+   "spawned": [
+    "implement",
+    "implement"
+   ],
+   "n_raw": 2,
+   "n_kept": 2,
+   "checked": [
+    "n0e7e50894d",
+    "nbf8c55f7fa"
+   ],
+   "failed": [],
+   "spent": 445101,
+   "ts": "2026-10-18T06:08:09"
+  }
+ ],
+ "spent": 445101,
+ "spent_aux": 7342435,
+ "spent_by_stage": {
+  "ideation": 159016,
+  "interrogation": 190106,
+  "other": 64464,
+  "build": 31515
+ },
+ "completed_rounds": 1,
+ "commitments_hash": "e0992bef611d",
+ "stage": {
+  "round": 1,
+  "step": "verified",
+  "ts": "2026-10-18T06:08:09"
+ },
+ "people_findings": [
+  {
+   "seq": 17,
+   "by": "luka",
+   "ts": "2026-10-18T01:32:25.587Z",
+   "part": null,
+   "title": "agent-long-tasks_what_we_tried.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_what_we_tried.md",
+   "values": {},
+   "file": {
+    "id": "vXvAvbklFx06",
+    "name": "agent-long-tasks_what_we_tried.md",
+    "bytes": 1113,
+    "type": "text/markdown",
+    "lines": 21,
+    "text": true
+   },
+   "excerpt": "# Three changes already tried\n\n1. Raise the step cap from 60 to 100.\n   Long-task pass rate 31 to 33 percent. Cost per task up 45 percent. The loop runs just looped longer.\n   Not kept.\n\n2. Retry a failed run from scratch once, with a different seed.\n   Pass rate for the pair of runs 31 to 44 percent on long tasks. Doubles the cost of a failed task.\n   Kept, as the current default. It shows the model can do these tasks; it does not do them reliably.\n\n3. Summarise the conversation every 20 steps (the model writes a summary, old messages are replaced by it).\n   Pass rate 31 to 34 percent. \"Stale context\" failures fell. \"Lost the goal\" failures rose: in 6 of 10 read\n   summaries the task text was shortened or dropped by the summary itself.\n   Not kept.\n\nWhat nobody has tried\n- Keeping the task text pinned so trimming never drops it.\n- Making the agent write what it expects a change to do before it runs the test again.\n- Re-reading a file after editing it, by rule.\n- A verification step the harness runs, not the agent.\n- A scratch notes file the agent is told to keep, with the plan and what is done.\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 16,
+   "by": "luka",
+   "ts": "2026-10-18T01:32:25.580Z",
+   "part": null,
+   "title": "agent-long-tasks_trajectories_sample.csv",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "data",
+   "source": "agent-long-tasks_trajectories_sample.csv",
+   "values": {},
+   "file": {
+    "id": "QNWlo87pbzfK",
+    "name": "agent-long-tasks_trajectories_sample.csv",
+    "bytes": 1478,
+    "type": "text/csv",
+    "lines": 31,
+    "text": true
+   },
+   "excerpt": "run_id,task_id,steps,tokens,outcome,failure_kind,task_text_in_context_at_end,repeated_cycles,files_over_300_lines_read,verify_step\nr001,t017,52,61000,fail,lost the goal,no,0,2,none\nr002,t017,44,52000,pass,,yes,0,2,real\nr003,t022,61,74000,fail,loop,yes,4,1,none\nr004,t022,58,70000,fail,loop,yes,3,1,none\nr005,t031,47,55000,pass,,yes,1,0,real\nr006,t031,49,57000,fail,stale context,yes,0,2,real\nr007,t040,38,44000,pass,,yes,0,1,real\nr008,t040,60,72000,fail,lost the goal,no,1,1,none\nr009,t045,55,66000,fail,wrong verification,yes,0,0,fake\nr010,t045,41,48000,pass,,yes,0,0,real\nr011,t052,60,71000,fail,loop,yes,5,2,none\nr012,t052,46,54000,pass,,yes,1,2,real\nr013,t058,57,69000,fail,lost the goal,no,0,3,none\nr014,t058,59,70000,fail,stale context,no,0,3,real\nr015,t063,43,50000,pass,,yes,0,1,real\nr016,t063,33,38000,fail,gave up early,yes,0,1,none\nr017,t070,60,73000,fail,lost the goal,no,2,2,none\nr018,t070,51,61000,fail,loop,no,3,2,none\nr019,t074,45,53000,pass,,yes,0,0,real\nr020,t074,48,56000,pass,,yes,0,0,real\nr021,t081,60,75000,fail,stale context,yes,0,4,real\nr022,t081,54,64000,fail,wrong verification,yes,0,4,fake\nr023,t088,42,49000,pass,,yes,0,1,real\nr024,t088,36,41000,fail,gave up early,yes,0,1,none\nr025,t093,60,74000,fail,tool misuse,yes,2,0,none\nr026,t093,47,55000,pass,,yes,0,0,real\nr027,t099,56,67000,fail,lost the goal,no,0,2,none\nr028,t099,53,63000,fail,wrong verification,no,0,2,fake\nr029,t104,40,46000,pass,,yes,0,1,real\nr030,t104,60,72000,fail,loop,yes,4,1,none\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 15,
+   "by": "luka",
+   "ts": "2026-10-18T01:32:25.569Z",
+   "part": null,
+   "title": "agent-long-tasks_reading_notes_agents.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_reading_notes_agents.md",
+   "values": {},
+   "file": {
+    "id": "sAt3ToYs9ztb",
+    "name": "agent-long-tasks_reading_notes_agents.md",
+    "bytes": 1674,
+    "type": "text/markdown",
+    "lines": 25,
+    "text": true
+   },
+   "excerpt": "# Reading notes: what is known about long-horizon agent failures\n\nReAct (Yao et al., 2022). Interleaving a written thought with each action helps the model keep track of what\nit is doing. Their failure analysis names reasoning that drifts from the task and repeated actions as the\nmain failure kinds. Matches our \"lost the goal\" and \"loop\".\n\nReflexion (Shinn et al., 2023). After a failed attempt the model writes a short reflection on what went wrong,\nkept in memory for the next attempt. Big gains on tasks with a clear pass or fail signal. Our retry from scratch\nkeeps nothing between attempts; a reflection would be cheap to add.\n\nSWE-agent (Yang et al., 2024). The interface the agent works through matters as much as the prompt: a file\nviewer that shows a window with line numbers, an edit command that checks syntax, and short tool outputs\nraised the solve rate on SWE-bench. Their point: tool results that are long or noisy fill the context with\nlittle information.\n\nLost in the Middle (Liu et al., 2023). Models use information at the start and end of a long context better\nthan information in the middle. Our task text starts at the beginning and is trimmed away; while it stays, it\nsits in the best position, and then it is gone.\n\ntau-bench (Yao et al., 2024). The same task run several times passes sometimes and fails other times; they\nreport pass^k, the chance that all k runs pass, which falls fast with k. Our 31 percent is one run; pass^3 is\nwhat a user feels.\n\nCommon ground across these: the agent needs the goal, the current state of the world, and a check it cannot\nfool, all kept close. Most harness fixes are ways of keeping one of the three in view.\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 14,
+   "by": "luka",
+   "ts": "2026-10-18T01:32:25.560Z",
+   "part": null,
+   "title": "agent-long-tasks_problem_brief.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_problem_brief.md",
+   "values": {},
+   "file": {
+    "id": "OzauaRqcs90n",
+    "name": "agent-long-tasks_problem_brief.md",
+    "bytes": 1729,
+    "type": "text/markdown",
+    "lines": 28,
+    "text": true
+   },
+   "excerpt": "# Why our coding agent fails on long tasks, and what to change in the harness\n\nWe run an LLM coding agent (tool calls: read, edit, run shell, search) on an internal suite of 120 repository\ntasks. Short tasks (under 15 tool calls) pass 78 percent of the time. Tasks that need more than 40 tool calls\npass 31 percent of the time, and the same task passes on one run and fails on the next.\n\nThe question: which changes to the harness, not the model, raise the pass rate on the long tasks, and by how much?\n\nScope\n- The model is fixed. No fine-tuning, no retraining, no bigger model.\n- Changes allowed: the system prompt, the tool set and tool descriptions, how context is trimmed or summarised,\n  memory between steps, retries and checkpoints, the step cap, and how the agent is told to verify its work.\n- Every change must be measurable on the 120-task suite with the same seeds.\n- A change that doubles cost per task is out, even if it passes more.\n\nWhat a good answer looks like\n- A ranked list of harness changes, each with a predicted effect on the long-task pass rate and its cost.\n- For each change: the failure kind it addresses (see failure_taxonomy_notes.md), the mechanism, and a test.\n- Honest about what cannot be fixed without the model changing.\n\nFiles in this folder\n- failure_taxonomy_notes.md: what 40 failed runs looked like when a person read them.\n- trajectories_sample.csv: 30 runs with steps, outcome and failure kind. SYNTHETIC: shaped like our logs, not real data.\n- harness_today.md: how the harness works now.\n- what_we_tried.md: three changes already tried and what happened.\n- reading_notes_agents.md: notes from the literature.\n- measurement_plan.md: how we will measure a change.\n- open_questions.txt\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 13,
+   "by": "luka",
+   "ts": "2026-10-18T01:32:25.552Z",
+   "part": null,
+   "title": "agent-long-tasks_open_questions.txt",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_open_questions.txt",
+   "values": {},
+   "file": {
+    "id": "Mudy9a5hQa4o",
+    "name": "agent-long-tasks_open_questions.txt",
+    "bytes": 572,
+    "type": "text/plain",
+    "lines": 6,
+    "text": true
+   },
+   "excerpt": "Does pinning the task text alone remove most \"lost the goal\" failures, or do those runs drift for another reason?\nIs a loop best broken by rule (same command twice with the same output means stop and rethink) or by asking for a prediction first?\nShould verification be a harness step the agent cannot skip, and what does it cost in runs that would have passed anyway?\nIs a notes file better than a summary, given that summaries dropped the task text?\nWhich of the changes combine, and which cancel out?\nWhich failures are the model's limit, where no harness change helps?\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 12,
+   "by": "luka",
+   "ts": "2026-10-18T01:32:25.546Z",
+   "part": null,
+   "title": "agent-long-tasks_measurement_plan.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_measurement_plan.md",
+   "values": {},
+   "file": {
+    "id": "BZ1sXdkTruap",
+    "name": "agent-long-tasks_measurement_plan.md",
+    "bytes": 1087,
+    "type": "text/markdown",
+    "lines": 20,
+    "text": true
+   },
+   "excerpt": "# How a harness change is measured\n\nSuite: 120 repository tasks, 48 of them long (40 or more tool calls in the median passing run). Each task has\nhidden tests the harness runs after the agent stops; the agent cannot see or change them.\n\nFor every change, on the 48 long tasks:\n- pass rate over 3 runs with seeds 1, 2, 3 (144 runs)\n- pass^3: the share of tasks that pass on all three runs\n- tokens per run and wall time per run\n- failure kinds, by the taxonomy, on every failed run (a person reads a 20-run sample)\n\nA change is kept when the long-task pass rate rises by 6 points or more (the seed-to-seed spread is about 4\npoints), cost per task does not rise by more than 20 percent, and the short-task pass rate does not fall.\n\nBudget for this study: 2,500 runs in total, so about 15 changes can be measured in full. Cheap screening on\na 12-task subset first, then the full 48 for the promising ones.\n\nBaseline numbers (3 seeds, current harness)\n- long tasks: pass 31 percent, pass^3 12 percent, 65k tokens per run\n- short tasks: pass 78 percent, pass^3 61 percent, 14k tokens per run\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 11,
+   "by": "luka",
+   "ts": "2026-10-18T01:32:25.530Z",
+   "part": null,
+   "title": "agent-long-tasks_harness_today.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_harness_today.md",
+   "values": {},
+   "file": {
+    "id": "YOcqY0FRy6pl",
+    "name": "agent-long-tasks_harness_today.md",
+    "bytes": 973,
+    "type": "text/markdown",
+    "lines": 12,
+    "text": true
+   },
+   "excerpt": "# The harness as it is now\n\n- One system prompt (about 900 tokens): the role, the tools, \"work until the task is done, then summarise\".\n- Tools: read_file (whole file or a line range), edit_file (search and replace), run_shell, search (grep).\n- Step cap: 60 tool calls. At the cap the agent is asked for a final summary and the run ends.\n- Context window: 128k tokens. When the conversation passes 100k, the oldest messages are dropped until it is\n  under 80k. The task text is the first user message, so it is dropped first.\n- No memory between runs. No notes file. The agent keeps nothing outside the conversation.\n- No checkpoint: a run that fails is retried from scratch at most once (see what_we_tried.md).\n- Verification is left to the agent. The prompt says \"run the tests\"; nothing checks that it did.\n- Cost per long task today: about 65k tokens per run on average, 2 runs with the retry.\n- Logs keep every tool call and result, so a run can be replayed and read.\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 10,
+   "by": "luka",
+   "ts": "2026-10-18T01:32:25.523Z",
+   "part": null,
+   "title": "agent-long-tasks_failure_taxonomy_notes.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_failure_taxonomy_notes.md",
+   "values": {},
+   "file": {
+    "id": "T2mzY6WND4Z1",
+    "name": "agent-long-tasks_failure_taxonomy_notes.md",
+    "bytes": 1730,
+    "type": "text/markdown",
+    "lines": 23,
+    "text": true
+   },
+   "excerpt": "# Reading 40 failed long-task runs by hand\n\nOne person read 40 failed runs (tasks with 40 or more tool calls) end to end. Each run was given one main\nfailure kind. Counts below. A run often shows two kinds; the first one that doomed the run is counted.\n\n| kind | runs | what it looks like |\n|---|---|---|\n| lost the goal | 11 | after 30 or more steps the agent works on a sub-problem and never returns to the task; the final message claims success on the sub-problem |\n| loop | 9 | the same edit and test cycle three or more times with the same error; no new information between tries |\n| stale context | 7 | the agent reasons from a file version it read 20 steps earlier, after its own edit changed it |\n| wrong verification | 6 | the agent runs a test that cannot fail (wrong path, skipped test, grep for a word) and stops |\n| gave up early | 4 | the agent writes \"this would need more investigation\" and stops with steps and budget left |\n| tool misuse | 3 | malformed edits, wrong working directory, shell quoting; recovered late or never |\n\nObservations\n- In 9 of the 11 \"lost the goal\" runs the original task text was no longer in the context window when the agent\n  went astray. The harness trims the oldest messages first and the task text is the oldest message.\n- The 9 loop runs averaged 2,400 tokens per cycle. The agent never stated what it expected the fix to change.\n- Stale context runs all involved files longer than 300 lines that the agent had read in full once.\n- \"Wrong verification\" runs ended with a confident summary. A person reading only the summary would have\n  accepted 5 of the 6.\n- Runs that passed and runs that failed used the same tools in the first 10 steps. The difference shows after\n  step 25.\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 9,
+   "by": "luka",
+   "ts": "2026-10-18T01:31:37.426Z",
+   "part": null,
+   "title": "agent-long-tasks_what_we_tried.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_what_we_tried.md",
+   "values": {},
+   "file": {
+    "id": "vXvAvbklFx06",
+    "name": "agent-long-tasks_what_we_tried.md",
+    "bytes": 1113,
+    "type": "text/markdown",
+    "lines": 21,
+    "text": true
+   },
+   "excerpt": "# Three changes already tried\n\n1. Raise the step cap from 60 to 100.\n   Long-task pass rate 31 to 33 percent. Cost per task up 45 percent. The loop runs just looped longer.\n   Not kept.\n\n2. Retry a failed run from scratch once, with a different seed.\n   Pass rate for the pair of runs 31 to 44 percent on long tasks. Doubles the cost of a failed task.\n   Kept, as the current default. It shows the model can do these tasks; it does not do them reliably.\n\n3. Summarise the conversation every 20 steps (the model writes a summary, old messages are replaced by it).\n   Pass rate 31 to 34 percent. \"Stale context\" failures fell. \"Lost the goal\" failures rose: in 6 of 10 read\n   summaries the task text was shortened or dropped by the summary itself.\n   Not kept.\n\nWhat nobody has tried\n- Keeping the task text pinned so trimming never drops it.\n- Making the agent write what it expects a change to do before it runs the test again.\n- Re-reading a file after editing it, by rule.\n- A verification step the harness runs, not the agent.\n- A scratch notes file the agent is told to keep, with the plan and what is done.\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 8,
+   "by": "luka",
+   "ts": "2026-10-18T01:31:37.419Z",
+   "part": null,
+   "title": "agent-long-tasks_trajectories_sample.csv",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "data",
+   "source": "agent-long-tasks_trajectories_sample.csv",
+   "values": {},
+   "file": {
+    "id": "QNWlo87pbzfK",
+    "name": "agent-long-tasks_trajectories_sample.csv",
+    "bytes": 1478,
+    "type": "text/csv",
+    "lines": 31,
+    "text": true
+   },
+   "excerpt": "run_id,task_id,steps,tokens,outcome,failure_kind,task_text_in_context_at_end,repeated_cycles,files_over_300_lines_read,verify_step\nr001,t017,52,61000,fail,lost the goal,no,0,2,none\nr002,t017,44,52000,pass,,yes,0,2,real\nr003,t022,61,74000,fail,loop,yes,4,1,none\nr004,t022,58,70000,fail,loop,yes,3,1,none\nr005,t031,47,55000,pass,,yes,1,0,real\nr006,t031,49,57000,fail,stale context,yes,0,2,real\nr007,t040,38,44000,pass,,yes,0,1,real\nr008,t040,60,72000,fail,lost the goal,no,1,1,none\nr009,t045,55,66000,fail,wrong verification,yes,0,0,fake\nr010,t045,41,48000,pass,,yes,0,0,real\nr011,t052,60,71000,fail,loop,yes,5,2,none\nr012,t052,46,54000,pass,,yes,1,2,real\nr013,t058,57,69000,fail,lost the goal,no,0,3,none\nr014,t058,59,70000,fail,stale context,no,0,3,real\nr015,t063,43,50000,pass,,yes,0,1,real\nr016,t063,33,38000,fail,gave up early,yes,0,1,none\nr017,t070,60,73000,fail,lost the goal,no,2,2,none\nr018,t070,51,61000,fail,loop,no,3,2,none\nr019,t074,45,53000,pass,,yes,0,0,real\nr020,t074,48,56000,pass,,yes,0,0,real\nr021,t081,60,75000,fail,stale context,yes,0,4,real\nr022,t081,54,64000,fail,wrong verification,yes,0,4,fake\nr023,t088,42,49000,pass,,yes,0,1,real\nr024,t088,36,41000,fail,gave up early,yes,0,1,none\nr025,t093,60,74000,fail,tool misuse,yes,2,0,none\nr026,t093,47,55000,pass,,yes,0,0,real\nr027,t099,56,67000,fail,lost the goal,no,0,2,none\nr028,t099,53,63000,fail,wrong verification,no,0,2,fake\nr029,t104,40,46000,pass,,yes,0,1,real\nr030,t104,60,72000,fail,loop,yes,4,1,none\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 7,
+   "by": "luka",
+   "ts": "2026-10-18T01:31:37.412Z",
+   "part": null,
+   "title": "agent-long-tasks_reading_notes_agents.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_reading_notes_agents.md",
+   "values": {},
+   "file": {
+    "id": "sAt3ToYs9ztb",
+    "name": "agent-long-tasks_reading_notes_agents.md",
+    "bytes": 1674,
+    "type": "text/markdown",
+    "lines": 25,
+    "text": true
+   },
+   "excerpt": "# Reading notes: what is known about long-horizon agent failures\n\nReAct (Yao et al., 2022). Interleaving a written thought with each action helps the model keep track of what\nit is doing. Their failure analysis names reasoning that drifts from the task and repeated actions as the\nmain failure kinds. Matches our \"lost the goal\" and \"loop\".\n\nReflexion (Shinn et al., 2023). After a failed attempt the model writes a short reflection on what went wrong,\nkept in memory for the next attempt. Big gains on tasks with a clear pass or fail signal. Our retry from scratch\nkeeps nothing between attempts; a reflection would be cheap to add.\n\nSWE-agent (Yang et al., 2024). The interface the agent works through matters as much as the prompt: a file\nviewer that shows a window with line numbers, an edit command that checks syntax, and short tool outputs\nraised the solve rate on SWE-bench. Their point: tool results that are long or noisy fill the context with\nlittle information.\n\nLost in the Middle (Liu et al., 2023). Models use information at the start and end of a long context better\nthan information in the middle. Our task text starts at the beginning and is trimmed away; while it stays, it\nsits in the best position, and then it is gone.\n\ntau-bench (Yao et al., 2024). The same task run several times passes sometimes and fails other times; they\nreport pass^k, the chance that all k runs pass, which falls fast with k. Our 31 percent is one run; pass^3 is\nwhat a user feels.\n\nCommon ground across these: the agent needs the goal, the current state of the world, and a check it cannot\nfool, all kept close. Most harness fixes are ways of keeping one of the three in view.\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 6,
+   "by": "luka",
+   "ts": "2026-10-18T01:31:37.406Z",
+   "part": null,
+   "title": "agent-long-tasks_problem_brief.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_problem_brief.md",
+   "values": {},
+   "file": {
+    "id": "OzauaRqcs90n",
+    "name": "agent-long-tasks_problem_brief.md",
+    "bytes": 1729,
+    "type": "text/markdown",
+    "lines": 28,
+    "text": true
+   },
+   "excerpt": "# Why our coding agent fails on long tasks, and what to change in the harness\n\nWe run an LLM coding agent (tool calls: read, edit, run shell, search) on an internal suite of 120 repository\ntasks. Short tasks (under 15 tool calls) pass 78 percent of the time. Tasks that need more than 40 tool calls\npass 31 percent of the time, and the same task passes on one run and fails on the next.\n\nThe question: which changes to the harness, not the model, raise the pass rate on the long tasks, and by how much?\n\nScope\n- The model is fixed. No fine-tuning, no retraining, no bigger model.\n- Changes allowed: the system prompt, the tool set and tool descriptions, how context is trimmed or summarised,\n  memory between steps, retries and checkpoints, the step cap, and how the agent is told to verify its work.\n- Every change must be measurable on the 120-task suite with the same seeds.\n- A change that doubles cost per task is out, even if it passes more.\n\nWhat a good answer looks like\n- A ranked list of harness changes, each with a predicted effect on the long-task pass rate and its cost.\n- For each change: the failure kind it addresses (see failure_taxonomy_notes.md), the mechanism, and a test.\n- Honest about what cannot be fixed without the model changing.\n\nFiles in this folder\n- failure_taxonomy_notes.md: what 40 failed runs looked like when a person read them.\n- trajectories_sample.csv: 30 runs with steps, outcome and failure kind. SYNTHETIC: shaped like our logs, not real data.\n- harness_today.md: how the harness works now.\n- what_we_tried.md: three changes already tried and what happened.\n- reading_notes_agents.md: notes from the literature.\n- measurement_plan.md: how we will measure a change.\n- open_questions.txt\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 5,
+   "by": "luka",
+   "ts": "2026-10-18T01:31:37.400Z",
+   "part": null,
+   "title": "agent-long-tasks_open_questions.txt",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_open_questions.txt",
+   "values": {},
+   "file": {
+    "id": "Mudy9a5hQa4o",
+    "name": "agent-long-tasks_open_questions.txt",
+    "bytes": 572,
+    "type": "text/plain",
+    "lines": 6,
+    "text": true
+   },
+   "excerpt": "Does pinning the task text alone remove most \"lost the goal\" failures, or do those runs drift for another reason?\nIs a loop best broken by rule (same command twice with the same output means stop and rethink) or by asking for a prediction first?\nShould verification be a harness step the agent cannot skip, and what does it cost in runs that would have passed anyway?\nIs a notes file better than a summary, given that summaries dropped the task text?\nWhich of the changes combine, and which cancel out?\nWhich failures are the model's limit, where no harness change helps?\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 4,
+   "by": "luka",
+   "ts": "2026-10-18T01:31:37.393Z",
+   "part": null,
+   "title": "agent-long-tasks_measurement_plan.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_measurement_plan.md",
+   "values": {},
+   "file": {
+    "id": "BZ1sXdkTruap",
+    "name": "agent-long-tasks_measurement_plan.md",
+    "bytes": 1087,
+    "type": "text/markdown",
+    "lines": 20,
+    "text": true
+   },
+   "excerpt": "# How a harness change is measured\n\nSuite: 120 repository tasks, 48 of them long (40 or more tool calls in the median passing run). Each task has\nhidden tests the harness runs after the agent stops; the agent cannot see or change them.\n\nFor every change, on the 48 long tasks:\n- pass rate over 3 runs with seeds 1, 2, 3 (144 runs)\n- pass^3: the share of tasks that pass on all three runs\n- tokens per run and wall time per run\n- failure kinds, by the taxonomy, on every failed run (a person reads a 20-run sample)\n\nA change is kept when the long-task pass rate rises by 6 points or more (the seed-to-seed spread is about 4\npoints), cost per task does not rise by more than 20 percent, and the short-task pass rate does not fall.\n\nBudget for this study: 2,500 runs in total, so about 15 changes can be measured in full. Cheap screening on\na 12-task subset first, then the full 48 for the promising ones.\n\nBaseline numbers (3 seeds, current harness)\n- long tasks: pass 31 percent, pass^3 12 percent, 65k tokens per run\n- short tasks: pass 78 percent, pass^3 61 percent, 14k tokens per run\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 3,
+   "by": "luka",
+   "ts": "2026-10-18T01:31:37.381Z",
+   "part": null,
+   "title": "agent-long-tasks_harness_today.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_harness_today.md",
+   "values": {},
+   "file": {
+    "id": "YOcqY0FRy6pl",
+    "name": "agent-long-tasks_harness_today.md",
+    "bytes": 973,
+    "type": "text/markdown",
+    "lines": 12,
+    "text": true
+   },
+   "excerpt": "# The harness as it is now\n\n- One system prompt (about 900 tokens): the role, the tools, \"work until the task is done, then summarise\".\n- Tools: read_file (whole file or a line range), edit_file (search and replace), run_shell, search (grep).\n- Step cap: 60 tool calls. At the cap the agent is asked for a final summary and the run ends.\n- Context window: 128k tokens. When the conversation passes 100k, the oldest messages are dropped until it is\n  under 80k. The task text is the first user message, so it is dropped first.\n- No memory between runs. No notes file. The agent keeps nothing outside the conversation.\n- No checkpoint: a run that fails is retried from scratch at most once (see what_we_tried.md).\n- Verification is left to the agent. The prompt says \"run the tests\"; nothing checks that it did.\n- Cost per long task today: about 65k tokens per run on average, 2 runs with the retry.\n- Logs keep every tool call and result, so a run can be replayed and read.\n",
+   "replaces": null,
+   "replaced_by": null
+  },
+  {
+   "seq": 2,
+   "by": "luka",
+   "ts": "2026-10-18T01:31:37.367Z",
+   "part": null,
+   "title": "agent-long-tasks_failure_taxonomy_notes.md",
+   "text": "Shared when describing the problem: Harness fixes for long tasks",
+   "kind": "note",
+   "source": "agent-long-tasks_failure_taxonomy_notes.md",
+   "values": {},
+   "file": {
+    "id": "T2mzY6WND4Z1",
+    "name": "agent-long-tasks_failure_taxonomy_notes.md",
+    "bytes": 1730,
+    "type": "text/markdown",
+    "lines": 23,
+    "text": true
+   },
+   "excerpt": "# Reading 40 failed long-task runs by hand\n\nOne person read 40 failed runs (tasks with 40 or more tool calls) end to end. Each run was given one main\nfailure kind. Counts below. A run often shows two kinds; the first one that doomed the run is counted.\n\n| kind | runs | what it looks like |\n|---|---|---|\n| lost the goal | 11 | after 30 or more steps the agent works on a sub-problem and never returns to the task; the final message claims success on the sub-problem |\n| loop | 9 | the same edit and test cycle three or more times with the same error; no new information between tries |\n| stale context | 7 | the agent reasons from a file version it read 20 steps earlier, after its own edit changed it |\n| wrong verification | 6 | the agent runs a test that cannot fail (wrong path, skipped test, grep for a word) and stops |\n| gave up early | 4 | the agent writes \"this would need more investigation\" and stops with steps and budget left |\n| tool misuse | 3 | malformed edits, wrong working directory, shell quoting; recovered late or never |\n\nObservations\n- In 9 of the 11 \"lost the goal\" runs the original task text was no longer in the context window when the agent\n  went astray. The harness trims the oldest messages first and the task text is the oldest message.\n- The 9 loop runs averaged 2,400 tokens per cycle. The agent never stated what it expected the fix to change.\n- Stale context runs all involved files longer than 300 lines that the agent had read in full once.\n- \"Wrong verification\" runs ended with a confident summary. A person reading only the summary would have\n  accepted 5 of the 6.\n- Runs that passed and runs that failed used the same tools in the first 10 steps. The difference shows after\n  step 25.\n",
+   "replaces": null,
+   "replaced_by": null
+  }
+ ]
+}

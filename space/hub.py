@@ -214,7 +214,7 @@ class Hub:
                     break
                 except OSError:
                     time.sleep(0.1)
-        if me:
+        if me and not (folder / "bundle.json").exists():   # a bundled space stays open to every account on this PC
             auth.add_member(name, me)
         self._start_my_agent(port, me, self._key_of(rec) if lan else "")
         return self._row(rec)
@@ -379,9 +379,10 @@ class Handler(BaseHTTPRequestHandler):
                     row["members"] = auth.members_of(row["name"])
                     row["open_to_all"] = row["members"] is None
                     row["member"] = auth.is_member(row["name"], me)
+                    row["bundled"] = (Path(row["db"]).parent / "bundle.json").exists()   # came with the repository
                     # your own spaces always; an open room (no members list) only while it runs, so old stage
-                    # folders do not pile up on the page
-                    if row["member"] and (not row["open_to_all"] or row["alive"]):
+                    # folders do not pile up on the page; a bundled space always
+                    if row["member"] and (not row["open_to_all"] or row["alive"] or row["bundled"]):
                         rows.append(row)
                 return self._send(200, dict(d, spaces=rows, me=me))
             p = (WEB / u.path.lstrip("/")).resolve()
@@ -436,6 +437,13 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     httpd = ThreadingHTTPServer(("127.0.0.1", a.port), Handler)
     httpd.daemon_threads = True
+    try:                                                   # spaces that travel with the repository (space/bundle.py)
+        from space import bundle
+        got = bundle.install_all()
+        if got:
+            print("installed bundled spaces: %s" % ", ".join(got), flush=True)
+    except Exception as e:  # noqa: BLE001
+        print("bundles: %s" % str(e)[:200], flush=True)
     httpd.hub = Hub(Path(a.spaces))
     print("hub on http://127.0.0.1:%d/  spaces in %s" % (a.port, a.spaces), flush=True)
     if a.open:

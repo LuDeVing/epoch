@@ -293,7 +293,7 @@ function SpaceCard({ s, me, act }) {
     <div class="card__top"><span class="mono-tile" aria-hidden="true">${initials(s.name)}</span>
       <div class="card__title"><span class="card__name" title=${s.name}>${s.name}</span>
         <span class="card__tags"><span class=${`pill${s.alive ? ' pill--on' : ''}`}><span class="pill__dot"></span>${s.alive ? 'Running' : 'Asleep'}</span>
-          ${s.open_to_all ? html`<span class="tag">open room</span>` : null}${s.lan ? html`<span class="tag">network</span>` : null}</span></div></div>
+          ${s.bundled ? html`<span class="tag" title="came with the repository; open to every account on this PC">example</span>` : s.open_to_all ? html`<span class="tag">open room</span>` : null}${s.lan ? html`<span class="tag">network</span>` : null}</span></div></div>
     <div class="card__meta">
       ${n ? html`<span class="members">${s.members.slice(0, 5).map((m) => html`<${Bubble} name=${m} small />`)}</span><span>${n} member${n === 1 ? '' : 's'}</span>` : html`<span>everyone signed in</span>`}
       ${s.updated ? html`<span class="meta__sep"></span><span title="the last change to its log">${ago(s.updated)}</span>` : null}
@@ -340,8 +340,8 @@ function HubPage() {
     } catch (ex) { say(ex.message); await refresh(); }
   };
   if (me === undefined) return html`<div class="login"><div class="muted">...</div></div>`;
-  const mine = (data.spaces || []).filter((s) => !s.open_to_all);
-  const openRooms = (data.spaces || []).filter((s) => s.open_to_all);
+  const mine = (data.spaces || []).filter((s) => !s.open_to_all || s.bundled);
+  const openRooms = (data.spaces || []).filter((s) => s.open_to_all && !s.bundled);
   return html`<div>
     <header class="top"><div class="brand"><span class="brand__mark"></span>Epoch <span class="muted" style="font-weight:400">spaces</span></div><div class="top__spacer"></div>
       ${me ? html`<button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button><button class="btn" title="stop every space and the hub on this PC" onClick=${() => setOff(true)}>Turn off</button><${Bell} me=${me} onChange=${refresh} /><${AccountMenu} me=${me} onChange=${refresh} />` : null}</header>

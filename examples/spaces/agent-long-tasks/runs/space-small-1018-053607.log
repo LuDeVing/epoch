@@ -1,0 +1,25 @@
+$ D:\AGI-lab\.venv\Scripts\python.exe -m nano.loop --profile custom_harness_fixes_for_long_t --batch space-small-1018-053607 --implement 2 --rounds 1 --max-sketch-calls 8 --model fable --budget 600000 --space http://127.0.0.1:8768
+Mode 3 (panel checker) needs a judge model apart from the generator: pass --judge-model, or set judge_model in the profile's checker_args
+
+$ D:\AGI-lab\.venv\Scripts\python.exe -m nano.loop --profile custom_harness_fixes_for_long_t --batch space-small-1018-053607 --implement 2 --rounds 1 --max-sketch-calls 8 --model fable --budget 600000 --space http://127.0.0.1:8768 --resume   (continued 2026-10-18T05:37:34)
+Mode 3 (panel checker) needs a judge model apart from the generator: pass --judge-model, or set judge_model in the profile's checker_args
+
+$ D:\AGI-lab\.venv\Scripts\python.exe -m nano.loop --profile custom_harness_fixes_for_long_t --batch space-small-1018-053607 --implement 2 --rounds 1 --max-sketch-calls 8 --model fable --budget 600000 --space http://127.0.0.1:8768 --resume   (continued 2026-10-18T05:38:09)
+Mode 3 (panel checker) needs a judge model apart from the generator: pass --judge-model, or set judge_model in the profile's checker_args
+
+$ D:\AGI-lab\.venv\Scripts\python.exe -m nano.loop --profile custom_harness_fixes_for_long_t --batch space-small-1018-053607 --implement 2 --rounds 1 --max-sketch-calls 8 --model fable --budget 600000 --space http://127.0.0.1:8768 --resume --judge-model opus   (continued 2026-10-18T05:43:30)
+
+$ D:\AGI-lab\.venv\Scripts\python.exe -m nano.loop --profile custom_harness_fixes_for_long_t --batch space-small-1018-053607 --implement 2 --rounds 1 --max-sketch-calls 8 --model fable --budget 600000 --space http://127.0.0.1:8768 --resume --judge-model opus   (continued 2026-10-18T05:55:44)
+[nano] reference set: - -> n0e7e50894d | the first checked candidate
+[nano] r1 impl:deepen+research n0e7e50894d -> checked rung 2 | System prompt layout, the trimming routine, the summariser prompt, and
+[nano] r1 impl:deepen+research nbf8c55f7fa -> checked rung 2 | The trimming routine (a hook that fires after each trim), a step-count
+{"n_candidates": 2, "n_checked": 2, "spent_tokens": 445101, "wall_s": 745}
+  n0e7e50894d impl:deepen+research extrap z None long z None learn z 0.0 step Nones | System prompt layout, the trimming routine, the summariser prompt, and run-start assembly; tools and step cap untouched.
+  nbf8c55f7fa impl:deepen+research extrap z None long z None learn z 0.89 step Nones | The trimming routine (a hook that fires after each trim), a step-count hook at 15, 30, 45, a short harness question and a requirement-sentence matcher, and a conditional verbatim re-injection of the task text; no change to tools, step cap, or the system prompt body.
+  reference set: - -> n0e7e50894d (round 1) | the first checked candidate
+  proposal 1. n0e7e50894d panel 6.722 sd 0.192 | Put the task text in the system prompt at run start instead of the first user message, so 
+  proposal 2. nbf8c55f7fa panel 6.278 sd 0.536 | Add a restatement handshake to the harness: after every trim event and at steps 15, 30 and
+  upward: Measure the harness as a packing scheme: how much of the goal stays readable as the context condenses, not whether the run passed.
+  upward: Study continuations from a shared checkpoint, not whole runs, because the first 25 steps carry no signal.
+  upward: Replace pass rate under a keep rule with passes per fixed token budget, and compare every change at matched spend.
+run folder: D:\AGI-lab\runs\space-small-1018-053607__nano__custom_harness_fixes_for_long_t__scaffold__r0

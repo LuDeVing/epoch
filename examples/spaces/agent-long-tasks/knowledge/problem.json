@@ -1,0 +1,314 @@
+{
+ "title": "Harness fixes for long tasks",
+ "goal": "Find which changes to the harness, not the model, raise the pass rate of the coding agent on long tasks (40 or more tool calls), and by how much. Long tasks pass 31 percent of the time against 78 percent for short ones, and the same task often passes on one run and fails on the next. The team wants a ranked list of harness changes, each with a predicted effect on long-task pass rate and its cost, the failure kind it addresses, the mechanism, and a test. The answer should also say honestly which failures cannot be fixed without a model change. Today only a retry from scratch is kept, and it lifts the pair of runs to 44 percent but doubles the cost of a failed task. Situation: An LLM coding agent with read_file, edit_file, run_shell and search tools runs on an internal suite of 120 repository tasks, 48 of them long. One person read 40 failed long runs by hand and sorted them into six failure kinds. Three changes were tried: raising the step cap to 100, retrying once from scratch, and summarising every 20 steps. Only the retry was kept. The folder holds the taxonomy notes, the harness description, the measurement plan, the tried-changes list, literature notes (ReAct, Reflexion, SWE-agent, Lost in the Middle, tau-bench), open questions, and a 30-run sample CSV that is synthetic, not real data. Scope: In: harness changes (prompt, tools, context handling, memory, retries, step cap, verification) judged on the 48 long tasks of the 120-task suite; out: any change to the model, fine-tuning, or a bigger model. Open questions: Does pinning the task text alone remove most 'lost the goal' failures, or do those runs drift for another reason?; Is a loop best broken by a rule (same command twice with the same output means stop and rethink) or by asking for a prediction first?; Should verification be a harness step the agent cannot skip, and what does it cost in runs that would have passed anyway?; Is a notes file better than a summary, given that summaries dropped the task text?; Which changes combine and which cancel out (for example, notes file plus pinning plus summaries)?; Which failures are the model's limit, where no harness change helps (guess: part of gave up early and tool misuse)? Situation: An LLM coding agent with read_file, edit_file, run_shell and search tools runs on an internal suite of 120 repository tasks, 48 of them long. One person read 40 failed long runs by hand and sorted them into six failure kinds. Three changes were tried: raising the step cap to 100, retrying once from scratch, and summarising every 20 steps. Only the retry was kept. The folder holds the taxonomy notes, the harness description, the measurement plan, the tried-changes list, literature notes (ReAct, Reflexion, SWE-agent, Lost in the Middle, tau-bench), open questions, and a 30-run sample CSV that is synthetic, not real data. Scope: In: harness changes (prompt, tools, context handling, memory, retries, step cap, verification) judged on the 48 long tasks of the 120-task suite; out: any change to the model, fine-tuning, or a bigger model. Open questions: Does pinning the task text alone remove most 'lost the goal' failures, or do those runs drift for another reason?; Is a loop best broken by a rule (same command twice with the same output means stop and rethink) or by asking for a prediction first?; Should verification be a harness step the agent cannot skip, and what does it cost in runs that would have passed anyway?; Is a notes file better than a summary, given that summaries dropped the task text?; Which changes combine and which cancel out (for example, notes file plus pinning plus summaries)?; Which failures are the model's limit, where no harness change helps (guess: part of gave up early and tool misuse)?",
+ "success": "Ranked list: The answer gives harness changes in ranked order, each with a predicted long-task pass-rate gain and a token cost per run.\nFailure link: Each change names the failure kind from the 40-run taxonomy it targets and the mechanism by which it helps, tied to counts or observations in the files.\nTestable: Each change has a test that fits the measurement plan: 48 long tasks, seeds 1-3, with pass rate, pass^3, tokens, and failure kinds.\nKeep rule: Predicted results are judged against the keep rule: at least +6 points on long tasks, cost rise at most 20 percent, no drop on short tasks.\nModel limits: The answer separates failures a harness change can fix from those that likely need a better model, with reasons.\nFits budget: The proposed study order (cheap screen on 12 tasks, then full 48) stays within about 2,500 runs and about 15 full measurements.",
+ "known": "Short tasks (under 15 tool calls) pass 78 percent; tasks over 40 tool calls pass 31 percent; the same task can pass and fail on different runs. (source: problem_brief.md, opening paragraph)\nBaseline long tasks: pass 31 percent, pass^3 12 percent, 65k tokens per run. Short tasks: pass 78 percent, pass^3 61 percent, 14k tokens per run. (source: measurement_plan.md, Baseline numbers)\nOf 40 failed long runs read by hand: lost the goal 11, loop 9, stale context 7, wrong verification 6, gave up early 4, tool misuse 3. (source: failure_taxonomy_notes.md, table)\nIn 9 of 11 'lost the goal' runs the task text was no longer in the context window; the harness trims oldest messages first and the task text is the oldest. (source: failure_taxonomy_notes.md, Observations)\nThe 9 loop runs averaged 2,400 tokens per cycle, and the agent never stated what it expected the fix to change. (source: failure_taxonomy_notes.md, Observations)\nAll stale context runs involved files longer than 300 lines that the agent had read in full once. (source: failure_taxonomy_notes.md, Observations)\nA person reading only the summary would have accepted 5 of the 6 wrong-verification runs. (source: failure_taxonomy_notes.md, Observations)\nPassing and failing runs used the same tools in the first 10 steps; the difference shows after step 25. (source: failure_taxonomy_notes.md, Observations)\nHarness: system prompt of about 900 tokens, four tools, step cap of 60 tool calls, 128k window; when over 100k, oldest messages are dropped until under 80k. (source: harness_today.md)\nNo memory between runs, no notes file, no checkpoint; a failed run is retried from scratch at most once; verification is left to the agent and nothing checks it. (source: harness_today.md)\nCost per long task today is about 65k tokens per run, 2 runs with the retry. (source: harness_today.md)\nRaising the step cap from 60 to 100 moved long-task pass from 31 to 33 percent and cost per task up 45 percent; loop runs just looped longer. Not kept. (source: what_we_tried.md, change 1)\nRetry from scratch with a different seed raised the pair's long-task pass rate from 31 to 44 percent and doubles cost of a failed task. Kept. (source: what_we_tried.md, change 2)\nSummarising every 20 steps moved pass from 31 to 34 percent; stale context failures fell but lost-the-goal failures rose; in 6 of 10 read summaries the task text was shortened or dropped. Not kept. (source: what_we_tried.md, change 3)\nUntried: pinned task text, prediction before re-running a test, re-reading a file after editing, harness-run verification, scratch notes file. (source: what_we_tried.md, What nobody has tried)\nSuite is 120 repository tasks, 48 long, with hidden tests run after the agent stops. (source: measurement_plan.md, first paragraph)\nMeasurement per change: pass rate over seeds 1, 2, 3 (144 runs), pass^3, tokens and wall time per run, and failure kinds on a 20-run sample. (source: measurement_plan.md, list)\nA change is kept if long-task pass rises 6 points or more (seed spread about 4 points), cost per task rises at most 20 percent, and short-task pass does not fall. (source: measurement_plan.md, keep rule)\nStudy budget is 2,500 runs, about 15 full changes, with screening on a 12-task subset first. (source: measurement_plan.md, Budget)\nReAct names drifting reasoning and repeated actions as main failure kinds; Reflexion's written reflection after a failure is cheap to add to the retry. (source: reading_notes_agents.md, ReAct and Reflexion)\nSWE-agent: a windowed file viewer, syntax-checked edits and short tool outputs raised solve rate; long noisy tool results fill the context. (source: reading_notes_agents.md, SWE-agent)\nLost in the Middle: models use the start and end of the context better than the middle; the task text sits at the start until it is trimmed away. (source: reading_notes_agents.md, Lost in the Middle)\nThe sample CSV has 30 runs on 15 tasks (two runs each) with steps, tokens, outcome, failure kind, task-text-in-context flag, repeated cycles, large files read, and verify step type. It is synthetic. (source: trajectories_sample.csv, header and rows; problem_brief.md file list)\nIn the sample CSV, every run marked verify_step 'fake' failed, and all fake-verify runs are labeled wrong verification. (source: trajectories_sample.csv, verify_step column)",
+ "fixed": "The model is fixed: no fine-tuning, no retraining, no bigger model.\nAllowed changes are the system prompt, tools and tool descriptions, context trimming or summarising, memory between steps, retries and checkpoints, step cap, and how the agent is told to verify.\nEvery change must be measurable on the 120-task suite with the same seeds.\nA change that doubles cost per task is out, even if it passes more.\nKeep rule: long-task pass up 6 points or more, cost up at most 20 percent, short-task pass not lower.\nStudy budget is 2,500 runs in total, about 15 full measurements, with a 12-task screen first.\nThe agent must not see or change the hidden tests.\nThe trajectories CSV is synthetic and must not be treated as real evidence.",
+ "parts": "task text pinning > pin outside trimming window | re-state goal periodically | fix summary dropping task, loop breaking > rule on repeated output | prediction before re-run | what to do after stop, file freshness > re-read after edit | windowed file viewing | shorter tool outputs, verification step > harness-run hidden-style tests | detect tests that cannot fail | cost on passing runs, notes and memory > scratch notes file format | notes versus summary | reflection carried to retry, retry and checkpoint > resume instead of restart | reflection on retry | cost of second run, step cap and giving up > stop early gave-up runs | cap value versus loops | budget-aware prompting, measurement and combining > screening on 12 tasks | which changes stack | model-limit failures",
+ "deep": true,
+ "field": "LLM agent harness",
+ "context": "An LLM coding agent with read_file, edit_file, run_shell and search tools runs on an internal suite of 120 repository tasks, 48 of them long. One person read 40 failed long runs by hand and sorted them into six failure kinds. Three changes were tried: raising the step cap to 100, retrying once from scratch, and summarising every 20 steps. Only the retry was kept. The folder holds the taxonomy notes, the harness description, the measurement plan, the tried-changes list, literature notes (ReAct, Reflexion, SWE-agent, Lost in the Middle, tau-bench), open questions, and a 30-run sample CSV that is synthetic, not real data.",
+ "criteria": [
+  {
+   "name": "Ranked list",
+   "how": "The answer gives harness changes in ranked order, each with a predicted long-task pass-rate gain and a token cost per run."
+  },
+  {
+   "name": "Failure link",
+   "how": "Each change names the failure kind from the 40-run taxonomy it targets and the mechanism by which it helps, tied to counts or observations in the files."
+  },
+  {
+   "name": "Testable",
+   "how": "Each change has a test that fits the measurement plan: 48 long tasks, seeds 1-3, with pass rate, pass^3, tokens, and failure kinds."
+  },
+  {
+   "name": "Keep rule",
+   "how": "Predicted results are judged against the keep rule: at least +6 points on long tasks, cost rise at most 20 percent, no drop on short tasks."
+  },
+  {
+   "name": "Model limits",
+   "how": "The answer separates failures a harness change can fix from those that likely need a better model, with reasons."
+  },
+  {
+   "name": "Fits budget",
+   "how": "The proposed study order (cheap screen on 12 tasks, then full 48) stays within about 2,500 runs and about 15 full measurements."
+  }
+ ],
+ "facts": [
+  {
+   "text": "Short tasks (under 15 tool calls) pass 78 percent; tasks over 40 tool calls pass 31 percent; the same task can pass and fail on different runs.",
+   "source": "problem_brief.md, opening paragraph"
+  },
+  {
+   "text": "Baseline long tasks: pass 31 percent, pass^3 12 percent, 65k tokens per run. Short tasks: pass 78 percent, pass^3 61 percent, 14k tokens per run.",
+   "source": "measurement_plan.md, Baseline numbers"
+  },
+  {
+   "text": "Of 40 failed long runs read by hand: lost the goal 11, loop 9, stale context 7, wrong verification 6, gave up early 4, tool misuse 3.",
+   "source": "failure_taxonomy_notes.md, table"
+  },
+  {
+   "text": "In 9 of 11 'lost the goal' runs the task text was no longer in the context window; the harness trims oldest messages first and the task text is the oldest.",
+   "source": "failure_taxonomy_notes.md, Observations"
+  },
+  {
+   "text": "The 9 loop runs averaged 2,400 tokens per cycle, and the agent never stated what it expected the fix to change.",
+   "source": "failure_taxonomy_notes.md, Observations"
+  },
+  {
+   "text": "All stale context runs involved files longer than 300 lines that the agent had read in full once.",
+   "source": "failure_taxonomy_notes.md, Observations"
+  },
+  {
+   "text": "A person reading only the summary would have accepted 5 of the 6 wrong-verification runs.",
+   "source": "failure_taxonomy_notes.md, Observations"
+  },
+  {
+   "text": "Passing and failing runs used the same tools in the first 10 steps; the difference shows after step 25.",
+   "source": "failure_taxonomy_notes.md, Observations"
+  },
+  {
+   "text": "Harness: system prompt of about 900 tokens, four tools, step cap of 60 tool calls, 128k window; when over 100k, oldest messages are dropped until under 80k.",
+   "source": "harness_today.md"
+  },
+  {
+   "text": "No memory between runs, no notes file, no checkpoint; a failed run is retried from scratch at most once; verification is left to the agent and nothing checks it.",
+   "source": "harness_today.md"
+  },
+  {
+   "text": "Cost per long task today is about 65k tokens per run, 2 runs with the retry.",
+   "source": "harness_today.md"
+  },
+  {
+   "text": "Raising the step cap from 60 to 100 moved long-task pass from 31 to 33 percent and cost per task up 45 percent; loop runs just looped longer. Not kept.",
+   "source": "what_we_tried.md, change 1"
+  },
+  {
+   "text": "Retry from scratch with a different seed raised the pair's long-task pass rate from 31 to 44 percent and doubles cost of a failed task. Kept.",
+   "source": "what_we_tried.md, change 2"
+  },
+  {
+   "text": "Summarising every 20 steps moved pass from 31 to 34 percent; stale context failures fell but lost-the-goal failures rose; in 6 of 10 read summaries the task text was shortened or dropped. Not kept.",
+   "source": "what_we_tried.md, change 3"
+  },
+  {
+   "text": "Untried: pinned task text, prediction before re-running a test, re-reading a file after editing, harness-run verification, scratch notes file.",
+   "source": "what_we_tried.md, What nobody has tried"
+  },
+  {
+   "text": "Suite is 120 repository tasks, 48 long, with hidden tests run after the agent stops.",
+   "source": "measurement_plan.md, first paragraph"
+  },
+  {
+   "text": "Measurement per change: pass rate over seeds 1, 2, 3 (144 runs), pass^3, tokens and wall time per run, and failure kinds on a 20-run sample.",
+   "source": "measurement_plan.md, list"
+  },
+  {
+   "text": "A change is kept if long-task pass rises 6 points or more (seed spread about 4 points), cost per task rises at most 20 percent, and short-task pass does not fall.",
+   "source": "measurement_plan.md, keep rule"
+  },
+  {
+   "text": "Study budget is 2,500 runs, about 15 full changes, with screening on a 12-task subset first.",
+   "source": "measurement_plan.md, Budget"
+  },
+  {
+   "text": "ReAct names drifting reasoning and repeated actions as main failure kinds; Reflexion's written reflection after a failure is cheap to add to the retry.",
+   "source": "reading_notes_agents.md, ReAct and Reflexion"
+  },
+  {
+   "text": "SWE-agent: a windowed file viewer, syntax-checked edits and short tool outputs raised solve rate; long noisy tool results fill the context.",
+   "source": "reading_notes_agents.md, SWE-agent"
+  },
+  {
+   "text": "Lost in the Middle: models use the start and end of the context better than the middle; the task text sits at the start until it is trimmed away.",
+   "source": "reading_notes_agents.md, Lost in the Middle"
+  },
+  {
+   "text": "The sample CSV has 30 runs on 15 tasks (two runs each) with steps, tokens, outcome, failure kind, task-text-in-context flag, repeated cycles, large files read, and verify step type. It is synthetic.",
+   "source": "trajectories_sample.csv, header and rows; problem_brief.md file list"
+  },
+  {
+   "text": "In the sample CSV, every run marked verify_step 'fake' failed, and all fake-verify runs are labeled wrong verification.",
+   "source": "trajectories_sample.csv, verify_step column"
+  }
+ ],
+ "limits": [
+  {
+   "text": "The model is fixed: no fine-tuning, no retraining, no bigger model."
+  },
+  {
+   "text": "Allowed changes are the system prompt, tools and tool descriptions, context trimming or summarising, memory between steps, retries and checkpoints, step cap, and how the agent is told to verify."
+  },
+  {
+   "text": "Every change must be measurable on the 120-task suite with the same seeds."
+  },
+  {
+   "text": "A change that doubles cost per task is out, even if it passes more."
+  },
+  {
+   "text": "Keep rule: long-task pass up 6 points or more, cost up at most 20 percent, short-task pass not lower."
+  },
+  {
+   "text": "Study budget is 2,500 runs in total, about 15 full measurements, with a 12-task screen first."
+  },
+  {
+   "text": "The agent must not see or change the hidden tests."
+  },
+  {
+   "text": "The trajectories CSV is synthetic and must not be treated as real evidence."
+  }
+ ],
+ "partsList": [
+  {
+   "name": "task text pinning",
+   "sub": "pin outside trimming window, re-state goal periodically, fix summary dropping task"
+  },
+  {
+   "name": "loop breaking",
+   "sub": "rule on repeated output, prediction before re-run, what to do after stop"
+  },
+  {
+   "name": "file freshness",
+   "sub": "re-read after edit, windowed file viewing, shorter tool outputs"
+  },
+  {
+   "name": "verification step",
+   "sub": "harness-run hidden-style tests, detect tests that cannot fail, cost on passing runs"
+  },
+  {
+   "name": "notes and memory",
+   "sub": "scratch notes file format, notes versus summary, reflection carried to retry"
+  },
+  {
+   "name": "retry and checkpoint",
+   "sub": "resume instead of restart, reflection on retry, cost of second run"
+  },
+  {
+   "name": "step cap and giving up",
+   "sub": "stop early gave-up runs, cap value versus loops, budget-aware prompting"
+  },
+  {
+   "name": "measurement and combining",
+   "sub": "screening on 12 tasks, which changes stack, model-limit failures"
+  }
+ ],
+ "scope": "In: harness changes (prompt, tools, context handling, memory, retries, step cap, verification) judged on the 48 long tasks of the 120-task suite; out: any change to the model, fine-tuning, or a bigger model.",
+ "files": [
+  "agent-long-tasks_failure_taxonomy_notes.md",
+  "agent-long-tasks_harness_today.md",
+  "agent-long-tasks_measurement_plan.md",
+  "agent-long-tasks_open_questions.txt",
+  "agent-long-tasks_problem_brief.md",
+  "agent-long-tasks_reading_notes_agents.md",
+  "agent-long-tasks_trajectories_sample.csv",
+  "agent-long-tasks_what_we_tried.md"
+ ],
+ "material": [
+  {
+   "id": "T2mzY6WND4Z1",
+   "name": "agent-long-tasks_failure_taxonomy_notes.md",
+   "bytes": 1730,
+   "type": "text/markdown",
+   "kind": "note",
+   "by": "luka",
+   "excerpt": "# Reading 40 failed long-task runs by hand\n\nOne person read 40 failed runs (tasks with 40 or more tool calls) end to end. Each run was given one main\nfailure kind. Counts below. A run often shows two kinds; the first one that doomed the run is counted.\n\n| kind | runs | what it looks like |\n|---|---|---|\n| lost the goal | 11 | after 30 or more steps the agent works on a sub-problem and never returns to the task; the final message claims success on the sub-problem |\n| loop | 9 | the same edit and test cycle three or more times with the same error; no new information between tries |\n| stale context | 7 | the agent reasons from a file version it read 20 steps earlier, after its own edit changed it |\n| wrong verification | 6 | the agent runs a test that cannot fail (wrong path, skipped test, grep for a word) and stops |\n| gave up early | 4 | the agent writes \"this would need more investigation\" and stops with steps and budget left |\n| tool misuse | 3 | malformed edits, wrong working directory, shell quoting; recovered late or never |\n\nObservations\n- In 9 of the 11 \"lost the goal\" runs the original task text was no longer in the context window when the agent\n  went astray. The harness trims the oldest messages first and the task text is the oldest message.\n- The 9 loop runs averaged 2,400 tokens per cycle. The agent never stated what it expected the fix to change.\n- Stale context runs all involved files longer than 300 lines that the agent had read in full once.\n- \"Wrong verification\" runs ended with a confident summary. A person reading only the summary would have\n  accepted 5 of the 6.\n- Runs that passed and runs that failed used the same tools in the first 10 steps. The difference shows after\n  step 25.\n",
+   "lines": 23,
+   "text": true,
+   "url": "http://127.0.0.1:8768/api/files/T2mzY6WND4Z1"
+  },
+  {
+   "id": "YOcqY0FRy6pl",
+   "name": "agent-long-tasks_harness_today.md",
+   "bytes": 973,
+   "type": "text/markdown",
+   "kind": "note",
+   "by": "luka",
+   "excerpt": "# The harness as it is now\n\n- One system prompt (about 900 tokens): the role, the tools, \"work until the task is done, then summarise\".\n- Tools: read_file (whole file or a line range), edit_file (search and replace), run_shell, search (grep).\n- Step cap: 60 tool calls. At the cap the agent is asked for a final summary and the run ends.\n- Context window: 128k tokens. When the conversation passes 100k, the oldest messages are dropped until it is\n  under 80k. The task text is the first user message, so it is dropped first.\n- No memory between runs. No notes file. The agent keeps nothing outside the conversation.\n- No checkpoint: a run that fails is retried from scratch at most once (see what_we_tried.md).\n- Verification is left to the agent. The prompt says \"run the tests\"; nothing checks that it did.\n- Cost per long task today: about 65k tokens per run on average, 2 runs with the retry.\n- Logs keep every tool call and result, so a run can be replayed and read.\n",
+   "lines": 12,
+   "text": true,
+   "url": "http://127.0.0.1:8768/api/files/YOcqY0FRy6pl"
+  },
+  {
+   "id": "BZ1sXdkTruap",
+   "name": "agent-long-tasks_measurement_plan.md",
+   "bytes": 1087,
+   "type": "text/markdown",
+   "kind": "note",
+   "by": "luka",
+   "excerpt": "# How a harness change is measured\n\nSuite: 120 repository tasks, 48 of them long (40 or more tool calls in the median passing run). Each task has\nhidden tests the harness runs after the agent stops; the agent cannot see or change them.\n\nFor every change, on the 48 long tasks:\n- pass rate over 3 runs with seeds 1, 2, 3 (144 runs)\n- pass^3: the share of tasks that pass on all three runs\n- tokens per run and wall time per run\n- failure kinds, by the taxonomy, on every failed run (a person reads a 20-run sample)\n\nA change is kept when the long-task pass rate rises by 6 points or more (the seed-to-seed spread is about 4\npoints), cost per task does not rise by more than 20 percent, and the short-task pass rate does not fall.\n\nBudget for this study: 2,500 runs in total, so about 15 changes can be measured in full. Cheap screening on\na 12-task subset first, then the full 48 for the promising ones.\n\nBaseline numbers (3 seeds, current harness)\n- long tasks: pass 31 percent, pass^3 12 percent, 65k tokens per run\n- short tasks: pass 78 percent, pass^3 61 percent, 14k tokens per run\n",
+   "lines": 20,
+   "text": true,
+   "url": "http://127.0.0.1:8768/api/files/BZ1sXdkTruap"
+  },
+  {
+   "id": "Mudy9a5hQa4o",
+   "name": "agent-long-tasks_open_questions.txt",
+   "bytes": 572,
+   "type": "text/plain",
+   "kind": "note",
+   "by": "luka",
+   "excerpt": "Does pinning the task text alone remove most \"lost the goal\" failures, or do those runs drift for another reason?\nIs a loop best broken by rule (same command twice with the same output means stop and rethink) or by asking for a prediction first?\nShould verification be a harness step the agent cannot skip, and what does it cost in runs that would have passed anyway?\nIs a notes file better than a summary, given that summaries dropped the task text?\nWhich of the changes combine, and which cancel out?\nWhich failures are the model's limit, where no harness change helps?\n",
+   "lines": 6,
+   "text": true,
+   "url": "http://127.0.0.1:8768/api/files/Mudy9a5hQa4o"
+  },
+  {
+   "id": "OzauaRqcs90n",
+   "name": "agent-long-tasks_problem_brief.md",
+   "bytes": 1729,
+   "type": "text/markdown",
+   "kind": "note",
+   "by": "luka",
+   "excerpt": "# Why our coding agent fails on long tasks, and what to change in the harness\n\nWe run an LLM coding agent (tool calls: read, edit, run shell, search) on an internal suite of 120 repository\ntasks. Short tasks (under 15 tool calls) pass 78 percent of the time. Tasks that need more than 40 tool calls\npass 31 percent of the time, and the same task passes on one run and fails on the next.\n\nThe question: which changes to the harness, not the model, raise the pass rate on the long tasks, and by how much?\n\nScope\n- The model is fixed. No fine-tuning, no retraining, no bigger model.\n- Changes allowed: the system prompt, the tool set and tool descriptions, how context is trimmed or summarised,\n  memory between steps, retries and checkpoints, the step cap, and how the agent is told to verify its work.\n- Every change must be measurable on the 120-task suite with the same seeds.\n- A change that doubles cost per task is out, even if it passes more.\n\nWhat a good answer looks like\n- A ranked list of harness changes, each with a predicted effect on the long-task pass rate and its cost.\n- For each change: the failure kind it addresses (see failure_taxonomy_notes.md), the mechanism, and a test.\n- Honest about what cannot be fixed without the model changing.\n\nFiles in this folder\n- failure_taxonomy_notes.md: what 40 failed runs looked like when a person read them.\n- trajectories_sample.csv: 30 runs with steps, outcome and failure kind. SYNTHETIC: shaped like our logs, not real data.\n- harness_today.md: how the harness works now.\n- what_we_tried.md: three changes already tried and what happened.\n- reading_notes_agents.md: notes from the literature.\n- measurement_plan.md: how we will measure a change.\n- open_questions.txt\n",
+   "lines": 28,
+   "text": true,
+   "url": "http://127.0.0.1:8768/api/files/OzauaRqcs90n"
+  },
+  {
+   "id": "sAt3ToYs9ztb",
+   "name": "agent-long-tasks_reading_notes_agents.md",
+   "bytes": 1674,
+   "type": "text/markdown",
+   "kind": "note",
+   "by": "luka",
+   "excerpt": "# Reading notes: what is known about long-horizon agent failures\n\nReAct (Yao et al., 2022). Interleaving a written thought with each action helps the model keep track of what\nit is doing. Their failure analysis names reasoning that drifts from the task and repeated actions as the\nmain failure kinds. Matches our \"lost the goal\" and \"loop\".\n\nReflexion (Shinn et al., 2023). After a failed attempt the model writes a short reflection on what went wrong,\nkept in memory for the next attempt. Big gains on tasks with a clear pass or fail signal. Our retry from scratch\nkeeps nothing between attempts; a reflection would be cheap to add.\n\nSWE-agent (Yang et al., 2024). The interface the agent works through matters as much as the prompt: a file\nviewer that shows a window with line numbers, an edit command that checks syntax, and short tool outputs\nraised the solve rate on SWE-bench. Their point: tool results that are long or noisy fill the context with\nlittle information.\n\nLost in the Middle (Liu et al., 2023). Models use information at the start and end of a long context better\nthan information in the middle. Our task text starts at the beginning and is trimmed away; while it stays, it\nsits in the best position, and then it is gone.\n\ntau-bench (Yao et al., 2024). The same task run several times passes sometimes and fails other times; they\nreport pass^k, the chance that all k runs pass, which falls fast with k. Our 31 percent is one run; pass^3 is\nwhat a user feels.\n\nCommon ground across these: the agent needs the goal, the current state of the world, and a check it cannot\nfool, all kept close. Most harness fixes are ways of keeping one of the three in view.\n",
+   "lines": 25,
+   "text": true,
+   "url": "http://127.0.0.1:8768/api/files/sAt3ToYs9ztb"
+  },
+  {
+   "id": "QNWlo87pbzfK",
+   "name": "agent-long-tasks_trajectories_sample.csv",
+   "bytes": 1478,
+   "type": "text/csv",
+   "kind": "data",
+   "by": "luka",
+   "excerpt": "run_id,task_id,steps,tokens,outcome,failure_kind,task_text_in_context_at_end,repeated_cycles,files_over_300_lines_read,verify_step\nr001,t017,52,61000,fail,lost the goal,no,0,2,none\nr002,t017,44,52000,pass,,yes,0,2,real\nr003,t022,61,74000,fail,loop,yes,4,1,none\nr004,t022,58,70000,fail,loop,yes,3,1,none\nr005,t031,47,55000,pass,,yes,1,0,real\nr006,t031,49,57000,fail,stale context,yes,0,2,real\nr007,t040,38,44000,pass,,yes,0,1,real\nr008,t040,60,72000,fail,lost the goal,no,1,1,none\nr009,t045,55,66000,fail,wrong verification,yes,0,0,fake\nr010,t045,41,48000,pass,,yes,0,0,real\nr011,t052,60,71000,fail,loop,yes,5,2,none\nr012,t052,46,54000,pass,,yes,1,2,real\nr013,t058,57,69000,fail,lost the goal,no,0,3,none\nr014,t058,59,70000,fail,stale context,no,0,3,real\nr015,t063,43,50000,pass,,yes,0,1,real\nr016,t063,33,38000,fail,gave up early,yes,0,1,none\nr017,t070,60,73000,fail,lost the goal,no,2,2,none\nr018,t070,51,61000,fail,loop,no,3,2,none\nr019,t074,45,53000,pass,,yes,0,0,real\nr020,t074,48,56000,pass,,yes,0,0,real\nr021,t081,60,75000,fail,stale context,yes,0,4,real\nr022,t081,54,64000,fail,wrong verification,yes,0,4,fake\nr023,t088,42,49000,pass,,yes,0,1,real\nr024,t088,36,41000,fail,gave up early,yes,0,1,none\nr025,t093,60,74000,fail,tool misuse,yes,2,0,none\nr026,t093,47,55000,pass,,yes,0,0,real\nr027,t099,56,67000,fail,lost the goal,no,0,2,none\nr028,t099,53,63000,fail,wrong verification,no,0,2,fake\nr029,t104,40,46000,pass,,yes,0,1,real\nr030,t104,60,72000,fail,loop,yes,4,1,none\n",
+   "lines": 31,
+   "text": true,
+   "url": "http://127.0.0.1:8768/api/files/QNWlo87pbzfK"
+  },
+  {
+   "id": "vXvAvbklFx06",
+   "name": "agent-long-tasks_what_we_tried.md",
+   "bytes": 1113,
+   "type": "text/markdown",
+   "kind": "note",
+   "by": "luka",
+   "excerpt": "# Three changes already tried\n\n1. Raise the step cap from 60 to 100.\n   Long-task pass rate 31 to 33 percent. Cost per task up 45 percent. The loop runs just looped longer.\n   Not kept.\n\n2. Retry a failed run from scratch once, with a different seed.\n   Pass rate for the pair of runs 31 to 44 percent on long tasks. Doubles the cost of a failed task.\n   Kept, as the current default. It shows the model can do these tasks; it does not do them reliably.\n\n3. Summarise the conversation every 20 steps (the model writes a summary, old messages are replaced by it).\n   Pass rate 31 to 34 percent. \"Stale context\" failures fell. \"Lost the goal\" failures rose: in 6 of 10 read\n   summaries the task text was shortened or dropped by the summary itself.\n   Not kept.\n\nWhat nobody has tried\n- Keeping the task text pinned so trimming never drops it.\n- Making the agent write what it expects a change to do before it runs the test again.\n- Re-reading a file after editing it, by rule.\n- A verification step the harness runs, not the agent.\n- A scratch notes file the agent is told to keep, with the plan and what is done.\n",
+   "lines": 21,
+   "text": true,
+   "url": "http://127.0.0.1:8768/api/files/vXvAvbklFx06"
+  }
+ ],
+ "notes": "",
+ "draftNote": "Drafted by Claude from 8 readable files of 8. Check every line; it marks guesses with \"(guess)\".",
+ "open_questions": [
+  "Does pinning the task text alone remove most 'lost the goal' failures, or do those runs drift for another reason?",
+  "Is a loop best broken by a rule (same command twice with the same output means stop and rethink) or by asking for a prediction first?",
+  "Should verification be a harness step the agent cannot skip, and what does it cost in runs that would have passed anyway?",
+  "Is a notes file better than a summary, given that summaries dropped the task text?",
+  "Which changes combine and which cancel out (for example, notes file plus pinning plus summaries)?",
+  "Which failures are the model's limit, where no harness change helps (guess: part of gave up early and tool misuse)?"
+ ]
+}

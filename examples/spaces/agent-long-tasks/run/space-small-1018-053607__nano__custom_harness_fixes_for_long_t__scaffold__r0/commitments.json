@@ -1,0 +1,81 @@
+{
+ "rules": [
+  "C1. A proposal has the five sections CLAIM, FROM THE FACTS TO THE IDEA, FROM THE IDEA TO THE RESULT, WEAK POINTS and PROPOSED TEST, and cites at least one known fact by its id.",
+  "C2. The model is fixed: no fine-tuning, no retraining, no bigger model.",
+  "C3. Allowed changes are the system prompt, tools and tool descriptions, context trimming or summarising, memory between steps, retries and checkpoints, step cap, and how the agent is told to verify.",
+  "C4. Every change must be measurable on the 120-task suite with the same seeds.",
+  "C5. A change that doubles cost per task is out, even if it passes more.",
+  "C6. Keep rule: long-task pass up 6 points or more, cost up at most 20 percent, short-task pass not lower.",
+  "C7. Study budget is 2,500 runs in total, about 15 full measurements, with a 12-task screen first.",
+  "C8. The agent must not see or change the hidden tests.",
+  "C9. The trajectories CSV is synthetic and must not be treated as real evidence.",
+  "C10. There is no objective score: proposals are ranked by a blind panel on ranked list, failure link, testable, keep rule, model limits, fits budget, with people's opinions at a bounded weight."
+ ],
+ "win": {
+  "margin_nats": 0.5,
+  "alpha": 0.05,
+  "min_seeds": 1
+ },
+ "stackable": {
+  "margin_nats": 0.002,
+  "alpha": 0.05
+ },
+ "baseline_version": "v2",
+ "baseline_hash": "d25cf10d3373",
+ "weights": {
+  "angle": 1.0,
+  "new": 0.25,
+  "known": 0.0,
+  "failed": -2.0,
+  "obvious": -0.75,
+  "departure": 0.5,
+  "cheap": 0.25,
+  "size": -0.05,
+  "metric_blind": -1.0
+ },
+ "weights_calibrated": false,
+ "slots": {
+  "k_impl": 2,
+  "rounds": 1,
+  "per_node": 1,
+  "inward_share": 0.6,
+  "longshot_share": 0.2,
+  "leap_share": 0.25,
+  "family_variants": 2
+ },
+ "models": {
+  "model": "fable",
+  "cheap": "sonnet",
+  "research": "sonnet"
+ },
+ "web_mode": "delegate",
+ "budget": 600000,
+ "aux_budget": 6000000,
+ "stage_shares": {
+  "research": 0.05,
+  "ideation": 0.2,
+  "judging": 0.05,
+  "interrogation": 0.2,
+  "build": 0.4,
+  "reserve": 0.1
+ },
+ "tune": {
+  "on": true,
+  "knobs": "default",
+  "top": 3
+ },
+ "anomaly_seeds": 3,
+ "sham_share": 0.1,
+ "controls": [
+  "placebo_order",
+  "zero_init_proj",
+  "lr_x10"
+ ],
+ "lens": "parts",
+ "lens_design": "fixed",
+ "aim": "",
+ "scope": [],
+ "profile": "custom_harness_fixes_for_long_t",
+ "digest": null,
+ "ts": "2026-10-18T05:36:07"
+}

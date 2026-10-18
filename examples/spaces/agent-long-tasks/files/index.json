@@ -1,0 +1,90 @@
+{
+ "T2mzY6WND4Z1": {
+  "id": "T2mzY6WND4Z1",
+  "name": "agent-long-tasks_failure_taxonomy_notes.md",
+  "bytes": 1730,
+  "type": "text/markdown",
+  "kind": "note",
+  "by": "luka",
+  "path": "D:\\AGI-lab\\spaces\\agent-long-tasks\\files\\T2mzY6WND4Z1-agent-long-tasks_failure_taxonomy_notes.md",
+  "lines": 23,
+  "text": true
+ },
+ "YOcqY0FRy6pl": {
+  "id": "YOcqY0FRy6pl",
+  "name": "agent-long-tasks_harness_today.md",
+  "bytes": 973,
+  "type": "text/markdown",
+  "kind": "note",
+  "by": "luka",
+  "path": "D:\\AGI-lab\\spaces\\agent-long-tasks\\files\\YOcqY0FRy6pl-agent-long-tasks_harness_today.md",
+  "lines": 12,
+  "text": true
+ },
+ "BZ1sXdkTruap": {
+  "id": "BZ1sXdkTruap",
+  "name": "agent-long-tasks_measurement_plan.md",
+  "bytes": 1087,
+  "type": "text/markdown",
+  "kind": "note",
+  "by": "luka",
+  "path": "D:\\AGI-lab\\spaces\\agent-long-tasks\\files\\BZ1sXdkTruap-agent-long-tasks_measurement_plan.md",
+  "lines": 20,
+  "text": true
+ },
+ "Mudy9a5hQa4o": {
+  "id": "Mudy9a5hQa4o",
+  "name": "agent-long-tasks_open_questions.txt",
+  "bytes": 572,
+  "type": "text/plain",
+  "kind": "note",
+  "by": "luka",
+  "path": "D:\\AGI-lab\\spaces\\agent-long-tasks\\files\\Mudy9a5hQa4o-agent-long-tasks_open_questions.txt",
+  "lines": 6,
+  "text": true
+ },
+ "OzauaRqcs90n": {
+  "id": "OzauaRqcs90n",
+  "name": "agent-long-tasks_problem_brief.md",
+  "bytes": 1729,
+  "type": "text/markdown",
+  "kind": "note",
+  "by": "luka",
+  "path": "D:\\AGI-lab\\spaces\\agent-long-tasks\\files\\OzauaRqcs90n-agent-long-tasks_problem_brief.md",
+  "lines": 28,
+  "text": true
+ },
+ "sAt3ToYs9ztb": {
+  "id": "sAt3ToYs9ztb",
+  "name": "agent-long-tasks_reading_notes_agents.md",
+  "bytes": 1674,
+  "type": "text/markdown",
+  "kind": "note",
+  "by": "luka",
+  "path": "D:\\AGI-lab\\spaces\\agent-long-tasks\\files\\sAt3ToYs9ztb-agent-long-tasks_reading_notes_agents.md",
+  "lines": 25,
+  "text": true
+ },
+ "QNWlo87pbzfK": {
+  "id": "QNWlo87pbzfK",
+  "name": "agent-long-tasks_trajectories_sample.csv",
+  "bytes": 1478,
+  "type": "text/csv",
+  "kind": "data",
+  "by": "luka",
+  "path": "D:\\AGI-lab\\spaces\\agent-long-tasks\\files\\QNWlo87pbzfK-agent-long-tasks_trajectories_sample.csv",
+  "lines": 31,
+  "text": true
+ },
+ "vXvAvbklFx06": {
+  "id": "vXvAvbklFx06",
+  "name": "agent-long-tasks_what_we_tried.md",
+  "bytes": 1113,
+  "type": "text/markdown",
+  "kind": "note",
+  "by": "luka",
+  "path": "D:\\AGI-lab\\spaces\\agent-long-tasks\\files\\vXvAvbklFx06-agent-long-tasks_what_we_tried.md",
+  "lines": 21,
+  "text": true
+ }
+}

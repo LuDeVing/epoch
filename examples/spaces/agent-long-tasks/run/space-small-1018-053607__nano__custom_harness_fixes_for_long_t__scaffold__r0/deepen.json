@@ -1,0 +1,3066 @@
+{
+ "nodes": [
+  {
+   "id": "d65f5833047",
+   "cluster_id": "fix_summary_drop-in-k02",
+   "cluster_name": "Token-triggered compaction",
+   "gen": 0,
+   "members": [
+    "sc5de7b2808"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "d65f5833047",
+   "focus": null,
+   "qa": [
+    {
+     "q": "Does luka's 6-of-10 finding blame the trimmer or the summariser for dropping the task text?",
+     "a": "luka's file says \"the task text was shortened or dropped by the summary itself\" (agent-long-tasks_what_we_tried.md), so the summariser is the named cause, and the trimmer-fires-first story in the idea is a second, unmeasured mechanism. Token-triggering changes when the summariser runs, not what it writes, so alone it does not address the recorded failure. Pinning is the direct fix and the brief reports 0 percent constraint loss with it versus 30 to 59 percent under standard compaction, https://codex.danielvaughan.com/2026/07/03/governance-decay-self-compacting-agents-context-compaction-safety-",
+     "decides": "build token-trigger alone vs build token-trigger only as a wrapper around pinned task text"
+    },
+    {
+     "q": "Does the raw oldest-first trimmer actually fire before step 20 on real long runs?",
+     "a": "Unknown. The claim rests on F6 and F9, which are not in the brief I was given, and the synthetic CSV (C9) cannot answer it. One instrumented pass over the 12-task screen, about 12 runs, settles it before any cell of the sweep is bought.",
+     "decides": "run the sweep as proposed vs first add a one-line log of trimmer firings and skip the sweep if firings are rare"
+    },
+    {
+     "q": "Can a single step's tool output exceed the gap between target and trigger, so the trimmer fires anyway?",
+     "a": "Unknown for this suite, but a 300-line file read is on the order of a few thousand tokens, so a 20k to 40k gap tolerates several reads. Observation masking keeps the task prompt and actions intact and halved cost with equal or better solve rate on SWE-bench Verified, https://arxiv.org/abs/2508.21433, so masking large outputs is the safer companion than a wider gap.",
+     "decides": "trigger on tokens only vs trigger on tokens plus per-observation masking of large tool outputs"
+    },
+    {
+     "q": "Is \"keep the last few messages verbatim\" sufficient, or must the first messages be kept verbatim too?",
+     "a": "OpenHands' condenser keeps the first N events (default 2, system prompt and task) and the last M verbatim and summarises only the middle, with self-reported no degradation, https://docs.openhands.dev/sdk/arch/condenser. Keep-last alone leaves the task in the summarised middle, which is exactly where luka saw it dropped. Keep-first is a one-parameter change and should be in every cell.",
+     "decides": "keep-last only vs keep-first-2 plus keep-last"
+    },
+    {
+     "q": "Will the summariser prompt obey a target size and a \"keep the task\" instruction?",
+     "a": "A parallel-compaction preprint reports summariser prompt instructions on content and size are largely ignored, https://www.alphaxiv.org/abs/2605.23296.md. So the target must be enforced by what is sent in, not by asking for a length, and the task must be re-inserted by the harness, not requested of the summariser.",
+     "decides": "rely on prompt instructions for the target vs enforce the target mechanically and pin the task outside the prompt"
+    },
+    {
+     "q": "Does the 9-cell sweep fit the budget and separate the cells?",
+     "a": "108 screen runs plus 36 for seeds 1 to 3 on the best cell is about 6 percent of the 2,500-run budget, which fits C7. But one seed per cell on 12 tasks cannot separate pass-rate differences of 2 to 4 points; only the trimmer-firing rate and token totals, which are low-variance, can be read per cell. The refutation clause already uses those, which is right.",
+     "decides": "full 3 by 3 sweep vs two-stage sweep with trimmer-firing log as the first filter"
+    },
+    {
+     "q": "Could a higher trigger make stale-context failures worse?",
+     "a": "Plausible: a wider window keeps more pre-edit file views, and luka lists \"re-reading a file after editing it, by rule\" as untried. Every compression method scored worst on artifact and file-state tracking, 2.19 to 2.45 out of 5, https://factory.com/news/evaluating-compression. Count stale-context failures per cell, not just pass rate.",
+     "decides": "high trigger with wide window vs moderate trigger plus mandatory re-read after edit"
+    },
+    {
+     "q": "Does the change touch short tasks at all?",
+     "a": "If short tasks never reach the trigger, the summariser never fires and short-task pass and cost are unchanged, which satisfies C6 by construction. That must be confirmed by checking that zero short runs in the screen cross T; if some do, the current every-20-steps setup also compacts them, so the comparison is still fair.",
+     "decides": "apply globally vs gate by task length"
+    },
+    {
+     "q": "How does this interact with the kept retry-from-scratch default?",
+     "a": "luka's note says retry is the current default and doubles cost on failed tasks. Any token saving from compaction is partly offset by retries, and the keep rule's cost cap must be measured on the pair, same as the baseline was.",
+     "decides": "measure pairs of runs vs single runs"
+    }
+   ],
+   "known": [
+    "luka's note says the every-20-steps summariser itself shortened or dropped the task text in 6 of 10 read summaries, and raised pass from 31 to 34 percent on long tasks (agent-long-tasks_what_we_tried.md).",
+    "Raising the step cap from 60 to 100 moved long-task pass 31 to 33 percent at 45 percent higher cost, so longer windows alone do not help (agent-long-tasks_what_we_tried.md).",
+    "Retry-once is the current default, 31 to 44 percent pair pass on long tasks, doubling cost on failures; cost comparisons must include retries (agent-long-tasks_what_we_tried.md).",
+    "The trajectories CSV is synthetic and cannot be used as evidence for trimmer firing or task-text presence (C9).",
+    "Constraint pinning re-injects pinned text verbatim after each compaction, cost about 47 tokens per re-injection, violations 0 percent versus 30 to 59 percent, https://codex.danielvaughan.com/2026/07/03/governance-decay-self-compacting-agents-context-compaction-safety-constraints-codex-cli-constraint",
+    "OpenHands condenser keeps first 2 events and last M verbatim; keep_first was never ablated, https://docs.openhands.dev/sdk/arch/condenser",
+    "Observation masking matched or beat LLM summarisation at about half the cost on SWE-bench Verified, https://arxiv.org/abs/2508.21433",
+    "Summariser prompt instructions on content and size are largely ignored, https://www.alphaxiv.org/abs/2605.23296.md",
+    "Every compression method scored 2.19 to 2.45 of 5 on artifact tracking, https://factory.com/news/evaluating-compression",
+    "Sweep cost is about 144 runs, under 6 percent of the 2,500-run budget."
+   ],
+   "assumes": [
+    "The raw trimmer, not the summariser, is what removes the task text on most long runs.",
+    "A summariser that runs at the right time will keep the task text without being forced to.",
+    "Keeping the last few messages verbatim is enough; the first messages may be summarised.",
+    "Compaction should be an LLM-written summary at all, rather than mechanical masking.",
+    "One compaction policy should apply to tool outputs and to the agent's own reasoning alike.",
+    "Window token count is the right trigger signal, rather than the agent's own judgement or a plan boundary.",
+    "Pass rate differences of 2 to 4 points can be read from one seed per cell on 12 tasks."
+   ],
+   "dropped_unsourced": 0,
+   "inherited": [],
+   "offshoots": [
+    "sd3b9aeb313",
+    "s8b3b520dda",
+    "saf43abc6f7",
+    "s18bffe40f1",
+    "s8b415b1943",
+    "scc0441bee9"
+   ],
+   "open": [
+    {
+     "q": "How often does the raw trimmer fire before step 20 on real long runs, and what is its oldest-first boundary?",
+     "build": true,
+     "decides": "run the trigger sweep vs skip it and build pinning only"
+    },
+    {
+     "q": "What are facts F6 and F9 exactly, and are they measured or belief?",
+     "build": true,
+     "decides": "cite them in the proposal vs replace them with an instrumented measurement"
+    },
+    {
+     "q": "What is the current mean token count per long task including retries?",
+     "build": true,
+     "decides": "trigger at 60k vs 90k"
+    },
+    {
+     "q": "Does any short task cross the 60k trigger today?",
+     "build": true,
+     "decides": "apply globally vs gate by task length"
+    },
+    {
+     "q": "Does a wider window raise stale-context failures on this suite?",
+     "build": true,
+     "decides": "high trigger alone vs moderate trigger plus mandatory re-read after edit"
+    },
+    {
+     "q": "Do the 2026 condensation-strategy results (https://arxiv.org/pdf/2605.18854) show a keep_first effect?",
+     "build": false,
+     "decides": "cite as support vs cite as open"
+    },
+    {
+     "q": "Recap: the idea moves compaction timing from a step count to a token threshold, but luka's own note blames the summariser itself for dropping the task in 6 of 10 cases, so the weakest link is the claim that timing alone restores the task text. The trimmer-fires-first premise rests on F6 and F9, whic",
+     "build": true,
+     "decides": ""
+    }
+   ],
+   "call_id": "c141cc64c75",
+   "node": "fix_summary_drop",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "Switch trigger from \"every 20 steps\" to \"window tokens > T\" -> the oldest-first raw trimmer stops firing before the summariser on long runs",
+     "quantity": "share of long runs in which the trimmer fires at least once",
+     "baseline": "unmeasured (the idea asserts \"most long runs\"; no log of trimmer firings exists in the brief or in luka's file)",
+     "expect": "down, from whatever it is now to under a fifth of runs",
+     "breaks_if": "instrumented baseline shows the trimmer already fires on few runs, or still fires after the switch because tool outputs between two steps alone exceed T"
+    },
+    {
+     "id": "L2",
+     "text": "Summariser rather than trimmer decides what survives -> task text is present in context at the end of the run more often",
+     "quantity": "task_text_in_context_at_end on real logs (not the synthetic CSV, C9)",
+     "baseline": "unmeasured on real runs; luka's note says the summariser itself dropped or shortened the task in 6 of 10 read summaries (agent-long-tasks_what_we_tried.md)",
+     "expect": "up only modestly, because an unconstrained summariser still drops the task",
+     "breaks_if": "task-text-present rate does not rise, or rises only when the task is also pinned"
+    },
+    {
+     "id": "L3",
+     "text": "Task text present at end more often -> \"lost the goal\" failures fall without \"stale context\" failures rising",
+     "quantity": "failure_kind counts on the 120-task suite, long subset",
+     "baseline": "luka's note: every-20-steps summary raised lost-the-goal and lowered stale-context; overall 31 to 34 percent pass",
+     "expect": "lost-the-goal down by a few cases, stale-context flat",
+     "breaks_if": "lost-the-goal unchanged, or stale-context rises because larger windows carry more outdated file views"
+    },
+    {
+     "id": "L4",
+     "text": "Fewer lost-the-goal failures, no new failure kinds -> long-task pass rate up and short-task pass flat",
+     "quantity": "long-task pass rate, short-task pass rate, same seeds",
+     "baseline": "long 31 percent raw, 34 percent with every-20-steps summary (what_we_tried.md); short unmeasured here",
+     "expect": "long up 2 to 4 points alone, short flat because short runs never cross T",
+     "breaks_if": "long-task gain under 2 points on 3 seeds, or short-task pass drops"
+    },
+    {
+     "id": "L5",
+     "text": "Summariser fires less on short-output runs and compacts to a target -> tokens per task within the cost cap",
+     "quantity": "mean tokens per task, long and short",
+     "baseline": "unmeasured for the current trimmer plus summariser setup; luka gives only step-cap and retry cost deltas",
+     "expect": "flat to down 5 to 15 percent",
+     "breaks_if": "a trigger high enough to stop trimmer firings raises tokens over 20 percent, which also voids C6"
+    },
+    {
+     "id": "L6",
+     "text": "Measured gain, cost, and a clear failure link -> panel ranks it on failure link, keep rule, fits budget",
+     "quantity": "panel rank",
+     "baseline": "unmeasured",
+     "expect": "middling, because the failure link is indirect (it fixes when compaction happens, not what it keeps)",
+     "breaks_if": "the panel notes that luka's 6-of-10 evidence blames the summariser, not the trimmer, and a pinning proposal addresses the finding directly"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "luka's note says the every-20-steps summariser itself shortened or dropped the task text in 6 of 10 read summaries, and raised pass from 31 to 34 percent on long tasks (agent-long-tasks_what_we_tried.md).",
+     "prov": "measured"
+    },
+    {
+     "text": "Raising the step cap from 60 to 100 moved long-task pass 31 to 33 percent at 45 percent higher cost, so longer windows alone do not help (agent-long-tasks_what_we_tried.md).",
+     "prov": "measured"
+    },
+    {
+     "text": "Retry-once is the current default, 31 to 44 percent pair pass on long tasks, doubling cost on failures; cost comparisons must include retries (agent-long-tasks_what_we_tried.md).",
+     "prov": "measured"
+    },
+    {
+     "text": "The trajectories CSV is synthetic and cannot be used as evidence for trimmer firing or task-text presence (C9).",
+     "prov": "script"
+    },
+    {
+     "text": "The references F6 and F9 in the idea are not in the brief, so the \"trimmer fires first\" premise is unverified.",
+     "prov": "belief"
+    },
+    {
+     "text": "Constraint pinning re-injects pinned text verbatim after each compaction, cost about 47 tokens per re-injection, violations 0 percent versus 30 to 59 percent, https://codex.danielvaughan.com/2026/07/03/governance-decay-self-compacting-agents-context-compaction-safety-constraints-codex-cli-constraint",
+     "prov": "untagged"
+    },
+    {
+     "text": "OpenHands condenser keeps first 2 events and last M verbatim; keep_first was never ablated, https://docs.openhands.dev/sdk/arch/condenser",
+     "prov": "web"
+    },
+    {
+     "text": "Observation masking matched or beat LLM summarisation at about half the cost on SWE-bench Verified, https://arxiv.org/abs/2508.21433",
+     "prov": "web"
+    },
+    {
+     "text": "Summariser prompt instructions on content and size are largely ignored, https://www.alphaxiv.org/abs/2605.23296.md",
+     "prov": "web"
+    },
+    {
+     "text": "Every compression method scored 2.19 to 2.45 of 5 on artifact tracking, https://factory.com/news/evaluating-compression",
+     "prov": "web"
+    },
+    {
+     "text": "The builder must add a per-run log with three columns: trimmer firings, summariser firings, and whether the verbatim task text is in context at the last step.",
+     "prov": "belief"
+    },
+    {
+     "text": "The target must be enforced by selecting what is sent to the summariser, not by asking for a length.",
+     "prov": "belief"
+    },
+    {
+     "text": "Sweep cost is about 144 runs, under 6 percent of the 2,500-run budget.",
+     "prov": "script"
+    }
+   ],
+   "unknown_share": 0.22,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "Switch trigger from \"every 20 steps\" to \"window tokens > T\" -> the oldest-first raw trimmer stops firing before the summariser on long runs",
+     "quantity": "share of long runs in which the trimmer fires at least once",
+     "baseline": "unmeasured (the idea asserts \"most long runs\"; no log of trimmer firings exists in the brief or in luka's file)",
+     "expect": "down, from whatever it is now to under a fifth of runs",
+     "breaks_if": "instrumented baseline shows the trimmer already fires on few runs, or still fires after the switch because tool outputs between two steps alone exceed T"
+    },
+    {
+     "id": "L2",
+     "text": "Summariser rather than trimmer decides what survives -> task text is present in context at the end of the run more often",
+     "quantity": "task_text_in_context_at_end on real logs (not the synthetic CSV, C9)",
+     "baseline": "unmeasured on real runs; luka's note says the summariser itself dropped or shortened the task in 6 of 10 read summaries (agent-long-tasks_what_we_tried.md)",
+     "expect": "up only modestly, because an unconstrained summariser still drops the task",
+     "breaks_if": "task-text-present rate does not rise, or rises only when the task is also pinned"
+    },
+    {
+     "id": "L3",
+     "text": "Task text present at end more often -> \"lost the goal\" failures fall without \"stale context\" failures rising",
+     "quantity": "failure_kind counts on the 120-task suite, long subset",
+     "baseline": "luka's note: every-20-steps summary raised lost-the-goal and lowered stale-context; overall 31 to 34 percent pass",
+     "expect": "lost-the-goal down by a few cases, stale-context flat",
+     "breaks_if": "lost-the-goal unchanged, or stale-context rises because larger windows carry more outdated file views"
+    },
+    {
+     "id": "L4",
+     "text": "Fewer lost-the-goal failures, no new failure kinds -> long-task pass rate up and short-task pass flat",
+     "quantity": "long-task pass rate, short-task pass rate, same seeds",
+     "baseline": "long 31 percent raw, 34 percent with every-20-steps summary (what_we_tried.md); short unmeasured here",
+     "expect": "long up 2 to 4 points alone, short flat because short runs never cross T",
+     "breaks_if": "long-task gain under 2 points on 3 seeds, or short-task pass drops"
+    },
+    {
+     "id": "L5",
+     "text": "Summariser fires less on short-output runs and compacts to a target -> tokens per task within the cost cap",
+     "quantity": "mean tokens per task, long and short",
+     "baseline": "unmeasured for the current trimmer plus summariser setup; luka gives only step-cap and retry cost deltas",
+     "expect": "flat to down 5 to 15 percent",
+     "breaks_if": "a trigger high enough to stop trimmer firings raises tokens over 20 percent, which also voids C6"
+    },
+    {
+     "id": "L6",
+     "text": "Measured gain, cost, and a clear failure link -> panel ranks it on failure link, keep rule, fits budget",
+     "quantity": "panel rank",
+     "baseline": "unmeasured",
+     "expect": "middling, because the failure link is indirect (it fixes when compaction happens, not what it keeps)",
+     "breaks_if": "the panel notes that luka's 6-of-10 evidence blames the summariser, not the trimmer, and a pinning proposal addresses the finding directly"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "The idea fixes when compaction fires, not what the summariser keeps. Luka's own evidence blames the summariser (6 of 10 summaries dropped the task), so an unconstrained summariser firing earlier still drops it, and lost-the-goal stays flat. Cheapest check: count task_text_in_context_at_end on 12 rea",
+     "severity": "high",
+     "cls": "interaction_cancels",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The idea bundles pinning: the task text is held outside the summarised span and re-inserted verbatim after every compaction, so the summariser never sees or rewrites it.",
+      "reason": "concede; pinning holds the task text outside the summarised span, which changes what is kept rather than only when",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    },
+    {
+     "text": "The trimmer-first story is unmeasured. No log of trimmer firings exists, and the current default is the trimmer alone with no summariser kept, so the claimed \"trimmer removes the task before the summariser runs\" race does not exist in the baseline the keep rule compares against. Cheapest check: inst",
+     "severity": "high",
+     "cls": "metric_blind",
+     "link": "L1",
+     "if_true": null,
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Reframe as replacing the raw oldest-first trimmer with a token-triggered summariser, compared against the trimmer-only default; L1 drops and the first quantity becomes task_text_in_context_at_end versus trimmer-only.",
+      "reason": "concede; the trimmer-first race is dropped and the comparison is reframed against the trimmer-only default",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    },
+    {
+     "text": "Expected gain of 2 to 4 points is below seed-to-seed noise on a 120-task suite with about 60 long tasks. One long task is roughly 1.7 points, and the every-20-steps summary moved 3 points on one measurement. Three seeds cannot separate a 2-point gain from zero, and the ladder's full-measurement budg",
+     "severity": "high",
+     "cls": "below_noise",
+     "link": "L4",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 1 at the full 120-task rung on seeds 1 to 3, paired per task agai",
+      "change": "",
+      "reason": "measure; the noise objection is left to a learn_z above 1 test at the 120-task rung on seeds 1 to 3",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    },
+    {
+     "text": "The screen sweep is 27 cells, not 9: trigger 3 x target 3 x keep-last 2 is 27 cells, 324 runs at one seed on the 12-task screen. Add seeds 1 to 3 on the best cell and this part alone eats about 15 percent of the 2,500-run budget before any full measurement, which undercuts the \"fits budget\" target t",
+     "severity": "medium",
+     "cls": "hidden_cost",
+     "link": "",
+     "if_true": null,
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The sweep is trigger 60k or 75k by keep-last 4 or 8 with target fixed at half the trigger, 4 cells, 48 screen runs, then 3 seeds on the best cell.",
+      "reason": "concede; the sweep is cut to 4 cells and 48 screen runs",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    },
+    {
+     "text": "Raising the trigger to 75k or 90k so the trimmer never fires means every long run carries a near-full window for most of its steps. Token cost scales with window size per call, so mean tokens per task rises rather than falls, and a trigger high enough to kill trimmer firings pushes cost over the 20 ",
+     "severity": "high",
+     "cls": "breaks_constraint",
+     "link": "L5",
+     "if_true": null,
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Drop the 90k trigger; the trigger never exceeds the current trimmer limit, so per-call window size is bounded by today's baseline and only the compaction method changes.",
+      "reason": "concede; the 90k trigger is dropped and the trigger is capped at the current trimmer limit",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    },
+    {
+     "text": "A builder will implement the token threshold with the raw trimmer still armed at its old limit, so when two consecutive 300-line file reads jump the window past the trimmer limit in one step, the trimmer still fires first and the summariser never sees the task text. Cheapest check: a unit case with ",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L1",
+     "if_true": null,
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Enabling the summariser disables the raw trimmer, with a unit case where two consecutive 300-line reads jump past the old limit in one step and assert the summariser, not the trimmer, ran.",
+      "reason": "concede; enabling the summariser disables the raw trimmer, with a unit case for the two-read jump",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    },
+    {
+     "text": "Keeping the last 4 or 8 messages verbatim keeps stale file views, which the every-20-steps summary had cut. Stale-context failures, which fell under fixed-interval summarising, come back, and the net on long tasks is zero. Cheapest check: failure_kind counts on long screen runs, stale-context share ",
+     "severity": "medium",
+     "cls": "interaction_cancels",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Keep-last applies to the last 4 messages only, with any tool output over 100 lines replaced by a path-and-line-count stub, so no stale file body survives compaction verbatim.",
+      "reason": "concede; keep-last is reduced to 4 messages with large tool outputs stubbed",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    },
+    {
+     "text": "The prediction's \"combined with sketch 1\" sentence smuggles pinning into the claim, but the test measures the token trigger alone. The panel will see that pinning is the named untried fix in luka's note, that the token trigger adds nothing once the task is pinned, and will rank this below a direct p",
+     "severity": "medium",
+     "cls": "early_only",
+     "link": "L6",
+     "if_true": null,
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The screen runs an ablation of pinning alone versus pinning plus token-triggered summariser, and the token trigger is kept only if it adds over pinning alone.",
+      "reason": "concede; the screen adds a pinning-alone versus pinning-plus-trigger ablation",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    },
+    {
+     "text": "Any gain only shows while the suite's long tasks are the ones whose runs sit near the 60k to 90k window. Tasks that finish under the trigger never compact and are unchanged, so the effect depends on how many of 60 long tasks cross T, which is unmeasured and likely a minority, shrinking the already s",
+     "severity": "medium",
+     "cls": "scale_only",
+     "link": "L4",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "fix_summary_drop-in-k02",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "resolved",
+      "fact": "In agent-long-tasks_trajectories_sample.csv, 8 of the first 14 runs have tokens above 60000 and all 8 are fails, while the 6 runs under 60000 include 5 passes.",
+      "source": "measured",
+      "test": "",
+      "change": "",
+      "reason": "measured fact from the trajectory sample shows 8 of 14 runs cross 60k and all 8 fail, so crossings are a measured majority of the failing long runs, not an unmeasured minority",
+      "exchange": 1,
+      "idea": "fix_summary_drop-in-k02"
+     }
+    }
+   ],
+   "premortem_verdict": "The summariser, not the trimmer, is what drops the task text, so moving the summariser's trigger changes nothing a pinned task would not already fix, and the 2 to 4 point prediction is inside seed noise on a 120-task suite.",
+   "dialogue": {
+    "exchanges": 1,
+    "stop": "done"
+   },
+   "revised_idea": "Pin the task text outside the compacted span and replace the raw oldest-first trimmer with a token-triggered summariser (trigger 60k or 75k, target half the trigger, last 4 messages kept with large tool outputs stubbed), tested as an ablation of pinning alone versus pinning plus token trigger on the 12-task screen in 4 cells, then 3 seeds on the best cell, kept only if learn_z exceeds 1 on the ful"
+  },
+  {
+   "id": "de4810da7a5",
+   "cluster_id": "re_state_goal_pe-in-k01",
+   "cluster_name": "Start-position reminder with eviction of old copies",
+   "gen": 0,
+   "members": [
+    "sb571ead842"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "de4810da7a5",
+   "focus": null,
+   "qa": [
+    {
+     "q": "In the current default harness, does the original task text ever leave the context, or is it only lost under the abandoned 20-step summariser?",
+     "a": "Luka's note says the summariser dropped or shortened the task text in 6 of 10 read summaries, and that summariser was not kept. Whether the current default trims at all is not stated in anything I was given, and the CSV cannot answer it [C9]. If the task text never leaves the context in the current default, the start arm is identical to baseline and the idea does nothing.",
+     "decides": "trigger every N steps vs trigger only on the step after a trim"
+    },
+    {
+     "q": "Is there evidence that a goal placed at the start of a long agent context is attended as well as one at the end?",
+     "a": "Lost in the Middle reports a U-shape, with start and end both above the middle, but on multi-document question answering and key-value retrieval, not instruction following over 60 tool calls (https://arxiv.org/abs/2307.03172). Arike et al. measured drift growing with context length in agents whose goal was already at the start, which is direct evidence that a start copy alone does not stop drift (https://ojs.aaai.org/index.php/AIES/article/download/36541/38679). So the baseline already is a start-position arm whenever the task text survives, which puts the burden on L1, not L2.",
+     "decides": "start position vs end position vs both"
+    },
+    {
+     "q": "Does replacing an identical copy at the same position every N steps change anything the model sees?",
+     "a": "If the copy is still there and unchanged, deleting it and reinserting the same text at the same position produces a byte-identical prompt. The schedule only matters on the first call after a trim removed the copy. A trim-triggered rule gives the same context at lower engineering and cache cost.",
+     "decides": "fixed every-N schedule vs trim-triggered reinsertion only"
+    },
+    {
+     "q": "What does inserting at position two do to prompt-cache cost?",
+     "a": "Prompt caching bills from the first changed token; everything after an insertion is a cache write at a higher rate than a read, 1.25 times base for writes versus 0.1 times for reads on Anthropic models (https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching). An insertion at position two forces a full-prefix rewrite each time, while appended copies at the end are read cheaply on later steps. The token count can be flat while the dollar cost rises, so C5 and C6 must be measured in dollars.",
+     "decides": "insert after the system prompt vs insert at the oldest surviving message after the trim boundary"
+    },
+    {
+     "q": "Will the start copy survive the trimmer, which the idea says is otherwise unchanged?",
+     "a": "A trimmer that drops or summarises the oldest messages hits position two first. Luka's summariser rewrote old messages into a summary, and that is where the start copy would sit. Without a protected flag, the start copy is the first thing eaten, which is the exact failure the PREDICTION names.",
+     "decides": "rely on position vs mark the copy as a protected message the trimmer skips"
+    },
+    {
+     "q": "How many seeds does the 12-task screen need for the 4-point kill threshold to mean anything?",
+     "a": "On 12 tasks one task is 8.3 points, so a 4-point threshold is below resolution with one seed. Five seeds per arm give 60 runs per arm, where 4 points is about 2.4 runs, still noisy but readable alongside the 20-run failure read. Two arms at five seeds is 120 runs, under 5 percent of the 2,500-run budget [C7].",
+     "decides": "one seed per arm vs five or more seeds per arm"
+    },
+    {
+     "q": "How is \"lost the goal\" decided in the 20-run read, and by whom?",
+     "a": "Luka's four failure kinds exist as labels, but the only labelled data I have is synthetic [C9]. A rubric must be written before the screen, for example: the final edits address a different requirement than the task text, or the agent's last stated objective omits a named requirement. Readers must not know the arm.",
+     "decides": "harness-assigned label vs blind human rubric fixed before the runs"
+    },
+    {
+     "q": "How does the idea interact with the retry-once default and with the short-task set?",
+     "a": "Retry is the kept default, so the keep rule baseline is 44 percent on the pair and the cost baseline already includes doubled cost on failures. A reminder that converts fails to passes lowers retry spending, which is a cost offset the measurement must capture. Short tasks under N steps never receive a reminder, so short-task pass should be unchanged by construction unless N is small.",
+     "decides": "measure against retry-on baseline vs retry-off"
+    },
+    {
+     "q": "Which role does the inserted copy carry, and does the API accept it there?",
+     "a": "A user-role copy right after the system prompt sits next to the original first user message, giving two consecutive user turns, which some APIs merge and others reject. Appending inside the system prompt avoids that but still rewrites the cached prefix. The pydantic-deepagents implementation uses a system-reminder tag inside a user message, truncated to 400 characters, which is a tested shape for the end position only (https://cdn.jsdelivr.net/gh/vstorm-co/pydantic-deepagents@main/docs/advanced/periodic-reminder.md).",
+     "decides": "separate user-role message vs field appended inside the system prompt vs system-reminder tag inside the first user message"
+    },
+    {
+     "q": "Does the cost argument depend on position at all?",
+     "a": "Eviction can be applied to an end-position copy too: delete the previous reminder and append a fresh one, leaving one live copy. The idea's test confounds position with eviction, so a win on cost could be credited to position wrongly. A three-arm screen, or a two-arm screen where both arms evict, isolates position.",
+     "decides": "compare start-with-eviction against end-accumulating vs against end-with-eviction"
+    }
+   ],
+   "known": [
+    "The proposal must be written in the five sections of the script and cite at least one fact id such as [F22]",
+    "Long-task pass baseline is 31 percent per run and 44 percent for the retry pair; raising the step cap to 100 raised cost 45 percent for 2 points; summarising every 20 steps dropped or shortened the task text in 6 of 10 summaries (source: agent-long-tasks_what_we_tried.md from luka)",
+    "Keep rule: long-task pass up 6 points or more, cost up at most 20 percent, short-task pass not lower, on the 120-task suite with the same seeds",
+    "Budget is 2,500 runs, about 15 full measurements, with a 12-task screen first",
+    "The trajectories CSV is synthetic and cannot support any claim about task_text_in_context_at_end",
+    "Lost in the Middle measured a U-shape on multi-document QA and key-value retrieval, not on agent instruction following https://arxiv.org/abs/2307.03172",
+    "Arike et al. found drift grows with context length in agents whose goal sat at the start of the context https://ojs.aaai.org/index.php/AIES/article/download/36541/38679",
+    "Prompt cache writes cost 1.25 times base and reads 0.1 times base, and the cache breaks at the first changed token https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching",
+    "Memory-grounded reminders raised Sonnet 4.5 on Terminal-Bench 2.0 from 37.6 to 45.9 percent; verbatim goal reminders have no measured effect size anywhere in the brief https://huggingface.co/papers/2607.08716.md",
+    "pydantic-deepagents injects the first user message truncated to 400 characters at turn 5 then every 10 turns, unmeasured https://cdn.jsdelivr.net/gh/vstorm-co/pydantic-deepagents@main/docs/advanced/periodic-reminder.md"
+   ],
+   "assumes": [
+    "The current default harness actually removes the task text from context on some long runs",
+    "A start-position copy is attended as well as an end-position copy in a 60-step agentic context",
+    "Token count is the right proxy for cost per task, ignoring cache writes versus reads",
+    "Position and eviction must be tested together rather than separately",
+    "The verbatim task text is the right content to restate, not a restated plan or memory",
+    "The copy is a message rather than a protected field the trimmer cannot touch",
+    "A fixed every-N schedule is needed even though one copy at a fixed position never moves",
+    "The trimmer rule will leave a message at position two alone"
+   ],
+   "dropped_unsourced": 0,
+   "inherited": [],
+   "offshoots": [
+    "saefed8c3a5",
+    "saeed72ad70",
+    "sb544aa0216",
+    "s5d21a7148c",
+    "sc119e6491b",
+    "sde5cff9eb1"
+   ],
+   "open": [
+    {
+     "q": "Does the current default harness ever remove the task text from context, and on what fraction of long runs?",
+     "build": true,
+     "decides": "every-n schedule vs trim-triggered reinsertion"
+    },
+    {
+     "q": "Does the harness use prompt caching in the cost measurement?",
+     "build": true,
+     "decides": "start-position insertion vs insertion at the trim boundary or end"
+    },
+    {
+     "q": "Which role and shape does the API accept for a copy placed right after the system prompt?",
+     "build": true,
+     "decides": "user-role message vs system-prompt field"
+    },
+    {
+     "q": "What is the real lost-the-goal count in a blind 20-run read of baseline runs?",
+     "build": true,
+     "decides": "whether this part is worth a full measurement vs skipping to the summariser header idea"
+    },
+    {
+     "q": "Is the baseline for the keep rule the retry-on default or a single run?",
+     "build": false,
+     "decides": "nothing in the build, only how the result is reported"
+    }
+   ],
+   "call_id": "c5228233a9f",
+   "node": "re_state_goal_pe",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "Insert the verbatim task after the system prompt every N steps and evict older copies -> the task text is present in context at the final step of every run, including trimmed runs",
+     "quantity": "share of runs with task text present at end (the CSV column task_text_in_context_at_end, re-measured on real runs)",
+     "baseline": "unmeasured on real runs; the CSV shows \"no\" on lost-the-goal fails but is synthetic [C9]",
+     "expect": "rises to near 100 percent of runs",
+     "breaks_if": "the trimmer or summariser removes or shortens the start copy between reminders, so a trimmed run still ends with no task text"
+    },
+    {
+     "id": "L2",
+     "text": "A task copy at the start position is attended at least as well as a copy at the recent end -> lost-the-goal failures fall by as much as in the end-position arm",
+     "quantity": "count of lost-the-goal fails in a blind 20-run read per arm",
+     "baseline": "unmeasured; luka reports the category rose under the 20-step summariser, no count given",
+     "expect": "both arms fall by a third to a half versus baseline, start arm within 2 of end arm",
+     "breaks_if": "the start arm has more lost-the-goal fails than the end arm by more than 2 of 20, or no fewer than baseline"
+    },
+    {
+     "id": "L3",
+     "text": "One live copy instead of accumulating copies -> billed cost per task stays near baseline while the end arm rises",
+     "quantity": "dollars per task and prompt tokens per task, cache reads and writes counted separately",
+     "baseline": "about 60 steps and 70k tokens per failed run in the CSV, synthetic; real baseline cost unmeasured here",
+     "expect": "start arm within plus 5 percent of baseline on tokens; end arm plus 5 to 15 percent",
+     "breaks_if": "start arm costs more than end arm in dollars because each insertion at position two invalidates the whole cached prefix"
+    },
+    {
+     "id": "L4",
+     "text": "Fewer lost-the-goal fails -> long-task pass rises",
+     "quantity": "long-task pass rate on the 120-task suite, same seeds",
+     "baseline": "31 percent, 44 percent for the retry pair, from luka's note",
+     "expect": "plus 3 to plus 8 points",
+     "breaks_if": "lost-the-goal runs convert into loop or stale-context fails rather than passes, so pass rate stays within the seed spread"
+    },
+    {
+     "id": "L5",
+     "text": "Pass up, cost flat, short tasks untouched -> keep rule met -> panel scores keep rule and fits budget above 5",
+     "quantity": "panel average on keep rule",
+     "baseline": "none",
+     "expect": "above 5 if L3 and L4 hold",
+     "breaks_if": "short-task pass drops because the inserted copy pushes a redundant goal check into tasks that did not need it, or cost exceeds plus 20 percent"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "The proposal must be written in the five sections of the script and cite at least one fact id such as [F22]",
+     "prov": "script"
+    },
+    {
+     "text": "Long-task pass baseline is 31 percent per run and 44 percent for the retry pair; raising the step cap to 100 raised cost 45 percent for 2 points; summarising every 20 steps dropped or shortened the task text in 6 of 10 summaries (source: agent-long-tasks_what_we_tried.md from luka)",
+     "prov": "measured"
+    },
+    {
+     "text": "Keep rule: long-task pass up 6 points or more, cost up at most 20 percent, short-task pass not lower, on the 120-task suite with the same seeds",
+     "prov": "script"
+    },
+    {
+     "text": "Budget is 2,500 runs, about 15 full measurements, with a 12-task screen first",
+     "prov": "script"
+    },
+    {
+     "text": "The trajectories CSV is synthetic and cannot support any claim about task_text_in_context_at_end",
+     "prov": "script"
+    },
+    {
+     "text": "Lost in the Middle measured a U-shape on multi-document QA and key-value retrieval, not on agent instruction following https://arxiv.org/abs/2307.03172",
+     "prov": "web"
+    },
+    {
+     "text": "Arike et al. found drift grows with context length in agents whose goal sat at the start of the context https://ojs.aaai.org/index.php/AIES/article/download/36541/38679",
+     "prov": "web"
+    },
+    {
+     "text": "Prompt cache writes cost 1.25 times base and reads 0.1 times base, and the cache breaks at the first changed token https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching",
+     "prov": "web"
+    },
+    {
+     "text": "Memory-grounded reminders raised Sonnet 4.5 on Terminal-Bench 2.0 from 37.6 to 45.9 percent; verbatim goal reminders have no measured effect size anywhere in the brief https://huggingface.co/papers/2607.08716.md",
+     "prov": "web"
+    },
+    {
+     "text": "pydantic-deepagents injects the first user message truncated to 400 characters at turn 5 then every 10 turns, unmeasured https://cdn.jsdelivr.net/gh/vstorm-co/pydantic-deepagents@main/docs/advanced/periodic-reminder.md",
+     "prov": "web"
+    },
+    {
+     "text": "The builder must record whether the task text is in context at the last step, per run, from the real harness, before anything else",
+     "prov": "belief"
+    },
+    {
+     "text": "Reinserting identical text at the same position is a no-op; only post-trim reinsertion changes the prompt",
+     "prov": "belief"
+    },
+    {
+     "text": "The screen needs at least five seeds per arm and a blind rubric for lost-the-goal written before runs start",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.0,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "Insert the verbatim task after the system prompt every N steps and evict older copies -> the task text is present in context at the final step of every run, including trimmed runs",
+     "quantity": "share of runs with task text present at end (the CSV column task_text_in_context_at_end, re-measured on real runs)",
+     "baseline": "unmeasured on real runs; the CSV shows \"no\" on lost-the-goal fails but is synthetic [C9]",
+     "expect": "rises to near 100 percent of runs",
+     "breaks_if": "the trimmer or summariser removes or shortens the start copy between reminders, so a trimmed run still ends with no task text"
+    },
+    {
+     "id": "L2",
+     "text": "A task copy at the start position is attended at least as well as a copy at the recent end -> lost-the-goal failures fall by as much as in the end-position arm",
+     "quantity": "count of lost-the-goal fails in a blind 20-run read per arm",
+     "baseline": "unmeasured; luka reports the category rose under the 20-step summariser, no count given",
+     "expect": "both arms fall by a third to a half versus baseline, start arm within 2 of end arm",
+     "breaks_if": "the start arm has more lost-the-goal fails than the end arm by more than 2 of 20, or no fewer than baseline"
+    },
+    {
+     "id": "L3",
+     "text": "One live copy instead of accumulating copies -> billed cost per task stays near baseline while the end arm rises",
+     "quantity": "dollars per task and prompt tokens per task, cache reads and writes counted separately",
+     "baseline": "about 60 steps and 70k tokens per failed run in the CSV, synthetic; real baseline cost unmeasured here",
+     "expect": "start arm within plus 5 percent of baseline on tokens; end arm plus 5 to 15 percent",
+     "breaks_if": "start arm costs more than end arm in dollars because each insertion at position two invalidates the whole cached prefix"
+    },
+    {
+     "id": "L4",
+     "text": "Fewer lost-the-goal fails -> long-task pass rises",
+     "quantity": "long-task pass rate on the 120-task suite, same seeds",
+     "baseline": "31 percent, 44 percent for the retry pair, from luka's note",
+     "expect": "plus 3 to plus 8 points",
+     "breaks_if": "lost-the-goal runs convert into loop or stale-context fails rather than passes, so pass rate stays within the seed spread"
+    },
+    {
+     "id": "L5",
+     "text": "Pass up, cost flat, short tasks untouched -> keep rule met -> panel scores keep rule and fits budget above 5",
+     "quantity": "panel average on keep rule",
+     "baseline": "none",
+     "expect": "above 5 if L3 and L4 hold",
+     "breaks_if": "short-task pass drops because the inserted copy pushes a redundant goal check into tasks that did not need it, or cost exceeds plus 20 percent"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "Prefix-cache invalidation makes the \"cost flat\" claim false in dollars. Inserting at position two every N steps rewrites the cached prefix for every message after it, so each reminder step is billed as a full cache write of the whole context instead of a cheap cache read. At 60 steps and N=10, that ",
+     "severity": "high",
+     "cls": "hidden_cost",
+     "link": "L3",
+     "if_true": null,
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Insert the start copy once, at step 0, and never move or re-insert it, so the cached prefix is written one time; the every-N trigger is dropped.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    },
+    {
+     "text": "The eviction step and the trimmer fight over the same slot. The trimmer rule is kept \"otherwise\", so a trim that removes oldest messages will remove position two first, since that is the oldest non-system message. The start copy is then the first thing evicted at every trim, and L1 only recovers it ",
+     "severity": "high",
+     "cls": "interaction_cancels",
+     "link": "L1",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The trimmer rule changes: the pinned copy carries a tag and the trimmer and summariser skip tagged messages, so it is never the oldest evictable message.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    },
+    {
+     "text": "The idea contradicts the mechanism it cites. Lost in the Middle's \"start\" position is the start of the document, which here is the system prompt itself. The system prompt already contains the task text in the baseline. A second copy adjacent to the system prompt occupies the same attention region an",
+     "severity": "high",
+     "cls": "below_noise",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "standing",
+      "fact": "luka [e17]: \"in 6 of 10 read summaries the task text was shortened or dropped by the summary itself\" — the task text lives in summarisable conversation turns, not in the system prompt, so a pinned copy adjacent to the system prompt is a new, not a redundant, position",
+      "source": "measured",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    },
+    {
+     "text": "The expected gain is smaller than the seed spread the test can resolve. L4 expects plus 3 to plus 8 points on long tasks, the seed spread is 4 points, and the 12-task screen has roughly 12 to 24 runs per arm, which cannot distinguish a 4-point difference. The refutation criterion \"more than 4 points",
+     "severity": "medium",
+     "cls": "below_noise",
+     "link": "L4",
+     "if_true": null,
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The pass-rate refutation moves to the 120-task suite with the same seeds; the 12-task screen is used only for the blind 20-run lost-the-goal count.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    },
+    {
+     "text": "Lost-the-goal fails convert into loop fails rather than passes. The CSV, synthetic as it is, shows that most failures are loop or stale context with task text present. A reminder that restores the goal to an agent that has already drifted into a bad plan re-anchors it to retry the same cycle, which ",
+     "severity": "medium",
+     "cls": "interaction_cancels",
+     "link": "L4",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 1 at 12-task screen",
+      "change": "",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    },
+    {
+     "text": "Implementation slip: eviction deletes the wrong message. A builder who identifies \"earlier reminder copy\" by text match will also delete the original user turn that contains the verbatim task, since it is identical text. After the first eviction the context has one copy at position two and no origin",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L1",
+     "if_true": null,
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The pinned copy is identified by a message tag, never by text match; with one static copy there is no eviction step at all, so the original user turn is never touched.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    },
+    {
+     "text": "Short tasks get a reminder they never needed. With a fixed every-N trigger and N near 10, a 38-step short task receives three insertions and three prefix invalidations. Prior work found ungrounded reminders can trigger unnecessary verification, which adds steps and can push a short task over the ste",
+     "severity": "medium",
+     "cls": "hidden_cost",
+     "link": "L5",
+     "if_true": null,
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "With a single copy pinned at step 0 and no periodic insertion, a short task sees exactly the context it sees today plus one static message; no repeated invalidations occur.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    },
+    {
+     "text": "The effect only appears in untrimmed early windows. Before the first trim, both arms have the task at the top of the context already, so any measured difference in the screen reflects runs that never reached a trim. Long tasks that fail reach the trim and are exactly the runs where the start copy is",
+     "severity": "medium",
+     "cls": "early_only",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The blind read and the pass comparison are reported separately for runs that reached at least one trim and runs that did not; the idea is judged on the trimmed subset.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    },
+    {
+     "text": "The CSV column task_text_in_context_at_end is cited as a quantity and baseline despite C9. A panel reader scoring \"failure link\" sees the mechanism anchored to synthetic data and discounts the chain, and the plan has no real-run measurement of that column before the screen. Cheapest check: measure t",
+     "severity": "low",
+     "cls": "breaks_constraint",
+     "link": "L1",
+     "if_true": null,
+     "cite": "",
+     "idea": "re_state_goal_pe-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Before the screen, measure task_text_in_context_at_end on 20 real baseline runs and use that as L1's baseline; the CSV value is dropped from the chain.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "re_state_goal_pe-in-k01"
+     }
+    }
+   ],
+   "premortem_verdict": "The start copy sits in the slot the kept trimmer evicts first and in the attention region the system prompt already occupies, so it adds cache-write cost without adding goal presence, and the screen cannot see a gap under the 4-point seed spread.",
+   "dialogue": {
+    "exchanges": 1,
+    "stop": "budget"
+   },
+   "revised_idea": "Pin one verbatim copy of the task right after the system prompt at step 0, tagged so the trimmer and summariser never remove it, with no periodic re-insertion or eviction, so the cached prefix is written once. Judge it by lost-the-goal count in a blind 20-run read on trimmed runs and by pass rate on the 120-task suite with the same seeds, after first measuring task-text presence at end on 20 real "
+  },
+  {
+   "id": "d64c7cd380a",
+   "cluster_id": "rule_on_repeated-in-k00",
+   "cluster_name": "Offline replay validation of detector",
+   "gen": 0,
+   "members": [
+    "s61919e570c"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "d64c7cd380a",
+   "focus": null,
+   "qa": [
+    {
+     "q": "Do the saved logs of the 40 read failed runs contain the full tool output text and arguments, or only summaries and step counts?",
+     "a": "Unknown. Luka's file reports step counts, pass rates and failure labels but does not say what the logs hold. If outputs are missing, the replay collapses to a (tool, args) detector, which is a different rule from [F5].",
+     "decides": "replay the exact hash as specified vs build a cheaper proxy over (tool, args) only and defer output hashing to the screen"
+    },
+    {
+     "q": "In the 40 failed runs, how many are loop failures, and what share of all long-task failures do they represent?",
+     "a": "The idea states 9 loop runs among the 40 read failures, which would be under a quarter of failures. The synthetic CSV shows a similar share but must not be used as evidence [C9]. With long-task pass at 31 percent, converting even all loop failures would move pass by only a few points, so L4 is bounded from above.",
+     "decides": "carry the rule to screening as a primary idea vs file it as a secondary rule behind task-pinning or verification"
+    },
+    {
+     "q": "Does an interrupt message turn a looping run into a pass, or only end it sooner?",
+     "a": "The only measured evidence says no on pass rate: SWE-smith's warn-and-resample cut repetition but resolution stayed at 38.4 percent (https://arxiv.org/pdf/2504.21798). Cognitive Companion cut repetition 52 to 62 percent at about 11 percent overhead but reports a repetition proxy, not task pass, and was neutral or negative on structured tasks (https://arxiv.org/abs/2604.13759). So the honest keep-rule claim is cost down and pass not lower, with pass up as the hope.",
+     "decides": "frame the rule as a pass-rate lever vs frame it as a cost lever paired with the existing one-retry default"
+    },
+    {
+     "q": "Will an exact hash on raw output ever match, given test runners print durations, timestamps and temp paths?",
+     "a": "Belief, not measured: pytest and most runners print wall-clock times, so two identical test reruns rarely produce byte-identical output. Without normalisation the detector fires late or never, and the replay will understate both recall and false positives. The replay should run both raw and normalised variants.",
+     "decides": "hash raw output vs normalise output before hashing (strip digits that look like timings, paths, PIDs)"
+    },
+    {
+     "q": "What legitimate repeats appear in passing long runs, and does threshold 3 clear them?",
+     "a": "OpenHands users report false positives on legitimate polling with hardcoded thresholds (https://github.com/OpenHands/software-agent-sdk/issues/762), and pydantic-deepagents uses 3 as default with a warn-or-abort choice (https://cdn.jsdelivr.net/gh/vstorm-co/pydantic-deepagents@main/docs/advanced/stuck-loop-detection.md). The replay answers this directly for this suite, which is the point of doing it offline.",
+     "decides": "one global threshold vs per-tool thresholds (higher for test and poll tools, lower for file reads)"
+    },
+    {
+     "q": "Should the count be consecutive repeats or repeats anywhere in the run?",
+     "a": "OpenRouter's doom-loop counter resets a streak when inputs change but not when other tools run in between (https://openrouter.ai/docs/agent-sdk/call-model/doom-loop-detection). Loops in SWE agents often alternate edit, test, edit, test with the test output unchanged, so a consecutive-only rule misses them. The replay should report both counting modes.",
+     "decides": "consecutive-streak detector vs run-wide count that survives interleaved calls"
+    },
+    {
+     "q": "At what step does the detector first fire in loop failures, and is that early enough to matter under a 60-step cap?",
+     "a": "Unknown until replayed. The entropy-collapse note claims exact repetition begins tens of turns after drift starts, so first fire may be late; the note's content was not readable and this rests on a search summary. If median first fire is past step 45, ending the run and retrying is the better use of the remaining steps.",
+     "decides": "interrupt with a rethink message vs interrupt by ending the run and letting the existing retry take over"
+    },
+    {
+     "q": "Are there enough passing long runs with full logs to form an equal set of 40?",
+     "a": "Unknown. At 31 percent pass on long tasks, the number of logged passing long runs depends on how many long tasks are in the 120 and how many seeds were kept. If fewer than 40 exist, the false-positive estimate has a wide band and the 10 percent kill line needs a stated interval.",
+     "decides": "equal-size matched set vs use all available passing long runs and report rates with a confidence band"
+    },
+    {
+     "q": "Does the replay cost anything from the 2,500-run budget or from calendar time?",
+     "a": "Zero suite runs, as the idea claims. Effort is a script over logs plus hand-reading of fires in passing runs to label them legitimate or not; belief: one to two person-days. That is cheap enough to finish before the screen.",
+     "decides": "run replay before the 12-task screen vs run it in parallel with the screen"
+    },
+    {
+     "q": "Could the interrupt message itself cause lost-the-goal failures, which luka's file shows rose when summaries dropped the task text?",
+     "a": "Luka reports that 6 of 10 summaries shortened or dropped the task text and lost-the-goal failures rose (agent-long-tasks_what_we_tried.md). An interrupt that injects a new instruction mid-run has the same risk. The message should restate the task verbatim, which ties this part to the task-pinning part.",
+     "decides": "a short rethink message that quotes the pinned task text vs a generic stop-and-rethink message"
+    }
+   ],
+   "known": [
+    "The rule hashes (tool, arguments, output) and interrupts on the second or third identical result [F5].",
+    "Long-task pass rate is 31 percent at a 60-step cap; raising the cap to 100 moved pass to 33 percent and cost up 45 percent, and loops just ran longer (agent-long-tasks_what_we_tried.md, luka).",
+    "One retry from scratch with a different seed is the current default and lifts long-task pair pass from 31 to 44 percent while doubling the cost of a failed task (agent-long-tasks_what_we_tried.md, luka).",
+    "Summarising every 20 steps dropped or shortened the task text in 6 of 10 summaries and raised lost-the-goal failures (agent-long-tasks_what_we_tried.md, luka).",
+    "The trajectories CSV is synthetic and may not be used as evidence [C9].",
+    "OpenHands halts on the same action and observation 4 or more times, same action and error 3 or more times, ping-pong 6 or more cycles. https://docs.openhands.dev/sdk/guides/agent-stuck-detector",
+    "pydantic-deepagents uses threshold 3 and offers warn or abort. https://cdn.jsdelivr.net/gh/vstorm-co/pydantic-deepagents@main/docs/advanced/stuck-loop-detection.md",
+    "OpenRouter resets the streak when inputs change but not when other tools run between repeats. https://openrouter.ai/docs/agent-sdk/call-model/doom-loop-detection",
+    "SWE-smith warn-and-resample cut repetition but resolved stayed at 38.4 percent. https://arxiv.org/pdf/2504.21798",
+    "Cognitive Companion LLM monitor cut repetition 52 to 62 percent at about 11 percent overhead; neutral or negative on structured tasks. https://arxiv.org/abs/2604.13759",
+    "Fixed thresholds false-positive on legitimate polling. https://github.com/OpenHands/software-agent-sdk/issues/762",
+    "Replay must be done on logs the agent never saw and must not touch the hidden tests [C8]."
+   ],
+   "assumes": [
+    "The saved logs record full tool arguments and outputs for every step.",
+    "Exact byte identity of output is a usable signal, so no normalisation is needed.",
+    "Firing in a passing run is a false positive, even though the run might have passed faster without the repeat.",
+    "A matched set of 40 passing long runs with logs exists.",
+    "Loop failures as labelled by the readers are the failures the rule should catch; other failure kinds are out of scope.",
+    "Interrupting a loop can change the outcome, not just the cost.",
+    "Threshold choice is global across tools and tasks.",
+    "Offline firing rates predict online firing rates once the agent's behaviour changes under the new rule."
+   ],
+   "dropped_unsourced": 0,
+   "inherited": [],
+   "offshoots": [
+    "s5949ccd61b",
+    "s92a8e1e8f0",
+    "sb334cb079b",
+    "s3b762e3443",
+    "scc04460f3e",
+    "s72f681054d"
+   ],
+   "open": [
+    {
+     "q": "Do the saved logs hold full tool outputs and arguments for every step?",
+     "build": true,
+     "decides": "exact (tool, args, output) hash vs (tool, args) proxy"
+    },
+    {
+     "q": "How many passing long runs with logs exist?",
+     "build": true,
+     "decides": "matched 40-run set vs all available with a stated band"
+    },
+    {
+     "q": "What is the median first-fire step in loop failures?",
+     "build": true,
+     "decides": "rethink in place vs end run and retry"
+    },
+    {
+     "q": "What share of all long-task failures are loop failures, by the readers' labels?",
+     "build": true,
+     "decides": "primary proposal vs secondary rule behind task pinning"
+    },
+    {
+     "q": "Does firing change outcome at all on this suite, or only cost?",
+     "build": true,
+     "decides": "pass-rate claim vs cost-only claim in the keep rule"
+    },
+    {
+     "q": "Do test runner outputs on this suite contain timings or paths that defeat exact hashing?",
+     "build": true,
+     "decides": "raw hash vs normalised hash"
+    },
+    {
+     "q": "Does the panel accept an 80-log replay as a test under the testable criterion?",
+     "build": false,
+     "decides": "nothing in the build, only how the proposed test is phrased"
+    },
+    {
+     "q": "Recap: the replay is cheap and settles false positives, but its weakest link is that interrupting a loop may not change outcomes, per SWE-smith. The builder must first confirm the logs hold full outputs, then replay with normalised and raw hashing and both counting modes. The strongest reframing is",
+     "build": true,
+     "decides": ""
+    }
+   ],
+   "call_id": "cee8c8b57f9",
+   "node": "rule_on_repeated",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "Replay the (tool, args, output) hash over saved logs of the 40 read failed runs and a matched set of passing long runs -> a firing table by threshold (2, 3) and run outcome",
+     "quantity": "share of passing runs fired on, share of loop-labelled failures fired on, step of first fire",
+     "baseline": "unmeasured (no detector has been replayed on these logs)",
+     "expect": "threshold 2 fires on a clear majority of loop failures and on a non-trivial minority of passes; threshold 3 fires on fewer passes",
+     "breaks_if": "logs lack full tool outputs or arguments, so the hash cannot be computed for most steps"
+    },
+    {
+     "id": "L2",
+     "text": "Firing table -> a chosen threshold and a decision to screen or kill the rule before any suite run",
+     "quantity": "suite runs spent before the first screen (should be 0 of the 2,500 budget)",
+     "baseline": "a 12-task screen costs roughly 12 runs per seed per arm [C7]",
+     "expect": "zero runs spent; one threshold carried to screening or the rule dropped",
+     "breaks_if": "both thresholds fire on more than 10 percent of passing runs, or recall on loop failures is below about half, so neither threshold is worth screening"
+    },
+    {
+     "id": "L3",
+     "text": "Chosen threshold -> interrupt-and-rethink fires early in loop failures (step of first fire inside the 60-step cap with room to recover)",
+     "quantity": "median step of first fire in loop failures versus total steps",
+     "baseline": "loop failures run to the cap of 60 steps per luka's file and the synthetic CSV, not real evidence [C9]",
+     "expect": "first fire well before step 45 in most loop failures",
+     "breaks_if": "exact-hash repetition starts only in the last few steps, as the entropy-collapse note argues loops are gradual (https://torpid-telephone-b59.notion.site/Detecti"
+    },
+    {
+     "id": "L4",
+     "text": "Early interrupt in loop failures -> some of them convert to passes and the rest stop earlier, so long-task pass rises and cost falls or holds",
+     "quantity": "long-task pass rate and cost per task on the screen then full measurement [C6]",
+     "baseline": "long-task pass 31 percent, step cap 60 (luka, agent-long-tasks_what_we_tried.md)",
+     "expect": "pass up a few points only if loop failures are a large share of failures; cost down because loops stop early",
+     "breaks_if": "interrupted runs still fail, as SWE-smith found: repetition fell, resolved stayed at 38.4 percent (https://arxiv.org/pdf/2504.21798)"
+    },
+    {
+     "id": "L5",
+     "text": "A written replay table plus a keep-rule prediction -> higher panel ranking on testable, fits budget, failure link",
+     "quantity": "panel rank on those three criteria [C10]",
+     "baseline": "unmeasured",
+     "expect": "moves testable and fits budget up; failure link only if replay shows loop failures are a real share of the 40",
+     "breaks_if": "the panel treats a replay on 40 plus 40 logs as too small to count as a test"
+    }
+   ],
+   "weakest": "L4",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "The rule hashes (tool, arguments, output) and interrupts on the second or third identical result [F5].",
+     "prov": "script"
+    },
+    {
+     "text": "Long-task pass rate is 31 percent at a 60-step cap; raising the cap to 100 moved pass to 33 percent and cost up 45 percent, and loops just ran longer (agent-long-tasks_what_we_tried.md, luka).",
+     "prov": "measured"
+    },
+    {
+     "text": "One retry from scratch with a different seed is the current default and lifts long-task pair pass from 31 to 44 percent while doubling the cost of a failed task (agent-long-tasks_what_we_tried.md, luka).",
+     "prov": "measured"
+    },
+    {
+     "text": "Summarising every 20 steps dropped or shortened the task text in 6 of 10 summaries and raised lost-the-goal failures (agent-long-tasks_what_we_tried.md, luka).",
+     "prov": "measured"
+    },
+    {
+     "text": "The trajectories CSV is synthetic and may not be used as evidence [C9].",
+     "prov": "script"
+    },
+    {
+     "text": "OpenHands halts on the same action and observation 4 or more times, same action and error 3 or more times, ping-pong 6 or more cycles. https://docs.openhands.dev/sdk/guides/agent-stuck-detector",
+     "prov": "web"
+    },
+    {
+     "text": "pydantic-deepagents uses threshold 3 and offers warn or abort. https://cdn.jsdelivr.net/gh/vstorm-co/pydantic-deepagents@main/docs/advanced/stuck-loop-detection.md",
+     "prov": "web"
+    },
+    {
+     "text": "OpenRouter resets the streak when inputs change but not when other tools run between repeats. https://openrouter.ai/docs/agent-sdk/call-model/doom-loop-detection",
+     "prov": "web"
+    },
+    {
+     "text": "SWE-smith warn-and-resample cut repetition but resolved stayed at 38.4 percent. https://arxiv.org/pdf/2504.21798",
+     "prov": "web"
+    },
+    {
+     "text": "Cognitive Companion LLM monitor cut repetition 52 to 62 percent at about 11 percent overhead; neutral or negative on structured tasks. https://arxiv.org/abs/2604.13759",
+     "prov": "web"
+    },
+    {
+     "text": "Fixed thresholds false-positive on legitimate polling. https://github.com/OpenHands/software-agent-sdk/issues/762",
+     "prov": "web"
+    },
+    {
+     "text": "Replay must report both raw and normalised output hashing, and both consecutive and run-wide counting, or it will misjudge the rule.",
+     "prov": "belief"
+    },
+    {
+     "text": "Replay must be done on logs the agent never saw and must not touch the hidden tests [C8].",
+     "prov": "script"
+    },
+    {
+     "text": "The interrupt message, if built, should restate the task text verbatim to avoid the lost-the-goal failure luka observed.",
+     "prov": "belief"
+    }
+   ],
+   "unknown_share": 0.3,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "Replay the (tool, args, output) hash over saved logs of the 40 read failed runs and a matched set of passing long runs -> a firing table by threshold (2, 3) and run outcome",
+     "quantity": "share of passing runs fired on, share of loop-labelled failures fired on, step of first fire",
+     "baseline": "unmeasured (no detector has been replayed on these logs)",
+     "expect": "threshold 2 fires on a clear majority of loop failures and on a non-trivial minority of passes; threshold 3 fires on fewer passes",
+     "breaks_if": "logs lack full tool outputs or arguments, so the hash cannot be computed for most steps"
+    },
+    {
+     "id": "L2",
+     "text": "Firing table -> a chosen threshold and a decision to screen or kill the rule before any suite run",
+     "quantity": "suite runs spent before the first screen (should be 0 of the 2,500 budget)",
+     "baseline": "a 12-task screen costs roughly 12 runs per seed per arm [C7]",
+     "expect": "zero runs spent; one threshold carried to screening or the rule dropped",
+     "breaks_if": "both thresholds fire on more than 10 percent of passing runs, or recall on loop failures is below about half, so neither threshold is worth screening"
+    },
+    {
+     "id": "L3",
+     "text": "Chosen threshold -> interrupt-and-rethink fires early in loop failures (step of first fire inside the 60-step cap with room to recover)",
+     "quantity": "median step of first fire in loop failures versus total steps",
+     "baseline": "loop failures run to the cap of 60 steps per luka's file and the synthetic CSV, not real evidence [C9]",
+     "expect": "first fire well before step 45 in most loop failures",
+     "breaks_if": "exact-hash repetition starts only in the last few steps, as the entropy-collapse note argues loops are gradual (https://torpid-telephone-b59.notion.site/Detecti"
+    },
+    {
+     "id": "L4",
+     "text": "Early interrupt in loop failures -> some of them convert to passes and the rest stop earlier, so long-task pass rises and cost falls or holds",
+     "quantity": "long-task pass rate and cost per task on the screen then full measurement [C6]",
+     "baseline": "long-task pass 31 percent, step cap 60 (luka, agent-long-tasks_what_we_tried.md)",
+     "expect": "pass up a few points only if loop failures are a large share of failures; cost down because loops stop early",
+     "breaks_if": "interrupted runs still fail, as SWE-smith found: repetition fell, resolved stayed at 38.4 percent (https://arxiv.org/pdf/2504.21798)"
+    },
+    {
+     "id": "L5",
+     "text": "A written replay table plus a keep-rule prediction -> higher panel ranking on testable, fits budget, failure link",
+     "quantity": "panel rank on those three criteria [C10]",
+     "baseline": "unmeasured",
+     "expect": "moves testable and fits budget up; failure link only if replay shows loop failures are a real share of the 40",
+     "breaks_if": "the panel treats a replay on 40 plus 40 logs as too small to count as a test"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "The idea is a measurement, not a change. C3 lists what may change in the agent; an offline replay changes nothing the 120-task suite can see, so the proposal's only pass-rate claim is the downstream interrupt rule (L3, L4), which the replay never tests. The panel scores keep rule on the replay and f",
+     "severity": "high",
+     "cls": "breaks_constraint",
+     "link": "L5",
+     "if_true": null,
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The proposal is the interrupt-and-rethink rule (an agent change under C3); the offline replay becomes its mandatory zero-run gate before the 12-task screen, not the deliverable itself.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "The replay cannot resolve its own kill threshold. With 40 passing runs, a true false-positive rate of 5 percent versus 10 percent is 2 versus 4 runs, inside one binomial standard error (about 4 points at n=40). Recall of 8 of 9 versus 5 of 9 is likewise one or two runs. The decision in L2 is made on",
+     "severity": "high",
+     "cls": "below_noise",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Use every available passing long-run log, not a matched 40, and make the kill rule coarse: kill only if threshold 3 fires on more than 20 percent of passes or on fewer than half of hand-labelled loop failures.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "The 9 loop runs come from the synthetic CSV, not the 40 read logs. Luka's file only says \"the loop runs just looped longer\" with no count; the CSV's failure_kind column is the only place \"loop\" is counted, and C9 forbids using it. If the 40 real logs have no agreed loop labels, the recall column of ",
+     "severity": "high",
+     "cls": "breaks_constraint",
+     "link": "L1",
+     "if_true": null,
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Drop the \"9 loop runs\" claim; the 40 read failed logs are hand-labelled loop or not-loop before the detector runs, blind to its output, and recall is reported against those labels only.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "Exact hashes on tool output miss real loops. Test runners print timings, temp paths and PIDs, so a looping agent re-running the same failing test produces a different output hash each time. Recall in the replay comes out near zero, the rule is killed in L2, and the real loops in the logs are never a",
+     "severity": "high",
+     "cls": "impl_slip",
+     "link": "L1",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 0.5
+     },
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Hash (tool, normalised args) and separately a normalised output with digits, temp paths and PIDs stripped; report recall for both hashes and carry forward whichever meets the kill rule.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "The kept retry-from-scratch default already harvests the easy loops. Retrying lifted long-task pass from 31 to 44 percent, which means the loop runs that survive today are the ones that loop under two seeds, the model-hard instances SWE-smith describes. Interrupting those produces a stopped run, not",
+     "severity": "high",
+     "cls": "interaction_cancels",
+     "link": "L4",
+     "if_true": null,
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The primary kept outcome becomes cost per long task down with pass rate not worse; the pass-rate rise is demoted to a secondary prediction.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "Offline firing rates do not transfer online. The logs were produced by an agent that was never interrupted; a live agent that is told to rethink can satisfy the rule by changing one argument, and the hash resets. Firing behaviour after the first interrupt is unobservable in replay, so the replay's \"",
+     "severity": "medium",
+     "cls": "early_only",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 1 at 12-task screen",
+      "change": "",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "Passing runs are shorter, so the matched set understates false positives. The CSV pattern and luka's note put passes near 40 to 47 steps and failures at the cap. A per-run false-positive rate on shorter runs underestimates the per-step rate the live detector faces on a 60-step budget, so threshold 3",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L1",
+     "if_true": null,
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Report false positives as fires per step at risk, extrapolated to a 60-step budget, not as a per-run rate.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "The replay and the live detector will use different definitions. Consecutive versus anywhere-in-window, streak reset on other tools or not (OpenRouter does not reset), argument normalisation or not: the builder picks one for the replay script and another in the harness. The firing table then describ",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L2",
+     "if_true": null,
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "One detector module with fixed definitions (consecutive, streak reset on any other tool, args normalised) is imported unchanged by both the replay script and the harness.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "Effect size is under seed noise even if everything works. Loops are at most a quarter of failures, so roughly 15 percent of long tasks; SWE-smith converted none, and converting a third would add about 5 points. Per-seed pass-rate noise on the long-task subset is about 6 points. The keep rule needs 6",
+     "severity": "high",
+     "cls": "below_noise",
+     "link": "L4",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 1 at full 120-task measurement",
+      "change": "",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    },
+    {
+     "text": "Hidden cost is human reading time, not runs. Parsing 80 logs, reconstructing full tool outputs, and hand-labelling loops is days of work that the budget in C7 does not count, and the panel's fits budget criterion counts runs only, so the proposal looks free while consuming the scarce resource. Cheap",
+     "severity": "low",
+     "cls": "hidden_cost",
+     "link": "L2",
+     "if_true": null,
+     "cite": "",
+     "idea": "rule_on_repeated-in-k00",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Hashing is fully scripted over existing logs; the only human work is loop labels on the 40 failed logs already read, capped at one day and stated in the proposal.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "rule_on_repeated-in-k00"
+     }
+    }
+   ],
+   "premortem_verdict": "The replay settles a false-positive question on 40 runs that it cannot statistically resolve, for an interrupt rule whose remaining loop failures are the two-seed-hard instances the kept retry already filtered, so the proposal scores on testable and fits budget while the keep-rule effect stays under",
+   "dialogue": {
+    "exchanges": 1,
+    "stop": "budget"
+   },
+   "revised_idea": "Add an interrupt-and-rethink rule to the agent that fires when a shared detector module sees a repeated (tool, normalised args, normalised output) hash, and before any suite run gate it with a scripted replay over all existing long-run logs, killing it if threshold 3 fires on more than 20 percent of passes per 60 steps or catches fewer than half of blind hand-labelled loop failures among the 40 re"
+  },
+  {
+   "id": "d77b76c5eef",
+   "cluster_id": "loop_breaking-in-k01",
+   "cluster_name": "Fixed step-25 reflection checkpoint",
+   "gen": 0,
+   "members": [
+    "s050c8a4a84"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "d77b76c5eef",
+   "focus": null,
+   "qa": [
+    {
+     "q": "On the nine loop runs, does the first repeated cycle start before or after tool call 25?",
+     "a": "Unknown. F8 says passing and failing runs diverge after step 25, but divergence is not the same as loop onset, and the CSV that shows cycle counts is synthetic and cannot settle it [C9]. If loops start around call 15, the checkpoint fires after the cycle has formed and becomes a late nudge, which is the case the LangChain post says the model can ignore.",
+     "decides": "fixed trigger at call 25 vs trigger on the first test re-run after an edit"
+    },
+    {
+     "q": "Is the checkpoint a one-off injected message, or a persistent field the harness stores and re-shows?",
+     "a": "As written it is a one-off message, which means any later context trimming or summarising can drop it, and luka's summarisation trial dropped even the task text in 6 of 10 summaries. A stored state object survives trimming and gives the loop detector a fixed field to grade. The OpenRouter detector docs describe the escalation rungs but do not say where the expectation lives (https://openrouter.ai/docs/agent-sdk/call-model/doom-loop-detection).",
+     "decides": "plain injected message vs a structured state object the harness keeps outside the transcript"
+    },
+    {
+     "q": "Does the harness grade the expectation against the next test result, or is it text the agent alone reads?",
+     "a": "In the idea as stated, grading belongs to the loop detector, which the test switches off, so the screen measures write-only reflection. The test-aware pattern in the brief grades progress by failure count falling or flat, with no published threshold (https://www.agentpatterns.ai/observability/loop-detection/). Write-only is cheaper but is also the version most likely to do nothing.",
+     "decides": "grade and inject a mismatch notice vs write-only reflection"
+    },
+    {
+     "q": "Do short tasks reach 25 tool calls at all?",
+     "a": "Unknown. The material gives no step distribution for short tasks, and the synthetic sample only covers long tasks. If short tasks commonly pass 25 calls, C6 requires checking short-task pass in the screen rather than assuming it is flat.",
+     "decides": "one global threshold vs firing only in the long-task suite"
+    },
+    {
+     "q": "Is the counter tool calls or model turns, and does it reset on the retry run?",
+     "a": "The idea says tool call 25; the sample's steps column runs 38 to 61 per run, so tool calls and steps may differ by a factor of two if steps include text turns. Retry from scratch is the current default (luka), so each retry run has its own call 25, and the checkpoint fires twice per failed task, which doubles its cost on exactly the runs where cost already doubles.",
+     "decides": "count tool calls with a reset per run vs a per-task counter spanning the retry"
+    },
+    {
+     "q": "Can 36 runs per arm detect a one-third drop in loop failures?",
+     "a": "No. At the baseline rate, 36 runs yield about 3 loop failures per arm, so a third fewer is one run and noise. The screen must pick tasks that looped in F5's real data, not the synthetic CSV, or the refutation rule \"loop-labeled failures unchanged\" cannot be read.",
+     "decides": "random 12-task screen vs a screen built from the tasks that looped"
+    },
+    {
+     "q": "Where does the injection sit relative to the pinned task text and the system prompt?",
+     "a": "Unknown for this harness. A user-message injection is what every known implementation does (LangChain middleware, pi-deadloop at https://pi.dev/packages/pi-deadloop?page=23). A system-prompt splice is invisible to summarisation but may make the agent treat it as a standing rule and reflect every turn, inflating cost.",
+     "decides": "append as a user message after the tool result vs splice into the system prompt"
+    },
+    {
+     "q": "What does the prompt's third field, \"what the next test should show\", do under C8?",
+     "a": "It is safe if it refers to the tests the agent runs itself. It must not be phrased as \"what the hidden tests check\", and the harness must not grade it against hidden test output, or C8 is breached.",
+     "decides": "ask about the agent's own test runs vs ask about expected pass criteria in general"
+    },
+    {
+     "q": "What is already known about a mid-run written reflection raising pass rate with a fixed model?",
+     "a": "Only indirect evidence. The LangChain harness-only change set rose from 52.8 to 66.5 percent on Terminal Bench 2.0 with no isolated effect for the nudge (https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering). SWE-PRM rose from 40.0 to 50.6 percent but used an external reviewer model, not self-reflection (https://neurips.cc/virtual/2025/124506). The 220-run study found only half of 12 automated interventions reduced their target signal (https://www.agentpatterns.ai/observability/loop-detection/).",
+     "decides": "build it as proposed vs skip to a harness-graded version"
+    },
+    {
+     "q": "Does the checkpoint and the later loop detector overlap or add?",
+     "a": "The idea claims they fire at different times, but if Q1 shows loops start before call 25, both fire on the same already-looping runs and the gains overlap. The screen as designed runs with the detector off, so overlap is not measured by it.",
+     "decides": "ship both vs ship one"
+    }
+   ],
+   "known": [
+    "Nine of 40 failed runs cycled the same edit-and-test action at about 2,400 tokens per cycle until the step cap, and none stated an expectation [F5, F12].",
+    "Passing and failing runs are indistinguishable for 10 steps and diverge after step 25 [F8].",
+    "The current step cap is 60; raising it to 100 moved long-task pass from 31 to 33 percent at 45 percent more cost and was not kept (luka, agent-long-tasks_what_we_tried.md).",
+    "Retry from scratch with a new seed is the current default and lifts pair pass from 31 to 44 percent on long tasks (luka, agent-long-tasks_what_we_tried.md).",
+    "Summarising every 20 steps dropped or shortened the task text in 6 of 10 read summaries and raised lost-the-goal failures (luka, agent-long-tasks_what_we_tried.md).",
+    "\"Making the agent write what it expects a change to do before it runs the test again\" is listed by luka as untried, so this idea is the first test of it.",
+    "The trajectories CSV is synthetic and cannot be used to pick screen tasks or to set the trigger step [C9].",
+    "The injection must be a tool-call hook that counts calls per run and fires once; an edit-count hook of this shape is the LangChain middleware pattern (https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering).",
+    "Nudges consume context, and a false positive near the context limit hastens failure (https://www.agentpatterns.ai/observability/loop-detection/).",
+    "The screen is 12 tasks by 3 seeds by 2 arms, 72 runs, about 3 percent of the 2,500-run budget [C7].",
+    "The agent must never see or change hidden tests, so the third field must refer only to tests the agent runs itself [C8]."
+   ],
+   "assumes": [
+    "Loop onset on the nine runs comes at or after call 25.",
+    "The agent will write a concrete expectation when asked once, without a format enforced by the tool layer.",
+    "A written expectation changes the agent's next action, rather than being written and ignored.",
+    "The injected message survives whatever context trimming runs later in the same run.",
+    "Short tasks finish before call 25.",
+    "A fixed step is a better trigger than an event, such as the first test re-run after an edit.",
+    "The reflection is written by the agent in free text rather than filled by the harness from facts it already has.",
+    "The retry run should get a fresh checkpoint rather than inherit the first run's answers."
+   ],
+   "dropped_unsourced": 0,
+   "inherited": [],
+   "offshoots": [
+    "s270956e641",
+    "s58daae9cd6",
+    "sac269a062c",
+    "sc6ca4a4d49",
+    "s008766141b",
+    "s4a7287c80b"
+   ],
+   "open": [
+    {
+     "q": "At which tool call does the first repeated cycle begin on the nine real loop runs?",
+     "build": true,
+     "decides": "fixed call-25 trigger vs event trigger on the first test re-run"
+    },
+    {
+     "q": "What share of short tasks exceed 25 tool calls?",
+     "build": true,
+     "decides": "global threshold vs long-suite-only firing"
+    },
+    {
+     "q": "Does the harness count tool calls or model turns, and does the counter reset on retry?",
+     "build": true,
+     "decides": "per-run counter vs per-task counter"
+    },
+    {
+     "q": "What context trimming runs inside a single run today, and would it drop an injected message?",
+     "build": true,
+     "decides": "injected message vs stored state object"
+    },
+    {
+     "q": "Which real tasks produced the nine loop runs, so the screen can be built from them?",
+     "build": true,
+     "decides": "random 12-task screen vs loop-prone screen"
+    },
+    {
+     "q": "How many tokens does the agent actually write when given the three-field prompt?",
+     "build": true,
+     "decides": "three fields vs one field"
+    },
+    {
+     "q": "Does the LangChain edit-count nudge have an isolated effect size anywhere?",
+     "build": false,
+     "decides": "nothing on its own, but it would set the prior for l2"
+    }
+   ],
+   "call_id": "caff50d47b7",
+   "node": "loop_breaking",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "Harness injects the three-field prompt at tool call 25 -> the agent writes a non-vacuous expectation before its next test run",
+     "quantity": "share of runs reaching call 25 whose next message contains a concrete expected test outcome (failure count or named test)",
+     "baseline": "0 of 9 loop runs stated an expectation [F12]",
+     "expect": "60 to 90 percent of runs comply with something gradeable, 10 to 40 percent write a vague summary",
+     "breaks_if": "in the 12-task screen fewer than half of the post-25 responses name a checkable outcome, or the agent ignores the prompt and calls the test tool directly"
+    },
+    {
+     "id": "L2",
+     "text": "A stated expectation before the first re-run -> fewer runs enter the edit-and-test cycle",
+     "quantity": "failed runs labeled loop",
+     "baseline": "9 of 40 failed runs [F5]",
+     "expect": "down by 2 to 4 of 9, not to zero, because a model that believes its path is right keeps going (https://www.langchain.com/blog/improving-deep-agents-with-harness",
+     "breaks_if": "loop-labeled failures are unchanged, or they shift to a different failure kind at the same count"
+    },
+    {
+     "id": "L3",
+     "text": "Fewer loops -> the freed steps turn into passes rather than other failures",
+     "quantity": "long-task pass rate",
+     "baseline": "31 percent single run, 44 percent with the retry default (luka, agent-long-tasks_what_we_tried.md)",
+     "expect": "up 2 to 4 points alone, in the band the idea claims, below the 6-point keep rule on its own",
+     "breaks_if": "loop failures fall but pass is flat, meaning the loop was a symptom of a task the model cannot solve"
+    },
+    {
+     "id": "L4",
+     "text": "One 400-token reflection -> cost per task rises under 1 percent",
+     "quantity": "tokens per task",
+     "baseline": "about 44,000 to 74,000 per run in the sample, but the sample is synthetic [C9]",
+     "expect": "up 0.5 to 3 percent, because the reflection is re-read as input on every later step, not paid once",
+     "breaks_if": "the reflection runs over 1,000 tokens or triggers a fresh exploration phase that adds steps"
+    },
+    {
+     "id": "L5",
+     "text": "Short tasks finish before call 25 -> short-task pass unchanged",
+     "quantity": "short-task pass",
+     "baseline": "unmeasured in the material given",
+     "expect": "flat, within one task",
+     "breaks_if": "short tasks routinely reach call 25 and the checkpoint interrupts a tight refactor, which the loop-detection write-up warns about (https://www.agentpatterns.ai/"
+    },
+    {
+     "id": "L6",
+     "text": "Links L2 to L5 hold -> the panel scores it on failure link, testable, fits budget",
+     "quantity": "panel rank",
+     "baseline": "unmeasured",
+     "expect": "mid to upper rank as a cheap combinable item, not a winner alone",
+     "breaks_if": "the panel reads a 2-to-4-point gain as failing the keep rule outright"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "Nine of 40 failed runs cycled the same edit-and-test action at about 2,400 tokens per cycle until the step cap, and none stated an expectation [F5, F12].",
+     "prov": "script"
+    },
+    {
+     "text": "Passing and failing runs are indistinguishable for 10 steps and diverge after step 25 [F8].",
+     "prov": "script"
+    },
+    {
+     "text": "The current step cap is 60; raising it to 100 moved long-task pass from 31 to 33 percent at 45 percent more cost and was not kept (luka, agent-long-tasks_what_we_tried.md).",
+     "prov": "measured"
+    },
+    {
+     "text": "Retry from scratch with a new seed is the current default and lifts pair pass from 31 to 44 percent on long tasks (luka, agent-long-tasks_what_we_tried.md).",
+     "prov": "measured"
+    },
+    {
+     "text": "Summarising every 20 steps dropped or shortened the task text in 6 of 10 read summaries and raised lost-the-goal failures (luka, agent-long-tasks_what_we_tried.md).",
+     "prov": "measured"
+    },
+    {
+     "text": "\"Making the agent write what it expects a change to do before it runs the test again\" is listed by luka as untried, so this idea is the first test of it.",
+     "prov": "measured"
+    },
+    {
+     "text": "The trajectories CSV is synthetic and cannot be used to pick screen tasks or to set the trigger step [C9].",
+     "prov": "script"
+    },
+    {
+     "text": "The injection must be a tool-call hook that counts calls per run and fires once; an edit-count hook of this shape is the LangChain middleware pattern (https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering).",
+     "prov": "web"
+    },
+    {
+     "text": "Nudges consume context, and a false positive near the context limit hastens failure (https://www.agentpatterns.ai/observability/loop-detection/).",
+     "prov": "web"
+    },
+    {
+     "text": "The reflection is re-read as input on every remaining step, so its cost is about 400 tokens times remaining steps, not 400 tokens once.",
+     "prov": "belief"
+    },
+    {
+     "text": "The screen is 12 tasks by 3 seeds by 2 arms, 72 runs, about 3 percent of the 2,500-run budget [C7].",
+     "prov": "script"
+    },
+    {
+     "text": "The agent must never see or change hidden tests, so the third field must refer only to tests the agent runs itself [C8].",
+     "prov": "script"
+    }
+   ],
+   "unknown_share": 0.3,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "Harness injects the three-field prompt at tool call 25 -> the agent writes a non-vacuous expectation before its next test run",
+     "quantity": "share of runs reaching call 25 whose next message contains a concrete expected test outcome (failure count or named test)",
+     "baseline": "0 of 9 loop runs stated an expectation [F12]",
+     "expect": "60 to 90 percent of runs comply with something gradeable, 10 to 40 percent write a vague summary",
+     "breaks_if": "in the 12-task screen fewer than half of the post-25 responses name a checkable outcome, or the agent ignores the prompt and calls the test tool directly"
+    },
+    {
+     "id": "L2",
+     "text": "A stated expectation before the first re-run -> fewer runs enter the edit-and-test cycle",
+     "quantity": "failed runs labeled loop",
+     "baseline": "9 of 40 failed runs [F5]",
+     "expect": "down by 2 to 4 of 9, not to zero, because a model that believes its path is right keeps going (https://www.langchain.com/blog/improving-deep-agents-with-harness",
+     "breaks_if": "loop-labeled failures are unchanged, or they shift to a different failure kind at the same count"
+    },
+    {
+     "id": "L3",
+     "text": "Fewer loops -> the freed steps turn into passes rather than other failures",
+     "quantity": "long-task pass rate",
+     "baseline": "31 percent single run, 44 percent with the retry default (luka, agent-long-tasks_what_we_tried.md)",
+     "expect": "up 2 to 4 points alone, in the band the idea claims, below the 6-point keep rule on its own",
+     "breaks_if": "loop failures fall but pass is flat, meaning the loop was a symptom of a task the model cannot solve"
+    },
+    {
+     "id": "L4",
+     "text": "One 400-token reflection -> cost per task rises under 1 percent",
+     "quantity": "tokens per task",
+     "baseline": "about 44,000 to 74,000 per run in the sample, but the sample is synthetic [C9]",
+     "expect": "up 0.5 to 3 percent, because the reflection is re-read as input on every later step, not paid once",
+     "breaks_if": "the reflection runs over 1,000 tokens or triggers a fresh exploration phase that adds steps"
+    },
+    {
+     "id": "L5",
+     "text": "Short tasks finish before call 25 -> short-task pass unchanged",
+     "quantity": "short-task pass",
+     "baseline": "unmeasured in the material given",
+     "expect": "flat, within one task",
+     "breaks_if": "short tasks routinely reach call 25 and the checkpoint interrupts a tight refactor, which the loop-detection write-up warns about (https://www.agentpatterns.ai/"
+    },
+    {
+     "id": "L6",
+     "text": "Links L2 to L5 hold -> the panel scores it on failure link, testable, fits budget",
+     "quantity": "panel rank",
+     "baseline": "unmeasured",
+     "expect": "mid to upper rank as a cheap combinable item, not a winner alone",
+     "breaks_if": "the panel reads a 2-to-4-point gain as failing the keep rule outright"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "Fires at the divergence point, not before it: [F8] says runs diverge after step 25, so the first wasted re-run has often already happened by call 25, and the sample shows runs with 3 to 5 repeated cycles inside a 58 to 61 step budget, which puts the first cycle well before call 25. Cheapest check: i",
+     "severity": "high",
+     "cls": "early_only",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The trigger moves from a fixed count to an event: the harness injects the prompt immediately before the first test-tool call that follows an edit, so the expectation is written before any re-run, not at call 25.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Steps and tool calls are counted differently: the mechanism cites a step index [F8] but triggers on tool call 25; a run with reads, thinking and text turns reaches call 25 at a very different step, so the checkpoint lands anywhere from step 25 to step 45 and sometimes after the loop has consumed the",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L1",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "With an event trigger there is no count to mismatch; the step-versus-tool-call distinction is dropped from the mechanism and L1 is restated as \"fires before the first post-edit test run\".",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Effect is smaller than seed noise: 2 to 4 points of long-task pass is one or two tasks, while the retry experiment (31 to 44 percent) shows a seed-to-seed swing of over 10 points on the same tasks, so a 12-task, 3-seed screen cannot separate the checkpoint from a lucky seed, and the full measurement",
+     "severity": "high",
+     "cls": "below_noise",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "rebut",
+      "verdict": "standing",
+      "fact": "\"Retry a failed run from scratch once, with a different seed. Pass rate for the pair of runs 31 to 44 percent on long tasks.\" [script] The 13 points is pair-pass versus single-pass, not a seed-to-seed swing on the same runs; seed variance is not reported, so the screen's power is unknown rather than shown insufficient, and L3 keeps its 3-seed design with learn_z as the decision metric.",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Written expectation hardens commitment instead of breaking it: LangChain reports nudges fail when the model believes its path is right; asking it to write what the test should show makes it state that belief, and when the test disagrees it edits toward the stated expectation. The step-cap-raise resu",
+     "severity": "high",
+     "cls": "interaction_cancels",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "above",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 1 at 12-task screen, where loop-labeled failures are counted toge",
+      "change": "",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Cancels the retry default it is layered on: retry gains come from trajectory variance between seeds; a fixed three-field prompt at the same call in both attempts homogenises the two trajectories, so pair pass rate drops back toward single-run pass. Cheapest check: measure pair pass with checkpoint o",
+     "severity": "medium",
+     "cls": "interaction_cancels",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 0.0
+     },
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The checkpoint fires only in the first attempt of a retry pair; the second attempt runs unchanged, so trajectory variance between the two attempts is preserved.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Hidden cost is a new exploration phase, not 400 tokens: the \"what is unknown\" field invites the agent to list unknowns and then go resolve them with file reads, adding steps under a fixed cap; the reflection is also re-read on every later step, so a 400-token note costs 400 times remaining steps. Ch",
+     "severity": "medium",
+     "cls": "hidden_cost",
+     "link": "L4",
+     "if_true": null,
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The \"what is unknown\" field is removed, leaving two fields (what is confirmed, what the next test should show); the cost prediction becomes under 3 percent including re-reading, and any rise in steps per task of 3 or more refutes it.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Goal rewriting through the \"what is confirmed\" field: the summariser attempt dropped or shortened the task text in 6 of 10 summaries; the checkpoint asks for a similar self-written summary, and the agent then anchors on its own narrowed restatement, so loop failures shift to lost-the-goal at the sam",
+     "severity": "medium",
+     "cls": "interaction_cancels",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The \"what is confirmed\" field is scoped to code and test behaviour and the prompt says not to restate the task; nothing in context is replaced; lost-the-goal failures are added to the refutation so a label shift from loop to lost-the-goal counts as a failure.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Wrong-verification failures rise: asked to state what the next test should show, the agent writes the expected outcome and then reports that outcome without running the real test (the fake verify_step kind in the sample), which the hidden tests catch but the agent's own report does not. Cheapest che",
+     "severity": "medium",
+     "cls": "metric_blind",
+     "link": "L3",
+     "if_true": null,
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The refutation adds \"any rise in fake verify_step counts\"; the harness logs whether the test tool was actually called after the expectation was written and grades the expectation only against a real run.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Additivity is asserted, never measured: the test runs detector off, so \"adds rather than overlaps\" is untested, and measuring the combination costs a second full measurement from the 15-slot budget. The panel scores testable and fits budget, and a claim with no test for its main selling point loses ",
+     "severity": "medium",
+     "cls": "breaks_constraint",
+     "link": "L6",
+     "if_true": null,
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The additivity claim is withdrawn; the idea is submitted as a stand-alone change with detector off, and combination with the detector is a separate measurement if the stand-alone result clears threshold.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Fails the keep rule on its own terms: C6 requires 6 points or more per change, and the proposal states 2 to 4 points; \"combinable\" is not a category the panel is asked to score, so the honest number reads as a self-declared keep-rule failure.",
+     "severity": "high",
+     "cls": "breaks_constraint",
+     "link": "L6",
+     "if_true": null,
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The idea is listed below any single change predicting 6 points or more, with the stated 2-to-4-point prediction and an explicit note that it does not meet the keep rule alone.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Short-task baseline is unmeasured: L5 assumes short tasks finish before call 25 with no data (the CSV is synthetic and long-task only), and the agentpatterns write-up warns a fixed interrupt breaks tight refactors; one short task interrupted mid-edit violates \"short-task pass not lower.\" Cheapest ch",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L5",
+     "if_true": null,
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The screen adds the short-task set with the same seeds, and the idea is refuted if any short task that passed at baseline fails with the checkpoint on.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    },
+    {
+     "text": "Builder slip on the counter: with retry-from-scratch as default, a counter that does not reset per attempt fires at call 25 of the pair, meaning never in the second run; and injecting the prompt as a user turn makes some runs answer the question and stop, treating it as the new task. Cheapest check:",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L1",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "loop_breaking-in-k01",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The prompt is injected as a system note attached to the next tool result, never as a user turn, and the first-attempt-only rule from REPLY 5 removes the per-attempt counter entirely.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "loop_breaking-in-k01"
+     }
+    }
+   ],
+   "premortem_verdict": "The checkpoint fires at the step where loops are already under way and asks a model that believes it is right to write that belief down, so loop runs continue unchanged and the one-or-two-task effect vanishes inside seed noise.",
+   "dialogue": {
+    "exchanges": 1,
+    "stop": "budget"
+   },
+   "revised_idea": "Before the first test-tool call that follows an edit, in the first attempt only, the harness attaches a two-field system note (what is confirmed about the code, what the next test should show) without replacing any context or restating the task; predicted long-task pass rises 2 to 4 points alone at under 3 percent cost, ranked below keep-rule-sized changes, and refuted on the 12-task long-plus-sho"
+  },
+  {
+   "id": "dcee1bdc15f",
+   "cluster_id": "prediction_befor-in-k03",
+   "cluster_name": "Diff view of repeated command output",
+   "gen": 0,
+   "members": [
+    "s246e1cde34"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "dcee1bdc15f",
+   "focus": null,
+   "qa": [
+    {
+     "q": "Does the agent act on \"0 lines changed\" when it is only an observation, or must the harness also block or warn?",
+     "a": "The nearest evidence says agents notice surprising observations far more often than they use them, 79-81 percent noticed against 37-50 percent used on Terminal-Bench and under 7 percent on AppWorld, https://arxiv.org/pdf/2604.17609. A bare diff is weaker than an injected solution, so expecting over half to switch is optimistic. The 12-task screen should log the switch rate; if under one third, add the harness message as a second arm.",
+     "decides": "pure diff view vs diff view plus a harness message like \"same command, same output, change something before re-running\""
+    },
+    {
+     "q": "What counts as \"the same command\" for the diff key?",
+     "a": "Loop-detection guidance hashes exact tool-call inputs and treats a retry as justified only if parameters, context or plan changed, https://www.jetbrains.com/pages/ai-agents/architecture/ai-agent-loops/. Exact hashing misses `pytest -q` versus `pytest -q -x`, and the agent can trivially defeat it by adding a flag. Start exact, log near-misses, and widen only if the screen shows flag-jitter evasion.",
+     "decides": "hash of exact (tool, args) string vs normalised key ignoring flags, cwd and timestamps"
+    },
+    {
+     "q": "When the output changes, does the diff carry enough for the agent to debug, or does it hide the failing assertion?",
+     "a": "Unknown on this suite. A unified diff with 3 context lines drops the assertion message when only the line count or a timestamp changed, and test output often has nondeterministic lines (durations, ids). Normalise known volatile lines before diffing and always include full lines for any hunk containing \"FAIL\", \"Error\" or \"assert\". The kill criterion on tasks with changing output measures this.",
+     "decides": "pure unified diff vs diff plus the full text of any failing test block that appears in the diff"
+    },
+    {
+     "q": "How much of the context growth in long runs is repeated test output, as opposed to large file reads?",
+     "a": "Unknown on real data; the CSV lists files over 300 lines read but is synthetic [C9]. If a 2,400-token cycle repeats 4 times it saves about 8,000 tokens, which against a 60,000 to 70,000-token run is 10 to 15 percent, enough to delay one trim at most. Measure trimming events per run in the screen before claiming L4.",
+     "decides": "expect L4 to matter vs treat L4 as a side effect and sell the idea on L2 alone"
+    },
+    {
+     "q": "Does the diff view interact badly with the free-text prediction rule it keeps?",
+     "a": "They are complementary in intent, but the prediction rule compares expected to actual and now \"actual\" is a diff. If the prediction says \"test_x will now pass\" and the diff shows only \"0 lines changed\", the comparison is easier, not harder. Keep them separate arms in the screen so the panel can attribute effect, since combining would use 72 of 2,500 runs.",
+     "decides": "ship diff view alone vs ship prediction and diff together as one arm"
+    },
+    {
+     "q": "Does cheaper re-running encourage more re-running?",
+     "a": "Belief: a shorter observation lowers the per-step cost of looping, so a step-cap-bound agent may loop more steps before cap. Luka's note that raising the cap from 60 to 100 made loops longer, with cost up 45 percent, supports the worry. Log consecutive identical commands per run; if the mean rises against baseline, add a cap of 3.",
+     "decides": "diff view alone vs diff view with a cap on consecutive identical commands"
+    },
+    {
+     "q": "Where does the previous output live for comparison, and does it survive trimming or summarising?",
+     "a": "It must be harness-side keyed by command hash, outside the model context, or trimming would lose the reference and the diff silently reverts to raw output. This is allowed under C3 as memory between steps. Initialise empty, keep only the latest output per hash, cap stored size.",
+     "decides": "store last output per command hash in harness-side memory vs rely on the context window"
+    },
+    {
+     "q": "Could the agent read \"0 lines changed\" as \"nothing broke, tests still pass\"?",
+     "a": "Reflexion on MBPP shows self-judged signals without an external check misled the agent, 77.1 against 80.1 baseline, https://arxiv.org/pdf/2303.11366. A bare \"0 lines changed\" is ambiguous when the previous full output was trimmed. Show the outcome summary line with the diff; this costs about 20 tokens.",
+     "decides": "show \"0 lines changed\" alone vs show it with a one-line summary of the unchanged outcome, such as \"0 lines changed; last result: 3 failed, 12 passed\""
+    },
+    {
+     "q": "Is 36 runs enough to see a 6-point pass gain?",
+     "a": "At 31 percent base pass, 36 runs give about 11 passes, and a 6-point gain is 2 passes, inside noise. Pick the 12 tasks with the most repeated cycles in baseline logs and screen on the mechanism quantities from L1 and L2, then spend a full measurement only if the switch rate exceeds one third.",
+     "decides": "screen on 12 tasks at 3 seeds vs screen on 12 tasks chosen for known looping, measuring cycle rate rather than pass"
+    },
+    {
+     "q": "Does the diff view affect short tasks?",
+     "a": "Short tasks rarely repeat commands, so the expected effect is near zero, but a single-repeat short task that relied on a nondeterministic line in the output could lose information. Apply to all tasks for simplicity, and watch the short-task pass figure under C6; gating by step would add a confound.",
+     "decides": "apply diff view to all tasks vs only after step 20"
+    }
+   ],
+   "known": [
+    "Plugs in at the tool-result layer: the harness intercepts the result of any command whose hash matches a stored prior result and substitutes a diff.",
+    "The idea text says a repeated cycle costs about 2,400 tokens; this comes from [F5], which the brief does not quote, so the builder must confirm it from the fact list before using it.",
+    "Baseline long-task pass is 31 percent; raising the step cap to 100 gave 33 percent at 45 percent higher cost; a seed retry gave 44 percent pair pass at double cost on failures; 20-step summarising gave 34 percent and dropped the task text in 6 of 10 summaries. Source: luka's file agent-long-tasks_wh",
+    "Agents noticed injected solutions in 79-81 percent of Terminal-Bench runs but used them in 37-50 percent, and under 7 percent on AppWorld, https://arxiv.org/pdf/2604.17609.",
+    "Loop-detection practice hashes (tool, args) and treats an unchanged observation as a no-progress signal, https://www.jetbrains.com/pages/ai-agents/architecture/ai-agent-loops/.",
+    "Self-generated signals without external check lowered Reflexion on MBPP to 77.1 from 80.1, false-positive rate 0.16, https://arxiv.org/pdf/2303.11366.",
+    "The CSV is synthetic and no cell in it may serve as a baseline.",
+    "The prediction rule stays free text and separate; the screen should run diff view as its own arm."
+   ],
+   "assumes": [
+    "A repeated command is identified by an exact (tool, args) match.",
+    "The agent reads and responds to a terse \"0 lines changed\" line as readily as to a full output.",
+    "Test output is deterministic enough that an unchanged state yields an empty diff.",
+    "Repeated test output is a large share of context growth in long runs.",
+    "The previous output is retained reliably somewhere the model cannot trim.",
+    "Showing less information on a re-run never removes something the agent needed.",
+    "Agents loop because they cannot see that nothing changed, not because they have no alternative plan."
+   ],
+   "dropped_unsourced": 0,
+   "inherited": [],
+   "offshoots": [
+    "s09fb692a3a",
+    "secdc845c42",
+    "sd73bb0e59e",
+    "s203359dd31",
+    "s3f887c9e57",
+    "s199ec05d50"
+   ],
+   "open": [
+    {
+     "q": "What do [F4], [F5] and [F15] actually state, and is the 2,400-token cycle figure from a real measurement or a synthetic row?",
+     "build": true,
+     "decides": "sell on token savings vs sell on loop breaking only"
+    },
+    {
+     "q": "What share of context growth in failed long runs comes from repeated test output versus file reads?",
+     "build": true,
+     "decides": "claim l4 vs drop l4 from the chain"
+    },
+    {
+     "q": "How often is baseline test output nondeterministic between identical runs on this suite?",
+     "build": true,
+     "decides": "raw text diff vs normalised or parsed diff"
+    },
+    {
+     "q": "Does the fixed model treat a terse harness observation with the same weight as a full tool output?",
+     "build": true,
+     "decides": "bare diff vs diff plus harness instruction line"
+    },
+    {
+     "q": "Do agents add no-op flags when a re-run is made obviously useless?",
+     "build": true,
+     "decides": "exact hash key vs normalised key"
+    }
+   ],
+   "call_id": "cf380f4785f",
+   "node": "prediction_befor",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "harness returns diff-only output on a repeated (tool, args) command -> tokens per repeated cycle fall",
+     "quantity": "mean tokens per long run, and tokens per repeated cycle",
+     "baseline": "about 2,400 tokens per cycle per the idea text citing [F5]; run-level token figures in the CSV are synthetic and unusable [C9]",
+     "expect": "tokens per long run down 10 to 20 percent on runs with 2 or more repeats, near zero change on runs with no repeats",
+     "breaks_if": "token count per long run falls under 5 percent, or rises because the agent re-runs more often now that re-runs are cheap"
+    },
+    {
+     "id": "L2",
+     "text": "\"0 lines changed\" shown literally -> the agent stops cycling and changes plan or state",
+     "quantity": "share of runs with 3 or more repeated cycles that switch strategy within 2 steps of the second \"0 lines changed\"",
+     "baseline": "unmeasured (luka's file says loops ran \"just looped longer\" when the cap rose, which is a hint, not a measure)",
+     "expect": "over half of such runs switch; refuted band under one third",
+     "breaks_if": "agents keep re-running at the same cycle rate after seeing the diff, consistent with the 37-50 percent use rate of surprising observations in https://arxiv.org/"
+    },
+    {
+     "id": "L3",
+     "text": "fewer loop cycles -> loop failures fall and steps freed are used on real work",
+     "quantity": "loop failure count on long tasks, mean steps",
+     "baseline": "unmeasured on the real suite; CSV synthetic",
+     "expect": "loop failures down by a quarter to a half",
+     "breaks_if": "loop failures move to a new failure kind, such as \"wrong verification\" after the agent accepts a short diff as success"
+    },
+    {
+     "id": "L4",
+     "text": "fewer tokens in context -> trimming fires later -> fewer lost-the-goal and stale-context failures",
+     "quantity": "count of runs where task text absent at end, trimming events per run",
+     "baseline": "unmeasured here; luka reports 6 of 10 summaries dropped the task text",
+     "expect": "trimming events down 10 to 20 percent, lost-the-goal down a few points at most",
+     "breaks_if": "trimming count is unchanged because the long files read, not test output, dominate context growth"
+    },
+    {
+     "id": "L5",
+     "text": "L3 and L4 together -> long-task pass up, short-task pass flat, cost down -> keep rule met -> panel ranks on keep rule, failure link, testable",
+     "quantity": "long pass, short pass, cost per task",
+     "baseline": "long pass 31 percent, from luka's file",
+     "expect": "long pass up 6 to 10 points with cost down; short pass within 2 points",
+     "breaks_if": "long pass gain under 6 points, or short pass down 2 points on tasks where output legitimately changes"
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "Plugs in at the tool-result layer: the harness intercepts the result of any command whose hash matches a stored prior result and substitutes a diff.",
+     "prov": "script"
+    },
+    {
+     "text": "The idea text says a repeated cycle costs about 2,400 tokens; this comes from [F5], which the brief does not quote, so the builder must confirm it from the fact list before using it.",
+     "prov": "script"
+    },
+    {
+     "text": "Baseline long-task pass is 31 percent; raising the step cap to 100 gave 33 percent at 45 percent higher cost; a seed retry gave 44 percent pair pass at double cost on failures; 20-step summarising gave 34 percent and dropped the task text in 6 of 10 summaries. Source: luka's file agent-long-tasks_wh",
+     "prov": "untagged"
+    },
+    {
+     "text": "Agents noticed injected solutions in 79-81 percent of Terminal-Bench runs but used them in 37-50 percent, and under 7 percent on AppWorld, https://arxiv.org/pdf/2604.17609.",
+     "prov": "web"
+    },
+    {
+     "text": "Loop-detection practice hashes (tool, args) and treats an unchanged observation as a no-progress signal, https://www.jetbrains.com/pages/ai-agents/architecture/ai-agent-loops/.",
+     "prov": "web"
+    },
+    {
+     "text": "Self-generated signals without external check lowered Reflexion on MBPP to 77.1 from 80.1, false-positive rate 0.16, https://arxiv.org/pdf/2303.11366.",
+     "prov": "web"
+    },
+    {
+     "text": "The stored previous output must live outside the model context so trimming cannot remove the reference; keep latest only, keyed by hash.",
+     "prov": "belief"
+    },
+    {
+     "text": "Volatile lines in test output (durations, temp paths, pids) must be normalised before diffing or \"0 lines changed\" will almost never appear.",
+     "prov": "belief"
+    },
+    {
+     "text": "The CSV is synthetic and no cell in it may serve as a baseline.",
+     "prov": "script"
+    },
+    {
+     "text": "The prediction rule stays free text and separate; the screen should run diff view as its own arm.",
+     "prov": "script"
+    }
+   ],
+   "unknown_share": 0.2,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "harness returns diff-only output on a repeated (tool, args) command -> tokens per repeated cycle fall",
+     "quantity": "mean tokens per long run, and tokens per repeated cycle",
+     "baseline": "about 2,400 tokens per cycle per the idea text citing [F5]; run-level token figures in the CSV are synthetic and unusable [C9]",
+     "expect": "tokens per long run down 10 to 20 percent on runs with 2 or more repeats, near zero change on runs with no repeats",
+     "breaks_if": "token count per long run falls under 5 percent, or rises because the agent re-runs more often now that re-runs are cheap"
+    },
+    {
+     "id": "L2",
+     "text": "\"0 lines changed\" shown literally -> the agent stops cycling and changes plan or state",
+     "quantity": "share of runs with 3 or more repeated cycles that switch strategy within 2 steps of the second \"0 lines changed\"",
+     "baseline": "unmeasured (luka's file says loops ran \"just looped longer\" when the cap rose, which is a hint, not a measure)",
+     "expect": "over half of such runs switch; refuted band under one third",
+     "breaks_if": "agents keep re-running at the same cycle rate after seeing the diff, consistent with the 37-50 percent use rate of surprising observations in https://arxiv.org/"
+    },
+    {
+     "id": "L3",
+     "text": "fewer loop cycles -> loop failures fall and steps freed are used on real work",
+     "quantity": "loop failure count on long tasks, mean steps",
+     "baseline": "unmeasured on the real suite; CSV synthetic",
+     "expect": "loop failures down by a quarter to a half",
+     "breaks_if": "loop failures move to a new failure kind, such as \"wrong verification\" after the agent accepts a short diff as success"
+    },
+    {
+     "id": "L4",
+     "text": "fewer tokens in context -> trimming fires later -> fewer lost-the-goal and stale-context failures",
+     "quantity": "count of runs where task text absent at end, trimming events per run",
+     "baseline": "unmeasured here; luka reports 6 of 10 summaries dropped the task text",
+     "expect": "trimming events down 10 to 20 percent, lost-the-goal down a few points at most",
+     "breaks_if": "trimming count is unchanged because the long files read, not test output, dominate context growth"
+    },
+    {
+     "id": "L5",
+     "text": "L3 and L4 together -> long-task pass up, short-task pass flat, cost down -> keep rule met -> panel ranks on keep rule, failure link, testable",
+     "quantity": "long pass, short pass, cost per task",
+     "baseline": "long pass 31 percent, from luka's file",
+     "expect": "long pass up 6 to 10 points with cost down; short pass within 2 points",
+     "breaks_if": "long pass gain under 6 points, or short pass down 2 points on tasks where output legitimately changes"
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "The population the idea targets is the wrong one for \"lost the goal\": in luka's sample every loop failure still had the task text in context, and every lost-the-goal run had zero repeated cycles and 2 to 3 big files read. The two failure kinds live in disjoint runs, so cutting re-run tokens cannot d",
+     "severity": "high",
+     "cls": "interaction_cancels",
+     "link": "L4",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Drop L4 and the lost-the-goal claim; the idea targets loop failures only, and lost-the-goal and stale-context are predicted flat.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "Loop runs die on the step cap, not the token budget. A diff cuts tokens per cycle but each re-run still costs one step, and the cap is kept unchanged. Luka's cap raise showed loop runs \"just looped longer\", so the binding constraint is steps per cycle, which the diff leaves at 1. Check: compare step",
+     "severity": "high",
+     "cls": "interaction_cancels",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Token saving is no longer claimed to cut loop failures; the only lever is the literal \"same output as step N\" signal in L2, and L1 becomes a cost claim only.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "The kept default is retry-from-scratch with a new seed, which already converts first-attempt loops into second-attempt passes (31 to 44 percent for the pair). The diff view only helps first attempts that would have looped, and most of that gain is already harvested by the retry. Measured against the",
+     "severity": "high",
+     "cls": "below_noise",
+     "link": "L5",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Baseline is the kept retry default at 44 percent pair pass; kill rule becomes pair pass not up 4 points or cost per passed long task not down 10 percent.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "Test output is rarely byte-identical: durations, timestamps, temp paths, collection order and random seeds change every run. The literal \"0 lines changed\" never appears, the agent sees \"4 lines changed\" of noise, and the signal L2 depends on never fires, while the agent also loses the raw failure he",
+     "severity": "high",
+     "cls": "impl_slip",
+     "link": "L2",
+     "if_true": null,
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Normalize durations, timestamps, temp paths, addresses and collection order before diffing, always keep the raw pass/fail summary line, and \"0 lines changed\" means zero after normalization.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "\"0 lines changed\" is ambiguous between \"my edit did not apply\" and \"my edit applied and changed nothing\", and a short diff is easily read as \"almost done\". With the raw summary line gone, agents declare success on a diff and the failure moves to \"wrong verification\" with a fake verify step. Check: c",
+     "severity": "high",
+     "cls": "interaction_cancels",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 0.5
+     },
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The diff header always restates the raw summary line with the base step, for example \"same output as step 41: 3 failed, 2 passed\", so a short diff cannot read as success.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "The diff is computed against a previous output that trimming or the every-20-step summary may already have removed from context. The agent then sees a delta relative to something it cannot see, which is worse than raw output on tasks where test results legitimately change after an edit. Check: in th",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L2",
+     "if_true": null,
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The harness shows raw output, not a diff, whenever the base run's step is no longer in context after trimming or summarization.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "Agents rarely repeat an exact (tool, args) pair when stuck; they add -x, change a -k filter, or swap paths. A hash on exact args misses these near-repeats, so most loop cycles never trigger the diff and the baseline cycle rate persists. Check: on baseline loop runs, count cycles that are exact repea",
+     "severity": "medium",
+     "cls": "impl_slip",
+     "link": "L1",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 1 at screen, with the share of baseline loop cycles that are exac",
+      "change": "",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "Cheap re-runs invite more re-runs. The agent learns within a run that a repeat costs a few hundred tokens and leans on it instead of reasoning, so cycles per run rise and steps burn faster. Check: mean repeated cycles per long run after the change against before; a rise rather than a fall refutes L1",
+     "severity": "medium",
+     "cls": "hidden_cost",
+     "link": "L1",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 0.5
+     },
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "measure",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "learn_z above 0.5 at screen, refuted if mean repeated cycles per long run rises a",
+      "change": "",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "The screen cannot see the effect. 36 runs over 12 tasks is 3 seeds per task; at a 31 percent base rate the seed-to-seed swing is around 8 points, and a 6-point long-task target is one or two tasks flipping. The \"switch strategy within 2 steps\" quantity for L2 is not logged and needs hand labelling o",
+     "severity": "medium",
+     "cls": "below_noise",
+     "link": "L2",
+     "if_true": null,
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "Screen widens to 12 tasks by 6 seeds (72 runs), and the harness logs each repeat event and the next (tool, args) so the switch metric is computed, not hand-labelled.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "The idea rests on the agent reacting to a surprising observation, and the brief's own evidence says agents used injected solutions in only 37 to 50 percent of runs even when they found them. The panel's \"model limits\" criterion will dock this directly, and the writeup's 2,400-token baseline is only ",
+     "severity": "medium",
+     "cls": "metric_blind",
+     "link": "L5",
+     "if_true": null,
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "L2 expectation lowered to a switch rate of 40 to 50 percent, in line with the 37 to 50 percent use rate; the refuted band stays under one third.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    },
+    {
+     "text": "The harness change is a transformation of tool results, which C3 lists only indirectly under tools or context trimming. A strict panel reading could call \"second showing is only its change\" a change to what the agent observes rather than to the allowed knobs, and rank it down on fits-budget and mode",
+     "severity": "low",
+     "cls": "breaks_constraint",
+     "link": "",
+     "if_true": null,
+     "cite": "",
+     "idea": "prediction_befor-in-k03",
+     "dialogue": {
+      "reply": "concede",
+      "verdict": "revised",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "The change is filed under the context trimming knob: the second showing of an identical result is a trimmed showing, with tools, seeds and step cap untouched.",
+      "reason": "",
+      "exchange": 1,
+      "idea": "prediction_befor-in-k03"
+     }
+    }
+   ],
+   "premortem_verdict": "Loop runs die on the step cap and the retry already rescues most of them, so shrinking tokens per repeated cycle changes neither steps nor pair pass rate, and the only measurable effect on 36 runs is noise.",
+   "dialogue": {
+    "exchanges": 1,
+    "stop": "budget"
+   },
+   "revised_idea": "On a repeated (tool, args) command, the harness shows a normalized diff against the previous run plus a header that restates the base step and its raw pass/fail summary line, falling back to raw output when the base has been trimmed; it is filed under context trimming, targets loop failures only, and is judged on a 72-run screen against the 44 percent retry-pair baseline on pair pass and cost per "
+  },
+  {
+   "id": "d8cb3f73ad8",
+   "cluster_id": "task_text_pinnin-in-k01",
+   "cluster_name": "Verbatim-quote gate on summariser",
+   "gen": 0,
+   "members": [
+    "s4e99e3d15a",
+    "s559878d216"
+   ],
+   "depth": 0,
+   "parent": null,
+   "root": "d8cb3f73ad8",
+   "focus": null,
+   "qa": [
+    {
+     "q": "In the F14 summariser arm, were lost-the-goal failures caused by the text being absent, or did agents drift while the text was still in context?",
+     "a": "Unknown. F14 reports that 6 of 10 read summaries dropped the text and that lost-the-goal rose, but it does not pair failures with presence. The one controlled study found that keeping a plan in context did not recover the loss from evicting it, so presence alone may not be enough: https://www.emergentmind.com/papers/2606.22953",
+     "decides": "gate the summary only vs gate the summary plus a tail reminder on every request"
+    },
+    {
+     "q": "How many points of long-task failure in the summariser arm were lost-the-goal?",
+     "a": "Unknown. F14 gives a direction, not a count, and the CSV column task_text_in_context_at_end is synthetic and cannot be used [C9]. If the rise was 2 points, the gate's ceiling is about +5 over base, short of the keep rule.",
+     "decides": "this idea alone can reach +6 vs it must be paired with another part to clear C6"
+    },
+    {
+     "q": "Why should the model quote the task when the harness could prepend it deterministically?",
+     "a": "No evidence favours quoting. The only argument is that writing the task first may anchor the summary body on the goal. CliffCompaction and ptc-runner keep the first user message mechanically, with no ablation numbers: https://arxiv.org/pdf/2609.26779. The screen should run both arms, since the prepend arm has zero retry cost and 100 percent acceptance by construction.",
+     "decides": "model-quoted gate with retries vs harness-prepended task text with no gate"
+    },
+    {
+     "q": "How long are task texts, and do they contain code blocks or punctuation that models normalise?",
+     "a": "Unknown; the builder must measure the length distribution on the 120 tasks. Belief: models routinely collapse whitespace, swap curly quotes, and fix typos, so an exact compare will reject correct quotes and depress acceptance for no benefit. Normalise before comparing and log the raw diff.",
+     "decides": "exact byte compare vs compare after whitespace and quote-character normalisation"
+    },
+    {
+     "q": "What does \"fall back to the raw copy\" mean, and does it reintroduce the original failure?",
+     "a": "If the fallback keeps the raw messages, the window passes 100k and the oldest-first trim drops the task, which is the failure in [F4, F9, F22]. The fallback must be harness-prepend, so the task text is never absent regardless of summariser behaviour.",
+     "decides": "fallback keeps raw messages vs fallback is the summary body with the task text prepended by the harness"
+    },
+    {
+     "q": "Where does the accepted summary sit, and does the agent attend to it there?",
+     "a": "The summary replaces old messages, so it sits just after the system prompt, far from the recent end. Pydantic's harness docs describe an ephemeral tail reminder behind a cache point that costs no history growth, but report no effect: https://pydantic.dev/docs/ai/harness/system-reminders/. Whether head placement suffices is unknown and is the heart of L2.",
+     "decides": "summary at the head only vs summary at head plus ephemeral task reminder at the tail of each request"
+    },
+    {
+     "q": "What did the ungated summariser cost per task, and how many summaries fire per 60-step run?",
+     "a": "Unknown; F14 reports no cost. With a 60-step cap and a 20-step period, at most three summaries fire. A retry adds one summariser call on a 20-step context, so the extra cost is bounded by three such calls per run and is likely under 10 percent, but this is belief until measured.",
+     "decides": "allow one retry vs no retry, prepend on first failure"
+    },
+    {
+     "q": "Can the screen compare against the recorded ungated result, or must the ungated arm be rerun on the 12 tasks?",
+     "a": "The recorded result is for the 120-task suite, not the 12-task screen, so cells do not match. The ungated arm must be rerun on the screen with the same seeds, which doubles screen cost but stays small within the 2,500-run budget [C7].",
+     "decides": "two live arms vs one live arm against a record"
+    },
+    {
+     "q": "Do short tasks ever pass 20 steps?",
+     "a": "Unknown. If some short tasks run past step 20, the summary and any retry add cost to them with no benefit, which risks the \"short-task pass not lower\" clause only through cost noise. A token-count trigger near 80k would skip them automatically.",
+     "decides": "step-count trigger vs token-count trigger for the summary"
+    },
+    {
+     "q": "Can quoting the task crowd out the summary body and worsen stale-context failures?",
+     "a": "Possible if the task text is long and the summary has a token cap. A fixed template with capped sections protects the body. No measurement exists.",
+     "decides": "free-form body vs a fixed template with DONE, OPEN and FILES sections after the TASK slot"
+    },
+    {
+     "q": "Does the variant's claim that \"prompt instructions are largely ignored\" come from the brief?",
+     "a": "No. That phrase does not appear in the brief or in luka's file. Citing it would fail the panel's source rules.",
+     "decides": "citing it in the proposal vs dropping it"
+    },
+    {
+     "q": "Does the gate touch anything the agent sees about hidden tests?",
+     "a": "No. The quote is the task text the agent already holds, and the summariser is the same model with the same context, so C8 is unaffected.",
+     "decides": "no change vs a scrub step"
+    }
+   ],
+   "known": [
+    "The task text is the oldest message; trimming is oldest-first once the window passes 100k tokens; the goal is often gone after about 25 steps [F4, F9, F22].",
+    "The tried summariser ran every 20 steps, model-written, replacing old messages; long-task pass went 31 to 34 percent; stale-context failures fell; lost-the-goal rose; 6 of 10 read summaries shortened or dropped the task text. [measured, from luka's file agent-long-tasks_what_we_tried.md]",
+    "Step cap is 60; raising it to 100 gave 31 to 33 percent at +45 percent cost and was not kept. [measured, from luka's file]",
+    "Retry from scratch once with a new seed is the current default; it raises pair pass from 31 to 44 percent on long tasks, so any new arm must be run under that default. [measured, from luka's file]",
+    "Pinning a plan did not recover the 34.7-point loss from evicting it on ALFWorld, Llama-3.1-70B, keep_recent=4, 30 tasks. https://www.emergentmind.com/papers/2606.22953",
+    "Fixed-turn goal reminders raised judge scores 16 to 27 percent on short τ-bench dialogues, with inconsistent tables and a worse equilibrium for the 70B model. https://arxiv.org/html/2510.07777v2",
+    "Keep-first-user-message during compaction exists as a library option with no ablation numbers. https://arxiv.org/pdf/2609.26779",
+    "An ephemeral tail reminder placed behind a cache point does not grow history or invalidate the prefix cache. https://pydantic.dev/docs/ai/harness/system-reminders/",
+    "The CSV is synthetic and none of its cells, including task_text_in_context_at_end, may be cited [C9]."
+   ],
+   "assumes": [
+    "The summariser is model-written rather than mechanical, so a gate is needed at all.",
+    "The lost-the-goal failures are caused by the text being absent, not by drift while it is present.",
+    "Having the task text at the head of context, after the system prompt, is enough for the agent to use it.",
+    "The task is a single message short enough to quote without crowding out the summary body.",
+    "Exact string equality is the right acceptance test, rather than a normalised compare.",
+    "The 20-step summary period from F14 is the right trigger rather than a token threshold.",
+    "The summariser's stale-context benefit survives a fixed template.",
+    "A failed summary should fall back to something, rather than aborting the summary and continuing with raw messages."
+   ],
+   "dropped_unsourced": 0,
+   "inherited": [],
+   "offshoots": [
+    "s6033bffa8e",
+    "sd8acb35dce",
+    "s795ade2709",
+    "s8741ce7cdf",
+    "s1a05fe43c2",
+    "sd660029dda"
+   ],
+   "open": [
+    {
+     "q": "What share of the F14 summariser arm's failures were lost-the-goal, in points?",
+     "build": true,
+     "decides": "this idea alone vs paired with the scratch-notes part to reach +6"
+    },
+    {
+     "q": "Does the agent use a goal placed at the head of context, or only one near the tail?",
+     "build": true,
+     "decides": "head-only summary vs head plus tail reminder"
+    },
+    {
+     "q": "Task text length distribution and presence of code blocks on the 120 tasks",
+     "build": true,
+     "decides": "exact compare vs normalised compare, and whether the quote needs a token cap"
+    },
+    {
+     "q": "Cost per task of the ungated summariser relative to baseline",
+     "build": true,
+     "decides": "allow one retry vs prepend on first mismatch"
+    },
+    {
+     "q": "Step counts of short tasks, and whether any exceed 20",
+     "build": true,
+     "decides": "step trigger vs token trigger for the summary"
+    },
+    {
+     "q": "Does model-written quoting anchor the summary body on the goal more than a harness prepend does?",
+     "build": true,
+     "decides": "gated quote vs mechanical prepend"
+    },
+    {
+     "q": "Whether the panel counts a mechanical prepend as a weaker \"failure link\" than a gate that exposes the summariser's drop rate",
+     "build": false,
+     "decides": "wording of the claim only"
+    }
+   ],
+   "call_id": "c030f8cb44f",
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "chain": [
+    {
+     "id": "L1",
+     "text": "Template plus exact-string gate -> every accepted summary opens with the full task text",
+     "quantity": "share of summaries with the task text intact; first-try acceptance rate",
+     "baseline": "4 of 10 summaries kept the task text [F14]; acceptance unmeasured",
+     "expect": "intact in all accepted summaries; first-try acceptance in the 60 to 95 percent band after whitespace normalisation",
+     "breaks_if": "first-try acceptance under 50 percent, or the fallback fires on most summaries"
+    },
+    {
+     "id": "L2",
+     "text": "Task text present after each summary -> lost-the-goal failures fall back to or below the no-summariser baseline",
+     "quantity": "lost-the-goal failure count on long tasks",
+     "baseline": "rose under the ungated summariser [F14]; absolute count unmeasured",
+     "expect": "down to baseline or lower",
+     "breaks_if": "lost-the-goal stays elevated while the text is verifiably in context (presence without influence, as pinning showed on ALFWorld)"
+    },
+    {
+     "id": "L3",
+     "text": "Stale-context benefit of summarising is kept -> net long-task pass rises above the ungated arm",
+     "quantity": "long-task pass rate",
+     "baseline": "31 percent base, 34 with the ungated summariser [F14]",
+     "expect": "+4 to +8 points over base",
+     "breaks_if": "gated arm is at or below 34, or stale-context failures rise because the quote displaces progress notes"
+    },
+    {
+     "id": "L4",
+     "text": "One retry plus quoted task tokens -> small cost rise",
+     "quantity": "cost per task relative to the no-summariser baseline",
+     "baseline": "summariser arm cost unmeasured [F14]",
+     "expect": "within +5 to +15 percent",
+     "breaks_if": "cost exceeds +20 percent, which fails C6"
+    },
+    {
+     "id": "L5",
+     "text": "Summary fires at step 20, most short tasks finish earlier -> short-task pass unchanged",
+     "quantity": "short-task pass rate",
+     "baseline": "unmeasured here",
+     "expect": "flat",
+     "breaks_if": "short-task pass falls or short tasks over 20 steps pay a retry"
+    },
+    {
+     "id": "L6",
+     "text": "Keep rule met and the failure link is one checkable cause -> panel ranks it on failure link, testable and keep rule",
+     "quantity": "panel rank",
+     "baseline": "unmeasured",
+     "expect": "upper third",
+     "breaks_if": "L2 fails, because the proposal's whole story is \"text absent causes lost goal\""
+    }
+   ],
+   "weakest": "L2",
+   "link_status": [],
+   "known_tagged": [
+    {
+     "text": "The task text is the oldest message; trimming is oldest-first once the window passes 100k tokens; the goal is often gone after about 25 steps [F4, F9, F22].",
+     "prov": "script"
+    },
+    {
+     "text": "The tried summariser ran every 20 steps, model-written, replacing old messages; long-task pass went 31 to 34 percent; stale-context failures fell; lost-the-goal rose; 6 of 10 read summaries shortened or dropped the task text. [measured, from luka's file agent-long-tasks_what_we_tried.md]",
+     "prov": "untagged"
+    },
+    {
+     "text": "Step cap is 60; raising it to 100 gave 31 to 33 percent at +45 percent cost and was not kept. [measured, from luka's file]",
+     "prov": "untagged"
+    },
+    {
+     "text": "Retry from scratch once with a new seed is the current default; it raises pair pass from 31 to 44 percent on long tasks, so any new arm must be run under that default. [measured, from luka's file]",
+     "prov": "untagged"
+    },
+    {
+     "text": "Pinning a plan did not recover the 34.7-point loss from evicting it on ALFWorld, Llama-3.1-70B, keep_recent=4, 30 tasks. https://www.emergentmind.com/papers/2606.22953",
+     "prov": "web"
+    },
+    {
+     "text": "Fixed-turn goal reminders raised judge scores 16 to 27 percent on short τ-bench dialogues, with inconsistent tables and a worse equilibrium for the 70B model. https://arxiv.org/html/2510.07777v2",
+     "prov": "web"
+    },
+    {
+     "text": "Keep-first-user-message during compaction exists as a library option with no ablation numbers. https://arxiv.org/pdf/2609.26779",
+     "prov": "web"
+    },
+    {
+     "text": "An ephemeral tail reminder placed behind a cache point does not grow history or invalidate the prefix cache. https://pydantic.dev/docs/ai/harness/system-reminders/",
+     "prov": "web"
+    },
+    {
+     "text": "The gate plugs into the summarise step: build template, call summariser, normalise and compare the TASK slot, retry once with the diff quoted, else prepend the task text mechanically.",
+     "prov": "belief"
+    },
+    {
+     "text": "Watch per run: acceptance on first try, retries, fallbacks, lost-the-goal count, stale-context count, cost ratio to baseline.",
+     "prov": "belief"
+    },
+    {
+     "text": "The CSV is synthetic and none of its cells, including task_text_in_context_at_end, may be cited [C9].",
+     "prov": "script"
+    }
+   ],
+   "unknown_share": 0.42,
+   "chain_root": [
+    {
+     "id": "L1",
+     "text": "Template plus exact-string gate -> every accepted summary opens with the full task text",
+     "quantity": "share of summaries with the task text intact; first-try acceptance rate",
+     "baseline": "4 of 10 summaries kept the task text [F14]; acceptance unmeasured",
+     "expect": "intact in all accepted summaries; first-try acceptance in the 60 to 95 percent band after whitespace normalisation",
+     "breaks_if": "first-try acceptance under 50 percent, or the fallback fires on most summaries"
+    },
+    {
+     "id": "L2",
+     "text": "Task text present after each summary -> lost-the-goal failures fall back to or below the no-summariser baseline",
+     "quantity": "lost-the-goal failure count on long tasks",
+     "baseline": "rose under the ungated summariser [F14]; absolute count unmeasured",
+     "expect": "down to baseline or lower",
+     "breaks_if": "lost-the-goal stays elevated while the text is verifiably in context (presence without influence, as pinning showed on ALFWorld)"
+    },
+    {
+     "id": "L3",
+     "text": "Stale-context benefit of summarising is kept -> net long-task pass rises above the ungated arm",
+     "quantity": "long-task pass rate",
+     "baseline": "31 percent base, 34 with the ungated summariser [F14]",
+     "expect": "+4 to +8 points over base",
+     "breaks_if": "gated arm is at or below 34, or stale-context failures rise because the quote displaces progress notes"
+    },
+    {
+     "id": "L4",
+     "text": "One retry plus quoted task tokens -> small cost rise",
+     "quantity": "cost per task relative to the no-summariser baseline",
+     "baseline": "summariser arm cost unmeasured [F14]",
+     "expect": "within +5 to +15 percent",
+     "breaks_if": "cost exceeds +20 percent, which fails C6"
+    },
+    {
+     "id": "L5",
+     "text": "Summary fires at step 20, most short tasks finish earlier -> short-task pass unchanged",
+     "quantity": "short-task pass rate",
+     "baseline": "unmeasured here",
+     "expect": "flat",
+     "breaks_if": "short-task pass falls or short tasks over 20 steps pay a retry"
+    },
+    {
+     "id": "L6",
+     "text": "Keep rule met and the failure link is one checkable cause -> panel ranks it on failure link, testable and keep rule",
+     "quantity": "panel rank",
+     "baseline": "unmeasured",
+     "expect": "upper third",
+     "breaks_if": "L2 fails, because the proposal's whole story is \"text absent causes lost goal\""
+    }
+   ],
+   "stop": null,
+   "objections": [
+    {
+     "text": "Presence is not influence. The gate guarantees the task text sits inside the summary, but the only evidence that absence causes lost-the-goal is 10 read summaries and the synthetic CSV column task_text_in_context_at_end, which C9 forbids as evidence. ALFWorld pinning kept the plan in context and rec",
+     "severity": "high",
+     "cls": "metric_blind",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    },
+    {
+     "text": "Exact string compare on model output fails far more than 20 percent. Task texts for long coding tasks contain code fences, tabs, trailing spaces, smart quotes and long lines; the model normalises or re-wraps these, and markdown rendering eats backslashes. With whitespace normalisation only, first-tr",
+     "severity": "high",
+     "cls": "impl_slip",
+     "link": "L1",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    },
+    {
+     "text": "Retry cost is a full re-summarisation, not a small tail. Each summary call reads the whole 20-step context (50 to 70k tokens per the brief's step counts), so one retry at steps 20, 40 and 60 adds up to three extra full-context calls per long task, plus the quoted task text repeated in every survivin",
+     "severity": "high",
+     "cls": "hidden_cost",
+     "link": "L4",
+     "if_true": null,
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    },
+    {
+     "text": "The quote displaces the progress notes. If the summariser has a fixed output budget, a 1 to 3k-token verbatim task block consumes the space that held \"what is done, what is left\", so stale-context failures (the thing the summariser was credited with fixing) come back, cancelling L3's retained gain. ",
+     "severity": "medium",
+     "cls": "interaction_cancels",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    },
+    {
+     "text": "The +3 being \"kept\" is itself inside the noise. Per-run pass on long tasks jumps from 31 to 44 just by changing the seed (change 2), so a single-seed SD on 60 long tasks is about 6 points. The ungated +3 and the predicted +6 to +8 are each under 1.5 SD, and the 12-task screen cannot separate them at",
+     "severity": "high",
+     "cls": "below_noise",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    },
+    {
+     "text": "Helps at step 20, fades by step 50. Lost-the-goal failures in the brief's examples are logged at steps 52 to 60. The gate puts the task text at the top of the summary at step 40, then 20 more steps of tool output push it to the oldest position, which is exactly where the terminal-agent paper says ea",
+     "severity": "medium",
+     "cls": "early_only",
+     "link": "L2",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    },
+    {
+     "text": "Relabelling masquerades as repair. \"Lost the goal\" is assigned by a human reading the trajectory; a summary that opens with the verbatim task will not get that label even when the agent's actions are identical, so failures migrate to \"loop\" or \"stale context\" and the per-kind count improves while pa",
+     "severity": "medium",
+     "cls": "metric_blind",
+     "link": "L6",
+     "if_true": null,
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    },
+    {
+     "text": "The comparison arm breaks C4. The test compares against the \"recorded ungated result\" from the what-we-tried note, which was run on unknown seeds and possibly an earlier harness build, so the arms are not same-seed. Any builder who skips rerunning the ungated arm reports a difference that is partly ",
+     "severity": "medium",
+     "cls": "breaks_constraint",
+     "link": "L6",
+     "if_true": null,
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    },
+    {
+     "text": "Retry-with-new-seed already absorbs the fixable failures. Lost-the-goal is seed-random on many tasks (same task passes on r002, fails on r001), and the kept default reruns failed tasks once. The gate only adds value on tasks that lose the goal on both seeds, a far smaller pool than the headline 6-of",
+     "severity": "medium",
+     "cls": "interaction_cancels",
+     "link": "L3",
+     "if_true": {
+      "metric": "learn_z",
+      "op": "below",
+      "threshold": 1.0
+     },
+     "cite": "",
+     "idea": "task_text_pinnin-in-k01",
+     "dialogue": {
+      "reply": "none",
+      "verdict": "standing",
+      "fact": "",
+      "source": "",
+      "test": "",
+      "change": "",
+      "reason": "",
+      "exchange": 0,
+      "idea": "task_text_pinnin-in-k01"
+     }
+    }
+   ],
+   "premortem_verdict": "The gate mechanically guarantees the task text is present, but the failure it targets is attention decay over 40-plus tool calls rather than eviction, so pass rate stays within seed noise of the ungated summariser while the exact-match fallback and full-context retries push cost past the 20 percent ",
+   "dialogue": {
+    "exchanges": 0,
+    "stop": "budget"
+   }
+  }
+ ]
+}

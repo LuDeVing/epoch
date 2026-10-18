@@ -1,0 +1,1126 @@
+{
+ "round": 1,
+ "clusters": [
+  {
+   "cluster_id": "task_text_pinnin-in-k00",
+   "name": "Trim-triggered verbatim re-copy at tail",
+   "members": [
+    "s902417a6aa",
+    "sd9aaa9e9b8",
+    "se916597fee",
+    "sb544aa0216",
+    "s712b636553",
+    "sd3b9aeb313",
+    "s8b3b520dda",
+    "s18bffe40f1"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 8,
+   "representative": "s902417a6aa",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "existence"
+   ],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "re_state_goal_pe-in-k03",
+     "node": "re_state_goal_pe",
+     "name": "Trim-triggered reinsertion"
+    },
+    {
+     "cluster_id": "fix_summary_drop-in-k00",
+     "node": "fix_summary_drop",
+     "name": "Pinned task re-injection after compaction (keep-first / buffer)"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.35,
+   "refill": true
+  },
+  {
+   "cluster_id": "task_text_pinnin-in-k01",
+   "name": "Ephemeral tail reminder (not stored in history)",
+   "members": [
+    "s32d4cd938f",
+    "s795ade2709",
+    "s1a05fe43c2",
+    "sde5cff9eb1",
+    "s87cbaf0321"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 5,
+   "representative": "s32d4cd938f",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "re_state_goal_pe-in-k08",
+     "node": "re_state_goal_pe",
+     "name": "Task always last message"
+    },
+    {
+     "cluster_id": "pin_outside_trim-in-k04",
+     "node": "pin_outside_trim",
+     "name": "Goal re-injection as newest message"
+    }
+   ],
+   "prior": "known",
+   "prior_match": "Ephemeral tail-of-request reminders (not stored in history)",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.25,
+   "refill": true
+  },
+  {
+   "cluster_id": "task_text_pinnin-in-k02",
+   "name": "Verbatim-quote gate on summariser",
+   "members": [
+    "s4e99e3d15a",
+    "s559878d216",
+    "s8b415b1943"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s4e99e3d15a",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "fix_summary_drop-in-k01",
+     "node": "fix_summary_drop",
+     "name": "Deterministic/judge gate on summary containing task"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.683
+  },
+  {
+   "cluster_id": "task_text_pinnin-in-k03",
+   "name": "Harness-prepended task text to summary",
+   "members": [
+    "s6033bffa8e"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 1,
+   "representative": "s6033bffa8e",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.7,
+   "refill": true
+  },
+  {
+   "cluster_id": "task_text_pinnin-in-k04",
+   "name": "Mechanical FILES check on summary body",
+   "members": [
+    "sd8acb35dce"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 1,
+   "representative": "sd8acb35dce",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.7,
+   "refill": true
+  },
+  {
+   "cluster_id": "task_text_pinnin-in-k05",
+   "name": "Task moved into system prompt",
+   "members": [
+    "sd660029dda",
+    "sd1d4a4303d",
+    "saefed8c3a5",
+    "s5d21a7148c"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 4,
+   "representative": "sd660029dda",
+   "n_angles": 3,
+   "selected": true,
+   "rank": 0,
+   "leap_share": 1.0,
+   "leap_ops": [],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "pin_outside_trim-in-k00",
+     "node": "pin_outside_trim",
+     "name": "Pin task text in system prompt (trim-exempt)"
+    },
+    {
+     "cluster_id": "re_state_goal_pe-in-k02",
+     "node": "re_state_goal_pe",
+     "name": "Protected task never trimmed or summarised"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 2.55,
+   "lane": "main"
+  },
+  {
+   "cluster_id": "task_text_pinnin-in-k06",
+   "name": "Stop-gate requirement check at finish",
+   "members": [
+    "s6262195bc8",
+    "s8741ce7cdf",
+    "sbcaf935c0a"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s6262195bc8",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 5,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "existence"
+   ],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "re_state_goal_pe-in-k05",
+     "node": "re_state_goal_pe",
+     "name": "Stop-time requirement map"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.6
+  },
+  {
+   "cluster_id": "task_text_pinnin-in-k07",
+   "name": "Agent restatement handshake",
+   "members": [
+    "sb48a106a68",
+    "sc6ca4a4d49",
+    "sdb5fc9bf73",
+    "s8d322bbf22"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 4,
+   "representative": "sb48a106a68",
+   "n_angles": 2,
+   "selected": true,
+   "rank": 6,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "existence"
+   ],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "loop_breaking-in-k02",
+     "node": "loop_breaking",
+     "name": "Checkpoint-hook task restatement"
+    },
+    {
+     "cluster_id": "fix_summary_drop-in-k03",
+     "node": "fix_summary_drop",
+     "name": "Post-compaction readback gate"
+    },
+    {
+     "cluster_id": "pin_outside_trim-in-k03",
+     "node": "pin_outside_trim",
+     "name": "Goal-recall probe at fixed steps"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.55,
+   "lane": "longshot",
+   "lane_propensity": 0.032
+  },
+  {
+   "cluster_id": "task_text_pinnin-in-k08",
+   "name": "Goal-present attribution read of failed runs",
+   "members": [
+    "se4e4cd5cbb",
+    "sd4324363be"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 2,
+   "representative": "se4e4cd5cbb",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 8,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "task_text_pinnin",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "re_state_goal_pe-in-k06",
+     "node": "re_state_goal_pe",
+     "name": "Goal-drift diagnostic logging"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.267
+  },
+  {
+   "cluster_id": "pin_outside_trim-in-k01",
+   "name": "Trim bulky tool results before old messages",
+   "members": [
+    "s32854804c1",
+    "saf43abc6f7"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 2,
+   "representative": "s32854804c1",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "pin_outside_trim",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "fix_summary_drop-in-k07",
+     "node": "fix_summary_drop",
+     "name": "Observation masking without summarisation"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.65
+  },
+  {
+   "cluster_id": "pin_outside_trim-in-k02",
+   "name": "Trim threshold sweep / small recent window",
+   "members": [
+    "s01fed4436b",
+    "s46124cc658"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 2,
+   "representative": "s46124cc658",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "limit"
+   ],
+   "node": "pin_outside_trim",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.267
+  },
+  {
+   "cluster_id": "pin_outside_trim-in-k05",
+   "name": "Pin a pointer to TASK.md instead of text",
+   "members": [
+    "s568950e976"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "s568950e976",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "limit"
+   ],
+   "node": "pin_outside_trim",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "re_state_goal_pe-in-k00",
+   "name": "Periodic verbatim task reminder (scheduled append)",
+   "members": [
+    "se254b3dab5",
+    "s095cbe10a0",
+    "s901e1bfc53"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 3,
+   "representative": "se254b3dab5",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "re_state_goal_pe",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "Periodic first-message reminder (pydantic-deepagents)",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.65
+  },
+  {
+   "cluster_id": "re_state_goal_pe-in-k01",
+   "name": "Start-position task copy with eviction/refresh",
+   "members": [
+    "sb571ead842",
+    "saeed72ad70"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 2,
+   "representative": "sb571ead842",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.5,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "re_state_goal_pe",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.65
+  },
+  {
+   "cluster_id": "re_state_goal_pe-in-k04",
+   "name": "Trim notice in reminder",
+   "members": [
+    "sbfb47bfc21"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "sbfb47bfc21",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "re_state_goal_pe",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "re_state_goal_pe-in-k07",
+   "name": "Notes-file recitation reminder",
+   "members": [
+    "sc119e6491b"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 1,
+   "representative": "sc119e6491b",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "re_state_goal_pe",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "Goal recitation via a rewritten todo.md (Manus pattern)",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.45
+  },
+  {
+   "cluster_id": "fix_summary_drop-in-k02",
+   "name": "Requirement ledger with evidence in summaries",
+   "members": [
+    "s484395bec5"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "s484395bec5",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "fix_summary_drop",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "fix_summary_drop-in-k04",
+   "name": "Drift-triggered goal re-injection",
+   "members": [
+    "s3661b4fbed"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "s3661b4fbed",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "import"
+   ],
+   "node": "fix_summary_drop",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "fix_summary_drop-in-k05",
+   "name": "Decode-tested summaries",
+   "members": [
+    "sbfefb576c2"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "sbfefb576c2",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "import"
+   ],
+   "node": "fix_summary_drop",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "fix_summary_drop-in-k06",
+   "name": "Token-triggered compaction",
+   "members": [
+    "sc5de7b2808"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "sc5de7b2808",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "fix_summary_drop",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "fix_summary_drop-in-k08",
+   "name": "Agent-chosen compaction points",
+   "members": [
+    "scc0441bee9"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 1,
+   "representative": "scc0441bee9",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 1.0,
+   "leap_ops": [],
+   "node": "fix_summary_drop",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "lexical",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.7
+  },
+  {
+   "cluster_id": "loop_breaking-in-k00",
+   "name": "Repeat-fingerprint loop detector (with factual nudge)",
+   "members": [
+    "sa93ba09f59",
+    "sb877c577f7",
+    "sc2dfdae8d7",
+    "sb334cb079b",
+    "s4652cb7fef",
+    "scc04460f3e"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 6,
+   "representative": "sa93ba09f59",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "loop_breaking",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "rule_on_repeated-in-k01",
+     "node": "rule_on_repeated",
+     "name": "Restricted test/run_shell-scoped detector"
+    },
+    {
+     "cluster_id": "rule_on_repeated-in-k02",
+     "node": "rule_on_repeated",
+     "name": "Informative interrupt message (prediction, diff, pinned task)"
+    }
+   ],
+   "prior": "known",
+   "prior_match": "Doom-loop detection on identical tool-call and error pairs (OpenDev)",
+   "prior_source": "model",
+   "obvious": true,
+   "obvious_match": "Harness blocks repeated identical command until agent states expected change.",
+   "score": -0.55
+  },
+  {
+   "cluster_id": "loop_breaking-in-k01",
+   "name": "Step-25 structured checkpoint reflection",
+   "members": [
+    "s050c8a4a84",
+    "sac269a062c",
+    "s008766141b"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s050c8a4a84",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.33,
+   "leap_ops": [],
+   "node": "loop_breaking",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.6
+  },
+  {
+   "cluster_id": "loop_breaking-in-k03",
+   "name": "Agent-declared step budget",
+   "members": [
+    "s4a7287c80b"
+   ],
+   "cards": [
+    "deepen"
+   ],
+   "n": 1,
+   "representative": "s4a7287c80b",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 1.0,
+   "leap_ops": [],
+   "node": "loop_breaking",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.7,
+   "refill": true
+  },
+  {
+   "cluster_id": "loop_breaking-in-k04",
+   "name": "Expectation required in tool call, graded against output",
+   "members": [
+    "saf53260295",
+    "s270956e641",
+    "s58daae9cd6",
+    "s555802871d",
+    "s566fe72301",
+    "se06a617488",
+    "s199ec05d50"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 7,
+   "representative": "saf53260295",
+   "n_angles": 3,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.33,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "loop_breaking",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "prediction_befor-in-k00",
+     "node": "prediction_befor",
+     "name": "Agent-written prediction required before repeated command"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.4
+  },
+  {
+   "cluster_id": "loop_breaking-in-k05",
+   "name": "Context pruning of loop cycles",
+   "members": [
+    "sb3026c7770",
+    "s027cc9ad0e"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 2,
+   "representative": "sb3026c7770",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 6,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "loop_breaking",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "rule_on_repeated-in-k04",
+     "node": "rule_on_repeated",
+     "name": "Collapse repeated cycles in context window"
+    }
+   ],
+   "prior": "known",
+   "prior_match": "Warn, prune and redirect (pi-deadloop)",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.6
+  },
+  {
+   "cluster_id": "loop_breaking-in-k06",
+   "name": "Revert tree and list tried attempts",
+   "members": [
+    "sa153ffd6db"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "sa153ffd6db",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "subtract"
+   ],
+   "node": "loop_breaking",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "loop_breaking-in-k07",
+   "name": "Factorial screen of rule vs prediction",
+   "members": [
+    "s6ba5d3d6f1"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "s6ba5d3d6f1",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 4,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "loop_breaking",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "rule_on_repeated-in-k00",
+   "name": "Offline replay of the detector on existing logs",
+   "members": [
+    "s61919e570c",
+    "s92a8e1e8f0",
+    "s3b762e3443"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s61919e570c",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "rule_on_repeated",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.6
+  },
+  {
+   "cluster_id": "rule_on_repeated-in-k03",
+   "name": "Cached output instead of re-run",
+   "members": [
+    "sf26d510b98",
+    "secdc845c42"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 2,
+   "representative": "sf26d510b98",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 1,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "limit"
+   ],
+   "node": "rule_on_repeated",
+   "direction": "inward",
+   "merged_from": [
+    {
+     "cluster_id": "prediction_befor-in-k04",
+     "node": "prediction_befor",
+     "name": "Refuse identical command when nothing changed"
+    }
+   ],
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.65
+  },
+  {
+   "cluster_id": "rule_on_repeated-in-k05",
+   "name": "End run early and hand off to retry",
+   "members": [
+    "s296de61d2f",
+    "s72f681054d",
+    "s5949ccd61b"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 3,
+   "representative": "s5949ccd61b",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.67,
+   "leap_ops": [
+    "limit"
+   ],
+   "node": "rule_on_repeated",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 1.683
+  },
+  {
+   "cluster_id": "rule_on_repeated-in-k06",
+   "name": "Honest ceiling on loop-fix impact",
+   "members": [
+    "s0fea5a8023"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "s0fea5a8023",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "rule_on_repeated",
+   "direction": "inward",
+   "prior": "failed",
+   "prior_match": "Warn-and-resample as a way to recover resolution",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -2.55
+  },
+  {
+   "cluster_id": "prediction_befor-in-k01",
+   "name": "Harness echoes stored prediction after re-run",
+   "members": [
+    "s98d3551d7f"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "s98d3551d7f",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 2,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "prediction_befor",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "prediction_befor-in-k02",
+   "name": "Harness states null prediction for agent to argue against",
+   "members": [
+    "s2d719ab74f"
+   ],
+   "cards": [
+    "research"
+   ],
+   "n": 1,
+   "representative": "s2d719ab74f",
+   "n_angles": 1,
+   "selected": false,
+   "rank": 3,
+   "leap_share": 1.0,
+   "leap_ops": [
+    "rerepresent"
+   ],
+   "node": "prediction_befor",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": -0.3
+  },
+  {
+   "cluster_id": "prediction_befor-in-k03",
+   "name": "Diff view of repeated command/read output",
+   "members": [
+    "s246e1cde34",
+    "s09fb692a3a",
+    "sd73bb0e59e",
+    "s203359dd31"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 4,
+   "representative": "s246e1cde34",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.25,
+   "leap_ops": [
+    "rerepresent"
+   ],
+   "node": "prediction_befor",
+   "direction": "inward",
+   "prior": "new",
+   "prior_match": null,
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.55
+  },
+  {
+   "cluster_id": "prediction_befor-in-k05",
+   "name": "Persist refuted hypotheses/reflections across trimming and retries",
+   "members": [
+    "sf53e82f8a8",
+    "s3f887c9e57"
+   ],
+   "cards": [
+    "deepen",
+    "research"
+   ],
+   "n": 2,
+   "representative": "sf53e82f8a8",
+   "n_angles": 2,
+   "selected": false,
+   "rank": 0,
+   "leap_share": 0.0,
+   "leap_ops": [],
+   "node": "prediction_befor",
+   "direction": "inward",
+   "prior": "known",
+   "prior_match": "Reflexion (verbal self-reflection after test feedback)",
+   "prior_source": "model",
+   "obvious": false,
+   "obvious_match": null,
+   "score": 0.4
+  }
+ ],
+ "n_sketches": 86
+}

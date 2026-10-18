@@ -1,0 +1,1881 @@
+{
+ "nodes": [
+  {
+   "id": "root",
+   "name": "Harness fixes for long tasks",
+   "parent": null,
+   "frame": "Find which changes to the harness, not the model, raise the pass rate of the coding agent on long tasks (40 or more tool calls), and by how much. Long tasks pass 31 percent of the time against 78 percent for short ones, and the same task often passes on one run and fails on the next. The team wants a ranked list of harness changes, each with a predicted effect on long-task pass rate and its cost, the failure kind it addresses, the mechanism, and a test. The answer should also say honestly which failures cannot be fixed without a model change. Today only a retry from scratch is kept, and it lif Known: [F1] Short tasks (under 15 tool calls) pass 78 percent; tasks over 40 tool calls pass 31 percent; the same task can pass and fail on different runs. (source: problem_brief.md, opening paragraph) [F2] Baseline long tasks: pass 31 percent, pass^3 12 percent, 65k tokens per run. Short tasks: pass 78 percent, pass^3 61 percent, 14k tokens per run. (source: measurement_plan.md, Baseline numbers) [F3] Of 40 failed long runs read by hand: lost the goal 11, loop 9, stale context 7, wrong verification 6, gave up early 4, tool misuse 3. (source: failure_taxonomy_notes.md, table) [F4] In 9 of 11 'lost the goal' runs the task text was no longer in the context window; the harness trims oldest messages first and the task text is the oldest. (source: failure_taxonomy_notes.md, Observations) [F5] The 9 loop runs averaged 2,400 tokens per cycle, and the agent never stated what it expected the fix to change. (source: failure_taxonomy_notes.md, Observations) [F6] All stale context runs involved files longer than 300 lines that the agent had read in full once. (source: failure_taxonomy_notes.md, Observations) [F7] A person reading only the summary would have accepted 5 of the 6 wrong-verification runs",
+   "assumptions": [],
+   "boundary": "everything",
+   "directions": [
+    "upward"
+   ],
+   "refines": "root",
+   "idea_assumptions": [],
+   "proposals": [
+    {
+     "id": "u24414d2aa7",
+     "proposal": "Measure the harness as a packing scheme: how much of the goal stays readable as the context condenses, not whether the run passed.",
+     "reframing": "DNA is compressed thousands of times yet promoters stay accessible; the harness compresses history too (trim at 100k, drop to 80k [F9]), but accessibility is never measured. Instead of six post-hoc failure labels [F3], model each run as a channel and measure, at fixed steps, whether the task text, acceptance criteria, and the last edit's intent are still present and still used. Lost-the-goal [F4], stale context [F6], and the summaries that shortened the task [F14] become one quantity: goal and state accessibility over time.",
+     "new_measure": "Goal-recall curve. At steps 20, 30, 40, 50 the harness injects a side probe (not shown to the agent's main trajectory, or run on a forked copy): \"restate the task and the acceptance criteria in two lines.\" Score against the original with exact-span match plus a rubric. Report area under the recall curve per harness variant, and the step at which recall first drops below 0.8. A harness change is good if it raises area under the curve; pass rate becomes a secondary check. Also log \"live fraction\": share of context tokens referenced by any later tool call.",
+     "why": "Pass rate at 31 percent with a 4-point seed spread [F18] needs 144 runs to detect a change; a recall curve shifts on every run and shows which step the harness loses the goal, so pinning, notes file, and summaries can be compared on 12 tasks. It also separates \"task text gone\" from \"task text present but ignored,\" which decides whether pinning alone fixes lost-the-goal, a listed open question.",
+     "cost": "Forked probe calls, about 400 tokens each, 4 per run, so under 5 percent extra. Code: a fork-and-probe hook in the harness and a scorer. Data: the original task texts. People: one person to write the rubric and spot-check 20 probes.",
+     "round": 1,
+     "call_id": "ce1770a0f00"
+    },
+    {
+     "id": "ued74553d53",
+     "proposal": "Study continuations from a shared checkpoint, not whole runs, because the first 25 steps carry no signal.",
+     "reframing": "Passing and failing runs are indistinguishable until step 25 [F8], so most of a 65k-token run [F2] is a prefix that varies nothing. Like replication from a stored template, store the state at step 25 (context, repo snapshot, notes) and branch many continuations with different harness settings. The unit of study becomes the continuation, and harness changes are compared on the same prefix, which removes prefix noise from the comparison.",
+     "new_measure": "Continuation pass rate: for each of the 48 long tasks, one shared prefix per seed, then k continuations per harness variant. Report pass rate over continuations, paired difference per prefix (variant A minus variant B on the same prefix), and tokens spent after the branch point. The keep rule maps to a paired difference of 6 points or more with confidence interval excluding zero.",
+     "why": "The current plan spends 144 full runs per change [F17] and allows about 15 changes [F19]. Branching reuses the prefix, so the post-branch cost is roughly 40 percent of a run, and paired comparison on identical prefixes cuts the seed spread, so 3 to 4 times as many variants fit the 2,500-run budget. It also exposes whether a late-stage change (verification step, loop breaker) helps at all, since pr",
+     "cost": "Harness support for snapshot and restore of repo plus context (a tarball and a JSON message log). Prompt cache hits on the shared prefix lower token cost further. People: none beyond the existing failure-kind reader.",
+     "round": 1,
+     "call_id": "ce1770a0f00"
+    },
+    {
+     "id": "ud978cc2b8a",
+     "proposal": "Replace pass rate under a keep rule with passes per fixed token budget, and compare every change at matched spend.",
+     "reframing": "The retry lifts the pair to 44 percent but doubles failed-task cost [F13]; the step cap to 100 gains 2 points for 45 percent more cost [F12]. Both are rejected or accepted by two separate thresholds [F18] that do not say which is the better use of 130k tokens. DNA packing is judged by information per unit volume; judge the harness by expected passes per 100k tokens, and let each change pick its own mix of retries, caps, and checkpoint restarts within that budget.",
+     "new_measure": "Pass-per-budget curve: for budgets B in 65k, 100k, 130k, 200k tokens per task, the pass rate achievable by the best policy under that budget (single run, run plus retry, run plus checkpoint resume, two short runs with a notes handoff). Compute by running each variant and recording cumulative tokens at the moment of stop, then reading pass rate at each budget cut. Rank changes by area between their curve and the baseline curve across the 65k to 130k band.",
+     "why": "The current framing cannot say whether a loop breaker that saves 15k tokens and gains 3 points beats a verification step that costs 8k tokens and gains 7 points, because cost and pass are separate gates. Budget-matched curves make the two commensurable and show which changes combine (notes handoff plus checkpoint resume) and which cancel (summaries plus pinning), another listed open question. It a",
+     "cost": "Only logging: cumulative tokens per step and stop point, already collected [F17]. Code: a curve script. Runs: the same 144 per variant, so no budget change, but variants that stop early return runs to the pool.",
+     "round": 1,
+     "call_id": "ce1770a0f00"
+    }
+   ],
+   "depth": 0,
+   "path": [],
+   "stats": {
+    "upward": {
+     "sketches": 3,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "task_text_pinnin",
+   "name": "task text pinning: keep the goal in the live window",
+   "parent": "root",
+   "refines": "task_text_pinnin",
+   "frame": "The task text is the oldest message and the harness trims oldest first once the window passes 100k tokens, so after about 25 steps the agent often works without its goal [F4, F9, F22]. Nothing re-injects the goal, and the tried summariser shortened or dropped it in 6 of 10 cases [F14].",
+   "assumptions": [
+    "The goal must live inside the chronological message list.",
+    "Trimming is purely positional, oldest first, with no protected messages.",
+    "The agent only needs to see the goal once at the start.",
+    "A summary is a faithful substitute for the original task text."
+   ],
+   "boundary": "System prompt layout, the trimming routine, the summariser prompt, and any goal re-injection step; not the tools or step cap.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [
+    {
+     "from": "task_text_pinnin-in-k01",
+     "text": "The summariser is model-written rather than mechanical, so a gate is needed at all.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "task_text_pinnin-in-k01",
+     "text": "The lost-the-goal failures are caused by the text being absent, not by drift while it is present.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "task_text_pinnin-in-k01",
+     "text": "Having the task text at the head of context, after the system prompt, is enough for the agent to use it.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "task_text_pinnin-in-k01",
+     "text": "The task is a single message short enough to quote without crowding out the summary body.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "task_text_pinnin-in-k01",
+     "text": "Exact string equality is the right acceptance test, rather than a normalised compare.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "task_text_pinnin-in-k01",
+     "text": "The 20-step summary period from F14 is the right trigger rather than a token threshold.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "task_text_pinnin-in-k01",
+     "text": "The summariser's stale-context benefit survives a fixed template.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "task_text_pinnin-in-k01",
+     "text": "A failed summary should fall back to something, rather than aborting the summary and continuing with raw messages.",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "depth": 1,
+   "path": [
+    "task text pinning: keep the goal in the live window"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 14,
+     "clusters": 9,
+     "implemented": 2,
+     "checked": 2
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 8
+   }
+  },
+  {
+   "id": "pin_outside_trim",
+   "name": "pin outside trimming window",
+   "parent": "task_text_pinnin",
+   "refines": "pin_outside_trim",
+   "frame": "Today the task text is an ordinary first message that trimming removes; a pin would exempt it or move it to the system prompt so it survives every trim [F4, F9].",
+   "assumptions": [
+    "The system prompt is the only immutable region.",
+    "Pinned text at the start is read as well as text at the end.",
+    "Pinning alone, without repetition, suffices to hold the goal."
+   ],
+   "boundary": "Trimming routine and system prompt assembly only.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "task text pinning: keep the goal in the live window",
+    "pin outside trimming window"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 7,
+     "clusters": 3,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "re_state_goal_pe",
+   "name": "re-state goal periodically",
+   "parent": "task_text_pinnin",
+   "refines": "re_state_goal_pe",
+   "frame": "No reminder of the goal is ever appended; a periodic or trim-triggered re-statement would place the task at the recent end of the context where attention is strongest [F8, F22].",
+   "assumptions": [
+    "A reminder costs only its tokens and does not disturb the agent's plan.",
+    "Every N steps is the right trigger rather than after each trim.",
+    "The restated goal should be verbatim rather than the agent's own restatement."
+   ],
+   "boundary": "Harness message injection cadence and wording.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [
+    {
+     "from": "re_state_goal_pe-in-k01",
+     "text": "The current default harness actually removes the task text from context on some long runs",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "re_state_goal_pe-in-k01",
+     "text": "A start-position copy is attended as well as an end-position copy in a 60-step agentic context",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "re_state_goal_pe-in-k01",
+     "text": "Token count is the right proxy for cost per task, ignoring cache writes versus reads",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "re_state_goal_pe-in-k01",
+     "text": "Position and eviction must be tested together rather than separately",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "re_state_goal_pe-in-k01",
+     "text": "The verbatim task text is the right content to restate, not a restated plan or memory",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "re_state_goal_pe-in-k01",
+     "text": "The copy is a message rather than a protected field the trimmer cannot touch",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "re_state_goal_pe-in-k01",
+     "text": "A fixed every-N schedule is needed even though one copy at a fixed position never moves",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "re_state_goal_pe-in-k01",
+     "text": "The trimmer rule will leave a message at position two alone",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "depth": 2,
+   "path": [
+    "task text pinning: keep the goal in the live window",
+    "re-state goal periodically"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 13,
+     "clusters": 4,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 8
+   }
+  },
+  {
+   "id": "fix_summary_drop",
+   "name": "fix summary dropping task",
+   "parent": "task_text_pinnin",
+   "refines": "fix_summary_drop",
+   "frame": "The 20-step summariser was free to compress anything and dropped the task text in 6 of 10 summaries, trading stale-context failures for lost-the-goal ones [F14].",
+   "assumptions": [
+    "Summaries must be produced by the model rather than by rule-based elision of tool outputs.",
+    "The task text is part of the material to be summarised.",
+    "Summary quality is uniform across runs."
+   ],
+   "boundary": "Summariser prompt, what is excluded from summarisation, and whether summarisation stays at all.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [
+    {
+     "from": "fix_summary_drop-in-k02",
+     "text": "The raw trimmer, not the summariser, is what removes the task text on most long runs.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "fix_summary_drop-in-k02",
+     "text": "A summariser that runs at the right time will keep the task text without being forced to.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "fix_summary_drop-in-k02",
+     "text": "Keeping the last few messages verbatim is enough; the first messages may be summarised.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "fix_summary_drop-in-k02",
+     "text": "Compaction should be an LLM-written summary at all, rather than mechanical masking.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "fix_summary_drop-in-k02",
+     "text": "One compaction policy should apply to tool outputs and to the agent's own reasoning alike.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "fix_summary_drop-in-k02",
+     "text": "Window token count is the right trigger signal, rather than the agent's own judgement or a plan boundary.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "fix_summary_drop-in-k02",
+     "text": "Pass rate differences of 2 to 4 points can be read from one seed per cell on 12 tasks.",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "depth": 2,
+   "path": [
+    "task text pinning: keep the goal in the live window",
+    "fix summary dropping task"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 13,
+     "clusters": 5,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 7
+   }
+  },
+  {
+   "id": "loop_breaking",
+   "name": "loop breaking: stop and rethink on repeated cycles",
+   "parent": "root",
+   "refines": "loop_breaking",
+   "frame": "Nine of 40 failed runs cycled the same edit-and-test action at about 2,400 tokens per cycle until the step cap, and the agent never stated what it expected to change [F5, F12]. The harness has no loop detector and the cap only bounds the damage.",
+   "assumptions": [
+    "The step cap is the only mechanism that ends a loop.",
+    "The agent will notice repetition on its own.",
+    "Loops are exact repeats rather than A-B-A-B structures.",
+    "An intervention must be a hard stop rather than a nudge."
+   ],
+   "boundary": "Tool-call fingerprinting in the harness, system prompt rules on re-running, and the message sent after a detected loop; not retries.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [
+    {
+     "from": "loop_breaking-in-k01",
+     "text": "Loop onset on the nine runs comes at or after call 25.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "loop_breaking-in-k01",
+     "text": "The agent will write a concrete expectation when asked once, without a format enforced by the tool layer.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "loop_breaking-in-k01",
+     "text": "A written expectation changes the agent's next action, rather than being written and ignored.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "loop_breaking-in-k01",
+     "text": "The injected message survives whatever context trimming runs later in the same run.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "loop_breaking-in-k01",
+     "text": "Short tasks finish before call 25.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "loop_breaking-in-k01",
+     "text": "A fixed step is a better trigger than an event, such as the first test re-run after an edit.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "loop_breaking-in-k01",
+     "text": "The reflection is written by the agent in free text rather than filled by the harness from facts it already has.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "loop_breaking-in-k01",
+     "text": "The retry run should get a fresh checkpoint rather than inherit the first run's answers.",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "depth": 1,
+   "path": [
+    "loop breaking: stop and rethink on repeated cycles"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 13,
+     "clusters": 7,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 8
+   }
+  },
+  {
+   "id": "rule_on_repeated",
+   "name": "rule on repeated output",
+   "parent": "loop_breaking",
+   "refines": "rule_on_repeated",
+   "frame": "A rule would hash (tool, arguments, output) and, on the second or third identical result, interrupt with a stop-and-rethink message instead of letting the cycle continue [F5].",
+   "assumptions": [
+    "Identical output is the right signal; near-identical outputs are missed.",
+    "The threshold of two or three transfers from other agents to this one.",
+    "Structural cycles across several steps need a separate detector."
+   ],
+   "boundary": "Harness-side detector and its threshold.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [
+    {
+     "from": "rule_on_repeated-in-k00",
+     "text": "The saved logs record full tool arguments and outputs for every step.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "rule_on_repeated-in-k00",
+     "text": "Exact byte identity of output is a usable signal, so no normalisation is needed.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "rule_on_repeated-in-k00",
+     "text": "Firing in a passing run is a false positive, even though the run might have passed faster without the repeat.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "rule_on_repeated-in-k00",
+     "text": "A matched set of 40 passing long runs with logs exists.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "rule_on_repeated-in-k00",
+     "text": "Loop failures as labelled by the readers are the failures the rule should catch; other failure kinds are out of scope.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "rule_on_repeated-in-k00",
+     "text": "Interrupting a loop can change the outcome, not just the cost.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "rule_on_repeated-in-k00",
+     "text": "Threshold choice is global across tools and tasks.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "rule_on_repeated-in-k00",
+     "text": "Offline firing rates predict online firing rates once the agent's behaviour changes under the new rule.",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "depth": 2,
+   "path": [
+    "loop breaking: stop and rethink on repeated cycles",
+    "rule on repeated output"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 13,
+     "clusters": 4,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 8
+   }
+  },
+  {
+   "id": "prediction_befor",
+   "name": "prediction before re-run",
+   "parent": "loop_breaking",
+   "refines": "prediction_befor",
+   "frame": "The agent re-runs tests without stating an expected change; requiring a one-line prediction before any repeated command, and comparing it to the result, is untried [F5, F15].",
+   "assumptions": [
+    "A prompt rule is obeyed without a harness gate.",
+    "Writing a prediction changes the next edit rather than just adding tokens.",
+    "The prediction should be free text rather than a structured field the harness can check."
+   ],
+   "boundary": "System prompt rule and an optional harness check on the re-run tool call.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [
+    {
+     "from": "prediction_befor-in-k03",
+     "text": "A repeated command is identified by an exact (tool, args) match.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "prediction_befor-in-k03",
+     "text": "The agent reads and responds to a terse \"0 lines changed\" line as readily as to a full output.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "prediction_befor-in-k03",
+     "text": "Test output is deterministic enough that an unchanged state yields an empty diff.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "prediction_befor-in-k03",
+     "text": "Repeated test output is a large share of context growth in long runs.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "prediction_befor-in-k03",
+     "text": "The previous output is retained reliably somewhere the model cannot trim.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "prediction_befor-in-k03",
+     "text": "Showing less information on a re-run never removes something the agent needed.",
+     "round": 1,
+     "kind": "silent"
+    },
+    {
+     "from": "prediction_befor-in-k03",
+     "text": "Agents loop because they cannot see that nothing changed, not because they have no alternative plan.",
+     "round": 1,
+     "kind": "silent"
+    }
+   ],
+   "depth": 2,
+   "path": [
+    "loop breaking: stop and rethink on repeated cycles",
+    "prediction before re-run"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 13,
+     "clusters": 4,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 7
+   }
+  },
+  {
+   "id": "what_to_do_after",
+   "name": "what to do after stop",
+   "parent": "loop_breaking",
+   "refines": "what_to_do_after",
+   "frame": "Nothing specifies the next move once a loop is caught: re-read the failing file, write a note, try a different hypothesis, or hand the run to the retry with a reflection.",
+   "assumptions": [
+    "The same agent context continues after the interruption.",
+    "A generic rethink instruction is enough without naming alternatives.",
+    "Early termination plus retry is worse than continuing."
+   ],
+   "boundary": "Interruption message content and its link to the retry and notes parts.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "loop breaking: stop and rethink on repeated cycles",
+    "what to do after stop"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "file_freshness",
+   "name": "file freshness: edits on stale views of large files",
+   "parent": "root",
+   "refines": "file_freshness",
+   "frame": "All seven stale-context failures involved files over 300 lines read in full once and then edited from memory after the read scrolled out or went stale [F6]. read_file returns whole files and nothing re-reads after an edit.",
+   "assumptions": [
+    "Reading a whole file once is the efficient default.",
+    "The agent will re-read on its own when needed.",
+    "Tool outputs should be returned unabridged.",
+    "Edits apply cleanly without showing the result."
+   ],
+   "boundary": "read_file and edit_file behaviour and descriptions, tool output truncation, and old tool-output masking in trimming.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 1,
+   "path": [
+    "file freshness: edits on stale views of large files"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "re_read_after_ed",
+   "name": "re-read after edit",
+   "parent": "file_freshness",
+   "refines": "re_read_after_ed",
+   "frame": "edit_file returns only success; returning the edited region with a few lines of context, or forcing a windowed re-read, keeps the live file state at the recent end of the context [F6, F15].",
+   "assumptions": [
+    "Echoing the region is cheaper than a stale-edit failure.",
+    "A syntax check on the edit is out of scope.",
+    "The agent trusts the echo over its memory of the file."
+   ],
+   "boundary": "edit_file return value and description.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "file freshness: edits on stale views of large files",
+    "re-read after edit"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "windowed_file_vi",
+   "name": "windowed file viewing",
+   "parent": "file_freshness",
+   "refines": "windowed_file_vi",
+   "frame": "A capped window of around 100 lines with line numbers, as in SWE-agent, replaces full reads of 300-plus-line files and cuts context load [F6, F21].",
+   "assumptions": [
+    "A fixed window size suits all files; too small costs navigation steps.",
+    "Line-number stability after edits is handled.",
+    "Search covers what the agent loses by not seeing the whole file."
+   ],
+   "boundary": "read_file parameters, default window, and description.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "file freshness: edits on stale views of large files",
+    "windowed file viewing"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "shorter_tool_out",
+   "name": "shorter tool outputs",
+   "parent": "file_freshness",
+   "refines": "shorter_tool_out",
+   "frame": "run_shell and search outputs are returned whole, so long test logs fill the window and accelerate trimming; truncation or masking of old tool outputs is untried [F9, F21].",
+   "assumptions": [
+    "Truncating from the end keeps the useful part.",
+    "Masking old outputs instead of summarising them is acceptable.",
+    "The agent can ask for the full output when it matters."
+   ],
+   "boundary": "Tool output post-processing and old-output masking in the trimmer.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "file freshness: edits on stale views of large files",
+    "shorter tool outputs"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "verification_ste",
+   "name": "verification step: harness-run check the agent cannot skip",
+   "parent": "root",
+   "refines": "verification_ste",
+   "frame": "Verification is left to the agent and nothing checks it; six failures claimed success on checks that could not fail, and a reader of the summary would have accepted five [F7, F10]. Hidden tests run only after the agent stops [F16].",
+   "assumptions": [
+    "The agent is the right party to decide when it is done.",
+    "A self-reported test run equals an executed test run.",
+    "Verification adds cost to every run, including passing ones.",
+    "Hidden tests must stay hidden, so the harness can only run visible or agent-written tests."
+   ],
+   "boundary": "A harness-run verification step before stop, the stop or done tool, and the prompt on verifying; not the hidden tests themselves [C8].",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 1,
+   "path": [
+    "verification step: harness-run check the agent cannot skip"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "harness_run_hidd",
+   "name": "harness-run hidden-style tests",
+   "parent": "verification_ste",
+   "refines": "harness_run_hidd",
+   "frame": "Before accepting done, the harness runs the repository's visible test command itself and feeds the result back, mimicking the hidden tests without exposing them [F15, F16].",
+   "assumptions": [
+    "Visible tests correlate with hidden tests.",
+    "One extra round after a failure is enough.",
+    "The harness knows the test command for every repository."
+   ],
+   "boundary": "Done gate in the harness and the feedback message.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "verification step: harness-run check the agent cannot skip",
+    "harness-run hidden-style tests"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "detect_tests_tha",
+   "name": "detect tests that cannot fail",
+   "parent": "verification_ste",
+   "refines": "detect_tests_tha",
+   "frame": "Wrong-verification runs ran a command that always passes; a rule flags verification commands with no assertions, zero tests collected, or an unchanged result before and after the edit [F7].",
+   "assumptions": [
+    "Fake verification is detectable from command and output alone.",
+    "The check is cheap enough to run on every verify call.",
+    "The synthetic CSV pattern of fake verify equals fail is not evidence [C9]."
+   ],
+   "boundary": "Output parsing for the verify step and the warning injected.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "verification step: harness-run check the agent cannot skip",
+    "detect tests that cannot fail"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "cost_on_passing_",
+   "name": "cost on passing runs",
+   "parent": "verification_ste",
+   "refines": "cost_on_passing_",
+   "frame": "A forced check adds a test run and tokens to the 31 percent of long runs and 78 percent of short runs that already pass, and must fit the 20 percent cost ceiling [F2, F18].",
+   "assumptions": [
+    "The check must run on every task rather than only on long ones.",
+    "Test output cost is comparable to one tool call.",
+    "Forced extra revision never lowers a correct result."
+   ],
+   "boundary": "Trigger conditions for the check and output truncation.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "verification step: harness-run check the agent cannot skip",
+    "cost on passing runs"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "notes_and_memory",
+   "name": "notes and memory: agent-written scratch state outside the co",
+   "parent": "root",
+   "refines": "notes_and_memory",
+   "frame": "There is no notes file or memory within or between runs; task state, hypotheses, and verified facts live only in the growing message list and disappear when trimmed or summarised [F10, F14].",
+   "assumptions": [
+    "Context is the only store of task state.",
+    "Model-written summaries are the only alternative to raw history.",
+    "The agent will maintain notes without being prompted at set points.",
+    "Notes and summaries are mutually exclusive."
+   ],
+   "boundary": "A notes file or tool, prompt rules on when to write and read it, and its injection into the context; not the summariser cadence.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 1,
+   "path": [
+    "notes and memory: agent-written scratch state outside the co"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "scratch_notes_fi",
+   "name": "scratch notes file format",
+   "parent": "notes_and_memory",
+   "refines": "scratch_notes_fi",
+   "frame": "A fixed-format file with goal, plan, done, open, and verified sections, kept short and re-shown after each trim, is the untried design [F15].",
+   "assumptions": [
+    "A fixed template beats free text.",
+    "The agent updates it faithfully instead of letting it rot.",
+    "Re-showing it costs few tokens."
+   ],
+   "boundary": "Template, size cap, and re-injection rule.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "notes and memory: agent-written scratch state outside the co",
+    "scratch notes file format"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "notes_versus_sum",
+   "name": "notes versus summary",
+   "parent": "notes_and_memory",
+   "refines": "notes_versus_sum",
+   "frame": "Summaries dropped the goal and vary run to run; a notes file is agent-controlled and persistent but costs attention; the field has no controlled comparison, so this is a measured choice [F14].",
+   "assumptions": [
+    "The two cannot be combined with rule-based elision.",
+    "Notes do not suffer the same drop of the task text.",
+    "The comparison on 12 tasks will separate them given seed spread."
+   ],
+   "boundary": "Which of notes, summary, or masking the trimmer relies on.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "notes and memory: agent-written scratch state outside the co",
+    "notes versus summary"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "reflection_carri",
+   "name": "reflection carried to retry",
+   "parent": "notes_and_memory",
+   "refines": "reflection_carri",
+   "frame": "The retry starts blank; a Reflexion-style written reflection on the failed run, passed to the second run, is cheap and untried [F13, F20].",
+   "assumptions": [
+    "The failed run can produce a useful reflection without seeing hidden test results.",
+    "The reflection does not anchor the retry on the same wrong path.",
+    "Hidden test output stays unseen [C8]."
+   ],
+   "boundary": "Post-failure reflection prompt and retry prompt.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "notes and memory: agent-written scratch state outside the co",
+    "reflection carried to retry"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "retry_and_checkp",
+   "name": "retry and checkpoint: make the second run worth its cost",
+   "parent": "root",
+   "refines": "retry_and_checkp",
+   "frame": "A failed run is retried once from scratch with a new seed, lifting the pair to 44 percent but doubling the cost of a failed task; no checkpoint or carried state exists [F10, F13].",
+   "assumptions": [
+    "Independence between runs is what makes the retry work.",
+    "Restarting from zero is the only safe state.",
+    "The retry gets the same step cap and context as the first run.",
+    "Retry cost is counted per failed task rather than amortised."
+   ],
+   "boundary": "Retry trigger, carried state (workspace, notes, reflection), and retry budget; not the model or seeds.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 1,
+   "path": [
+    "retry and checkpoint: make the second run worth its cost"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "resume_instead_o",
+   "name": "resume instead of restart",
+   "parent": "retry_and_checkp",
+   "refines": "resume_instead_o",
+   "frame": "Resuming from the failed run's workspace and notes with a fresh context could save the localisation steps that both passing and failing runs share early on [F8].",
+   "assumptions": [
+    "The failed workspace is more help than harm.",
+    "A fresh context removes the drift that caused the failure.",
+    "A git checkpoint is available to reset bad edits."
+   ],
+   "boundary": "Workspace reset policy and what state the retry inherits.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "retry and checkpoint: make the second run worth its cost",
+    "resume instead of restart"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "reflection_on_re",
+   "name": "reflection on retry",
+   "parent": "retry_and_checkp",
+   "refines": "reflection_on_re",
+   "frame": "The retry prompt could include the first run's notes and a short reflection on why it stopped, as in Reflexion [F20].",
+   "assumptions": [
+    "The reflection is written by the same model that failed.",
+    "Reflection plus new seed beats new seed alone by a measurable margin.",
+    "The reflection fits in a few hundred tokens."
+   ],
+   "boundary": "Retry prompt content.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "retry and checkpoint: make the second run worth its cost",
+    "reflection on retry"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "cost_of_second_r",
+   "name": "cost of second run",
+   "parent": "retry_and_checkp",
+   "refines": "cost_of_second_r",
+   "frame": "The retry already doubles failed-task cost; any improvement to first-run pass rate reduces retries, and resume could shorten the second run [F11, F13].",
+   "assumptions": [
+    "Cost is measured per task across both runs.",
+    "Retrying early after a detected loop or give-up costs less than retrying after the cap.",
+    "The keep rule's 20 percent applies on top of the retry baseline."
+   ],
+   "boundary": "When the retry is triggered and its step cap.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "retry and checkpoint: make the second run worth its cost",
+    "cost of second run"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "step_cap_and_giv",
+   "name": "step cap and giving up: budget as a signal, not just a limit",
+   "parent": "root",
+   "refines": "step_cap_and_giv",
+   "frame": "The cap is 60 tool calls, raising it to 100 added 2 points at 45 percent more cost because loops ran longer; four runs gave up early with steps left [F3, F12]. The agent is not told its budget.",
+   "assumptions": [
+    "A single cap suits all tasks.",
+    "The cap is the right place to control loop cost.",
+    "The agent cannot be told how many steps remain.",
+    "Giving up early is purely a model limit."
+   ],
+   "boundary": "Cap value, early-stop triggers, and budget text in the prompt; not the loop detector itself.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 1,
+   "path": [
+    "step cap and giving up: budget as a signal, not just a limit"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "stop_early_gave_",
+   "name": "stop early gave-up runs",
+   "parent": "step_cap_and_giv",
+   "refines": "stop_early_gave_",
+   "frame": "A done claim with many steps left and failing or absent verification could be refused once, pushing the agent to continue or triggering the retry sooner [F3, F10].",
+   "assumptions": [
+    "Give-up is detectable from the stop message.",
+    "A single refusal is enough.",
+    "Some give-ups are correct and forcing more steps wastes tokens."
+   ],
+   "boundary": "Stop-acceptance rule in the harness.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "step cap and giving up: budget as a signal, not just a limit",
+    "stop early gave-up runs"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "cap_value_versus",
+   "name": "cap value versus loops",
+   "parent": "step_cap_and_giv",
+   "refines": "cap_value_versus",
+   "frame": "Cap 100 only paid off if loops were already broken; the right cap depends on the loop detector, so the two must be screened together [F12].",
+   "assumptions": [
+    "The cap should be fixed before the detector is chosen.",
+    "Step count rather than token count is the right unit.",
+    "Trajectories past 60 steps rarely pass."
+   ],
+   "boundary": "Cap value and its unit, tested after loop breaking.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "step cap and giving up: budget as a signal, not just a limit",
+    "cap value versus loops"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "budget_aware_pro",
+   "name": "budget-aware prompting",
+   "parent": "step_cap_and_giv",
+   "refines": "budget_aware_pro",
+   "frame": "Telling the agent its remaining steps at intervals is untried and may both reduce give-ups and prompt verification before the cap [F9].",
+   "assumptions": [
+    "Knowing the budget does not cause rushed edits.",
+    "A countdown message costs negligible tokens.",
+    "The agent interprets remaining steps sensibly."
+   ],
+   "boundary": "Periodic budget message in the prompt.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "step cap and giving up: budget as a signal, not just a limit",
+    "budget-aware prompting"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "measurement_and_",
+   "name": "measurement and combining: screening order, stacking, and wh",
+   "parent": "root",
+   "refines": "measurement_and_",
+   "frame": "Each change costs 144 runs for a full measurement with seed spread of 4 points and a 6-point keep rule; 2,500 runs allow about 15 full measurements after 12-task screens [F17, F18, F19]. Interactions and model-limit failures are unknown.",
+   "assumptions": [
+    "Changes are measured one at a time.",
+    "The 20-run failure-kind sample is enough to attribute gains.",
+    "Any failure kind is fixable if the right change is found.",
+    "The 12-task screen predicts the 48-task result."
+   ],
+   "boundary": "Study order, which changes are bundled, how failure kinds are re-labelled, and the model-limit estimate; not the suite or seeds.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 1,
+   "path": [
+    "measurement and combining: screening order, stacking, and wh"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "screening_on_12_",
+   "name": "screening on 12 tasks",
+   "parent": "measurement_and_",
+   "refines": "screening_on_12_",
+   "frame": "A 12-task screen at 3 seeds costs 36 runs and can only detect large effects; the subset should over-represent the failure kind each change targets [F19].",
+   "assumptions": [
+    "A random 12 tasks is representative.",
+    "A screen result above the noise floor is needed to promote a change.",
+    "Screens for cheap prompt changes can be skipped."
+   ],
+   "boundary": "Subset choice and promotion threshold.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "measurement and combining: screening order, stacking, and wh",
+    "screening on 12 tasks"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "which_changes_st",
+   "name": "which changes stack",
+   "parent": "measurement_and_",
+   "refines": "which_changes_st",
+   "frame": "Pinning, notes, summaries, and masking all touch context; verification and loop breaking both add steps; the plan must test bundles that add up and avoid pairs that cancel [F14].",
+   "assumptions": [
+    "Gains on different failure kinds add linearly.",
+    "Two context changes do not compete for the same tokens.",
+    "Order of adding changes does not matter."
+   ],
+   "boundary": "Bundle definitions and the order of full measurements.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "measurement and combining: screening order, stacking, and wh",
+    "which changes stack"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "model_limit_fail",
+   "name": "model-limit failures",
+   "parent": "measurement_and_",
+   "refines": "model_limit_fail",
+   "frame": "Tool misuse and part of gave-up early may persist under any harness; a failure is model-side if the fix leaves it unchanged across seeds, giving a ceiling on reachable pass rate [F3, C2].",
+   "assumptions": [
+    "The six kinds map cleanly to harness or model.",
+    "Residual failures after all kept changes are the model limit.",
+    "Short-task failures share the same split."
+   ],
+   "boundary": "Attribution rule and the predicted ceiling.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "measurement and combining: screening order, stacking, and wh",
+    "model-limit failures"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "structural_cycle",
+   "name": "structural cycle and dead-step detection",
+   "parent": "loop_breaking",
+   "refines": "new",
+   "frame": "Exact-repeat rules miss A-B-A-B cycles and steps whose output never changes later actions; a windowed fingerprint over the last several calls would catch them.",
+   "assumptions": [
+    "Longer cycles are rare enough to ignore in the first screen.",
+    "The extra detector cost is negligible.",
+    "False positives on legitimate iterate-test loops are acceptable."
+   ],
+   "boundary": "Detector window length and cycle patterns in the harness.",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "depth": 2,
+   "path": [
+    "loop breaking: stop and rethink on repeated cycles",
+    "structural cycle and dead-step detection"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  },
+  {
+   "id": "offtree",
+   "name": "off the map (whole problem, no part assigned)",
+   "parent": "root",
+   "frame": "The whole proposal, read without the problem map.",
+   "assumptions": [],
+   "boundary": "the whole of Harness fixes for long tasks: task text pinning, pin outside trimming window, re-state goal periodically, fix summary dropping task, loop breaking, rule on repeated output, prediction before re-run, what to do after stop, file freshness, re-read after edit, windowed file viewing, shorter tool outputs, verification step, harness-run hidden-style tests, detect tests that cannot fail, cost on passing runs, notes and memory, scratch notes file format, notes versus summary, reflection carried to retry, retry and checkpoint, resume instead of restart, reflection on retry, cost of second run, step cap and giving up, stop early gave-up runs, cap value versus loops, budget-aware prompting, measurement and combining, screening on 12 tasks, which changes stack, model-limit failures",
+   "directions": [
+    "inward",
+    "outward"
+   ],
+   "idea_assumptions": [],
+   "refines": "new",
+   "depth": 1,
+   "path": [
+    "off the map (whole problem, no part assigned)"
+   ],
+   "stats": {
+    "inward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "outward": {
+     "sketches": 0,
+     "clusters": 0,
+     "implemented": 0,
+     "checked": 0
+    },
+    "n_idea_assumptions": 0
+   }
+  }
+ ],
+ "tree": {
+  "id": "root",
+  "name": "Harness fixes for long tasks",
+  "kind": "root",
+  "children": [
+   {
+    "id": "task_text_pinnin",
+    "name": "task text pinning: keep the goal in the live window",
+    "kind": "part",
+    "children": [
+     {
+      "id": "pin_outside_trim",
+      "name": "pin outside trimming window",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "re_state_goal_pe",
+      "name": "re-state goal periodically",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "fix_summary_drop",
+      "name": "fix summary dropping task",
+      "kind": "part",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "loop_breaking",
+    "name": "loop breaking: stop and rethink on repeated cycles",
+    "kind": "part",
+    "children": [
+     {
+      "id": "rule_on_repeated",
+      "name": "rule on repeated output",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "prediction_befor",
+      "name": "prediction before re-run",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "what_to_do_after",
+      "name": "what to do after stop",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "structural_cycle",
+      "name": "structural cycle and dead-step detection",
+      "kind": "part",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "file_freshness",
+    "name": "file freshness: edits on stale views of large files",
+    "kind": "part",
+    "children": [
+     {
+      "id": "re_read_after_ed",
+      "name": "re-read after edit",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "windowed_file_vi",
+      "name": "windowed file viewing",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "shorter_tool_out",
+      "name": "shorter tool outputs",
+      "kind": "part",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "verification_ste",
+    "name": "verification step: harness-run check the agent cannot skip",
+    "kind": "part",
+    "children": [
+     {
+      "id": "harness_run_hidd",
+      "name": "harness-run hidden-style tests",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "detect_tests_tha",
+      "name": "detect tests that cannot fail",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "cost_on_passing_",
+      "name": "cost on passing runs",
+      "kind": "part",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "notes_and_memory",
+    "name": "notes and memory: agent-written scratch state outside the co",
+    "kind": "part",
+    "children": [
+     {
+      "id": "scratch_notes_fi",
+      "name": "scratch notes file format",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "notes_versus_sum",
+      "name": "notes versus summary",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "reflection_carri",
+      "name": "reflection carried to retry",
+      "kind": "part",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "retry_and_checkp",
+    "name": "retry and checkpoint: make the second run worth its cost",
+    "kind": "part",
+    "children": [
+     {
+      "id": "resume_instead_o",
+      "name": "resume instead of restart",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "reflection_on_re",
+      "name": "reflection on retry",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "cost_of_second_r",
+      "name": "cost of second run",
+      "kind": "part",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "step_cap_and_giv",
+    "name": "step cap and giving up: budget as a signal, not just a limit",
+    "kind": "part",
+    "children": [
+     {
+      "id": "stop_early_gave_",
+      "name": "stop early gave-up runs",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "cap_value_versus",
+      "name": "cap value versus loops",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "budget_aware_pro",
+      "name": "budget-aware prompting",
+      "kind": "part",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "measurement_and_",
+    "name": "measurement and combining: screening order, stacking, and wh",
+    "kind": "part",
+    "children": [
+     {
+      "id": "screening_on_12_",
+      "name": "screening on 12 tasks",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "which_changes_st",
+      "name": "which changes stack",
+      "kind": "part",
+      "children": []
+     },
+     {
+      "id": "model_limit_fail",
+      "name": "model-limit failures",
+      "kind": "part",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "offtree",
+    "name": "off the map (whole problem, no part assigned)",
+    "kind": "part",
+    "children": []
+   }
+  ]
+ },
+ "inward_share": 0.6,
+ "off_tree_share": 0.4,
+ "origins": {
+  "tree": {
+   "contexts": 7,
+   "sketches": 86,
+   "clusters": 36,
+   "built": 2,
+   "checked": 2,
+   "wins": 0,
+   "clusters_per_context": 5.143,
+   "wins_per_context": 0.0,
+   "slot_share": 1.0,
+   "context_share": 1.0
+  },
+  "off": {
+   "contexts": 0,
+   "sketches": 0,
+   "clusters": 0,
+   "built": 0,
+   "checked": 0,
+   "wins": 0,
+   "clusters_per_context": 0.0,
+   "wins_per_context": 0.0,
+   "slot_share": 0.0,
+   "context_share": 0.0
+  }
+ },
+ "lens": "parts",
+ "lens_design": "fixed",
+ "stats": {
+  "n_idea_assumptions": 46
+ }
+}
