@@ -266,20 +266,6 @@ streams or the flow between layers; ideas that changed the inside of one layer w
 four streams were nearly unused at initialisation, and giving them a job is where the room was. Known speedrun tricks
 mostly did not transfer: of four tested, only the value residual helped.
 
-## 6. What this shows, and what it does not
-
-This is the only realistic test we could afford: one model size, one seed on the skeleton rows, 50 million tokens, a
-laptop. Gains at this scale do not automatically hold at scale, and a second seed of the final model is the cheapest
-next step. Of the ideas with a measured gain, one is new as far as the prior-art search found, four are variants of
-published work, two are known.
-
-What it does show: a team of agents whose thinking is organised by a schema taken from the sciences of human
-invention produced the ideas behind a measured improvement to the strongest open architecture at this scale, some
-by restructuring existing methods and some of its own; people then built and tested them and kept what helped. The
-ideas that hurt were caught by the tests, not by anyone's judgement of the text, which is the point of the schema. The same team, pointed at a folder of notes about a clinic's front desk or a coding agent's failures,
-produces ranked proposals with the facts they rest on and the test that would settle each. That is the potential we
-are building on.
-
 ## Sources
 
 1. The Decoder, 2026: OpenAI announces Astra by releasing ten solutions to previously unsolved problems.
