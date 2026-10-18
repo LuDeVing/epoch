@@ -366,7 +366,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, (WEB / "hub.html").read_bytes(), "text/html; charset=utf-8")
             if u.path == "/api/busy" and self.client_address[0] == "127.0.0.1":   # the local launcher asks before a shutdown
                 return self._send(200, hub.busy())
-            if u.path in ("/api/me", "/api/invites"):
+            if u.path in ("/api/me", "/api/invites", "/api/notifications"):
                 if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
                     return None
             if u.path == "/api/spaces":

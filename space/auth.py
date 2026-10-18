@@ -165,6 +165,46 @@ def make_invite(by: str, space: str | None, base_url: str) -> dict:
     return dict(inv[code], url=f"{base_url}/?invite={code}")
 
 
+def invite_user(by: str, space: str | None, to_raw) -> dict:
+    """An invitation to a named account, no link needed: it shows on that person's dashboard until they accept
+    or decline. The account must exist on this PC's hub."""
+    to = clean_name(to_raw)
+    if to not in users():
+        raise Reject(404, "no_such_account", hint=f"no account named {to} on this PC; they can create one on the dashboard first")
+    if space and is_member(space, to) and members_of(space) is not None:
+        raise Reject(409, "already_member", hint=f"{to} is already a member")
+    code = secrets.token_urlsafe(9)
+    with _LOCK:
+        inv = _load("invites.json")
+        for rec in inv.values():                                 # one open invitation per person and space
+            if rec.get("to") == to and rec.get("space") == space and not rec.get("used_by") and not rec.get("declined") \
+                    and rec.get("expires", 0) >= _now():
+                return dict(rec, again=True)
+        inv[code] = {"code": code, "by": by, "space": space, "to": to, "created": _now(),
+                     "expires": _now() + INVITE_DAYS * 86400, "used_by": None, "used": None, "declined": None}
+        _save("invites.json", inv)
+    return dict(inv[code])
+
+
+def invites_to(name: str) -> list[dict]:
+    """The open invitations addressed to this account: what the dashboard's bell shows."""
+    now = _now()
+    rows = [v for v in _load("invites.json").values()
+            if v.get("to") == name and not v.get("used_by") and not v.get("declined") and v.get("expires", 0) >= now]
+    return sorted(rows, key=lambda r: -r.get("created", 0))
+
+
+def decline_invite(code: str, name: str) -> dict:
+    with _LOCK:
+        inv = _load("invites.json")
+        rec = inv.get(str(code or ""))
+        if not rec or rec.get("to") != name:
+            raise Reject(403, "bad_invite", hint="no such invitation for you")
+        rec["declined"] = _now()
+        _save("invites.json", inv)
+    return rec
+
+
 def invites_for(space: str | None) -> list[dict]:
     rows = [v for v in _load("invites.json").values() if space is None or v.get("space") in (None, space)]
     return sorted(rows, key=lambda r: -r.get("created", 0))
@@ -180,6 +220,8 @@ def use_invite(code: str, name: str) -> dict:
             raise Reject(403, "bad_invite", hint="this invitation was already used")
         if rec.get("expires", 0) < _now():
             raise Reject(403, "bad_invite", hint="this invitation expired")
+        if rec.get("to") and rec.get("to") != name:
+            raise Reject(403, "bad_invite", hint="this invitation is for someone else")
         rec["used_by"], rec["used"] = name, _now()
         _save("invites.json", inv)
     return rec
@@ -323,6 +365,23 @@ def handle(path: str, body: dict, headers, client_address, space_id: str | None,
         name = me()
         rec = accept_invite(body.get("code"), name)
         return 200, {"name": name, "space": rec.get("space"), "member": True}, None
+    if path == "/api/invites/send":                          # by name: {to}, and {space} on the hub
+        name = me()
+        target = space_id or clean_name(body.get("space"))
+        if not target:
+            raise Reject(422, "no_space", hint="which space?")
+        if members_of(target) is not None and not is_member(target, name):
+            raise Reject(403, "member_required")
+        rec = invite_user(name, target, body.get("to"))
+        return 200, {"to": rec.get("to"), "space": target, "again": bool(rec.get("again"))}, None
+    if path == "/api/notifications":                         # the bell: open invitations addressed to me
+        name = me()
+        return 200, {"name": name, "invites": [{"code": r["code"], "by": r.get("by"), "space": r.get("space"), "created": r.get("created")}
+                                               for r in invites_to(name)]}, None
+    if path == "/api/invites/decline":
+        name = me()
+        decline_invite(body.get("code"), name)
+        return 200, {"ok": True}, None
     if path == "/api/members":
         return 200, {"space": space_id, "members": members_of(space_id), "open_to_all": members_of(space_id) is None}, None
     return None

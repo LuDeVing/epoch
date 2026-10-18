@@ -490,7 +490,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
         try:
             self._key(q)
             one = lambda name, default=None: q.get(name, [default])[0]          # noqa: E731
-            if u.path in ("/api/me", "/api/invites", "/api/members"):
+            if u.path in ("/api/me", "/api/invites", "/api/members", "/api/notifications"):
                 if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
                     return None
             if u.path.startswith("/api/files/"):              # a shared file, served back

@@ -41,6 +41,8 @@ function PeoplePanel({ api, onClose }) {
   const [invites, setInvites] = useState([]);
   const [members, setMembers] = useState(null);
   const [pw, setPw] = useState('');
+  const [toName, setToName] = useState('');
+  const inviteByName = async (e) => { e.preventDefault(); setBusy(true); setErr(''); try { const j = await post('/api/invites/send', { to: toName }); setMade({ name: j.to, invited: true, again: j.again }); setToName(''); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const kq = api.flags && api.flags.key ? `?key=${encodeURIComponent(api.flags.key)}` : '';   // a --lan space wants its key on GETs too
   const loadInvites = async () => { try { const r = await fetch(`${base}/api/invites${kq}`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setInvites(((await r.json()).invites) || []); } catch (e) { /* offline */ } };
   const loadMembers = async () => { try { const r = await fetch(`${base}/api/members${kq}`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setMembers(await r.json()); } catch (e) { /* offline */ } };
@@ -58,8 +60,12 @@ function PeoplePanel({ api, onClose }) {
       <button class="btn btn--small" type="button" onClick=${async () => { try { await post('/api/logout', { forget: true }); } catch (e) { /* ignore */ } accounts.drop(api.me); const u = new URL(location.href); u.searchParams.delete('me'); location.href = u.toString(); }}>sign out</button></div>
     <div class="people__invite">
       <div class="muted">${members && members.open_to_all ? 'This space is open to every signed-in account.' : `Members: ${((members && members.members) || []).join(', ') || 'none yet'}`}</div>
-      <div><button class="btn btn--small btn--primary" type="button" disabled=${busy} onClick=${makeInvite}>Invite an account</button>
-        <span class="muted">one link per person; they sign in or register when they open it and become a member of this space</span></div>
+      <form class="people__add" onSubmit=${inviteByName}><input placeholder="invite by account name, like gio" value=${toName} onInput=${(e) => setToName(e.target.value)} autocomplete="off" />
+        <button class="btn btn--small btn--primary" type="submit" disabled=${busy || !toName.trim()}>Invite</button>
+        <span class="muted">they see it on their dashboard's bell and accept there; no link needed</span></form>
+      ${made && made.invited ? html`<div class="muted">${made.again ? `${made.name} already has an open invitation to this space.` : `Invited ${made.name}. It shows on their dashboard.`}</div>` : null}
+      <div><button class="btn btn--small" type="button" disabled=${busy} onClick=${makeInvite}>Make an invitation link instead</button>
+        <span class="muted">for someone without an account here yet: they register when they open it</span></div>
       ${invites.length ? html`<ul class="people__list">${invites.slice(0, 6).map((i) => html`<li class="people__row">
           <span class="mono" style="user-select:all">${inviteBase}?invite=${i.code}${data && data.lan ? `&key=${data.invite_url.split('key=')[1] || ''}` : ''}</span>
           <span class=${`tag ${i.used_by ? 'tag--on' : ''}`}>${i.used_by ? `used by ${i.used_by}` : 'open'}</span></li>`)}</ul>` : null}
