@@ -114,6 +114,9 @@ class Hub:
                 with urllib.request.urlopen("http://127.0.0.1:%d/api/people" % port, timeout=0.5) as r:
                     d = json.loads(r.read().decode("utf-8", "replace"))
                 sid = d.get("space_id") if isinstance(d, dict) else None
+                db = d.get("db") if isinstance(d, dict) else None
+                if db and Path(db).resolve().parent.parent != self.dir.resolve():   # a server of another lab on this PC
+                    return None
                 return (str(sid), port) if sid else None
             except Exception:  # noqa: BLE001
                 return None
@@ -214,7 +217,7 @@ class Hub:
                     break
                 except OSError:
                     time.sleep(0.1)
-        if me and not (folder / "bundle.json").exists():   # a bundled space stays open to every account on this PC
+        if me:                                             # the person who makes or wakes a space is a member of it
             auth.add_member(name, me)
         self._start_my_agent(port, me, self._key_of(rec) if lan else "")
         return self._row(rec)

@@ -118,9 +118,13 @@ class People:
         ip = lan_ip() if self.key else ""
         port = self.url.rsplit(":", 1)[-1]
         invite = f"http://{ip}:{port}/?key={self.key}" if ip and self.key else ""
+        from space import auth
+        accounts = set(auth.users().keys())
         return {"url": self.url, "space_id": self.space_id, "lan": bool(self.key), "models": list(MODELS),
-                "me_default": me_default(), "invite_url": invite,
-                "people": [{"name": n, "join_url": self.join_url(n), "agent": by.get(n)} for n in names]}
+                "me_default": me_default(), "invite_url": invite, "db": str(self.dir.parent / "space.db"),
+                "people": [{"name": n, "join_url": self.join_url(n), "agent": by.get(n),
+                            "account": n in accounts or n in by}        # False: an author of this record, not on this PC
+                           for n in names]}
 
     def ensure_agent(self, raw_name) -> None:
         """A person who shows up in the space gets their agent (Sonnet, canned fallback) if none is running;

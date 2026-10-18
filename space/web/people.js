@@ -75,10 +75,11 @@ function PeoplePanel({ api, onClose }) {
     </div>
     ${people.length ? html`<ul class="people__list">${people.map((p) => html`<li class="people__row">
         <strong>${p.name}</strong>
+        ${p.account === false ? html`<span class="tag" title="took part in this record; has no account on this PC">author of this record</span>` : html`
         <span class=${`tag ${p.agent && p.agent.alive ? 'tag--on' : ''}`}>${p.agent ? (p.agent.alive ? `agent on ${p.agent.model}` : 'agent stopped') : 'no agent'}</span>
         ${p.agent && p.agent.alive ? html`<button class="btn btn--small" disabled=${busy} onClick=${() => stop(p.name)}>stop agent</button>`
           : html`<button class="btn btn--small" disabled=${busy} onClick=${() => { setName(p.name); }}>start agent</button>`}
-        <a class="muted mono" href=${p.join_url} target="_blank" rel="noopener">open as ${p.name}</a>
+        <a class="muted mono" href=${p.join_url} target="_blank" rel="noopener">open as ${p.name}</a>`}
       </li>`)}</ul>` : html`<div class="muted">Nobody yet.</div>`}
     <form class="people__add" onSubmit=${add}>
       <input type="text" placeholder="name, like maria" value=${name} onInput=${(e) => setName(e.target.value)} maxlength="24" />
