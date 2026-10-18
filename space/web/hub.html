@@ -11,6 +11,10 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; }
   body { background: var(--bg-app); color: var(--text-1); font: 14px/1.5 var(--font-ui); -webkit-font-smoothing: antialiased; }
+  body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(1.5px 1.5px at 1px 1px, var(--line-subtle) 1px, transparent 0) 0 0 / 26px 26px,
+      radial-gradient(900px 420px at 18% -10%, color-mix(in oklab, var(--owner-a) 18%, transparent), transparent 70%),
+      radial-gradient(700px 380px at 92% 0%, color-mix(in oklab, var(--owner-c) 14%, transparent), transparent 70%); }
   a { color: inherit; text-decoration: none; }
   button, input { font: inherit; color: inherit; }
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-card); cursor: pointer; transition: background var(--t-hover), border-color var(--t-hover), transform var(--t-hover); white-space: nowrap; }
@@ -61,24 +65,42 @@
   .or { display: flex; align-items: center; gap: 10px; color: var(--text-2); font-size: 12px; }
   .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line-subtle); }
 
-  .page { max-width: 1080px; margin: 0 auto; padding: 28px 24px 60px; }
-  .page__head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-  .page__title { font-size: 20px; font-weight: 700; margin: 0; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .page { max-width: 1120px; margin: 0 auto; padding: 36px 24px 72px; }
+  .page__head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
+  .page__title { font-size: 26px; font-weight: 800; letter-spacing: -.01em; margin: 0; }
+  .page__count { font-size: 13px; color: var(--text-2); padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line-subtle); background: color-mix(in oklab, var(--bg-panel) 70%, transparent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
   .card { background: var(--bg-panel); border: 1px solid var(--line-subtle); border-radius: 14px; padding: 16px; display: grid; gap: 12px; transition: border-color var(--t-hover), transform var(--t-hover); animation: pop var(--t-enter); }
-  .card:hover { border-color: var(--line-strong); transform: translateY(-1px); }
-  .card__top { display: flex; align-items: center; gap: 10px; }
-  .card__name { font-weight: 700; font-size: 15px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--solid); flex: 0 0 auto; }
-  .dot--on { background: var(--ok); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ok) 25%, transparent); }
-  .card__meta { display: flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 12px; flex-wrap: wrap; }
+  .card { position: relative; overflow: hidden; --hue: var(--owner-a); animation-delay: calc(var(--i, 0) * 45ms); animation-fill-mode: both; }
+  .card--a { --hue: var(--owner-a); } .card--b { --hue: var(--owner-b); } .card--c { --hue: var(--owner-c); }
+  .card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: linear-gradient(90deg, var(--hue), color-mix(in oklab, var(--hue) 20%, transparent)); opacity: .9; }
+  .card::after { content: ""; position: absolute; width: 220px; height: 220px; right: -90px; top: -110px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--hue) 22%, transparent), transparent); opacity: 0; transition: opacity 300ms ease; }
+  .card:hover { border-color: color-mix(in oklab, var(--hue) 55%, var(--line-strong)); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.35); }
+  .card:hover::after { opacity: 1; }
+  .card__top { display: flex; align-items: center; gap: 12px; }
+  .mono-tile { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 16px; color: #fff; flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--hue), color-mix(in oklab, var(--hue) 55%, #000)); box-shadow: inset 0 1px 0 rgba(255,255,255,.18); letter-spacing: .02em; }
+  .card__title { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .card__name { font-weight: 700; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card__tags { display: flex; gap: 6px; align-items: center; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; padding: 2px 9px 2px 7px; border-radius: 999px; border: 1px solid var(--line-subtle); color: var(--text-2); background: color-mix(in oklab, var(--bg-app) 60%, transparent); }
+  .pill--on { color: var(--ok); border-color: color-mix(in oklab, var(--ok) 40%, transparent); }
+  .pill__dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .pill--on .pill__dot { box-shadow: 0 0 0 0 color-mix(in oklab, var(--ok) 50%, transparent); animation: pulse 1.8s ease-out infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--ok) 50%, transparent); } 100% { box-shadow: 0 0 0 7px transparent; } }
+  .card__meta { display: flex; align-items: center; gap: 10px; color: var(--text-2); font-size: 12px; flex-wrap: wrap; min-height: 24px; }
+  .meta__sep { width: 3px; height: 3px; border-radius: 50%; background: var(--line-strong); }
   .members { display: inline-flex; align-items: center; padding-left: 6px; }
+  .members + span { font-weight: 600; color: var(--text-1); }
   .card__actions { display: flex; gap: 8px; align-items: center; }
   .grow { flex: 1; justify-content: center; }
   .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-2); }
-  .new { border-style: dashed; display: grid; place-items: center; min-height: 150px; cursor: pointer; color: var(--text-2); gap: 6px; text-align: center; }
-  .new:hover { color: var(--text-1); border-color: var(--owner-a); }
-  .new__plus { font-size: 28px; line-height: 1; }
+  .new { border-style: dashed; border-color: var(--line); background: transparent; display: grid; place-items: center; align-content: center; min-height: 164px; cursor: pointer; color: var(--text-2); gap: 10px; text-align: center; }
+  .new::before, .new::after { display: none; }
+  .new:hover { color: var(--text-1); border-color: var(--owner-a); background: color-mix(in oklab, var(--owner-a) 8%, transparent); transform: none; box-shadow: none; }
+  .new__plus { width: 40px; height: 40px; border-radius: 50%; border: 1.5px dashed currentColor; display: grid; place-items: center; font-size: 22px; line-height: 1; transition: transform var(--t-hover); }
+  .new:hover .new__plus { transform: rotate(90deg); border-style: solid; }
   .empty { text-align: center; padding: 60px 20px; color: var(--text-2); }
   .empty--loading { display: grid; justify-items: center; gap: 10px; }
   .loading__ring { width: 30px; height: 30px; border-radius: 50%; box-sizing: border-box; border: 4px solid var(--owner-a); border-top-color: transparent; animation: loading-spin 0.9s linear infinite; }
@@ -234,13 +256,14 @@ function RemoveSpace({ s, onClose, onDone }) {
 function SpaceCard({ s, me, act }) {
   const open = s.join.replace('{name}', me);
   const n = (s.members || []).length;
-  return html`<div class="card">
-    <div class="card__top"><span class=${`dot${s.alive ? ' dot--on' : ''}`}></span><span class="card__name">${s.name}</span>
-      ${s.open_to_all ? html`<span class="tag">open room</span>` : null}${s.lan ? html`<span class="tag">network</span>` : null}</div>
+  return html`<div class=${`card card--${hueOf(s.name)}`} style=${`--i:${s.i || 0}`}>
+    <div class="card__top"><span class="mono-tile" aria-hidden="true">${initials(s.name)}</span>
+      <div class="card__title"><span class="card__name" title=${s.name}>${s.name}</span>
+        <span class="card__tags"><span class=${`pill${s.alive ? ' pill--on' : ''}`}><span class="pill__dot"></span>${s.alive ? 'Running' : 'Asleep'}</span>
+          ${s.open_to_all ? html`<span class="tag">open room</span>` : null}${s.lan ? html`<span class="tag">network</span>` : null}</span></div></div>
     <div class="card__meta">
       ${n ? html`<span class="members">${s.members.slice(0, 5).map((m) => html`<${Bubble} name=${m} small />`)}</span><span>${n} member${n === 1 ? '' : 's'}</span>` : html`<span>everyone signed in</span>`}
-      <span>.</span><span>${s.alive ? `running on port ${s.port}` : 'asleep'}</span>
-      ${s.updated ? html`<span>.</span><span>${ago(s.updated)}</span>` : null}
+      ${s.updated ? html`<span class="meta__sep"></span><span title="the last change to its log">${ago(s.updated)}</span>` : null}
     </div>
     <div class="card__actions">
       ${s.alive ? html`<a class="btn btn--primary grow" href=${open}>Open</a>
@@ -288,8 +311,8 @@ function HubPage() {
     ${off ? html`<${TurnOff} onClose=${() => setOff(false)} />` : null}
     ${removing ? html`<${RemoveSpace} s=${removing} onClose=${() => setRemoving(null)} onDone=${() => { setRemoving(null); say(`${removing.name} removed`); refresh(); }} />` : null}
     ${!me ? html`<${Login} onDone=${refresh} />` : html`<main class="page">
-      <div class="page__head"><h1 class="page__title">Your spaces</h1><span class="muted">${mine.length ? `${mine.length} you are part of` : ''}</span></div>
-      ${mine.length ? html`<div class="grid">${mine.map((s) => html`<${SpaceCard} key=${s.name} s=${s} me=${me} act=${act} />`)}
+      <div class="page__head"><h1 class="page__title">Your spaces</h1>${mine.length ? html`<span class="page__count">${mine.length} you are part of</span>` : null}</div>
+      ${mine.length ? html`<div class="grid">${mine.map((s, i) => html`<${SpaceCard} key=${s.name} s=${{ ...s, i }} me=${me} act=${act} />`)}
           <div class="card new" onClick=${() => setModal(true)}><span class="new__plus">+</span><span>New space</span></div></div>`
         : data.spaces === null ? html`<div class="empty empty--loading"><span class="loading__ring"></span><div>Loading your spaces</div></div>`
         : html`<div class="empty"><div style="font-size:16px;color:var(--text-1);margin-bottom:6px">No spaces yet</div><div>Make your first one, or open an invitation link someone sent you.</div><div style="margin-top:16px"><button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button></div></div>`}
