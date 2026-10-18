@@ -9,10 +9,13 @@ AI agents are very good at general knowledge. Ask one about any field and it ans
 they do not do well is come up with something new: a fact nobody had, a method nobody tried, a result that was not
 already in the training data in some form.
 
-And yet there is a spark. Reports of the newest models (Fable, Astra) working through hard open mathematics when run
-as agentic systems, not as single answers, suggest the raw capability is there and the missing piece is how the
-thinking is organised. We have not verified those reports ourselves; we took them as a reason to try.
-[Source to add.]
+And yet there is a spark. In 2026 OpenAI reported that an unreleased model, Astra, run as an agentic system, produced
+results on ten long-standing open problems in mathematics (sphere-packing bounds, non-sofic groups, Connes's rigidity
+conjecture among them), each with a Lean formalisation; independent review of the proofs was still pending when we
+wrote this [1][2]. An Anthropic engineer then reported solving five of the same problems with Claude [3], and a
+separate report credits Claude Fable 5 with helping to disprove the Jacobian conjecture, an open problem since 1939
+[4]. None of these are Millennium Prize problems, and all of them are claims awaiting review. We took them as a reason
+to try: the raw capability seems to be there, and the missing piece is how the thinking is organised.
 
 One part of that organisation already works and is cheap: letting the agent read before it thinks. In Epoch, every
 part of a problem gets a web search, newest sources first, and the findings arrive as structured facts with the
@@ -35,6 +38,8 @@ known:
   url:       https://arxiv.org/html/2510.16786v2
 ```
 
+(The paper it found is [5].)
+
 The agents that invent ideas for that part see this before they write anything.
 
 ## 2. The real problem: thinking in a line
@@ -42,16 +47,17 @@ The agents that invent ideas for that part see this before they write anything.
 Why does an AI not come up with new ideas? Our answer: its thinking is linear. It talks to itself in tokens, one after
 another, and each next token is the most likely continuation of what came before. The most likely continuation of an
 idea is the obvious idea. Ask again and you get the same idea in different words. A 2024 study of research ideation
-had a model produce four thousand ideas; they collapsed to about two hundred distinct ones. Our own notes on this are
-in `research_notes/idea_generation`.
+had a model produce four thousand ideas; they collapsed to about two hundred distinct ones [6]. Our own notes on this
+are in `research_notes/idea_generation`.
 
 People who are good at inventing do not think in a line. They have schemas: habits of directing thought that were
 learned, named and studied. Experts represent a problem by its deep structure, not its surface (Chi, Feltovich and
-Glaser, 1981). Seeing an example first narrows what people produce (Jansson and Smith, 1991: design fixation).
-Comparing two analogues and writing down the shared schema roughly doubles the chance of transferring it to a new
-problem (Gick and Holyoak, 1983). People who generate ideas alone and pool them afterwards produce more and better
-ideas than a group talking (Diehl and Stroebe, 1987, and the meta-analyses since). The returns on ideas are
-fat-tailed: a small share of ideas carries most of the gain, so the task is to find the best, not the average.
+Glaser, 1981 [7]). Seeing an example first narrows what people produce (Jansson and Smith, 1991: design fixation
+[8]). Comparing two analogues and writing down the shared schema roughly doubles the chance of transferring it to a
+new problem (Gick and Holyoak, 1983 [9]). People who generate ideas alone and pool them afterwards produce more and
+better ideas than a group talking (Diehl and Stroebe, 1987 [10], and the meta-analyses since). The returns on ideas
+are fat-tailed: at Bing's experiment platform the top 2 percent of ideas gave about 75 percent of the gains [11], so
+the task is to find the best, not the average.
 
 So the question became: what if we take the sciences that study how people direct their thoughts, build that schema
 as a fixed script, and let the model only fill in the pieces?
@@ -85,7 +91,7 @@ agent that reads what the team changed and explains it to them.
 
 ## 4. Did it make the thinking better? The benchmark
 
-We tested the thinking schema alone, without any building or training, on NoveltyBench, a public benchmark of
+We tested the thinking schema alone, without any building or training, on NoveltyBench [12], a public benchmark of
 creative prompts where ten answers are generated per prompt and judged for how many are genuinely distinct and
 how good they are (curated split, 100 prompts, k = 10, the official v1.1 judge prompts).
 
@@ -144,14 +150,14 @@ What went into the final model, and what it is:
 
 - **Depth delay line**: the skeleton's four parallel residual streams start as a cyclic shift, so stream j holds the
   state j layers back and a layer can read what each recent layer added. New as a combination; a variant of the
-  window DenseFormer (2024) gets another way.
+  window DenseFormer (2024) gets another way [13].
 - **Signed reads**: layers combine the streams with free weights, so they can subtract one stored state from
-  another. A variant of Hyper-Connections (2024).
-- **Value residual**: every layer mixes its attention values with the first layer's. Known (ResFormer, the
-  modded-nanogpt speedrun); the team found it by measurement, not by name.
+  another. A variant of Hyper-Connections (2024) [14].
+- **Value residual**: every layer mixes its attention values with the first layer's. Known (ResFormer [15], the
+  modded-nanogpt speedrun [16]); the team found it by measurement, not by name.
 - **Narrow keys, wide values**: 32 key and 96 value dimensions per head instead of 64 and 64. A variant of what
-  latent attention already allows.
-- **Logit soft-cap**: known (Gemma 2).
+  latent attention already allows; "Thin Keys, Full Values" (2026) shrinks keys the same way [17].
+- **Logit soft-cap**: known (Gemma 2 [18]).
 
 The result, at the same parameter count (21.24 million), the same tokens and the same data:
 
@@ -183,6 +189,38 @@ existing methods and some of it from ideas of its own, filtered out the ideas th
 learned. The same team, pointed at a folder of notes about a clinic's front desk or a coding agent's failures,
 produces ranked proposals with the facts they rest on and the test that would settle each. That is the potential we
 are building on.
+
+## Sources
+
+1. The Decoder, 2026: OpenAI announces Astra by releasing ten solutions to previously unsolved problems.
+   https://the-decoder.com/openai-announces-its-next-major-model-astra-by-dropping-ten-previously-unsolved-math-solutions/
+2. Zvi Mowshowitz, 2026: OpenAI's unreleased model Astra solves ten major open mathematics problems, with the
+   caveats on review. https://thezvi.substack.com/p/openais-unreleased-model-astra-solves
+3. The Hans India, 2026: OpenAI claims Astra solved 10 difficult math problems; Anthropic says Fable solved 5.
+   https://www.thehansindia.com/technology/tech-news/openai-claims-its-astra-model-solved-10-difficult-math-problems-anthropic-says-fable-solved-5-1104627
+4. CoinDesk, 2026-07-21: Claude's Fable 5 and the Jacobian conjecture.
+   https://www.coindesk.com/tech/2026/07/21/claude-s-fable-5-just-solved-an-87-year-old-math-problem-and-it-matters-for-bitcoin
+5. Turn budgets and remaining-turn reminders for coding agents (TRAE Agent), 2025. https://arxiv.org/abs/2510.16786
+6. Si, Yang and Hashimoto, 2024: Can LLMs generate novel research ideas? https://arxiv.org/abs/2409.04109
+7. Chi, Feltovich and Glaser, 1981: Categorization and representation of physics problems by experts and novices.
+   Cognitive Science 5(2), 121-152. https://doi.org/10.1207/s15516709cog0502_2
+8. Jansson and Smith, 1991: Design fixation. Design Studies 12(1), 3-11.
+9. Gick and Holyoak, 1983: Schema induction and analogical transfer. Cognitive Psychology 15(1), 1-38.
+   https://www.gwern.net/doc/psychology/1983-gick.pdf
+10. Diehl and Stroebe, 1987: Productivity loss in brainstorming groups. Journal of Personality and Social Psychology
+    53(3), 497-509. https://doi.org/10.1037/0022-3514.53.3.497
+11. Kohavi et al., 2014: Seven rules of thumb for web site experimenters.
+    https://www.exp-platform.com/Documents/2014%20experimentersRulesOfThumb.pdf
+12. NoveltyBench, 2025. https://arxiv.org/abs/2504.05228
+13. Pagliardini et al., 2024: DenseFormer, depth weighted averaging (NeurIPS 2024). https://arxiv.org/abs/2402.02622
+14. ByteDance Seed, 2024: Hyper-Connections (ICLR 2025). https://arxiv.org/abs/2409.19606
+15. Zhou et al., 2024: Value residual learning (ResFormer). https://arxiv.org/abs/2410.17897
+16. modded-nanogpt, the speedrun's hyper-connections port, PR 230. https://github.com/KellerJordan/modded-nanogpt/pull/230
+17. Yao et al., 2026: Thin keys, full values. https://arxiv.org/abs/2603.04427
+18. Gemma 2 technical report, 2024. https://arxiv.org/abs/2408.00118
+
+The project's own reading on these fields, with many more sources, is in `research_notes/idea_generation`
+(twelve briefs and a synthesis), `research_notes/creative_genius` and `research_notes/How the brain generates new ideas`.
 
 ## Files
 
