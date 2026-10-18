@@ -1,0 +1,2 @@
+# The test suites: python -m pytest harness/tests space/tests, and node --test space/web/tests/core
+pytest>=8.0

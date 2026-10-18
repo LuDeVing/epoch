@@ -1,0 +1,8 @@
+# Epoch runs on the standard library: the hub, the spaces, the launcher, the research loop on a folder problem
+# with the Claude CLI as the model backend need nothing from here.
+#
+#   pip install -r requirements.txt        the API backend (ANTHROPIC_API_KEY) and the harness tooling
+#   pip install -r requirements-ml.txt     the built-in language-model problem (training and measuring, needs a GPU)
+#   pip install -r requirements-dev.txt    the test suites
+anthropic>=1.13
+pyyaml>=6.0

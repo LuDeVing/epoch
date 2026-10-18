@@ -1,0 +1,6 @@
+# The built-in language-model problem: nano/train.py, nano/exam.py, nano/prepare_data.py and the measurements.
+# A CUDA build of torch is needed for real runs; see https://pytorch.org for the right index for your GPU.
+torch>=2.4
+numpy>=2.0
+tiktoken>=0.9
+datasets>=3.0

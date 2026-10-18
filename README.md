@@ -10,6 +10,9 @@ People join the same space, add findings and files, steer the next round, and ta
 Needs Python 3.12 or newer and the Claude CLI signed in (or an Anthropic API key in `ANTHROPIC_API_KEY`).
 Everything else is in the standard library.
 
+`pip install -r requirements.txt` adds the API backend and the harness tooling; `requirements-ml.txt` is for the
+built-in language-model problem (needs a GPU); `requirements-dev.txt` for the tests.
+
 1. Double-click `Epoch.bat`, or run `scripts\install_shortcut.ps1` once for an Epoch shortcut on the Desktop and in
    the Start Menu.
 2. The dashboard opens in its own window. Create an account, make a space, press Start a research, pick the folder.
