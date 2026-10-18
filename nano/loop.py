@@ -3353,6 +3353,8 @@ class NanoLoop:
                        "lens_design": self.lens_design, "baseline_version": self.baseline_version, "decisions": []})
         if self.resume:
             self.load_state()                     # first: every later state write carries the spend read back here
+            if self.space and self.tree:          # a continued run: the page gets the map at once, not at the next boundary
+                self.space.push_map(max(1, int(self.completed_rounds) + 1))
         self._write_commitments()
         if self.mode == "no_check":
             self._resolve_judge_model()
