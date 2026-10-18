@@ -152,7 +152,8 @@ function AccountMenu({ me, onChange }) {
       ${others.length ? html`<div class="menu__label">Switch account</div>${others.map((a) => html`<button class="menu__item" onClick=${() => sw(a)}><${Bubble} name=${a.name} small /> ${a.name}</button>`)}` : null}
       <div class="menu__label">Account</div>
       <button class="menu__item" onClick=${async () => { setOpen(false); await api('/api/logout', {}); onChange(); }}>Add another account</button>
-      <button class="menu__item" onClick=${async () => { setOpen(false); await api('/api/logout', {}); accounts.drop(me); onChange(); }}>Sign out</button>
+      <button class="menu__item" title="a separate window with its own sign-in, so two people can work from this PC at once" onClick=${async () => { setOpen(false); try { const r = await api('/api/window', {}); onChange(r.app_window ? 'a second window is opening: sign in there as the other person' : 'opened in your browser; that tab shares this sign-in, so use another browser for a second person'); } catch (e) { onChange(e.message); } }}>Open a second window for another account</button>
+      <button class="menu__item" onClick=${async () => { setOpen(false); await api('/api/logout', { forget: true }); accounts.drop(me); onChange(); }}>Sign out</button>
     </div>` : null}
   </div>`;
 }
@@ -282,10 +283,14 @@ function HubPage() {
   const [removing, setRemoving] = useState(null);         // the space whose remove question is open
   const [toast, setToast] = useState('');
   const say = (t) => { setToast(t); setTimeout(() => setToast(''), 2600); };
+  const meRef = useRef(undefined);
   const refresh = async (msg) => {
     if (typeof msg === 'string') say(msg);
-    try { const j = await api('/api/me'); setMe(j.name); } catch (e) { setMe(null); setData({ spaces: null }); return; }
-    try { setData(await api('/api/spaces')); } catch (e) { if (e.status === 401) setMe(null); }
+    let name;
+    try { const j = await api('/api/me'); name = j.name; } catch (e) { meRef.current = null; setMe(null); setData({ spaces: null }); return; }
+    if (name !== meRef.current) { meRef.current = name; setData({ spaces: null }); }   // another person: never their predecessor's list
+    setMe(name);
+    try { const d = await api('/api/spaces'); if (meRef.current === name) setData(d); } catch (e) { if (e.status === 401) setMe(null); }
   };
   useEffect(() => { refresh(); }, []);
   useEffect(() => { if (!me) return undefined; const t = setInterval(refresh, 5000); return () => clearInterval(t); }, [me]);

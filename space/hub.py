@@ -399,6 +399,11 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(n) or b"{}") if n else {}
             if not isinstance(body, dict):
                 raise Reject(422, "bad_envelope")
+            if u.path == "/api/window" and self.client_address[0] == "127.0.0.1":     # a second app window, its own identity
+                from space.app import open_window, browser
+                n = int(body.get("n") or 2)
+                proc = open_window("http://127.0.0.1:%d/" % self.server.server_address[1], profile="app-profile-%d" % n)
+                return self._send(200, {"opened": True, "profile": n, "app_window": proc is not None, "browser": bool(browser())})
             if u.path == "/api/shutdown" and self.client_address[0] == "127.0.0.1":   # the local launcher: stop everything
                 out = hub.stop_all()
                 self._send(200, dict(out, hub="stopping"))

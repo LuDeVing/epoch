@@ -55,7 +55,7 @@ function PeoplePanel({ api, onClose }) {
       ${accounts.list().filter((a) => a.name !== api.me).length ? html` <label class="muted">switch to <select onChange=${(e) => { const a = accounts.list().find((x) => x.name === e.target.value); if (a) useAccount(a, base).catch((ex) => setErr(ex.message)); }}>
         <option value="">another account</option>${accounts.list().filter((a) => a.name !== api.me).map((a) => html`<option value=${a.name}>${a.name}</option>`)}</select></label>` : null}
       <button class="btn btn--small" type="button" onClick=${() => { const u = new URL(location.href); u.searchParams.delete('me'); u.searchParams.set('switch', '1'); location.href = u.toString(); }}>add account</button>
-      <button class="btn btn--small" type="button" onClick=${async () => { try { await post('/api/logout', {}); } catch (e) { /* ignore */ } accounts.drop(api.me); const u = new URL(location.href); u.searchParams.delete('me'); location.href = u.toString(); }}>sign out</button></div>
+      <button class="btn btn--small" type="button" onClick=${async () => { try { await post('/api/logout', { forget: true }); } catch (e) { /* ignore */ } accounts.drop(api.me); const u = new URL(location.href); u.searchParams.delete('me'); location.href = u.toString(); }}>sign out</button></div>
     <div class="people__invite">
       <div class="muted">${members && members.open_to_all ? 'This space is open to every signed-in account.' : `Members: ${((members && members.members) || []).join(', ') || 'none yet'}`}</div>
       <div><button class="btn btn--small btn--primary" type="button" disabled=${busy} onClick=${makeInvite}>Invite an account</button>

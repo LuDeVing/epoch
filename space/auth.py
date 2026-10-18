@@ -305,8 +305,9 @@ def handle(path: str, body: dict, headers, client_address, space_id: str | None,
         if not name:
             raise Reject(401, "bad_session", hint="that saved sign-in expired; sign in again")
         return 200, {"name": name, "token": t}, set_cookie(t)
-    if path == "/api/logout":
-        drop_session(tok)
+    if path == "/api/logout":                                # {"forget": true} ends the session; otherwise the browser
+        if body.get("forget"):                               # only lets go of it, and a saved switch back still works
+            drop_session(tok)
         return 200, {"ok": True}, set_cookie(None)
     if path == "/api/password":
         set_password(me(), body.get("password"))

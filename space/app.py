@@ -90,15 +90,15 @@ def browser() -> str | None:
     return None
 
 
-def open_window(url: str):
+def open_window(url: str, profile: str = "app-profile"):
     """An app window: no address bar, its own profile and taskbar entry; returns its process (None when the default
-    browser had to be used)."""
+    browser had to be used). Another `profile` is another browser identity: a second account can be signed in there."""
     b = browser()
     if not b:
         import webbrowser
         webbrowser.open(url)
         return None
-    profile = lab_root() / "app-profile"
+    profile = lab_root() / profile
     profile.mkdir(parents=True, exist_ok=True)
     args = [b, f"--app={url}", f"--user-data-dir={profile}", "--window-size=1500,920", "--no-first-run",
             "--no-default-browser-check", "--disable-features=TranslateUI"]
