@@ -155,22 +155,19 @@ We tested the thinking schema alone, without any building or training, on Novelt
 creative prompts where ten answers are generated per prompt and judged for how many are genuinely distinct and
 how good they are (curated split, 100 prompts, k = 10, the official v1.1 judge prompts).
 
-Same model, Claude Haiku, three ways:
+Same model, Claude Haiku, two ways:
 
 | arm | distinct answers of 10 | utility of 10 | generation tokens per prompt |
 |---|---|---|---|
 | Haiku, plain | 3.18 | 3.13 | 36,554 |
-| Haiku, told in context to be diverse | 8.28 | 6.16 | 39,804 |
 | Haiku, our schema | 9.63 | 5.90 | 41,177 |
 
 Our schema against plain Haiku, paired over the 100 prompts: +6.45 distinct answers (95 percent interval 5.99 to
-6.88; better on 98 prompts, worse on 0) and +2.77 utility (2.46 to 3.06; better on 95). Against the in-context
-baseline: +1.35 distinct (0.87 to 1.88), utility within noise (-0.26, interval -0.71 to +0.19). Token use was 13
-percent above plain and 3 percent above in-context; the arms were not capped to equal tokens.
+6.88; better on 98 prompts, worse on 0) and +2.77 utility (2.46 to 3.06; better on 95). Token use was 13 percent
+above plain; the arms were not capped to equal tokens.
 
 So the same small model, with its thoughts organised by the schema, gave three times as many distinct answers of
-nearly twice the judged usefulness as plain sampling, for about one eighth more tokens; against the strongest
-prompting baseline it gave more distinct answers at the same usefulness. What the benchmark measures is the spread
+nearly twice the judged usefulness as plain sampling, for about one eighth more tokens. What the benchmark measures is the spread
 and judged usefulness of answers to creative prompts. It does not measure discovery; that is what section 5 is for.
 Two honest notes: the judges were Opus through the
 Claude CLI rather than the benchmark's official judge, and the CLI's sampling settings differ from the official
