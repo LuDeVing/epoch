@@ -50,6 +50,7 @@ PRESETS = {
 }
 PRESET_ORDER = ("demo", "small", "medium", "big")
 REAL_MODEL = "fable"           # the inventing model of a real run; the loop's own default would be the cheap model
+JUDGE_MODEL = "opus"                      # the blind panel of a folder profile: a model apart from the inventing one
 
 # Measured on past runs: Fable tokens per call kind, minutes per call, calls in parallel.
 SKETCH_TOKENS, CHAIN_TOKENS, BUILD_TOKENS = 65_000, 40_000, 35_000
@@ -152,6 +153,8 @@ def command(preset, profile, mode, batch, space_url, overrides=None) -> list[str
         cmd += ["--model", model]
         if p.get("model"):                                   # a demo run: the cheap roles on it too; the judges on another
             cmd += ["--research-model", model, "--cheap-model", model, "--judge-model", "sonnet" if model != "sonnet" else "haiku"]
+        else:                                                # a real run: the panel judges (a folder profile has no objective
+            cmd += ["--judge-model", JUDGE_MODEL if model != JUDGE_MODEL else "sonnet"]   # check) must not be the inventing model
         return cmd + ["--budget", str(p["budget"]), "--space", space_url] + pause
     raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
 
