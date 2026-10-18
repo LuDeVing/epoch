@@ -59,16 +59,32 @@ def _lines(text) -> list[str]:
 
 
 def _parts(spec: dict) -> list[dict]:
-    names = [p.strip() for p in str(spec.get("parts") or "").replace("\n", ",").split(",") if p.strip()]
+    """The parts line "part > sub one | sub two, part two" as nodes: parts under the root, sub-parts under
+    their part (the loop's ideas go to the leaves, so a part with sub-parts is worked through them)."""
+    items = [p.strip() for p in str(spec.get("parts") or "").replace("\n", ",").split(",") if p.strip()]
     out = []
-    seen = set()
-    for name in names[:9]:
+    seen = {"root", "recipe", "offtree"}
+
+    def node(name, parent):
         pid = slug(name, 16)                      # the loop's id rule for parts
-        if pid in seen or pid == "root":
-            continue
+        k = 2
+        while pid in seen:
+            sfx = f"_{k}"
+            pid = slug(name, 16 - len(sfx)) + sfx
+            k += 1
         seen.add(pid)
-        out.append({"id": pid, "name": name[:60], "parent": "root", "frame": "", "assumptions": [],
-                    "boundary": name[:60], "directions": ["inward", "outward"], "refines": pid})
+        return {"id": pid, "name": name[:60], "parent": parent, "frame": "", "assumptions": [],
+                "boundary": name[:60], "directions": ["inward", "outward"], "refines": pid}
+
+    for item in items[:9]:
+        head, _, tail = item.partition(">")
+        name = head.strip()
+        if not name:
+            continue
+        part = node(name, "root")
+        out.append(part)
+        for s in [x.strip() for x in tail.split("|") if x.strip()][:4]:
+            out.append(node(s, part["id"]))
     return out
 
 

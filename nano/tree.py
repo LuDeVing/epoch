@@ -154,8 +154,9 @@ def planner_prompt(goal: str, source: str, lens: str = "parts", diagnostics: str
     hint = p.v("planner_hint") or f"boundaries name the functions or sections of the {p.v('artifact', 'artifact')} a part may change"
     return ("Decompose the following problem into parts for a research search. Return ONLY a JSON array of nodes "
             '{"id", "name", "refines": "<default part id this node refines or splits, or \\"new\\" if it is none of them>", '
+            '"parent": "<for a sub-part: the id of the node (in this reply) it sits under; omit for a part>", '
             '"frame", "assumptions": [3-5 short sentences], "boundary": "<which functions or classes '
-            f'a change may touch>"}} with 6 to 9 parts. Draw the map through this lens: {view}. '
+            f'a change may touch>"}} with 6 to 9 parts, plus their sub-parts. Draw the map through this lens: {view}. '
             "Frames describe the CURRENT design in one or two sentences; assumptions are the design choices a "
             f"different paradigm could remove; {hint}.\n\n" + _default_parts_text() + "\n\nGOAL:\n" + goal
             + (f"\n\nHOW THE BASELINE BEHAVES (measured):\n{diagnostics}" if diagnostics else "")
@@ -164,10 +165,25 @@ def planner_prompt(goal: str, source: str, lens: str = "parts", diagnostics: str
 
 def _default_parts_text() -> str:
     """The default parts the planner maps onto, and the rule that keeps a run's --only-nodes scope resolvable."""
-    parts = "\n".join(f"- {n['id']}: {n['name']}" for n in default_parts())
-    return ("DEFAULT PARTS (id: name):\n" + parts + "\nEvery node must say in \"refines\" which default part id it "
+    dp = default_parts()
+    tops = [n for n in dp if n.get("parent") in (None, "root")]
+    subs = {}
+    for n in dp:
+        if n.get("parent") not in (None, "root"):
+            subs.setdefault(n["parent"], []).append(n)
+    lines = []
+    for n in tops:
+        lines.append(f"- {n['id']}: {n['name']}")
+        for c in subs.get(n["id"], []):
+            lines.append(f"    - {c['id']}: {c['name']}  (sub-part of {n['id']})")
+    text = ("DEFAULT PARTS (id: name):\n" + "\n".join(lines) + "\nEvery node must say in \"refines\" which default part id it "
             "refines or splits (several nodes may refine the same part), or \"new\" if it is none of them. A node that "
             "refines a default part also starts its name with that part's name, then a colon.")
+    if subs:
+        text += ("\nThe indented sub-parts stay in the map: return each one as its own node (same id, the name refined if "
+                 "you see it better) with \"parent\" set to the id of your node that refines its part, and \"refines\" "
+                 "set to its own id. You may add a sub-part the files call for; the map is at most two levels deep.")
+    return text
 
 
 def repair_prompt(unresolved, nodes: list[dict]) -> str:

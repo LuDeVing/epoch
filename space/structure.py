@@ -25,6 +25,7 @@ criteria: 3 to 6 objects {name, how}: how to tell a good answer; name is one or 
 facts: up to 25 objects {text, source}: concrete facts, numbers, results and claims found in the files; source is the file name and where in it.
 limits: up to 8 strings: what must stay fixed, what must never happen, limits on time, money, people, tools.
 parts: 3 to 8 strings of two to five words each: the parts the problem naturally splits into (names, like "the paper forms" or "queue order", not sentences).
+subparts: an object, one key per part name above, each a list of 2 to 4 strings of two to five words: the smaller questions inside that part (like "which fields to drop" under "the paper forms"). Every part gets sub-parts.
 field: the field in two or three words.
 scope: one sentence: what is in and what is out.
 open_questions: up to 6 strings: what the files leave unanswered, the questions the team should chase first.
@@ -90,6 +91,21 @@ def _short(t: str, n: int) -> str:
     return (cut or t[:n]).rstrip(",;:")
 
 
+def _parts_list(d: dict) -> list[dict]:
+    """Parts with their sub-parts: [{name, sub: "a, b, c"}]; the wizard edits both as text."""
+    subs = d.get("subparts") if isinstance(d.get("subparts"), dict) else {}
+    norm = {" ".join(str(k).lower().split()): v for k, v in subs.items()}
+    out = []
+    for t in (d.get("parts") or [])[:9]:
+        name = _short(str(t).strip(), 48)
+        if not name:
+            continue
+        raw = norm.get(" ".join(name.lower().split())) or norm.get(" ".join(str(t).lower().split())) or []
+        names = [_short(str(x).strip(), 40) for x in (raw if isinstance(raw, list) else []) if str(x).strip()][:4]
+        out.append({"name": name, "sub": ", ".join(n for n in names if n)})
+    return out
+
+
 def to_spec(d: dict) -> dict:
     """The draft in the shape the wizard and space/launch.py use."""
     def lst(x):
@@ -103,7 +119,7 @@ def to_spec(d: dict) -> dict:
         "criteria": crit[:8],
         "facts": facts[:40],
         "limits": [{"text": t[:400]} for t in lst(d.get("limits"))[:12]],
-        "partsList": [{"name": _short(t, 48)} for t in lst(d.get("parts"))[:9]],
+        "partsList": _parts_list(d),
         "field": str(d.get("field") or "")[:80],
         "scope": str(d.get("scope") or "")[:400],
         "open_questions": lst(d.get("open_questions"))[:8],
