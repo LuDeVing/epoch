@@ -70,9 +70,11 @@ def start_hub(port: int) -> bool:
     log.parent.mkdir(parents=True, exist_ok=True)
     flags = 0
     if os.name == "nt":
-        flags = subprocess.CREATE_NEW_PROCESS_GROUP | getattr(subprocess, "CREATE_NO_WINDOW", 0) | getattr(subprocess, "DETACHED_PROCESS", 0)
+        flags = subprocess.CREATE_NEW_PROCESS_GROUP | getattr(subprocess, "CREATE_NO_WINDOW", 0)   # never DETACHED_PROCESS: a venv stub then opens a console
+    py = python_exe()
+    pyw = os.path.join(os.path.dirname(py), "pythonw.exe")   # the windowless interpreter when it exists
     with open(log, "ab") as out:
-        subprocess.Popen([python_exe(), "-m", "space.hub", "--port", str(port)], cwd=str(REPO), env=env,
+        subprocess.Popen([pyw if os.path.exists(pyw) else py, "-m", "space.hub", "--port", str(port)], cwd=str(REPO), env=env,
                          stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT, creationflags=flags)
     for _ in range(150):
         if port_open(port):
@@ -132,14 +134,66 @@ def ask_shutdown(port: int) -> None:
     lines += ["", "Yes: stop everything. A run stops where it is and can be continued later.",
               "No: keep running in the background. The Epoch shortcut opens the window again."]
     text = "\n".join(lines)
-    yes = True
-    if os.name == "nt":
+    yes = styled_question(lines, bool(runs))
+    if yes is None and os.name == "nt":            # no tkinter on this Python: the plain Windows box
         import ctypes
         MB_YESNO, MB_ICONQUESTION, MB_TOPMOST, MB_DEFBUTTON2 = 0x4, 0x20, 0x40000, 0x100
         flags = MB_YESNO | MB_ICONQUESTION | MB_TOPMOST | (MB_DEFBUTTON2 if runs else 0)
         yes = ctypes.windll.user32.MessageBoxW(0, text, "Epoch", flags) == 6
     if yes:
         hub_json(port, "/api/shutdown", post=True)
+
+
+def styled_question(lines: list, runs_going: bool):
+    """A small dark window in Epoch's colours with Keep running and Turn off; True, False, or None without tkinter."""
+    try:
+        import tkinter as tk
+    except Exception:  # noqa: BLE001
+        return None
+    BG, PANEL, TEXT, MUTED, LINE, TEAL, BAD = "#141619", "#1c1f24", "#edeef0", "#b0b4ba", "#43484e", "#24b0a4", "#e5484d"
+    out = {"yes": False}
+    root = tk.Tk()
+    root.title("Epoch")
+    root.configure(bg=BG)
+    root.resizable(False, False)
+    root.attributes("-topmost", True)
+    try:
+        root.iconbitmap(str(REPO / "space" / "web" / "epoch.ico"))
+    except Exception:  # noqa: BLE001
+        pass
+    frame = tk.Frame(root, bg=PANEL, highlightbackground=LINE, highlightthickness=1, padx=22, pady=18)
+    frame.pack(padx=18, pady=18)
+    head = tk.Frame(frame, bg=PANEL)
+    head.pack(anchor="w")
+    ring = tk.Canvas(head, width=22, height=22, bg=PANEL, highlightthickness=0)
+    ring.create_arc(3, 3, 19, 19, start=100, extent=320, style="arc", outline=TEAL, width=4)
+    ring.pack(side="left", padx=(0, 8))
+    tk.Label(head, text="Turn Epoch off?", bg=PANEL, fg=TEXT, font=("Segoe UI", 13, "bold")).pack(side="left")
+    body = "\n".join(lines[2:-3]).strip()          # what is running (the title and the two explanations are drawn apart)
+    tk.Label(frame, text=body, bg=PANEL, fg=MUTED, justify="left", font=("Segoe UI", 10), wraplength=420).pack(anchor="w", pady=(10, 4))
+    tk.Label(frame, text="Turn off stops every space; a run stops where it is and can be continued later.\nKeep running leaves it all in the background; the shortcut opens the window again.",
+             bg=PANEL, fg=MUTED, justify="left", font=("Segoe UI", 9), wraplength=420).pack(anchor="w", pady=(0, 14))
+    row = tk.Frame(frame, bg=PANEL)
+    row.pack(anchor="e")
+
+    def btn(label, fg, border, cmd):
+        b = tk.Button(row, text=label, command=cmd, bg=PANEL, fg=fg, activebackground=BG, activeforeground=fg,
+                      relief="flat", bd=0, padx=14, pady=6, font=("Segoe UI", 10), cursor="hand2",
+                      highlightbackground=border, highlightthickness=1)
+        b.pack(side="left", padx=(8, 0))
+        return b
+
+    def yes():
+        out["yes"] = True
+        root.destroy()
+    btn("Keep running", TEXT, LINE, root.destroy)
+    btn("Turn off", BAD if runs_going else TEAL, BAD if runs_going else TEAL, yes)
+    root.bind("<Escape>", lambda e: root.destroy())
+    root.update_idletasks()
+    w, hgt = root.winfo_width(), root.winfo_height()
+    root.geometry("+%d+%d" % ((root.winfo_screenwidth() - w) // 2, (root.winfo_screenheight() - hgt) // 2))
+    root.mainloop()
+    return out["yes"]
 
 
 def main(argv=None) -> int:

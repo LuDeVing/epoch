@@ -87,6 +87,7 @@
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
   .modal { width: 440px; max-width: calc(100vw - 32px); background: var(--bg-panel); border: 1px solid var(--line-strong); border-radius: 16px; padding: 24px; display: grid; gap: 14px; animation: pop var(--t-enter); }
   .modal__title { margin: 0; font-size: 18px; font-weight: 700; }
+  .off__runs { margin: 0; padding-left: 18px; } .btn--danger { border-color: var(--bad); color: var(--bad); }
   .switch { display: flex; align-items: center; gap: 10px; cursor: pointer; }
   .switch input { width: 18px; height: 18px; }
   .modal__actions { display: flex; justify-content: flex-end; gap: 8px; }
@@ -176,6 +177,30 @@ function NewSpace({ onClose, onMade }) {
   </form></div>`;
 }
 
+// Turn off: the in-page question. Stops every space and the hub; a run stops where it is and continues later.
+function TurnOff({ onClose }) {
+  const [busy, setBusy] = useState(null);
+  const [state, setState] = useState('ask');
+  useEffect(() => { api('/api/busy').then(setBusy).catch(() => setBusy({ spaces: [], runs: [] })); }, []);
+  const off = async () => {
+    setState('stopping');
+    try { await api('/api/shutdown', {}); } catch (e) { /* the hub stops mid-answer */ }
+    setState('off');
+    setTimeout(() => { try { window.close(); } catch (e) { /* a browser tab may not close itself */ } }, 600);
+  };
+  const runs = (busy && busy.runs) || [], spaces = (busy && busy.spaces) || [];
+  return html`<div class="backdrop" onClick=${(e) => { if (e.target === e.currentTarget && state === 'ask') onClose(); }}><div class="modal">
+    <h2 class="modal__title">${state === 'off' ? 'Epoch is off' : 'Turn Epoch off?'}</h2>
+    ${state === 'off' ? html`<p class="muted">Every space is stopped. You can close this window; the Epoch shortcut starts it again.</p>` : html`
+      ${!busy ? html`<p class="muted">Checking what is running...</p>` : html`
+        ${runs.length ? html`<p><strong>${runs.length} research run${runs.length === 1 ? '' : 's'} still going.</strong> Turning off stops ${runs.length === 1 ? 'it' : 'them'} where ${runs.length === 1 ? 'it is' : 'they are'}; Continue picks ${runs.length === 1 ? 'it' : 'them'} up later.</p>
+          <ul class="off__runs">${runs.map((r) => html`<li><strong>${r.space}</strong> <span class="muted">${r.batch}${r.preset ? ` . ${r.preset}` : ''}</span></li>`)}</ul>` : html`<p class="muted">No research is running.</p>`}
+        <p class="muted">${spaces.length} space${spaces.length === 1 ? '' : 's'} open${spaces.length ? `: ${spaces.join(', ')}` : ''}. Nothing is deleted; Open wakes a space again.</p>`}
+      <div class="modal__actions"><button type="button" class="btn btn--ghost" onClick=${onClose} disabled=${state === 'stopping'}>Keep running</button>
+        <button type="button" class=${`btn ${runs.length ? 'btn--danger' : 'btn--primary'}`} onClick=${off} disabled=${!busy || state === 'stopping'}>${state === 'stopping' ? 'Stopping...' : 'Turn off'}</button></div>`}
+  </div></div>`;
+}
+
 function SpaceCard({ s, me, act }) {
   const open = s.join.replace('{name}', me);
   const n = (s.members || []).length;
@@ -200,6 +225,7 @@ function HubPage() {
   const [me, setMe] = useState(undefined);
   const [data, setData] = useState({ spaces: [] });
   const [modal, setModal] = useState(false);
+  const [off, setOff] = useState(false);
   const [toast, setToast] = useState('');
   const say = (t) => { setToast(t); setTimeout(() => setToast(''), 2600); };
   const refresh = async (msg) => {
@@ -226,7 +252,8 @@ function HubPage() {
   const openRooms = data.spaces.filter((s) => s.open_to_all);
   return html`<div>
     <header class="top"><div class="brand"><span class="brand__mark"></span>Epoch <span class="muted" style="font-weight:400">spaces</span></div><div class="top__spacer"></div>
-      ${me ? html`<button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button><${AccountMenu} me=${me} onChange=${refresh} />` : null}</header>
+      ${me ? html`<button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button><button class="btn" title="stop every space and the hub on this PC" onClick=${() => setOff(true)}>Turn off</button><${AccountMenu} me=${me} onChange=${refresh} />` : null}</header>
+    ${off ? html`<${TurnOff} onClose=${() => setOff(false)} />` : null}
     ${!me ? html`<${Login} onDone=${refresh} />` : html`<main class="page">
       <div class="page__head"><h1 class="page__title">Your spaces</h1><span class="muted">${mine.length ? `${mine.length} you are part of` : ''}</span></div>
       ${mine.length ? html`<div class="grid">${mine.map((s) => html`<${SpaceCard} key=${s.name} s=${s} me=${me} act=${act} />`)}
