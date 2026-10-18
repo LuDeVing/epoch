@@ -146,7 +146,7 @@ class SpaceClient:
             for chunk in _chunks([json.dumps(ev) for ev in evs]):
                 try:
                     st, _ = self._call("POST", "/api/events", {"events": [json.loads(x) for x in chunk]})
-                    if st >= 500:
+                    if st >= 500 or st in (401, 403):            # refused (a missing key) counts as not sent
                         raise OSError(f"status {st}")
                     sent += len(chunk)
                     done += len(chunk)
@@ -173,7 +173,7 @@ class SpaceClient:
             for chunk in _chunks(lines):
                 try:
                     st, _ = self._call("POST", "/api/events", {"events": [json.loads(x) for x in chunk]})
-                    if st >= 500:
+                    if st >= 500 or st in (401, 403):
                         left += chunk
                     done += len(chunk)
                 except (OSError, ValueError):
@@ -319,8 +319,18 @@ class LoopSpace:
                                 round=round_no, stage=stage)
 
     def _post(self, evs) -> None:
-        if evs:
-            self.client.send_many(evs)
+        if evs and self.client.send_many(evs) < len(evs):
+            raise OSError("the space did not take the events; they wait in the outbox")
+
+    _MIRRORED = ("m_nodes", "m_sketches", "m_snap", "m_roots", "m_dialogue", "m_cands", "m_tests", "m_memory", "m_picks", "m_preview")
+
+    def _mirror_snapshot(self) -> dict:
+        import copy
+        return {k: copy.copy(getattr(self, k)) for k in self._MIRRORED}
+
+    def _mirror_restore(self, snap: dict) -> None:            # a failed push marks nothing as mirrored
+        for k, v in snap.items():
+            setattr(self, k, v)
 
     def push_stage(self, round_no: int, name: str) -> None:
         """A boundary: mirror what the stage produced, then stage_entered. Never raises into the loop."""
@@ -329,6 +339,7 @@ class LoopSpace:
             self.client.flush_outbox()
             with self._lock:
                 lp = self.loop
+                snap = self._mirror_snapshot()
                 evs = self._nodes(round_no, name)
                 with lp.lock:
                     evs += self._picks(round_no, name)
@@ -345,7 +356,11 @@ class LoopSpace:
                 evs.append(self._ev("stage_entered", "run:main", f"{name} r{round_no}",
                                     {"round": round_no, "stage": name, "waiting": waiting, "step_mode": self.step,
                                      "mode": getattr(lp, "mode", "baseline")}, round_no, name))
-                self._post(evs)
+                try:
+                    self._post(evs)
+                except OSError:
+                    self._mirror_restore(snap)
+                    raise
                 self._save_state()
         except Exception as e:  # noqa: BLE001
             self._warn("push_stage", e)
@@ -357,12 +372,17 @@ class LoopSpace:
             self.client.reset_down()
             self.client.flush_outbox()
             with self._lock:
+                snap = self._mirror_snapshot()
                 evs = self._nodes(round_no, "planned")
                 evs.append(self._ev("stage_entered", "run:main", f"planned r{round_no}",
                                     {"round": round_no, "stage": "planned", "waiting": False, "step_mode": self.step,
                                      "mode": getattr(self.loop, "mode", "baseline"), "note": "the map is drawn; the team reads up before the ideas"},
                                     round_no, "planned"))
-                self._post(evs)
+                try:
+                    self._post(evs)
+                except OSError:
+                    self._mirror_restore(snap)
+                    raise
                 self._save_state()
         except Exception as e:  # noqa: BLE001
             self._warn("push_map", e)
