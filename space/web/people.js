@@ -40,8 +40,9 @@ function PeoplePanel({ api, onClose }) {
   const [invites, setInvites] = useState([]);
   const [members, setMembers] = useState(null);
   const [pw, setPw] = useState('');
-  const loadInvites = async () => { try { const r = await fetch(`${base}/api/invites`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setInvites(((await r.json()).invites) || []); } catch (e) { /* offline */ } };
-  const loadMembers = async () => { try { const r = await fetch(`${base}/api/members`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setMembers(await r.json()); } catch (e) { /* offline */ } };
+  const kq = api.flags && api.flags.key ? `?key=${encodeURIComponent(api.flags.key)}` : '';   // a --lan space wants its key on GETs too
+  const loadInvites = async () => { try { const r = await fetch(`${base}/api/invites${kq}`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setInvites(((await r.json()).invites) || []); } catch (e) { /* offline */ } };
+  const loadMembers = async () => { try { const r = await fetch(`${base}/api/members${kq}`, { credentials: 'same-origin', cache: 'no-store' }); if (r.ok) setMembers(await r.json()); } catch (e) { /* offline */ } };
   useEffect(() => { loadInvites(); loadMembers(); }, []);
   const makeInvite = async () => { setBusy(true); setErr(''); try { await post('/api/invites', {}); await loadInvites(); } catch (ex) { setErr(ex.message); } setBusy(false); };
   const setPassword = async (e) => { e.preventDefault(); setBusy(true); setErr(''); try { await post('/api/password', { password: pw }); setPw(''); setMade({ name: api.me, join_url: '', password: true }); } catch (ex) { setErr(ex.message); } setBusy(false); };
