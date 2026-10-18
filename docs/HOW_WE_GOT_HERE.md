@@ -229,8 +229,10 @@ What went into the final model, and what it is:
 Where the ideas came from matters as much as the gain. Of the seven ideas with a measured gain across the two runs,
 the prior-art search found one that is new as far as it could tell (the gain-tied input lookup, on the plain recipe:
 the input embedding is multiplied by the final norm's own gain, so the shared embedding table is an exact transpose
-of the output head in both directions, at zero extra parameters; it is part of the four-seed gain on the plain
-recipe and did not carry over to the skeleton), four
+of the output head in both directions, at zero extra parameters). That idea helped where it was found: it is one of
+the seven in the combination that beat the plain recipe by 0.0089 nats over four seeds, though the combination was
+measured as a whole, so its own share of that gain is not known. On the skeleton it did not help and stayed out of
+the final model. The 7 percent came from the next group: four
 that are the team's own variants of published mechanisms (the delay line, the signed reads, the depth buckets, the
 narrow keys), and two known techniques it arrived at from the measurements rather than by name (the value residual,
 the soft-cap). The variants were not copies: the team wrote them for this skeleton's four-stream design, from what
