@@ -111,7 +111,8 @@ class Hub:
                 except OSError:
                     return None
             try:
-                with urllib.request.urlopen("http://127.0.0.1:%d/api/people" % port, timeout=0.5) as r:
+                req = urllib.request.Request("http://127.0.0.1:%d/api/people" % port, headers={"X-Space-Kind": "system", "X-Space-Actor": "hub"})
+                with urllib.request.urlopen(req, timeout=0.5) as r:
                     d = json.loads(r.read().decode("utf-8", "replace"))
                 sid = d.get("space_id") if isinstance(d, dict) else None
                 db = d.get("db") if isinstance(d, dict) else None
@@ -383,6 +384,9 @@ class Handler(BaseHTTPRequestHandler):
                     row["open_to_all"] = row["members"] is None
                     row["member"] = auth.is_member(row["name"], me)
                     row["bundled"] = (Path(row["db"]).parent / "bundle.json").exists()   # came with the repository
+                    if row["bundled"] and not row["member"]:          # the example belongs to every account on this PC
+                        row["members"] = auth.add_member(row["name"], me)
+                        row["member"] = True
                     # your own spaces always; an open room (no members list) only while it runs, so old stage
                     # folders do not pile up on the page; a bundled space always
                     if row["bundled"] or (row["member"] and (not row["open_to_all"] or row["alive"])):   # the example: everyone

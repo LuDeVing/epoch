@@ -319,3 +319,6 @@ body[data-run="running"] .empty--running { display: inline; }
 .mapstory { margin-top: 10px; }
 .mapstory__sec { margin-top: 8px; }
 .mapstory__title { font-weight: 600; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
+
+.notmember { display:grid; justify-items:center; gap:14px; max-width:560px; text-align:center; }
+.notmember .btn { text-decoration:none; margin-top:6px; }

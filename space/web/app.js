@@ -436,6 +436,18 @@ function askLogin() {
 }
 
 
+// Signed in, but not a member of this space: say so plainly, with the way back, instead of an empty space.
+function notMember(name) {
+  flags.me = '';
+  document.body.classList.remove('is-loading');
+  const hub = `${location.protocol}//${location.hostname}:8760/`;
+  const box = document.getElementById('loading');
+  if (box) { box.innerHTML = ''; document.body.classList.add('is-loading'); }
+  render(html`<div class="notmember"><span class="loading__text">This space is private</span>
+    <span class="loading__sub">You are signed in as ${name}, who is not a member. Ask a member to invite you by name; the invitation then appears on your dashboard's bell.</span>
+    <a class="btn btn--primary" href=${hub}>Back to the dashboard</a></div>`, box || document.body);
+}
+
 function askName() {
   const top = document.getElementById('topbar');
   const done = (name) => {
@@ -533,6 +545,8 @@ async function main() {
     try {
       const r = await fetch(`${base}/api/me${flags.key ? `?key=${encodeURIComponent(flags.key)}` : ''}`, { cache: 'no-store', credentials: 'same-origin' });
       if (r.status === 401) { flags.me = ''; askLogin(); return; }   // the top bar then leaves the form alone
+      const j = r.ok ? await r.json().catch(() => ({})) : {};
+      if (j.member === false) { notMember(j.name); return; }
     } catch (e) { /* offline: the page says so itself */ }
   }
   if (flags.me) ls.set('htsa.me', flags.me);

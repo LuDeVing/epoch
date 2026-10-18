@@ -392,6 +392,27 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
             raise Reject(422, "bad_envelope", detail="actor kind")
         return by, by_kind
 
+    READ_GUARDED = ("/api/events", "/api/stream", "/api/digest", "/api/control", "/api/snapshot", "/api/memory",
+                    "/api/knowledge", "/api/files", "/api/run/", "/api/people")
+
+    def _readable(self, path):
+        """A space with a members list is read only by its members. A browser shows its session; a process on this
+        PC (the loop, the agents, the bridge) says what it is in X-Space-Kind and has no session. Open mode and spaces
+        without a members list are readable by everyone, as before."""
+        if getattr(self.server, "open_mode", False) or not path.startswith(self.READ_GUARDED):
+            return
+        space_id = getattr(self.server.space.store, "space_id", None)
+        if auth.members_of(space_id) is None:
+            return
+        name = auth.session_name(auth.cookie_of(self.headers))
+        if name:
+            if not auth.is_member(space_id, name):
+                raise Reject(403, "member_required", hint="ask a member of this space for an invitation")
+            return
+        if self.headers.get("X-Space-Kind") in ("agent", "system") and auth.is_local(self.client_address):
+            return
+        raise Reject(401, "login_required")
+
     def _key(self, q):
         k = self.server.key
         if k and (self.headers.get("X-Space-Key") or q.get("key", [""])[0]) != k:
@@ -494,6 +515,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):           # static files co
         try:
             self._key(q)
             one = lambda name, default=None: q.get(name, [default])[0]          # noqa: E731
+            self._readable(u.path)
             if u.path in ("/api/me", "/api/invites", "/api/members", "/api/notifications"):
                 if self._auth(u.path, {"list": True} if u.path == "/api/invites" else {}):
                     return None
