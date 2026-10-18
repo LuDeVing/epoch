@@ -13,7 +13,8 @@
 <!-- D3 7.9.0 UMD (owned by the views part) loads as a classic script before the modules. -->
 <script src="vendor/d3.min.js"></script>
 </head>
-<body>
+<body class="is-loading">
+<div id="loading" aria-live="polite"><span class="loading__ring"></span><span class="loading__text">Loading the space</span><span class="loading__sub">reading what the team has done so far</span></div>
 <div id="app">
   <header id="topbar" aria-label="Run status and people"></header>
   <div id="topright"><div id="people-panel" aria-label="People in this space"></div><div id="start-run" aria-label="Start a research and its status"></div></div>

@@ -16,6 +16,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* a column: a hidden banner takes no grid row, so the panes take the free height by flex, not by row number */
 #app { display: flex; flex-direction: column; height: 100vh; }
+/* the loading screen: shown until the event log has caught up (app.js), so an empty pane is never mistaken for an empty space */
+#loading { position: fixed; inset: 0; z-index: 90; display: none; place-items: center; align-content: center; gap: 6px; background: var(--bg-app); color: var(--text-2); }
+body.is-loading #loading { display: grid; }
+body.is-loading #panes, body.is-loading #strip { visibility: hidden; }
+.loading__ring { width: 34px; height: 34px; border-radius: 50%; box-sizing: border-box; border: 5px solid var(--owner-a); border-top-color: transparent; animation: loading-spin 0.9s linear infinite; margin-bottom: 8px; }
+.loading__text { color: var(--text-1); font-weight: 600; font-size: 15px; }
+.loading__sub { font-size: var(--fs-small); }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
 #topbar { background: var(--bg-panel); border-bottom: 1px solid var(--line-subtle); padding: 6px 12px; display: grid; gap: 4px; }
 .topbar__line { display: flex; align-items: center; gap: var(--gap); flex-wrap: wrap; min-height: 26px; }
 .brand { font-weight: 600; }

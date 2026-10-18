@@ -53,6 +53,7 @@ let R = null, store = null, conn = null, contract = null, layout = trivialLayout
 let presence = { clients: [], claims: [] };
 let net = { status: 'connecting', since: Date.now(), epoch: null, replay: null, spaceId: null, offsetMs: 0 };
 let current = null, queue = [], scheduled = false, opN = 0, goLockUntil = 0;
+let loadHead = null;                                         // the log head the server announced; loading ends when the page has it
 let following = flags.follow || '';
 let focus = null, viewName = 'tree', lastFocusBeat = 0, focusTimer = null, selected = null;
 const myClaims = new Map();                                  // subject -> token (takeovers made by this browser)
@@ -70,7 +71,14 @@ function publish() {
   compose();
   bus.emit('state', current);
   renderChrome();
+  if (loadHead !== null && current.head >= loadHead) loaded();
 }
+function loaded() {                                          // the loading screen goes once, when the log is read
+  loadHead = null;
+  document.body.classList.remove('is-loading');
+  bus.emit('fit');                                           // the panes had no size while hidden: fit them now
+}
+setTimeout(() => { if (document.body.classList.contains('is-loading')) loaded(); }, 12000);   // never stuck on it
 
 // ---- the per-frame apply queue: a burst of 300 events paints once -------------------------------------------------
 const raf = typeof requestAnimationFrame === 'function' ? requestAnimationFrame : (fn) => setTimeout(fn, 16);
@@ -126,6 +134,7 @@ function onStatus(kind, info) {
     if (net.status !== 'reconnecting' && net.status !== 'offline' && net.status !== 'rejected') { net.since = Date.now(); net.status = 'reconnecting'; }
   }
   else if (kind === 'hello') {
+    if (document.body.classList.contains('is-loading')) { loadHead = Number(info.head || 0); if (!loadHead) loaded(); else if (current && current.head >= loadHead) loaded(); }
     net.epoch = info.epoch || net.epoch;
     net.replay = info.replay || null;
     net.spaceId = info.space_id || net.spaceId;
