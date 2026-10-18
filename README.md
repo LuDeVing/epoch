@@ -23,12 +23,13 @@ The space `agent-long-tasks` comes with the repository as an example: a finished
 long tasks, with its map, ideas, arguments, two judged proposals and the report. Its folder of inputs is
 `examples/agent-long-tasks`; what the team found is in `examples/RESULTS-agent-long-tasks-2026-10-18.md`.
 
-How we got here, with the benchmark and the model results: `docs/HOW_WE_GOT_HERE.md`.
-
 ## Where things are
 
 - `space/`: the shared space server, the hub (dashboard), the launcher of research runs, accounts, files, knowledge.
 - `space/web/`: the pages.
 - `nano/`: the research loop and the problem profiles.
-- `docs/`: the design notes (`docs/SPACE.md` for the space, `docs/MULTIPLAYER_DESIGN.md` for the page).
+- `docs/`: how a run works (`HOW_IT_WORKS.md`), the team design (`TEAM_OF_RESEARCHERS.md`), the space and the page
+  (`SPACE.md`, `MULTIPLAYER_DESIGN.md`), the model result (`RESULTS_FRONTIER_MODEL.md`), the demo runbook.
 - `examples/`: research folders to try, and bundled spaces.
+- `research_notes/`: the reading behind the design, twelve fields and their syntheses.
+- `llmcandidates/`: the final models of the architecture result.

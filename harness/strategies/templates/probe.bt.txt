@@ -1,9 +1,0 @@
-Problem statement:
-{{problem_md}}
-
-Problem data:
-{{data}}
-
-Seed word: {{seed}}
-
-Choose one option. End your reply with a final line of the form ANSWER: X, where X is one of A, B, C or D.

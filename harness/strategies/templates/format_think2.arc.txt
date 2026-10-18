@@ -1,8 +1,0 @@
-If the starting point or angle given above does not fit this puzzle, say so in one line and set it aside.
-Work it out in writing first, in this order:
-1. Restate the task in your own words: what the inputs are, what the outputs are, what stays the same in every example.
-2. For each example, state what changed between input and output and what did not, and note how the examples differ from each other.
-3. Write two to four candidate rules, one sentence each.
-4. Check the first rule against every example, cell by cell where it matters, and list each mismatch. If it fits every example, keep it; do not invent doubt. If it fails, change how you are describing the grid (objects, lines, regions, counts, symmetry) rather than adjusting details, and try the next rule.
-5. Write one alternative rule that also fits every example, and name one feature of the test input on which the two would give different outputs. Decide which rule that feature supports, preferring the simpler rule.
-Then write {{n}} program(s) implementing the final rule, each as one python code block that defines transform(grid) -> grid, where grid is a list of lists of ints 0-9. Use only the python standard library. After the code, state the rule in one sentence.

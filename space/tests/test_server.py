@@ -830,7 +830,7 @@ def test_lan_key_required(mk):
     r = mk(key="k3y")
     assert post(r.port, "note_posted", {"text": "x"})[1]["error"] == "bad_key"
     st, b = call(r.port, "POST", "/api/events", {"kind": "note_posted", "data": {"text": "x"}},
-                 headers={"X-Space-Key": "k3y"})
+                 headers={"X-Space-Key": "k3y", "X-Space-Actor": "ana.agent", "X-Space-Kind": "agent"})   # a local agent: no session needed
     assert st == 200 and b["seq"] == 2
     assert call(r.port, "GET", "/api/events?since=0")[0] == 403
     assert call(r.port, "GET", "/api/events?since=0&key=k3y")[0] == 200
@@ -843,7 +843,9 @@ def test_routes_match_the_contract():
 
 
 def test_space_imports_only_the_standard_library():
-    allowed = set(sys.stdlib_module_names) | {"space", "__future__"}
+    # The space runs on the standard library plus this repository's own packages: harness (the lab root and the
+    # model calls) and nano (the research loop's profiles). Nothing third-party.
+    allowed = set(sys.stdlib_module_names) | {"space", "harness", "nano", "__future__"}
     bad = []
     for p in sorted(SPACE_DIR.rglob("*.py")):
         rel = p.relative_to(SPACE_DIR).parts
@@ -857,9 +859,7 @@ def test_space_imports_only_the_standard_library():
                 names = [n.module or ""]
             else:
                 continue
-            # The person-agent makes its one model call through harness.llm (design 16, P6).
-            ok = allowed | ({"harness"} if rel == ("agent.py",) else set())
-            bad += ["%s: %s" % ("/".join(rel), m) for m in names if m.split(".")[0] not in ok]
+            bad += ["%s: %s" % ("/".join(rel), m) for m in names if m.split(".")[0] not in allowed]
     assert not bad, bad
 
 

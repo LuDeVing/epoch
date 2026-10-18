@@ -1,8 +1,0 @@
-{{problem}}
-
-Rewrite this problem in the sections below, with these exact headers and in this order. Resolve every pronoun so that each item can be read on its own.
-GOAL: one sentence stating what an answer must give.
-FACTS: a numbered list of the facts the problem states.
-RESOURCES: a numbered list of the objects, values and operations the problem makes available.
-CHECKLIST: a numbered list of the hard constraints that any acceptable answer must satisfy.
-NOUNS: the domain nouns used in the problem text, one per line.

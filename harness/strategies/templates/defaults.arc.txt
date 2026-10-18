@@ -1,3 +1,0 @@
-{{problem}}
-
-List the first 5 answers that come to mind, as a numbered list. Each item is one short sentence stating a rule that maps each input grid to its output grid.
