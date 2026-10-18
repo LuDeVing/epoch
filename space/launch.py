@@ -150,8 +150,8 @@ def command(preset, profile, mode, batch, space_url, overrides=None) -> list[str
             cmd += ["--max-sketch-calls", str(p["max_sketch_calls"])]
         model = p.get("model") or REAL_MODEL
         cmd += ["--model", model]
-        if p.get("model"):                                   # a demo run: the cheap roles and the judges on it too
-            cmd += ["--research-model", model, "--cheap-model", model, "--judge-model", model]
+        if p.get("model"):                                   # a demo run: the cheap roles on it too; the judges on another
+            cmd += ["--research-model", model, "--cheap-model", model, "--judge-model", "sonnet" if model != "sonnet" else "haiku"]
         return cmd + ["--budget", str(p["budget"]), "--space", space_url] + pause
     raise Reject(422, "bad_mode", mode=mode if isinstance(mode, str) else None, modes=list(MODES))
 
