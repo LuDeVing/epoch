@@ -385,7 +385,7 @@ class Handler(BaseHTTPRequestHandler):
                     row["bundled"] = (Path(row["db"]).parent / "bundle.json").exists()   # came with the repository
                     # your own spaces always; an open room (no members list) only while it runs, so old stage
                     # folders do not pile up on the page; a bundled space always
-                    if row["member"] and (not row["open_to_all"] or row["alive"] or row["bundled"]):
+                    if row["bundled"] or (row["member"] and (not row["open_to_all"] or row["alive"])):   # the example: everyone
                         rows.append(row)
                 return self._send(200, dict(d, spaces=rows, me=me))
             p = (WEB / u.path.lstrip("/")).resolve()
