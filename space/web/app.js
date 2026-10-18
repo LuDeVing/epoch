@@ -137,6 +137,7 @@ function onStatus(kind, info) {
   }
   publish();
 }
+window.addEventListener('htsa-run', () => renderChrome());  // the run chip learned something new: the top bar follows
 setInterval(() => {                                          // Reconnecting turns Offline after 10 s
   if (net.status === 'reconnecting' && Date.now() - net.since > OFFLINE_AFTER_MS) { net.status = 'offline'; publish(); }
 }, 1000);
@@ -286,7 +287,16 @@ function connText() {
   return 'Connecting';
 }
 function runText(run) {
-  if (!run.stage) return 'No research running';
+  if (!run.stage) {
+    const ph = typeof document !== 'undefined' ? document.body.dataset.phase || '' : '';
+    if (ph) {
+      const m = /^round (\d+): (\w+)/.exec(ph);
+      const word = m ? ({ researching: 'reading up before the ideas', ideating: 'inventing', clustering: 'grouping', deepening: 'arguing', building: 'building', verifying: 'testing', planning: 'planning' }[m[2]] || m[2]) : ph;
+      return m ? `Round ${m[1]}: ${word}` : `Research running: ${ph}`;
+    }
+    if (typeof document !== 'undefined' && document.body.dataset.run === 'running') return 'Research starting';
+    return 'No research running';
+  }
   const paused = run.pausedBy.length ? `, paused by ${run.pausedBy.map((p) => whoText({ cls: 'person', owner: p })).join(' and ')}` : '';
   if (run.waiting) return `Round ${run.round}: ${STAGE_DONE[run.stage] || run.stage}. Waiting for Go${paused}`;
   return `Round ${run.round}: ${STAGE_RUNNING[run.stage] || run.stage}${paused}`;

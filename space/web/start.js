@@ -60,7 +60,7 @@ export function mountStart(el, api = {}) {
     profile: '', preset: 'demo', mode: 'real', confirming: false, busy: false, error: '',
     runs: [], showLog: false, showReport: false, report: null,
     problem: { title: '', goal: '', success: '', known: '', fixed: '', parts: '', field: '' },
-    rounds: '', pauseEvery: 0, files: null, fileOpen: null, showFiles: false,
+    rounds: '', pauseEvery: 0, files: null, fileOpen: null, showFiles: false, runOpen: false,
   };
   let timer = null, lastCheck = 0;
   const wizard = mountWizard(api);
@@ -148,6 +148,7 @@ export function mountStart(el, api = {}) {
 
   function toggle() {
     S.open = !S.open;
+    S.runOpen = false;
     S.confirming = false;
     S.error = '';
     if (S.open && !S.loaded) loadProfiles();
@@ -160,8 +161,7 @@ export function mountStart(el, api = {}) {
     if (!c) return null;
     return html`<span class=${c.cls} title=${`${run.batch} . ${run.profile || ''}${run.run_dir ? ` . ${run.run_dir}` : ''}`}>
       <span class="run-chip__dot" aria-hidden="true"></span>
-      <button class="run-chip__text" onClick=${() => { S.showLog = !S.showLog; draw(); }}>${c.text}</button>
-      ${run.alive && canStart ? html`<button class="btn btn--small" onClick=${() => stop(run)}>Stop</button>` : null}
+      <button class="run-chip__text" title="open the run: status, log, files, report" onClick=${() => { S.runOpen = !S.runOpen; S.open = false; draw(); }}>${c.text}</button>
     </span>`;
   }
 
@@ -217,6 +217,24 @@ export function mountStart(el, api = {}) {
     </div>`;
   }
 
+  function RunPanel({ run }) {
+    if (!run || !S.runOpen) return null;
+    const c = chipOf(run);
+    return html`<div class="run-panel" role="dialog" aria-label="The current run">
+      <div class="run-panel__head"><span class="run-panel__title">${c.text}</span>
+        <span class="run-panel__actions">
+          ${run.alive && canStart ? html`<button class="btn btn--small" onClick=${() => stop(run)}>Stop</button>` : null}
+          <button class="btn btn--small" onClick=${() => { S.showLog = !S.showLog; draw(); }}>${S.showLog ? 'Hide log' : 'Log'}</button>
+          ${run.run_dir ? html`<button class="btn btn--small" onClick=${() => (S.showFiles ? (S.showFiles = false, draw()) : loadFiles(run))}>${S.showFiles ? 'Hide files' : 'Run files'}</button>` : null}
+          ${run.report ? html`<button class="btn btn--small" onClick=${() => (S.showReport ? (S.showReport = false, draw()) : loadReport(run))}>${S.showReport ? 'Hide report' : 'Report'}</button>` : null}
+          <button class="btn btn--small" onClick=${() => { S.runOpen = false; draw(); }}>Close</button>
+        </span></div>
+      <div class="muted mono">${run.batch}${run.profile ? ` . ${run.profile}` : ''}${run.run_dir ? ` . ${run.run_dir}` : ''}</div>
+      <${Status} run=${run} />
+      <${Log} run=${run} />
+    </div>`;
+  }
+
   function Status({ run }) {
     if (!run) return null;
     const c = chipOf(run);
@@ -230,12 +248,10 @@ export function mountStart(el, api = {}) {
       ${failed ? html`<div class="start-error start-error--run" role="alert">
         <strong>The run stopped.</strong> ${run.error || 'No reason was logged.'}
         ${canStart && !alive() ? html`<button class="btn btn--small btn--primary" disabled=${S.busy} onClick=${() => resume(run)}>Continue from the last save</button>` : null}
-        <button class="btn btn--small" onClick=${() => { S.showLog = !S.showLog; draw(); }}>${S.showLog ? 'Hide log' : 'Show log'}</button>
       </div>` : null}
       ${c && c.state === 'running' && c.note ? html`<div class="muted start-note">${c.note}</div>` : null}
-      ${run.run_dir ? html`<div class="start-report"><button class="btn btn--small" onClick=${() => (S.showFiles ? (S.showFiles = false, draw()) : loadFiles(run))}>${S.showFiles ? 'Hide run files' : 'Browse run files'}</button></div>` : null}
       <${RunFiles} run=${run} />
-      ${run.report ? html`<div class="start-report"><button class="btn btn--small" onClick=${() => (S.showReport ? (S.showReport = false, draw()) : loadReport(run))}>${S.showReport ? 'Hide report' : 'Read the report'}</button>
+      ${run.report ? html`<div class="start-report">
         ${S.showReport && S.report ? html`<a class="btn btn--small" download=${`${run.batch}-REPORT.md`} href=${`data:text/markdown;charset=utf-8,${encodeURIComponent(S.report.text)}`}>Download</a>` : null}</div>` : null}
       ${S.showReport && S.report ? html`<pre class="start-log__text start-report__text">${S.report.text}</pre>` : null}`;
   }
@@ -324,15 +340,21 @@ export function mountStart(el, api = {}) {
         ${canStart ? html`<button class=${`btn btn--start${S.open ? ' btn--on' : ''}`} aria-expanded=${S.open} onClick=${toggle}>Start a research</button>` : null}
       </div>
       ${S.open && canStart ? html`<${Panel} />` : null}
-      ${!S.open ? html`<${Status} run=${run} />` : null}
-      ${!S.open ? html`<${Log} run=${run} />` : null}`;
+      ${!S.open ? html`<${RunPanel} run=${run} />` : null}`;
   }
 
+  let lastState = null;
   function draw() {
     render(html`<${Root} />`, el);
     const run = latest();
     const c = chipOf(run);
-    if (typeof document !== 'undefined') document.body.dataset.run = c && c.state === 'running' ? 'running' : (c ? c.state : '');
+    if (typeof document !== 'undefined') {
+      document.body.dataset.run = c && c.state === 'running' ? 'running' : (c ? c.state : '');
+      const ph = c && c.state === 'running' && run.live && run.live.phase ? String(run.live.phase) : '';
+      if (document.body.dataset.phase !== ph) { document.body.dataset.phase = ph; window.dispatchEvent(new Event('htsa-run')); }
+      if (c && lastState && c.state !== lastState && (c.state === 'failed' || c.state === 'finished') && !S.open) { S.runOpen = true; render(html`<${Root} />`, el); }
+      if (c) lastState = c.state;
+    }
   }
 
   if (typeof api.subscribe === 'function') {

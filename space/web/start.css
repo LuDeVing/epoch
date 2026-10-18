@@ -1,6 +1,7 @@
 /* start.css: the "Start a research" button, panel and run chip (start.js, part P8). Colours only through the tokens of
    tokens.css (no raw hex here). The mount sits over the right end of the top bar. */
-#start-run { position: fixed; top: 6px; right: 12px; z-index: 40; display: grid; justify-items: end; gap: 6px;
+#topright { position: fixed; top: 6px; right: 12px; z-index: 40; display: flex; align-items: center; gap: 8px; }
+#start-run { position: relative; display: grid; justify-items: end; gap: 6px;
   max-width: calc(100vw - 24px); pointer-events: none; }
 #start-run > * { pointer-events: auto; }
 .start-bar { display: flex; align-items: center; gap: var(--gap); min-height: 26px; }
@@ -108,3 +109,13 @@ body.stage .start-log { display: none; }
 .run-files__view { min-width: 0; }
 .run-files__text { max-height: 56vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 4px; }
 .run-files__hint { padding: 12px; }
+
+/* the run panel: everything about the current run drops down under the chip */
+.run-panel { position: absolute; right: 0; top: 34px; width: min(760px, calc(100vw - 24px)); max-height: calc(100vh - 56px); overflow: auto;
+  background: var(--bg-panel); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 12px; box-shadow: 0 14px 40px rgba(0,0,0,.5); display: grid; gap: 8px; }
+.run-panel__head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.run-panel__title { font-weight: 600; flex: 1 1 auto; }
+.run-panel__actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.run-panel .start-error--run, .run-panel .start-done, .run-panel .start-note, .run-panel .start-report { max-width: none; text-align: left; justify-content: flex-start; }
+.run-panel .start-log, .run-panel .run-files { position: static; max-width: none; }
+.run-chip__text { cursor: pointer; }
