@@ -63,7 +63,7 @@ def _parts(spec: dict) -> list[dict]:
     out = []
     seen = set()
     for name in names[:9]:
-        pid = slug(name, 20)
+        pid = slug(name, 16)                      # the loop's id rule for parts
         if pid in seen or pid == "root":
             continue
         seen.add(pid)

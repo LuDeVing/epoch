@@ -134,10 +134,10 @@
   font: inherit; color: var(--text-1); background: var(--bg-panel); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px;
 }
 
-.island-glow__in { stop-color: var(--bg-panel); stop-opacity: 0.9; }
-.island-glow__out { stop-color: var(--bg-panel); stop-opacity: 0; }
-.island__disc { pointer-events: none; }
-.island__label { font-size: 15px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--text-2); pointer-events: none; }
+.island-glow__in { stop-color: var(--owner-team); stop-opacity: 0.16; }
+.island-glow__out { stop-color: var(--owner-team); stop-opacity: 0.04; }
+.island__disc { pointer-events: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 5; transition: r 0.45s ease; }
+.island__label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--text-2); pointer-events: none; }
 .island__tail { cursor: pointer; }
 .island__tail-ring { fill: var(--bg-card); stroke: var(--line); stroke-dasharray: 3 3; transition: stroke var(--t-hover); }
 .island__tail:hover .island__tail-ring, .island__tail.is-open .island__tail-ring { stroke: var(--line-strong); }
@@ -199,7 +199,7 @@
 .stage .card:not(.card--deep) .card__row { height: 16px; }
 .stage .card:not(.card--deep) .chip { font-size: 12px; height: 16px; line-height: 16px; }
 .stage .bubble__label { font-size: 14px; }
-.stage .island__label { font-size: 15px; }
+.stage .island__label { font-size: 13px; }
 
 /* reduced motion: colour changes only */
 @media (prefers-reduced-motion: reduce) {

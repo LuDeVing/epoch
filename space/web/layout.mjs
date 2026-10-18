@@ -9,8 +9,8 @@
 
 export const ROW_H = 56;            // d3.tree nodeSize breadth (screen y)
 export const COL_W = 250;           // d3.tree nodeSize depth (screen x)
-export const CELL_W = 440;          // anchor grid cell, world units
-export const CELL_H = 400;
+export const CELL_W = 360;          // anchor grid cell, world units
+export const CELL_H = 340;
 export const SPACING = 7.8;         // sunflower spacing: (2 * 5 + 2) / 1.5456
 export const DOT_R = 5;
 export const DOT_GAP = 2;
@@ -144,7 +144,7 @@ export function layoutTree(nodes, firstSeen) {
 export function anchorFor(partIndex, nParts) {
   const n = Math.max(1, nParts | 0);
   const i = Math.max(0, partIndex | 0);
-  const cols = Math.ceil(Math.sqrt(n));
+  const cols = n <= 3 ? n : Math.ceil(Math.sqrt(n));     // up to three islands sit in one row
   const rows = Math.ceil(n / cols);
   const col = i % cols;
   const row = Math.floor(i / cols);

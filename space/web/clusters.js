@@ -14,7 +14,8 @@ import { clock, glide, T, animateOnce, later } from './motion.mjs';
 const SVG = 'http://www.w3.org/2000/svg';
 export const TOP_LABELS = 5;            // labels on the top 5 by n per island, the others on hover
 export const TAIL_ZOOM = 1.6;           // the long-tail ring opens at this zoom
-export const ISLAND_R = 190;            // the soft island disc
+export const ISLAND_R = 64;             // the smallest island disc; an island grows to hold its bubbles
+export const ISLAND_PAD = 26;           // disc edge beyond the farthest bubble
 export const COLOR_BY = ['owner', 'part', 'prior', 'card', 'status'];
 const WINNER_STATUSES = new Set(['win', 'preferred']);
 const DIM_HOLD = 1500;
@@ -129,8 +130,8 @@ export function mountClusters(el, store, bus, opts = {}) {
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     const list = part != null ? [...bubbles.values()].filter((b) => b.node === part) : [...bubbles.values()];
     for (const b of list) { x0 = Math.min(x0, b.tx - b.tr); y0 = Math.min(y0, b.ty - b.tr); x1 = Math.max(x1, b.tx + b.tr); y1 = Math.max(y1, b.ty + b.tr); }
-    if (!list.length) {
-      for (const is of islands.values()) { x0 = Math.min(x0, is.anchor.x - ISLAND_R); y0 = Math.min(y0, is.anchor.y - ISLAND_R); x1 = Math.max(x1, is.anchor.x + ISLAND_R); y1 = Math.max(y1, is.anchor.y + ISLAND_R); }
+    if (part == null) {                                                           // the discs and their labels count too
+      for (const is of islands.values()) { x0 = Math.min(x0, is.anchor.x - is.r); y0 = Math.min(y0, is.anchor.y - is.r - 22); x1 = Math.max(x1, is.anchor.x + is.r); y1 = Math.max(y1, is.anchor.y + is.r); }
     }
     if (!Number.isFinite(x0)) return false;
     const pad = 48;
@@ -163,16 +164,47 @@ export function mountClusters(el, store, bus, opts = {}) {
       const tailText = h('text', 'island__tail-text', tail);
       tailText.setAttribute('text-anchor', 'middle'); tailText.setAttribute('dy', '0.35em');
       tail.addEventListener('click', () => { is.tailOpen = !is.tailOpen; paintLod(); });
-      is = { part, index, anchor, el: g, label, tail, tailText, tailOpen: false, count: 0, dimUntil: 0 };
+      is = { part, index, anchor, el: g, disc, label, tail, tailText, tailOpen: false, count: 0, dimUntil: 0, r: 0 };
       islands.set(part, is);
     }
     is.index = index; is.anchor = anchor;
     is.el.setAttribute('transform', `translate(${anchor.x},${anchor.y})`);
     is.el.style.setProperty('--part-mix', `${30 + ((index * 23) % 60)}%`);
-    is.label.setAttribute('y', String(-ISLAND_R + 14));
-    is.label.textContent = name || part;
-    is.tail.setAttribute('transform', `translate(${ISLAND_R * 0.72},${ISLAND_R * 0.72})`);
+    is.label.textContent = name || String(part).replace(/_/g, ' ');
+    if (!is.r) sizeIsland(is, ISLAND_R);
     return is;
+  }
+  // where the islands sit on the page: a grid by count (up to three in a line), stacked the other way when the
+  // pane is taller than wide, spaced so the two largest islands keep a gap and the labels stay clear
+  function shownAnchors(grouped, reachOf) {
+    const out = new Map();
+    const n = grouped.length;
+    if (!n) return out;
+    const { w, h: vh } = viewSize();
+    const tall = w && vh && vh > w * 1.15;
+    let cols = n <= 3 ? n : Math.ceil(Math.sqrt(n));
+    let rows = Math.ceil(n / cols);
+    if (tall && cols > rows) [cols, rows] = [rows, cols];
+    const radii = [...reachOf.values()].sort((a, b) => b - a);
+    const big = (radii[0] || ISLAND_R) + (radii[1] || radii[0] || ISLAND_R);
+    const stepX = Math.max(ISLAND_R * 2 + 70, big + 70);
+    const stepY = stepX + 24;                                                    // a line for the label above each row
+    grouped.forEach((g, i) => {
+      const col = i % cols, row = Math.floor(i / cols);
+      out.set(g.part, { x: Math.round((col - (cols - 1) / 2) * stepX), y: Math.round((row - (rows - 1) / 2) * stepY) });
+    });
+    return out;
+  }
+  // the disc holds the island's bubbles: its radius follows the farthest bubble; the label sits just above the
+  // disc and the long-tail chip just inside its lower right edge
+  function sizeIsland(is, r) {
+    const rr = Math.max(ISLAND_R, Math.round(r));
+    if (rr === is.r) return;
+    is.r = rr;
+    is.disc.setAttribute('r', String(rr));
+    is.label.setAttribute('y', String(-rr - 8));
+    const t = rr * 0.72;
+    is.tail.setAttribute('transform', `translate(${t.toFixed(1)},${t.toFixed(1)})`);
   }
 
   // --- bubbles ---
@@ -233,7 +265,35 @@ export function mountClusters(el, store, bus, opts = {}) {
       b.el.classList.toggle('is-hot', hot);
       b.el.classList.toggle('is-cold', !!active && !hot);
       b.el.classList.toggle('is-labelled', b.top || hot || b.key === selectedKey);
+      const full = hot || b.key === selectedKey;
+      const want = full ? b.name : shortName(b.name);
+      if (b.parts && b.parts.label.textContent !== want) b.parts.label.textContent = want;
     }
+  }
+  // a label goes below its bubble unless that box would cross another bubble or a label already placed below;
+  // then it goes above. Boxes are estimated from the short label (about 6.6 px a character, 14 px tall).
+  function labelSides(list) {
+    const up = new Set();
+    const placed = [];                                                           // boxes taken so far
+    const sorted = [...list].filter((b) => b.shown).sort((a, b) => (a.y - b.y) || (a.x - b.x));
+    const box = (b, side) => { const w = Math.min(26, (b.name || '').length) * 6.6 + 8; const y = side > 0 ? b.y + b.r + 3 : b.y - b.r - 17; return { x0: b.x - w / 2, x1: b.x + w / 2, y0: y, y1: y + 14 }; };
+    const hits = (bx, me) => {
+      for (const o of sorted) if (o !== me && bx.x0 < o.x + o.r && bx.x1 > o.x - o.r && bx.y0 < o.y + o.r && bx.y1 > o.y - o.r) return true;
+      for (const q of placed) if (bx.x0 < q.x1 && bx.x1 > q.x0 && bx.y0 < q.y1 && bx.y1 > q.y0) return true;
+      return false;
+    };
+    for (const me of sorted) {
+      const below = box(me, 1);
+      if (!hits(below, me)) { placed.push(below); continue; }
+      const above = box(me, -1);
+      if (!hits(above, me)) { up.add(me.key); placed.push(above); continue; }
+      placed.push(below);
+    }
+    return up;
+  }
+  function shortName(name) {                                                     // a label at rest: 24 characters
+    const s = String(name || '');
+    return s.length > 26 ? s.slice(0, 24).trimEnd() + '\u2026' : s;
   }
   function paintLod() {
     const zoomedIn = transform.k >= TAIL_ZOOM;
@@ -281,7 +341,7 @@ export function mountClusters(el, store, bus, opts = {}) {
     p.body.setAttribute('r', String(r));
     p.halo.setAttribute('r', String(r + 10));
     p.ring.setAttribute('r', String(r + 5));
-    p.label.setAttribute('y', String(r + 13));
+    p.label.setAttribute('y', String(b.labelUp && !b.winner ? -(r + 6) : r + 13));   // a neighbour's label is below: this one goes above
     p.badge.setAttribute('transform', `translate(0,${-r - 12})`);
     if (Math.abs(b.rimR - r) > 0.25) { b.rimR = r; paintRim(b); paintVotes(b); }
   }
@@ -363,38 +423,64 @@ export function mountClusters(el, store, bus, opts = {}) {
     const partOrder = [...anchors.keys()];
     const grouped = islandsOf([...state.clusters.values()].filter((c) => !c.mergedInto), partOrder);
     const seenParts = new Set();
+    const base = new Map();                                                      // part -> the reducer's anchor
     for (const g of grouped) {
-      const anchor = anchors.get(g.part) || anchorFor(g.index, grouped.length);
-      const nn = nodes.get(g.part);
-      island(g.part, g.index, anchor, nn ? nn.name : g.part);
+      base.set(g.part, anchors.get(g.part) || anchorFor(g.index, grouped.length));
       seenParts.add(g.part);
     }
     for (const [part, is] of islands) if (!seenParts.has(part)) { if (is.el.parentNode) is.el.parentNode.removeChild(is.el); islands.delete(part); }
+
+    // first pass: every bubble's target around the reducer's anchor, and how far each island reaches
+    const targets = new Map();                                                   // key -> {x, y, r} around the base anchor
+    const reachOf = new Map();
+    const localOf = new Map();
+    for (const g of grouped) {
+      const a0 = base.get(g.part);
+      let local = null;
+      if (g.clusters.some((c) => !positions.has(c.key))) {
+        const prev = new Map();
+        const was = islands.get(g.part);
+        const dx = was ? was.anchor.x - a0.x : 0, dy = was ? was.anchor.y - a0.y : 0;
+        for (const c of g.clusters) { const b = bubbles.get(c.key); if (b && !b.retiring) prev.set(c.key, { x: b.tx - dx, y: b.ty - dy, r: b.tr }); }
+        const born = new Map();
+        for (const c of g.clusters) if (c.bornFrom) born.set(c.key, c.bornFrom);
+        local = layoutClusters(prev, g.clusters, a0, born);
+      }
+      localOf.set(g.part, local);
+      let reach = 0;
+      for (const c of g.clusters) {
+        const pos = positions.get(c.key) || (local && local.get(c.key)) || { x: a0.x, y: a0.y, r: clusterRadius(c.n || 1) };
+        targets.set(c.key, pos);
+        reach = Math.max(reach, Math.hypot(pos.x - a0.x, pos.y - a0.y) + (pos.r || 0));
+      }
+      reachOf.set(g.part, Math.max(ISLAND_R, Math.round(reach + ISLAND_PAD)));
+    }
+    const shown = shownAnchors(grouped, reachOf);
+    for (const g of grouped) {
+      const nn = nodes.get(g.part);
+      const is = island(g.part, g.index, shown.get(g.part), nn ? nn.name : g.part);
+      sizeIsland(is, reachOf.get(g.part));
+    }
 
     // bubbles: targets from the layout, local settle only when the reducer gave none
     const seen = new Set();
     for (const g of grouped) {
       const is = islands.get(g.part);
-      let local = null;
-      const missing = g.clusters.some((c) => !positions.has(c.key));
-      if (missing) {
-        const prev = new Map();
-        for (const c of g.clusters) { const b = bubbles.get(c.key); if (b && !b.retiring) prev.set(c.key, { x: b.tx, y: b.ty, r: b.tr }); }
-        const born = new Map();
-        for (const c of g.clusters) if (c.bornFrom) born.set(c.key, c.bornFrom);
-        local = layoutClusters(prev, g.clusters, is.anchor, born);
-      }
+      const a0 = base.get(g.part);
+      const dx = is.anchor.x - a0.x, dy = is.anchor.y - a0.y;
+      const at = (key) => { const t = targets.get(key); return { x: t.x + dx, y: t.y + dy, r: t.r }; };
       const byN = [...g.clusters].sort((a, c) => (c.n - a.n) || (a.key < c.key ? -1 : 1)).slice(0, TOP_LABELS).map((c) => c.key);
       const existing = g.clusters.filter((c) => { const b = bubbles.get(c.key); return b && !b.retiring; });
-      const moves = existing.some((c) => { const b = bubbles.get(c.key); const p = positions.get(c.key) || (local && local.get(c.key)); return !p || b.tx !== p.x || b.ty !== p.y || b.tr !== p.r; });
+      const moves = existing.some((c) => { const b = bubbles.get(c.key); const p = at(c.key); return b.tx !== p.x || b.ty !== p.y || b.tr !== p.r; });
       const changed = moves || existing.length !== g.clusters.length;
       if (changed && is.dimUntil && now > is.dimUntil) {                       // the dim after a winner moment ends with the next snapshot
         is.dimUntil = 0;
         for (const o of bubbles.values()) if (o.node === g.part) o.el.classList.remove('is-dim-soft');
       }
+      const up = labelSides(g.clusters.map((c) => ({ key: c.key, name: c.name || c.key, shown: (c.n || 0) >= 2 || !!c.selected || Object.keys(c.votes || {}).length > 0, ...at(c.key) })));
       for (const c of g.clusters) {
         seen.add(c.key);
-        const pos = positions.get(c.key) || (local && local.get(c.key)) || { x: is.anchor.x, y: is.anchor.y, r: clusterRadius(c.n || 1) };
+        const pos = at(c.key);
         let b = bubbles.get(c.key);
         let isNew = false;
         if (!b || b.retiring) {
@@ -407,6 +493,9 @@ export function mountClusters(el, store, bus, opts = {}) {
           b.el.setAttribute('transform', `translate(${b.x},${b.y})`);
           b.el.classList.add('is-arriving'); b.arriving = true;
         }
+        const wasUp = !!b.labelUp;
+        b.labelUp = up.has(c.key);
+        if (!isNew && wasUp !== b.labelUp) paintRadius(b);                      // the side changed after the bubble settled
         b.node = g.part; b.n = c.n || 0; b.selected = !!c.selected; b.contributors = c.contributors || {}; b.votes = c.votes || {};
         b.hasVotes = Object.keys(b.votes).length > 0;
         b.top = byN.includes(c.key);
@@ -454,7 +543,8 @@ export function mountClusters(el, store, bus, opts = {}) {
     b.el.setAttribute('class', classes.join(' '));
     const is = islands.get(b.node);
     if (is) b.el.style.setProperty('--part-mix', `${30 + ((is.index * 23) % 60)}%`);
-    p.label.textContent = c.name || b.key;
+    b.name = c.name || b.key;
+    p.label.textContent = (hoverKey === b.key || selectedKey === b.key) ? b.name : shortName(b.name);
     const title = p.body.querySelector ? p.body.querySelector('title') : null;
     const t = title || h('title', null, p.body);
     t.textContent = `${c.name || b.key}: ${c.n || 0} ideas, ${c.prior || 'unknown'} prior, ${status}`;

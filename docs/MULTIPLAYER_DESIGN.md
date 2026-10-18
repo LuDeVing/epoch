@@ -271,7 +271,8 @@ member overlap), `cand:<id>`, `question:<id>`, `fact:<node>:<n>`, `person:<name>
    `seq`. The answer and the stored data carry `overwrote [{field, seq, by}]` when another actor set the field after
    the author's `base`, so the loser gets a chip ("Ben's choice replaced yours at #88. Undo") and an undo.
 4. Adds commute by unique id. A second `node_added` with a used id gets 409 `id_taken` (the loop would drop it
-   silently). Ids are cleaned the way the loop cleans them: lower case, `a-z0-9_`, 16 characters.
+   silently). Ids are cleaned the way the loop cleans them: lower case, `a-z0-9_`; the page keeps up to 40 characters so a
+   profile's longer part ids (which clusters name in full) stay whole; the loop caps people-added ids at 16.
 5. Votes: one live vote per (owner, idea); a new one replaces it. Net votes are shown. Hit, miss or open is derived
    from the test_result of a candidate built from that cluster. Votes change nothing in the loop on day one.
 6. Opinions: one live opinion per (owner, target), latest wins. They reach the loop as `opinions` and only the

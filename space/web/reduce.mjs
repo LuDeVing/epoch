@@ -89,7 +89,7 @@ export function actorClass(by, byKind, owner) {          // contract.actor_class
 export function ownerOf(by) { return String(by || '').split('.')[0]; }
 
 // The loop's cleaning (nano/loop.py _add_human_nodes, space/store.py clean_id): drop every other character.
-export function cleanId(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 16); }
+export function cleanId(raw) { return String(raw || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 40); }   // the loop caps people-added ids at 16; a profile's own part ids run longer and clusters name them in full
 
 export function q(text, cap = QUOTE_CAP) {               // a person's words: tags stripped, whitespace folded, cut
   let t = String(text == null ? '' : text).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();

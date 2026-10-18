@@ -245,7 +245,8 @@ test('who wrote it, bursts, quotes', () => {
 
 test('node ids are cleaned the way the loop and the server clean them', () => {
   assert.equal(cleanId('Item-Order'), 'itemorder');
-  assert.equal(cleanId('item order rule long'), 'itemorderrulelon');
+  assert.equal(cleanId('item order rule long'), 'itemorderrulelong');
+  assert.equal(cleanId('x'.repeat(50)).length, 40);
   const R = makeReducer(trivialLayout);
   let s = upTo(9).reduce((st, e) => R.reduce(st, e), R.init());
   s = R.reduce(s, { seq: 10, kind: 'node_added', by: 'ana', by_kind: 'human', owner: 'ana', op: 'ana-1-1',
