@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HTSA</title>
-<link rel="icon" href="htsa.ico" />
+<title>Epoch</title>
+<link rel="icon" href="epoch.ico" />
 <link rel="stylesheet" href="tokens.css">
 <style>
   @font-face { font-family: Inter; src: url(vendor/inter-latin.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
@@ -32,7 +32,7 @@
 
   .top { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px; height: 56px; padding: 0 24px; background: color-mix(in oklab, var(--bg-app) 85%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-subtle); }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .02em; }
-  .brand__mark { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, var(--owner-a), var(--owner-c)); }
+  .brand__mark { width: 22px; height: 22px; border-radius: 50%; box-sizing: border-box; border: 5px solid var(--owner-a); border-top-color: var(--owner-c); border-right-color: var(--owner-c); transform: rotate(45deg); }
   .top__spacer { flex: 1; }
 
   .acct { position: relative; }
@@ -145,7 +145,7 @@ function Login({ onDone }) {
   };
   const use = async (a) => { setErr(''); try { await switchTo(a, ''); onDone(); } catch (ex) { setErr(ex.message); } };
   return html`<div class="login"><form class="login__card" onSubmit=${go}>
-    <div><h1 class="login__title">Welcome to HTSA</h1><p class="login__sub">A team of AI researchers that works with you. Sign in to see your spaces.</p></div>
+    <div><h1 class="login__title">Welcome to Epoch</h1><p class="login__sub">A team of AI researchers that works with you. Sign in to see your spaces.</p></div>
     ${saved.length ? html`<div class="saved">${saved.map((a) => html`<div class="saved__row" onClick=${() => use(a)}><${Bubble} name=${a.name} /><div><div style="font-weight:600">${a.name}</div><div class="muted" style="font-size:12px">continue</div></div></div>`)}</div>
       <div class="or">or</div>` : null}
     <div class="tabs"><button type="button" class=${`tab${mode === 'login' ? ' tab--on' : ''}`} onClick=${() => setMode('login')}>Sign in</button><button type="button" class=${`tab${mode === 'register' ? ' tab--on' : ''}`} onClick=${() => setMode('register')}>Create account</button></div>
@@ -225,7 +225,7 @@ function HubPage() {
   const mine = data.spaces.filter((s) => !s.open_to_all);
   const openRooms = data.spaces.filter((s) => s.open_to_all);
   return html`<div>
-    <header class="top"><div class="brand"><span class="brand__mark"></span>HTSA <span class="muted" style="font-weight:400">spaces</span></div><div class="top__spacer"></div>
+    <header class="top"><div class="brand"><span class="brand__mark"></span>Epoch <span class="muted" style="font-weight:400">spaces</span></div><div class="top__spacer"></div>
       ${me ? html`<button class="btn btn--primary" onClick=${() => setModal(true)}>+ New space</button><${AccountMenu} me=${me} onChange=${refresh} />` : null}</header>
     ${!me ? html`<${Login} onDone=${refresh} />` : html`<main class="page">
       <div class="page__head"><h1 class="page__title">Your spaces</h1><span class="muted">${mine.length ? `${mine.length} you are part of` : ''}</span></div>

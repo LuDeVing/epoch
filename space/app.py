@@ -1,6 +1,6 @@
-"""space/app.py: HTSA as a Windows application.
+"""space/app.py: Epoch as a Windows application.
 
-Double-click HTSA.bat (or the shortcut scripts/install_shortcut.ps1 makes): this starts the hub when it is not
+Double-click Epoch.bat (or the shortcut scripts/install_shortcut.ps1 makes): this starts the hub when it is not
 running (python -m space.hub, no console window, same lab root) and opens the dashboard in its own window,
 an Edge or Chrome "app" window with no address bar, its own profile under the lab folder (so sign-ins persist),
 and its own taskbar entry. Spaces open in that window; the top bar's Dashboard button comes back.
@@ -97,7 +97,7 @@ def open_window(url: str) -> None:
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="HTSA as a Windows application: the hub in the background, the dashboard in its own window")
+    ap = argparse.ArgumentParser(description="Epoch as a Windows application: the hub in the background, the dashboard in its own window")
     ap.add_argument("--port", type=int, default=HUB_PORT, help="the hub's port (8760)")
     ap.add_argument("--url", default="", help="open this page instead of the dashboard")
     ap.add_argument("--no-window", action="store_true", help="start the hub only")

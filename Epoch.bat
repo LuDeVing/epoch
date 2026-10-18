@@ -1,5 +1,5 @@
 @echo off
-rem HTSA as a Windows application: starts the hub when needed and opens the dashboard in its own window.
+rem Epoch as a Windows application: starts the hub when needed and opens the dashboard in its own window.
 rem No console stays open: the windowless Python runs space/app.py.
 setlocal
 set "REPO=%~dp0"

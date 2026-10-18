@@ -22,7 +22,7 @@
 
 /* ---- the brand and the run state ---- */
 .brand { display: inline-flex; align-items: center; gap: 8px; }
-.brand::before { content: ""; width: 14px; height: 14px; border-radius: 4px; background: linear-gradient(135deg, var(--owner-a), var(--owner-c)); }
+.brand::before { content: ""; width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; border: 3.5px solid var(--owner-a); border-top-color: var(--owner-c); border-right-color: var(--owner-c); transform: rotate(45deg); }
 @keyframes breathe { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 .runstate { display: inline-flex; align-items: center; gap: 7px; }
 .runstate::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--solid); }

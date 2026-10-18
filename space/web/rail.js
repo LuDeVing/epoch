@@ -152,7 +152,7 @@ function bestOf(results) {
 }
 export function summaryMarkdown(view) {
   const L = [];
-  L.push(`# ${view.spaceId || 'HTSA space'}: results`, '');
+  L.push(`# ${view.spaceId || 'Epoch space'}: results`, '');
   L.push(`Round ${view.run.round || 0}, stage ${view.run.stage || 'not started'}. ${view.results.length} candidates built, ${view.findings.length} findings shared.`, '');
   const best = bestOf(view.results);
   if (best) { L.push('## Best so far', '', `${best.name || best.cand}: ${best.status}${best.reason ? `. ${best.reason}` : ''}`, ''); }

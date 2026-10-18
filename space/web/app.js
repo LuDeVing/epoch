@@ -319,7 +319,7 @@ function Topbar({ v }) {
   const space = v.spaceId || net.spaceId || 'space';
   const others = [...v.people.keys()].filter((p) => p !== flags.me);
   return html`<div class="topbar__line">
-      <a class="brand brand--link" href=${hubUrl()} title="back to the dashboard: all your spaces">HTSA</a><span class="dot-sep">.</span><span class="space-name">${space}</span>
+      <a class="brand brand--link" href=${hubUrl()} title="back to the dashboard: all your spaces">Epoch</a><span class="dot-sep">.</span><span class="space-name">${space}</span>
       <a class="btn btn--small topbar__back" href=${hubUrl()} title="all your spaces">Dashboard</a>
       <span class="dot-sep">.</span><span class=${`runstate${run.waiting ? ' runstate--waiting' : ''}`} title=${run.stage ? `stage ${run.stage}, event #${v.head}` : ''}>${runText(run)}</span>
       ${!g.hidden ? html`<button class="btn btn--primary btn--go" disabled=${g.disabled} title=${g.title || ''} onClick=${pressGo}>${g.label}</button>` : null}
@@ -414,7 +414,7 @@ function askLogin() {
     } catch (ex) { err = 'The server is offline.'; draw(); }
   };
   const draw = () => render(html`<form class="join" onSubmit=${go}>
-    <span class="brand">HTSA space</span>
+    <span class="brand">Epoch space</span>
     ${saved.length ? html`<span class="join__saved">${saved.map((a) => html`<button class="btn btn--small" type="button" onClick=${() => useAccount(a).catch((ex) => { err = ex.message; draw(); })}>Continue as ${a.name}</button>`)}</span>` : null}
     ${invite ? html`<span class="tag">invitation ${invite.slice(0, 6)}...</span>` : null}
     <label>Name <input name="name" autocomplete="username" autofocus /></label>
@@ -436,7 +436,7 @@ function askName() {
     location.replace(u.toString());
   };
   render(html`<form class="join" onSubmit=${(e) => { e.preventDefault(); done(e.target.elements.name.value); }}>
-    <span class="brand">HTSA space</span> <label>Your name <input name="name" autocomplete="off" autofocus /></label>
+    <span class="brand">Epoch space</span> <label>Your name <input name="name" autocomplete="off" autofocus /></label>
     <button class="btn btn--primary" type="submit">Join</button>
     <span class="muted">or open with ?stage=1 to watch</span></form>`, top);
 }
