@@ -67,8 +67,10 @@ body[data-run="running"] .runstate::before, .runstate--waiting::before { backgro
 .island__disc { animation: islandbreathe 7s ease-in-out infinite; }
 .island:nth-child(2n) .island__disc { animation-delay: -2.3s; }
 .island:nth-child(3n) .island__disc { animation-delay: -4.1s; }
-.bubble { transition: transform 180ms cubic-bezier(.2,.8,.2,1); transform-box: fill-box; transform-origin: center; }
-.bubble:hover, .bubble.is-hot { transform: scale(1.08); }
+/* the hover pop scales the shapes, never the bubble group: a CSS transform on the group would replace its
+   SVG translate and send the bubble to the world origin */
+.bubble__body, .bubble__halo { transition: transform 180ms cubic-bezier(.2,.8,.2,1); transform-box: fill-box; transform-origin: center; }
+.bubble:hover .bubble__body, .bubble.is-hot .bubble__body, .bubble:hover .bubble__halo, .bubble.is-hot .bubble__halo { transform: scale(1.08); }
 .bubble__body { transition: fill var(--t-hover), stroke var(--t-hover), stroke-width var(--t-hover); }
 .bubble.is-hot .bubble__body { stroke-width: 2px; }
 @keyframes ringpulse { 0% { stroke-opacity: .9; r: 0; } 100% { stroke-opacity: 0; } }
