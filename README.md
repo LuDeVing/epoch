@@ -7,6 +7,26 @@ invents ideas for every part, groups them, argues them out with critics, builds 
 blind, and tells you what it found and what to test next. People join the same space, add findings and files, steer
 the next round, and each has an agent that explains what the team changed.
 
+## Run it on Windows
+
+> **You need two things on the PC:**
+> 1. **Python 3.12 or newer** from [python.org](https://www.python.org/downloads/), installed with **"Add Python to PATH"** ticked.
+> 2. **The Claude CLI signed in** (`claude` on the PATH), or an Anthropic API key in the environment variable
+>    `ANTHROPIC_API_KEY`. This is only for starting new research; opening the bundled example needs no model at all.
+>
+> Everything else is in the Python standard library. Edge or Chrome, which Windows has, draws the window.
+
+1. Download and unzip, or clone.
+2. Double-click `Epoch.bat`. The hub starts, a lab folder named `AGI-lab` appears next to the unzipped folder, the
+   example space installs into it, and the dashboard opens in its own window. Or run `scripts\install_shortcut.ps1`
+   once for an Epoch shortcut on the Desktop and in the Start Menu.
+3. Create an account, open the example space `agent-long-tasks`, or make a space, press Start a research and pick
+   a folder. The two folders in `examples/` are ready to try.
+
+Spaces, runs, accounts and the team's memory live in that lab folder (`D:\AGI-lab` is used instead when it already
+exists). `pip install -r requirements.txt` adds the API backend and the harness tooling; `requirements-ml.txt` is
+for the built-in language-model problem (needs a GPU); `requirements-dev.txt` for the tests.
+
 ## The idea in short
 
 AI agents know a great deal and come up with very little. Ask one for ideas and you get the obvious ones; ask again
@@ -101,21 +121,6 @@ is its own repository: **[epoch-architecture-run](https://github.com/LuDeVing/ep
 **On a folder of notes.** The space `agent-long-tasks` comes bundled with this repository: a finished run on why
 coding agents fail on long tasks, from eight files of notes. Its map, 50 ideas, 60 objections and two judged
 proposals are there to click through; what the team found is in `examples/RESULTS-agent-long-tasks-2026-10-18.md`.
-
-## Run it on Windows
-
-Needs Python 3.12 or newer and the Claude CLI signed in (or an Anthropic API key in `ANTHROPIC_API_KEY`).
-Everything else is in the standard library.
-
-1. Double-click `Epoch.bat`, or run `scripts\install_shortcut.ps1` once for an Epoch shortcut on the Desktop and in
-   the Start Menu.
-2. The dashboard opens in its own window. Create an account, make a space, press Start a research, pick a folder.
-   The two folders in `examples/` are ready to try.
-3. Spaces, runs, accounts and the team's memory live in a lab folder: `D:\AGI-lab` when it exists, otherwise
-   `AGI-lab` next to this folder, made on first start.
-
-`pip install -r requirements.txt` adds the API backend and the harness tooling; `requirements-ml.txt` is for the
-built-in language-model problem (needs a GPU); `requirements-dev.txt` for the tests.
 
 ## Where things are
 
