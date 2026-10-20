@@ -5,7 +5,7 @@ summarises them; start there.
 
 | Folder | What it covers | Start with |
 |---|---|---|
-| `single_agent/` | **Current focus.** How one agent should think: expert problem solving, converging and diverging, a router, thinking split into twelve faculties, selection on ARC | `single_agent/00_PLAN.md` |
+| `single_agent/` | **Current focus.** How one agent should think: expert problem solving, converging and diverging, a router, thinking split into twelve faculties, selection on ARC; `fields/` holds eight briefs from fields that model good thinking (diagnosis, intelligence analysis, forecasting, design, expert decisions, metacognition, LLM methods, correlated errors) | `single_agent/00_PLAN.md`, then `single_agent/fields/00_SYNTHESIS.md` |
 | `team/` | How a team of agents generates and selects ideas: twelve fields of idea-generation research, creative genius, the gaps a team needs to close, selection cost, the 137-mechanism catalogue | `team/idea_generation/00_SYNTHESIS.md` |
 | `human_thought/` | What neuroscience and psychology say about new ideas: brain networks, insight, memory and combination, mind wandering, predictive processing, sleep and replay | `human_thought/brain_and_new_ideas/` |
 | `benchmarks/` | How the benchmarks were set up (NoveltyBench) | `benchmarks/noveltybench/00_SETUP.md` |
