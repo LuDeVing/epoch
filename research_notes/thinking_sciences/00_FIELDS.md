@@ -139,3 +139,105 @@ The fields most likely to add **structure** to the schema (states, operators, co
 - Judging, fast and slow (Cunliffe 2014): https://vlex.co.uk/vid/judging-fast-and-slow-874254987
 - Schoenfeld's episode theory applied to reasoning models (2025 preprint): https://arxiv.org/pdf/2509.14662
 - Schoenfeld, mathematical problem solving: https://tecfa.unige.ch/themes/sa2/act-app-dos2-fic-mathemat2.htm
+
+---
+
+## Subfields: what each folder holds (2026-10-20)
+
+Each field folder now has a `SUBFIELDS.md`: the field's subfields with what they study, key people and works, usefulness
+for the agent and the schema part they could inform; the subfields to dig into next with research questions; what does
+not transfer; and sources marked [V] opened this session or [M] from memory or search results only.
+
+**The two subfields per field most worth digging into**
+
+| Field | Top subfields |
+|---|---|
+| A01 Reasoning | Wason task and hypothesis testing; belief bias and content effects |
+| A02 Problem solving | impasse-driven subgoaling and chunking; progress monitoring |
+| A03 Judgment and decision making | heuristics and input cues (anchoring); debiasing by training with feedback |
+| A04 Metacognition | monitoring accuracy and cheap signals; regulation and strategy choice |
+| A05 Learning science | worked examples with fading; transfer |
+| A06 Memory | encoding specificity and cue design; interference |
+| A07 Attention | capture by salient cues; load theory |
+| A08 Cognitive load | element interactivity; expertise reversal and fading |
+| A09 Creative cognition | fixation and structured imagination; Geneplore |
+| A10 Creativity and expertise | Einstellung; chunking and templates |
+| A11 Analogy and categories | analogical access (retrieval); schema induction |
+| A12 Insight | representational change (constraint relaxation, chunk decomposition); progress monitoring as an impasse detector |
+| A13 Intelligence research | item difficulty models; capacity versus load in reasoning |
+| A14 Development | exploration and choosing informative tests; scientific reasoning skills |
+| A15 Language and thought | framing and wording effects; presupposition and suggestive cues |
+| A16 Embodied cognition | external representations; epistemic action |
+| A17 Collective intelligence | conditions for aggregation; social influence on crowds |
+| A18 Comparative cognition | causal reasoning tasks and their controls; the parsimony debate |
+| A19 Cross-cultural cognition | analytic versus holistic framing; dialectical reasoning |
+| A20 Psychology of programming | debugging strategies; programming plans and schemas |
+| B01 Creativity neuroscience | generation versus evaluation; metacognition of insight |
+| B02 Neuroeconomics | expected value of control; model-based versus model-free arbitration |
+| B03 Predictive processing | information-gain test selection; explore-to-exploit switch |
+| B04 Sleep and replay | gist extraction; wake-sleep library learning (DreamCoder) |
+| B05 Planning neuroscience | prioritised replay; successor representation and subgoal discovery |
+| C01 LLM methods | verification design; adaptive stopping and test-time allocation |
+| C02 Cognitive architectures | Soar impasses and substates; Soar chunking as a subgoal library |
+| C03 Computational cognitive science | library learning (DreamCoder, LILO); resource-rational strategy selection |
+| C04 Computational creativity | quality-diversity and novelty search; evaluating creativity |
+| C05 Search and planning | search with restarts at known cost; heuristics by relaxation |
+| C06 Theorem proving | lemma discovery and proof libraries; conflict learning (no-goods) |
+| C07 Exploration | bandit selection of operators; Go-Explore archive |
+| C08 Case-based reasoning | retention and maintenance; retrieval as a learned choice |
+| C09 Model-based diagnosis | probe selection; conflict sets over attempts |
+| C10 Analogy engines | structure mapping and candidate inferences; MAC/FAC retrieval |
+| C11 Minimum description length | MDL as the selection tie-break; MDL program synthesis on ARC |
+| C12 Decision analysis | value of computation; optimal stopping for attempts |
+| D01 Logic of discovery | proofs and refutations; abduction and inference to the best explanation |
+| D02 Bayesian epistemology | belief revision; conditionalisation and Jeffrey updating |
+| D03 Formal logic | SAT and SMT consistency and counterexample search; default logic |
+| D04 Argumentation | argument schemes and critical questions; formal argumentation frameworks |
+| D05 Critical thinking | transfer; debiasing results |
+| D06 Philosophy of mind | mental representation; global workspace theory |
+| D07 History of science | cognitive-historical case studies; scientists' notebooks |
+| E01 Diagnosis | knowledge-based strategies over process instructions; a reflective second look |
+| E02 Intelligence analysis | diagnosticity of evidence; why ACH failed |
+| E03 Forecasting | base rates and comparison classes; decomposition with a coded combine step |
+| E04 Expert decisions | conditions for valid intuition (as the S0 gate); mental simulation |
+| E05 Design cognition | framing and reframing; co-evolution against problem-space-first |
+| E06 Mathematical problem solving | a coded impasse detector from episode labels; Polya operators with preconditions |
+| E07 Engineering design | functional decomposition; TRIZ contradiction as a typed reframe |
+| E08 Troubleshooting | half-split and cost-weighted search; hypothesis limits |
+| E09 Debugging | supplied hypotheses as a debugging aid; a mental-model-first phase |
+| E10 Sensemaking | data-frame theory and frame activities; anomaly handling and fixation |
+| E11 Legal reasoning | story model with coverage; case-based reasoning |
+| E12 Military planning | course-of-action analysis; wargaming as test by simulation |
+| E13 Cognitive systems engineering | anomaly response and failure patterns; error detection and recovery |
+| E14 Innovation | recombinant search and distance; exploration versus exploitation |
+| E15 Science of science | discovery as reasoning; novelty and atypicality |
+| E16 Chess | staged thought process and deepening; chunks and templates |
+| E17 Strategy | planning-performance research; scenario planning |
+| E18 Behavioural economics | ecological rationality; resource-rational analysis |
+| F01 Cognitive linguistics | conceptual blending; computational blending |
+| F02 Distributed cognition | epistemic actions; external representations |
+| F03 Sociology of knowledge | network epistemology and division of cognitive labour; judgment aggregation |
+
+**Findings from this round worth testing against the schema**
+
+- A short "Don't be blind" warning made over half of Luchins's subjects switch from a habitual method (A10). It pulls
+  against G1 and section 4b of the schema; test it before adopting anything.
+- Bias training with feedback cut six biases by over 30%, while generic warnings did not (A03). Supports lessons plus
+  real feedback over instructions.
+- A 2026 monitoring harness for LLMs raised pooled accuracy for Claude Sonnet 4.6 from 48.3 to 56.9 (A04; one source,
+  abstract level).
+- The working-memory capacity account of fluid reasoning was not supported, and training does not transfer (A13).
+- No single program-comprehension strategy was best (A20); supplying hypotheses gave debuggers about a six-fold gain (E09).
+- Schoenfeld's episodes have been labelled in LLM traces (E06, arXiv 2509.14662): Read, Analyze, Plan, Implement,
+  Explore, Verify, Monitor; GPT-4.1 reproduced human labels at 0.805 sentence accuracy. A ready vocabulary for the
+  schema's states and an impasse detector.
+- Nudges: d = 0.45 over 200+ studies, but a reanalysis finds no effect after publication-bias correction (E18).
+
+**What the search could not close** (the shared web-search allowance of this session ran out mid-round)
+
+- No LLM work found for model-based diagnosis (C09) and no structure-mapping engine inside an LLM loop (C10). Gaps in
+  the search, not proof of absence.
+- ACT-R production compilation, Kapur's productive failure, Getzels and Csikszentmihalyi's problem finding, Ko and Myers
+  on debugging fixation, and controlled TRIZ outcomes remain unconfirmed ([M]).
+- No controlled study of red teaming or scenario planning was found in the pages opened (E12, E17).
+- Several key PDFs could not be opened; rows resting on them stay [M] in each file.
