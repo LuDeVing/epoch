@@ -150,7 +150,7 @@ FLAGS = {
     # EXPERIMENTAL, off in the gate configuration: "1" or "2" swaps format.arc for
     # format_think[2].arc, which asks the generator to check its rule against the examples.
     # That is generator self-checking, which Pr1 bans for generators; it exists only as a
-    # measured arm (research_notes/thinking_modes/00_SYNTHESIS.md), never as a default.
+    # measured arm (research_notes/single_agent/thinking_modes/00_SYNTHESIS.md), never as a default.
     "experimental_think_aloud_self_check": os.environ.get("HTSA_THINK_ALOUD", "") or "off",
     # EVL-08 / Pr17: share of items (hashed on item id and replicate) whose candidates are judged
     # for calibration only when the check is a free script. p_raw is logged to judgments.jsonl and

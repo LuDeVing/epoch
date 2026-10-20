@@ -1,4 +1,4 @@
-// store.mjs: note 02 Appendix A.4 verbatim (research_notes/multiplayer/02_realtime_sync.md).
+// store.mjs: note 02 Appendix A.4 verbatim (research_notes/product/multiplayer/02_realtime_sync.md).
 // makeStore(reduce, init) takes a pure reduce(state, event). Call addPending(op, ev) when the person acts,
 // queued(op, seq) when the POST returns, applyServer(ev) for every event from connectSpace, and reject(op) on a 409.
 // status(op) gives pending, queued or applied. The reducer (reduce.mjs) ignores a pending copy whose op the

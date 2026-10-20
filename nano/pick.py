@@ -1,4 +1,4 @@
-"""Choosing the team's next question (docs/TEAM_GAPS_SPEC.md, agent C; research_notes/team_gaps/04_problem_finding.md).
+"""Choosing the team's next question (docs/TEAM_GAPS_SPEC.md, agent C; research_notes/team/team_gaps/04_problem_finding.md).
 
     score(q) = P(resolve) x gain x novelty / cost x learning-progress bonus
 

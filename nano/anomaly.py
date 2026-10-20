@@ -5,7 +5,7 @@ its residual against a smooth expectation drawn from the rest of its family is l
 spread, has the same sign on every seed, and survives a false-discovery filter across all cells. The top rows
 are rendered as concrete sentences an idea agent can start from; with a small probability a sham row (a
 fabricated deviation on a quiet cell) is mixed in, recorded privately, so the share of sketches that chase
-noise can be measured. Design: research_notes/creative_genius/00_SYNTHESIS.md D6; brief 07 (N1, N2, N9).
+noise can be measured. Design: research_notes/team/creative_genius/00_SYNTHESIS.md D6; brief 07 (N1, N2, N9).
 Pure python: no torch, no model calls. The cells are the language-model diagnostics (nano/diagnose.py); on a
 profile without diagnostics compute() returns no rows and an empty text, and cell_of() names no cell.
 """

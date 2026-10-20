@@ -233,9 +233,9 @@ The asks come from the workflow brief (not checked on the hackathon page). For e
 | GS | `docs/GENERIC_SPEC.md` | all (section 6 is Modes) |
 | TGS | `docs/TEAM_GAPS_SPEC.md` | all |
 | CL | `docs/CHANGELOG_2026-10-17.md` | all |
-| PF4 | `research_notes/team_gaps/04_problem_finding.md` | all |
-| DL1 | `research_notes/team_gaps/01_dialogue.md` | all |
-| PE2 | `research_notes/team_gaps/02_persistent_expertise.md` | L36-80 |
+| PF4 | `research_notes/team/team_gaps/04_problem_finding.md` | all |
+| DL1 | `research_notes/team/team_gaps/01_dialogue.md` | all |
+| PE2 | `research_notes/team/team_gaps/02_persistent_expertise.md` | L36-80 |
 | code | `nano/loop.py` (stage and control code, question pick, owner seeds, human nodes, opinions, dialogue writer, re-plan carry), `nano/pick.py`, `nano/memory.py`, `nano/checks/panel.py`, `nano/deepen.py` (reply round), `nano/tree.py` (dispute mark, `deal_contexts`), `nano/dashboard.py`, `harness/schemas.py` | the parts named |
 
 Web-based claims behind the rules (copied from the project's notes, not re-checked here):

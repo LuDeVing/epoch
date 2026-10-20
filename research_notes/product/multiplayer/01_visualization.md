@@ -76,7 +76,7 @@ Caveat. These are Node (V8) timings of layout maths on synthetic data. No browse
 
 ### 0.4 Three traps found in our own data [L]
 
-Source: `research_notes/multiplayer/00_artifacts.md` (sections 5, 9.2, 9.4) and a read-only look at the mock run folder.
+Source: `research_notes/product/multiplayer/00_artifacts.md` (sections 5, 9.2, 9.4) and a read-only look at the mock run folder.
 
 1. **Cluster ids are positional.** `choice-in-k03` is the index in one grouping. A new grouping can reuse an id for a different cluster. Key clusters by member overlap, not by id. Appendix A has a tested matcher.
 2. **Private fields must never be drawn.** `idea_clusters.json` carries `obvious` and `obvious_match`, which copy text from the private defaults list. A shared view must read a cleaned feed.
@@ -640,7 +640,7 @@ Seen in search summaries only [S]:
 
 Local files [L]:
 
-- `research_notes/multiplayer/00_requirements.md`, `00_artifacts.md`, `00_environment.md`
+- `research_notes/product/multiplayer/00_requirements.md`, `00_artifacts.md`, `00_environment.md`
 - `nano/dashboard.py` (as described in those notes)
 - dataviz skill: `references/color-formula.md`, `references/palette.md`, `scripts/validate_palette.js`
 - Read-only look at `D:/AGI-lab/runs/mock-after-bugpass__nano__binpack_nobase__scaffold__r0/problem_tree.json` and `idea_clusters.json`

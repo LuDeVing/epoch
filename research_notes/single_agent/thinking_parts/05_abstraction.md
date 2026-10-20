@@ -95,5 +95,5 @@ No test of abstraction libraries on ML-recipe search; RLAD, AbstRaL and Step-Bac
 29. Trninic, Kapur, Sinha 2020: https://edrl.berkeley.edu/publications/trninic-d-kapur-m-sinha-t-2020-the-disappearing-advantage-of-abstract-examples-in-learning-math/
 30. Fyfe et al. 2014, concreteness fading: https://www.doi.org/10.1007/S10648-014-9249-3
 31. Trope, Liberman 2010, construal level: https://pmc.ncbi.nlm.nih.gov/articles/PMC3152826/
-32. Repo notes: `research_notes/idea_generation/02_analogy.md`, `06_mathematics.md`, `00_SYNTHESIS.md`; `research_notes/catalog_parts/05_memory.md` (MEM-15)
+32. Repo notes: `research_notes/team/idea_generation/02_analogy.md`, `06_mathematics.md`, `00_SYNTHESIS.md`; `research_notes/team/catalog_parts/05_memory.md` (MEM-15)
 33. Refactoring Codebases through Library Design (Librarian): https://arxiv.org/abs/2506.11058

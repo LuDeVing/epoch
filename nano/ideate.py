@@ -80,7 +80,7 @@ LLM_DEFAULT_VOCAB: dict = {
                       "on 50M tokens on one laptop GPU; the measure is validation loss at a fixed token budget)"),
     "measured_numbers": "loss, perplexity, speed, scale",
     # leap operators: an input bundle plus an output schema, never an instruction to be bold
-    # (research_notes/creative_genius/00_SYNTHESIS.md, D2). Contexts of the same part get different operators.
+    # (research_notes/team/creative_genius/00_SYNTHESIS.md, D2). Contexts of the same part get different operators.
     "leap_operators": {
         "rulebreak": "list eight rules of this part as testable sentences (equal weight on every token; every layer computes the same thing; one schedule; one update rule per tensor; the same context for every token; fixed shapes); rank them by how much of the recipe depends on each; drop or invert exactly one and say what must change so training still runs; the leap is that change.",
         "subtract": "for each component of this part write what happens if it is removed or frozen at identity or zero, and what the measurements say it buys; keep the two removals you can defend; reinvest the freed parameters, steps or memory in one named alternative; the leap is a removal plus its reinvestment.",
@@ -613,7 +613,7 @@ CHEAP_TEST_WORDS = ("smoke", "1-minute", "one-minute", "60", "3-step", "three st
 # Selection weights (settable from the loop). Coverage across angles stays the strongest signal,
 # novelty against the research brief and the private defaults comes next; a documented failure is
 # a strong penalty; departure cards and cheap tests are tie-breakers; size counts slightly against.
-# Evidence (research_notes/idea_generation/00_SYNTHESIS.md, C5, X1): gains come mostly from adapted known
+# Evidence (research_notes/team/idea_generation/00_SYNTHESIS.md, C5, X1): gains come mostly from adapted known
 # techniques and recombination; novelty is protected in a long-shot lane, not rewarded on the main line.
 # These are priors until nano/calibrate.py has ~100 builds; then --weights-from-ledger replaces them.
 WEIGHTS = {"angle": 1.0, "new": 0.25, "known": 0.0, "failed": -2.0, "obvious": -0.75,

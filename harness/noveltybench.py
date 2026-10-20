@@ -17,7 +17,7 @@ Arms:
     python -m harness.noveltybench judge --out D:/AGI-lab/results/nb/haiku-plain
     python -m harness.noveltybench summary D:/AGI-lab/results/nb/* [--method haiku-method] [--md OUT.md]
 
-Evidence (research_notes/team_gaps/05_evidence.md): `summary` also reports the interquartile mean (IQM) per arm and,
+Evidence (research_notes/team/team_gaps/05_evidence.md): `summary` also reports the interquartile mean (IQM) per arm and,
 for each baseline arm, a paired bootstrap 95% interval (10,000 resamples over prompts, seed 0) of the mean difference
 method minus baseline on distinct and on utility, with per-prompt win/loss/tie counts.
     python -m harness.noveltybench rejudge --out D:/AGI-lab/results/nb/haiku-method --judge-model sonnet --limit 20 --seed 0 --suffix sonnet

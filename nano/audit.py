@@ -22,7 +22,7 @@ Verdicts:
   learning rung cannot see on a card whose runs are not bit-reproducible);
 - ok: otherwise, with the facts recorded (kinds, new parameters, identity at initialisation).
 Runs under nano/launch.py like every candidate process. Writes reach.json; the checker decides.
-Design: research_notes/thinking_parts/06_reasoning.md item 7; docs/VERDICT.md (the no-op gap).
+Design: research_notes/single_agent/thinking_parts/06_reasoning.md item 7; docs/VERDICT.md (the no-op gap).
 """
 from __future__ import annotations
 

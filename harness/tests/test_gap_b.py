@@ -1,6 +1,6 @@
 """Team gap B: one anchored reply round between the critic (pre-mortem) and the idea's author.
 
-research_notes/team_gaps/01_dialogue.md: the author may only concede (and change the idea), rebut with a quoted fact,
+research_notes/team/team_gaps/01_dialogue.md: the author may only concede (and change the idea), rebut with a quoted fact,
 or propose a measurement; the critic marks each objection resolved, revised or standing; at most two exchanges, stop
 early when nothing changes; the critic is a checklist, never a gate. `--no-dialogue` is the control arm."""
 from __future__ import annotations

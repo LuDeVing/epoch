@@ -1,6 +1,6 @@
 """Stage envelopes for the token budget: which stage a call belongs to, and whether a call is affordable
 without eating the builds' floor. The dry runs showed a round can spend a fifth of the budget on ideas and
-then build nothing; the floor stops that (research_notes/thinking_parts/09_control.md C1)."""
+then build nothing; the floor stops that (research_notes/single_agent/thinking_parts/09_control.md C1)."""
 from __future__ import annotations
 
 SHARES = {"research": 0.05, "ideation": 0.20, "judging": 0.05, "interrogation": 0.20, "build": 0.40, "reserve": 0.10}

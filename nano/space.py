@@ -3,7 +3,7 @@
 Off by default: nano.loop builds a LoopSpace only with --space URL. Without it nothing here runs, no event is
 written and the loop reads control.json from disk as before.
 
-SpaceClient is the tested client of research_notes/multiplayer/02_realtime_sync.md Appendix A.5 with two
+SpaceClient is the tested client of research_notes/product/multiplayer/02_realtime_sync.md Appendix A.5 with two
 additions: get(path) for the control, events and snapshot routes, and a `down` mark: after one failed call the
 client skips the network for the rest of that boundary (a closed port costs one 3 s timeout per boundary, not one
 per event) and tries again at the next boundary or poll. Events that could not be sent wait in

@@ -1,4 +1,4 @@
-// Test-only copy of matchClusters from research_notes/multiplayer/01_visualization.md Appendix A (tested there).
+// Test-only copy of matchClusters from research_notes/product/multiplayer/01_visualization.md Appendix A (tested there).
 // The page's copy lives in space/web/match.mjs (P4); the views tests never import another part's code.
 export function matchClusters(prev, next, counter, minJ) {
   minJ = minJ == null ? 0.3 : minJ;

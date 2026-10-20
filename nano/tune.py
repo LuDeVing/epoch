@@ -3,7 +3,7 @@
 Single-knob moves around the current values, each a one-line change of a Config default in the baseline
 script, built and sent up the same ladder as every idea; the best few go on to the long comparison and the
 night like any candidate. A script chooses these, not a model (models do not ration a search well; the
-evidence is in research_notes/creative_genius/04). Agents may still propose a tuning idea with a reason
+evidence is in research_notes/team/creative_genius/04_raising_the_ceiling.md). Agents may still propose a tuning idea with a reason
 (KIND: tune). Values are read from the baseline as it is now, so the sweep follows the recipe when it is
 promoted. The overnight duel (batch_verify --duel) separately re-tunes the original's learning rates when an
 optimiser idea is judged.

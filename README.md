@@ -131,5 +131,5 @@ proposals are there to click through; what the team found is in `examples/RESULT
 - `docs/`: how a run works (`HOW_IT_WORKS.md`), the team design (`TEAM_OF_RESEARCHERS.md`), the space and the page
   (`SPACE.md`, `MULTIPLAYER_DESIGN.md`), the model result (`RESULTS_FRONTIER_MODEL.md`), the demo runbook.
 - `examples/`: research folders to try, and bundled spaces.
-- `research_notes/`: the reading behind the design, twelve fields and their syntheses.
+- `research_notes/`: the reading behind the design, grouped by topic; `research_notes/README.md` is the index.
 - `llmcandidates/`: the final models of the architecture result.

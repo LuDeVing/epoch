@@ -420,7 +420,7 @@ class NanoLoop:
         self.stop_after = None                  # a stage name: the run stops cleanly after it (test mode)
         self.max_sketch_calls = 0               # cap on idea-sketch agents per round (0 = all; test mode)
         self.diag_steps = 100
-        # --- evidence-driven settings (research_notes/idea_generation/00_SYNTHESIS.md)
+        # --- evidence-driven settings (research_notes/team/idea_generation/00_SYNTHESIS.md)
         self.controls: list[str] | None = ["placebo_order", "zero_init_proj", "lr_x10"]   # ladder controls each run
         self.longshot_share = 0.2               # about one fifth (selection_cost/00_VERDICT.md); build slots drawn at random from leap / step-outside / analogy / new clusters
         self.leap_share = 0.25                  # quota: share of each sketch call that must be leaps (0 = off)
@@ -472,7 +472,7 @@ class NanoLoop:
         self.hedged: set[str] = set()
         self.ledger_texts: dict[str, str] = {}  # hypotheses from earlier runs, for the novelty gate
         self.hash_memory: dict = self._load_hash_memory()
-        # per-part persistent memory (nano/memory.py; research_notes/team_gaps/02_persistent_expertise.md)
+        # per-part persistent memory (nano/memory.py; research_notes/team/team_gaps/02_persistent_expertise.md)
         self.use_memory = True                  # False = the control arm (--no-memory): no block, no curation, no files
         self._memory: MEM.Memory | None = None
         self.memory_free: set[int] = set()      # id() of this round's ignores-memory contexts, one per part
@@ -2465,7 +2465,7 @@ class NanoLoop:
 
     def effort_for(self, card: str) -> str | None:
         """Reasoning effort by role: high where the output is code or a repair, low for clerical roles, the
-        default for sketching (research_notes/thinking_parts/06_reasoning.md item 8)."""
+        default for sketching (research_notes/single_agent/thinking_parts/06_reasoning.md item 8)."""
         if not self.effort_by_role:
             return None
         if card.endswith(":questions") or card.endswith(":findings"):
@@ -4068,7 +4068,7 @@ class NanoLoop:
         """The control arms, on the same ladder and the same budget as the scaffold: `plain` = independent direct
         builds (best-of-N) until the token budget is spent (or --n-builds, when set); `climb` = the autoresearch loop,
         each build from the current best checked script, keep or discard. A baseline must get an equal budget and the
-        same tuning effort (research_notes/team_gaps/05_evidence.md, rows 4-6), so both arms also run the round-1
+        same tuning effort (research_notes/team/team_gaps/05_evidence.md, rows 4-6), so both arms also run the round-1
         controls and the scripted tuning sweep exactly as the scaffold does, and their builders see the rules in
         the same (canonical) order as the scaffold's builders."""
         seeds = _seeds()

@@ -1,5 +1,5 @@
 // connect.mjs: the live connection to the space server.
-// connectStream is note 02 Appendix A.3 verbatim (research_notes/multiplayer/02_realtime_sync.md), only renamed so
+// connectStream is note 02 Appendix A.3 verbatim (research_notes/product/multiplayer/02_realtime_sync.md), only renamed so
 // that connectSpace can choose between it and the long-poll mode (?poll=1, design section 2).
 // One addition to A.3: an error while the browser retries by itself (readyState 0) reports 'reconnecting', so a
 // killed server shows Reconnecting at once instead of after the 25 s watchdog. Delivery is unchanged.

@@ -1,6 +1,6 @@
 """Tuned-baseline duel for optimiser, schedule and initialisation ideas.
 
-Evidence (research_notes/idea_generation/12_ml_research_practice.md): claimed 2x optimiser speed-ups
+Evidence (research_notes/team/idea_generation/12_ml_research_practice.md): claimed 2x optimiser speed-ups
 fall to about 1.1-1.4x against a tuned AdamW; tuning the baseline's weight decay and learning rate
 alone moved a speedrun record as much as the proposed change. So before an optimiser-family candidate
 gets its verdict, both sides get the same small tuning at half budget (weight decay first, then the

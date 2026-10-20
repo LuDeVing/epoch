@@ -1,7 +1,7 @@
 # HTSA Mechanism Catalog
 Date: 2026-10-10
 
-This catalog was machine-extracted from the research notes in C:/Users/User/Desktop/AGI/research_notes/How the brain generates new ideas and C:/Users/User/Desktop/AGI/research_notes/Deeper mechanisms of human thought, and merged per function.
+This catalog was machine-extracted from the research notes in C:/Users/User/Desktop/AGI/research_notes/human_thought/brain_and_new_ideas and C:/Users/User/Desktop/AGI/research_notes/human_thought/deeper_mechanisms, and merged per function.
 
 ## representation
 

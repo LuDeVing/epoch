@@ -1,6 +1,6 @@
 """Per-part persistent memory: what the team already knows about one part of the problem, kept across runs.
 
-Design: research_notes/team_gaps/02_persistent_expertise.md. One structured markdown file per part,
+Design: research_notes/team/team_gaps/02_persistent_expertise.md. One structured markdown file per part,
 read whole (no top-k retrieval), capped in the rendered view. After each round a curator model proposes
 a delta in the same headers; `curate` keeps an entry only if it cites a run artefact that exists and is
 not a near-duplicate, then appends it with date, run and round. Entries are never rewritten by a model;

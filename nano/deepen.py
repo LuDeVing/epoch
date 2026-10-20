@@ -440,7 +440,7 @@ def resolve_objections(objections: list[dict], metrics: dict) -> list[dict]:
 
 def standing_classes(roots: list[dict], share: float = 0.4, min_roots: int = 3) -> set[str]:
     """Objection classes the critic raises against most ideas in a run: a checklist the ladder handles once, not
-    information about any one idea (research_notes/thinking_parts/07_critique.md C3)."""
+    information about any one idea (research_notes/single_agent/thinking_parts/07_critique.md C3)."""
     with_obj = [n for n in roots if n.get("objections")]
     if len(with_obj) < min_roots:
         return set()
@@ -486,7 +486,7 @@ def objections_text(objections: list[dict], verdict: str = "", standing: set[str
 
 
 # ---------------------------------------------------------------- one anchored reply round: the author answers the critic
-# research_notes/team_gaps/01_dialogue.md: free debate gives small, unreliable gains; an anchored reply helps. The author
+# research_notes/team/team_gaps/01_dialogue.md: free debate gives small, unreliable gains; an anchored reply helps. The author
 # may only concede (and change the idea), rebut with a quoted fact, or propose a measurement. The critic marks each
 # objection resolved, revised or standing. Nothing is dropped: the critic is a checklist, never a gate. Standing
 # objections keep their if_true test, so the ladder settles them as before. At most two exchanges; stop early when

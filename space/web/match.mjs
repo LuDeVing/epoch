@@ -1,5 +1,5 @@
 // match.mjs: stable identity for clusters whose ids are positional.
-// matchClusters is note 01 Appendix A verbatim (research_notes/multiplayer/01_visualization.md), as an ES module.
+// matchClusters is note 01 Appendix A verbatim (research_notes/product/multiplayer/01_visualization.md), as an ES module.
 // prev: [{vid, members:[sketchId,...]}]   next: [{members:[...], ...anything}]
 // Returns {vids:[vid per next cluster], born:{vid:fromVid}, dead:[{vid, into}], counter}
 // Clusters are matched by member overlap (Jaccard), greedy from the best pair down.

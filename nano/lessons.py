@@ -1,7 +1,7 @@
 """Lessons: short itemised claims with evidence, derived by script from what runs recorded, merged by script,
 never written or rewritten by an agent.
 
-Two speeds (research_notes/thinking_parts/10_learning.md, I7 and I8; creative_genius/00_SYNTHESIS.md):
+Two speeds (research_notes/single_agent/thinking_parts/10_learning.md, I7 and I8; creative_genius/00_SYNTHESIS.md):
 - pitfalls: what builders got wrong at the cheap rungs (boundary, build, size, speed), per part; plentiful, fast,
   and actionable, so they reach the builder of the next idea in the same part (at most five);
 - outcomes: what the overnight verdict settled (helped, did not help), per baseline version; slow and rare.
@@ -78,7 +78,7 @@ def is_gap_failure(fb: dict | None) -> bool:
 
 def failure_card(fb: dict | None) -> str:
     """A failed build's record as a short card for the repairing agent: which check, why, where, the cause tag.
-    Replaces the raw JSON dump (research_notes/thinking_parts/06_reasoning.md item 6, 01_representation.md R8)."""
+    Replaces the raw JSON dump (research_notes/single_agent/thinking_parts/06_reasoning.md item 6, 01_representation.md R8)."""
     fb = fb or {}
     if fb.get("near_miss"):
         return ("RECORD: passed the first checks (a near miss or better from the ambitious lane)"

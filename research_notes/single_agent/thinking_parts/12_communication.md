@@ -124,4 +124,4 @@ Failures
 30. Google SRE workbook, alerting on SLOs: https://sre.google/workbook/alerting-on-slos/ (page)
 31. Alahmadi et al. 2022, SOC analysts and alarms: https://www.usenix.org/conference/usenixsecurity22/presentation/alahmadi (abstract)
 32. Anthropic 2025, SHADE-Arena: https://www.anthropic.com/research/shade-arena-sabotage-monitoring (page)
-33. Local: research_notes/mechanism_catalog.md (EVL-16); idea_generation/07_collective_intelligence.md; nano/ code; docs/HOW_IT_WORKS.md
+33. Local: research_notes/team/mechanism_catalog.md (EVL-16); idea_generation/07_collective_intelligence.md; nano/ code; docs/HOW_IT_WORKS.md

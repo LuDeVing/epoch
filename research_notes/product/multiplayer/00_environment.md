@@ -230,7 +230,7 @@ DEFAULT_MODEL = os.environ.get("HTSA_MODEL", "sonnet")
 - `git status --short | wc -l` -> `0` (clean) before this file was written.
 - Branch: `master`. HEAD: `74abcaf Vote and dedup tolerate a state without cluster_members`.
 - The only local branch is `master`. There is no local `main`.
-- This notes file is new, so after it was written the tree has one untracked folder (`research_notes/multiplayer/`).
+- This notes file is new, so after it was written the tree has one untracked folder (`research_notes/product/multiplayer/`).
   `.gitignore` covers `__pycache__/`, `*.pyc`, `.pytest_cache/` and `.claude/` only.
 
 ## 8. Stdlib-only server + static page with CDN libraries: what is available, what needs installs

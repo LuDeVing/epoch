@@ -9,7 +9,7 @@ version and critic model, about ten calls:
 
     python -m nano.critic_check --model fable --backend cli_json
 
-Design: research_notes/thinking_parts/07_critique.md (C4); creative_genius/00_SYNTHESIS.md.
+Design: research_notes/single_agent/thinking_parts/07_critique.md (C4); creative_genius/00_SYNTHESIS.md.
 """
 from __future__ import annotations
 

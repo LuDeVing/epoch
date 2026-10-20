@@ -128,4 +128,4 @@ Reach today: round-1 sketchers see outcomes only through the research and adapt 
 [40] Roediger and Karpicke 2006, https://learninglab.psych.purdue.edu/downloads/2006/2006_Roediger_Karpicke_PsychSci.pdf
 [41] Cepeda et al. 2006, https://www.gwern.net/doc/psychology/spaced-repetition/2006-cepeda.pdf
 [42] Prioritized experience replay (abs), https://arxiv.org/abs/1511.05952
-[43] Local: mechanism catalogue MEM-07, 11, 14, 16, 17 (cites Mattar and Daw 2018, https://pmc.ncbi.nlm.nih.gov/articles/PMC6203620) in research_notes/catalog_parts/05_memory.md; briefs 04, 09, 11, 12 and 00_SYNTHESIS.md in research_notes/idea_generation/
+[43] Local: mechanism catalogue MEM-07, 11, 14, 16, 17 (cites Mattar and Daw 2018, https://pmc.ncbi.nlm.nih.gov/articles/PMC6203620) in research_notes/team/catalog_parts/05_memory.md; briefs 04, 09, 11, 12 and 00_SYNTHESIS.md in research_notes/team/idea_generation/

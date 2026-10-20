@@ -5,7 +5,7 @@ Code version: commit 74abcaf on master. Line numbers below are for that commit a
 
 This is the one text every builder codes against. It merges the winning design (design 0, stage first) with the
 grafts the three judges asked for from designs 1 and 2, and it fixes the four faults the judges found in the winner.
-Sources: research_notes/multiplayer/00_requirements.md, 00_artifacts.md, 00_environment.md, 01_visualization.md,
+Sources: research_notes/product/multiplayer/00_requirements.md, 00_artifacts.md, 00_environment.md, 01_visualization.md,
 02_realtime_sync.md, 03_prompts.md, 04_multiplayer_ux.md, and the code at 74abcaf (read today, read only).
 Every web fact in this file keeps the tag its research note gave it: [page] or [V] means verified on the page by that
 note's author, [memory] means from memory and not checked. Nothing new was fetched from the web for this file.
@@ -1330,7 +1330,7 @@ Build the one writer: `space/store.py` (SQLite WAL log mirrored in memory, idemp
 `GET /api/snapshot` shape of section 5.1), `space/replay.py` (`--replay FILE --speed N --seek SEQ`), `space/server.py`
 (the routes of section 5.1, the SSE stream of 5.2, the Windows rules of 5.3, `--lan`, `--memory-dir`, `--dump`),
 `space/__main__.py` (`python -m space.server`), and `space/tests/test_server.py`. Port the tested reference core of
-research_notes/multiplayer/02_realtime_sync.md Appendix A.1 (read it in full first) and split it into these files.
+research_notes/product/multiplayer/02_realtime_sync.md Appendix A.1 (read it in full first) and split it into these files.
 Import `space.contract` for KINDS, SERVER_ONLY, GUARDED, PRIVATE_KEYS, ROUTES, the TTLs and `guard_applies`;
 import `space.control.merge` for `GET /api/control` and `space.digest.render_digest` for `GET /api/digest?role=`
 (`make_digest` when no role is given). Standard library only.

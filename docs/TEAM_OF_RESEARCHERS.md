@@ -121,7 +121,7 @@ full node schema is in docs/PROBLEM_TREE.md.
 ## What landed on 2026-10-17
 
 Every addition is behind a flag with a control arm, because the research says each one helps only under
-conditions and must be measured (research_notes/team_gaps/00_SYNTHESIS.md, docs/TEAM_GAPS_SPEC.md).
+conditions and must be measured (research_notes/team/team_gaps/00_SYNTHESIS.md, docs/TEAM_GAPS_SPEC.md).
 
 | Addition | What it does | Flag (default) and control arm | Status |
 |---|---|---|---|

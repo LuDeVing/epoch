@@ -1,7 +1,7 @@
 """A computed cost and headroom card for the recipe: where the parameters and the compute go, and how much
 room the rules leave. Analytic, from the Config values in the script and the measured profile; no torch.
 Shown to every idea agent, interrogator, critic and builder, so "spend the headroom" means a number.
-(research_notes/thinking_parts/01_representation.md R1, 04_generation.md G3; creative_genius D2 EXISTENCE.)
+(research_notes/single_agent/thinking_parts/01_representation.md R1, 04_generation.md G3; creative_genius D2 EXISTENCE.)
 """
 from __future__ import annotations
 

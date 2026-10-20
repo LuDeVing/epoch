@@ -1,4 +1,4 @@
-"""The prompt_style switch (docs/MULTIPLAYER_DESIGN.md section 7.3; research_notes/multiplayer/03_prompts.md
+"""The prompt_style switch (docs/MULTIPLAYER_DESIGN.md section 7.3; research_notes/product/multiplayer/03_prompts.md
 sections 4 and 6.3).
 
 Mode 1 prompts stay byte for byte as they are: v1 is the default and every v1 text stays where it was. The v2

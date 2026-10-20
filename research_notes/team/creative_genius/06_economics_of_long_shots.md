@@ -1,6 +1,6 @@
 # 06. The economics and statistics of long shots: how much, and how to judge them
 
-Prepared 2026-10-13 for the HTSA nano loop. Labels: **H** large-N or replicated; **M** one peer-reviewed or observational study; **L** theory, abstract-level, secondary, or my arithmetic; "(inference)" marks my reasoning. "Brief N" is a sibling note in research_notes/idea_generation (05, 11, 12), not repeated here. Numbers checked in the primary text: [2][3][5]-[15][23]-[26]; abstract, summary or quoted figure only: [1][4][16]-[20]; paywalled and unopened: [21][22]. The search quota ran out mid-task, so later sources were fetched by direct URL.
+Prepared 2026-10-13 for the HTSA nano loop. Labels: **H** large-N or replicated; **M** one peer-reviewed or observational study; **L** theory, abstract-level, secondary, or my arithmetic; "(inference)" marks my reasoning. "Brief N" is a sibling note in research_notes/team/idea_generation (05, 11, 12), not repeated here. Numbers checked in the primary text: [2][3][5]-[15][23]-[26]; abstract, summary or quoted figure only: [1][4][16]-[20]; paywalled and unopened: [21][22]. The search quota ran out mid-task, so later sources were fetched by direct URL.
 
 ## Bottom line
 

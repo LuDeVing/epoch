@@ -1,7 +1,7 @@
 """Pre-registered experiment: does the mapper add value on a problem far from language models?
 
 Bin packing (nano/profiles/binpack_nobase.py: no baseline, a harness scorer, CPU only), three arms at an equal cap
-of scorer calls (research_notes/team_gaps/03_generality.md, "What the first real non-LLM run should check"):
+of scorer calls (research_notes/team/team_gaps/03_generality.md, "What the first real non-LLM run should check"):
 
   profile_only  the loop on the profile's default tree: --no-planner (no planner call), --no-deepen,
                 --off-tree-share 0 (no off-map contexts)

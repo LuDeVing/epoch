@@ -1,5 +1,5 @@
 // space/web/motion.mjs: the one animation clock the two views share (docs/MULTIPLAYER_DESIGN.md section 10.3).
-// smoothDamp is the critically damped helper of research_notes/multiplayer/01_visualization.md Appendix A.
+// smoothDamp is the critically damped helper of research_notes/product/multiplayer/01_visualization.md Appendix A.
 // The clock runs one requestAnimationFrame loop, calls every registered step with the frame's dt, and stops when
 // no step reports work left (zero CPU when idle). It snaps on visibilitychange and under prefers-reduced-motion.
 // Every DOM call is guarded, so the module imports under Node.

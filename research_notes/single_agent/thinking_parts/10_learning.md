@@ -100,4 +100,4 @@ S42 Goodhart's Law in RL: https://arxiv.org/abs/2310.09144
 S43 Reward model overoptimization: https://arxiv.org/abs/2210.10760
 S44 After-action review overview: https://en.wikipedia.org/wiki/After-action_review
 Fetched, not used in the text (abstract-level, weak): Memento https://arxiv.org/abs/2508.16153; Dynamic Cheatsheet https://arxiv.org/abs/2504.07952; Training-Free GRPO https://arxiv.org/abs/2510.08191; Voyager https://arxiv.org/abs/2305.16291; Misevolve https://arxiv.org/abs/2509.26354; ShinkaEvolve https://arxiv.org/abs/2509.19349; GEAR https://arxiv.org/abs/2605.13874; ForeAgent https://arxiv.org/abs/2601.05930
-Project files read: nano/calibrate.py, promote.py, loop.py, novelty.py, predict.py, report.py, research.py; research_notes/idea_generation/09_llm_ideation.md (R).
+Project files read: nano/calibrate.py, promote.py, loop.py, novelty.py, predict.py, report.py, research.py; research_notes/team/idea_generation/09_llm_ideation.md (R).

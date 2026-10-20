@@ -1,6 +1,6 @@
 # 03. Practices of exceptionally creative researchers: executable moves, evidence, failure modes (2026-10-13)
 
-*For the ambitious lane of the nano loop. Seventeen practices, each reduced to an operational form with grade and failure mode; then 12 operators. Grades follow the series: **H** large controlled or replicated; **M** peer-reviewed data, one study or small n; **L** self-report, essay, case. None reaches H. Tags: [P] primary text opened; [S] abstract or page opened; [R] reported only. The search quota ran out partway; later sources were fetched directly. "Brief NN" = research_notes/creative_genius; "note NN" = research_notes/idea_generation.*
+*For the ambitious lane of the nano loop. Seventeen practices, each reduced to an operational form with grade and failure mode; then 12 operators. Grades follow the series: **H** large controlled or replicated; **M** peer-reviewed data, one study or small n; **L** self-report, essay, case. None reaches H. Tags: [P] primary text opened; [S] abstract or page opened; [R] reported only. The search quota ran out partway; later sources were fetched directly. "Brief NN" = research_notes/team/creative_genius; "note NN" = research_notes/team/idea_generation.*
 
 ## 1. Bottom line
 

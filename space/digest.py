@@ -2,7 +2,7 @@
 
 Built by code, never by a model, so it cannot invent a change and it lands in milliseconds. `render_digest` is the
 per-role text for prompt slots, `check_digest` is its checker, and `make_digest` is the generic panel text of
-research_notes/multiplayer/02_realtime_sync.md Appendix A.1, kept for the page. Standard library only.
+research_notes/product/multiplayer/02_realtime_sync.md Appendix A.1, kept for the page. Standard library only.
 """
 from __future__ import annotations
 

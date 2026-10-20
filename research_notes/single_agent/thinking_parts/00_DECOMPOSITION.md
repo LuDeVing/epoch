@@ -2,7 +2,7 @@
 
 *2026-10-14. The HTSA method applied to thinking itself. The map below is drawn through the lens "the faculties a thinker uses between meeting a problem and knowing an answer". For each part: what the loop does today, the assumptions behind it, which code owns it, and the weak points already known. Research agents take one part each (briefs 01–12 in this folder); the synthesis of improvement ideas is 00_IDEAS.md.*
 
-Already researched and should not be repeated: the twelve field briefs in `research_notes/idea_generation/` (summarised in `00_SYNTHESIS.md` there), the two reports on human thought in `reports/`, and the 137-mechanism catalogue in `research_notes/mechanism_catalog.md`. The question for each part now is narrower: *how do strong thinkers and the best 2024–2026 systems do THIS part, where is our implementation of it weak, and what concrete change follows.*
+Already researched and should not be repeated: the twelve field briefs in `research_notes/team/idea_generation/` (summarised in `00_SYNTHESIS.md` there), the two reports on human thought in `reports/`, and the 137-mechanism catalogue in `research_notes/team/mechanism_catalog.md`. The question for each part now is narrower: *how do strong thinkers and the best 2024–2026 systems do THIS part, where is our implementation of it weak, and what concrete change follows.*
 
 ---
 
