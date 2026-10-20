@@ -6,6 +6,7 @@ summarises them; start there.
 | Folder | What it covers | Start with |
 |---|---|---|
 | `single_agent/` | **Current focus.** How one agent should think: expert problem solving, converging and diverging, a router, thinking split into twelve faculties, selection on ARC; `fields/` holds eight briefs from fields that model good thinking (diagnosis, intelligence analysis, forecasting, design, expert decisions, metacognition, LLM methods, correlated errors) | `single_agent/SCHEMA.md` (the living schema the agent runs under), `single_agent/00_PLAN.md`, then `single_agent/fields_v2/00_SYNTHESIS.md` (the deeper, evidence-backed round on twelve fields; `fields/` was the first, lighter round) |
+| `thinking_sciences/` | **The map of every science that studies thinking**, with what we covered and what to research next; each field gets its own folder here when we go deep | `thinking_sciences/00_FIELDS.md` |
 | `team/` | How a team of agents generates and selects ideas: twelve fields of idea-generation research, creative genius, the gaps a team needs to close, selection cost, the 137-mechanism catalogue | `team/idea_generation/00_SYNTHESIS.md` |
 | `human_thought/` | What neuroscience and psychology say about new ideas: brain networks, insight, memory and combination, mind wandering, predictive processing, sleep and replay | `human_thought/brain_and_new_ideas/` |
 | `benchmarks/` | How the benchmarks were set up (NoveltyBench) | `benchmarks/noveltybench/00_SETUP.md` |
