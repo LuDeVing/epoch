@@ -16,6 +16,21 @@ This field asks how people find a path from a start to a goal when the path is n
 | Analogical problem solving | Structure-mapping: find, map, check; prefers relational match over surface match (systematicity) [V6] | Gentner; Holyoak and Thagard (1997); Gick and Holyoak [M] | Med | O7 map an analogue |
 | Mathematical problem solving and heuristic method | Specialise, generalise, work backwards, control [M] | Polya; Schoenfeld; Brown and Walter | High | O1 to O5; S6 control |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Means-ends analysis | | not started |
+| Impasse-driven subgoaling and chunking | | not started |
+| Problem solving strategies and the problem-solving cycle | | not started |
+| Representational change theory | | not started |
+| Gestalt insight and the "sudden insight" debate | | not started |
+| Progress monitoring | | not started |
+| Analogical problem solving | | not started |
+| Mathematical problem solving and heuristic method | | not started |
+
 ## Dig into next
 
 1. **Impasse-driven subgoaling (Soar).** Questions: (a) What exactly counts as an impasse in Soar (tie, no-change, conflict) and which of these our detector should copy? (b) How are substate results compiled into rules, and what is the LLM analogue (a stored subgoal with its trigger)? (c) How does Soar avoid reusing a stale chunk? Evidence: Laird's Soar manual and papers; then replay of our logged impasses.

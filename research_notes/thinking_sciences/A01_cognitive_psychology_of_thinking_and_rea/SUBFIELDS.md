@@ -27,10 +27,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Content effects | [`subfields/03_content_effects/DEEP.md`](subfields/03_content_effects/DEEP.md) | done, batch 1 (2026-10-21) |
 | Belief bias | [`subfields/04_belief_bias/DEEP.md`](subfields/04_belief_bias/DEEP.md) | done, batch 1 (2026-10-21) |
 | Dual-process theories | [`subfields/05_dual_process_theories/DEEP.md`](subfields/05_dual_process_theories/DEEP.md) | done, batch 1 (2026-10-21) |
-| Single-process versus two-process induction and deduction | | not started |
-| Dual-strategy model of deduction | | not started |
-| Syllogistic and conditional reasoning | | not started |
-| Inductive and category-based reasoning; probabilistic reasoning | | not started |
+| Single-process versus two-process induction and deduction | [`subfields/06_single_vs_two_process_induction_deduction/DEEP.md`](subfields/06_single_vs_two_process_induction_deduction/DEEP.md) | done, batch 2 (2026-10-21) |
+| Dual-strategy model of deduction | [`subfields/07_dual_strategy_model_of_deduction/DEEP.md`](subfields/07_dual_strategy_model_of_deduction/DEEP.md) | done, batch 2 (2026-10-21) |
+| Syllogistic and conditional reasoning | [`subfields/08_syllogistic_and_conditional_reasoning/DEEP.md`](subfields/08_syllogistic_and_conditional_reasoning/DEEP.md) | done, batch 2 (2026-10-21) |
+| Inductive and category-based reasoning; probabilistic reasoning | [`subfields/09_inductive_category_and_probabilistic_reasoning/DEEP.md`](subfields/09_inductive_category_and_probabilistic_reasoning/DEEP.md) | done, batch 2 (2026-10-21) |
 
 ## Dig into next
 
