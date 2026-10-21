@@ -22,6 +22,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
+| Problem-space theory | [`subfields/01_problem_space_theory/DEEP.md`](subfields/01_problem_space_theory/DEEP.md) | done, batch 2 (2026-10-21) |
 | Means-ends analysis | | not started |
 | Impasse-driven subgoaling and chunking | | not started |
 | Problem solving strategies and the problem-solving cycle | | not started |
