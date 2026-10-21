@@ -18,7 +18,7 @@ This field asks how people find a path from a start to a goal when the path is n
 
 ## Deep research
 
-One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests.
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
 
 | Subfield | Deep document | Status |
 |---|---|---|

@@ -19,6 +19,7 @@ Subfields are researched in batches of five. Each gets a folder `<field>/subfiel
 | File | What it is |
 |---|---|
 | `DEEP.md` | **Read this.** 11 fixed sections: 1 what it is, 2 history and theories, 3 core findings with numbers, 4 mechanisms and models, 5 what holds up, 6 language models, **7 what our agent should take** (add now vs test first), **8 tests on our bench**, 9 what does not transfer, 10 open questions, 11 sources |
+| `UNKNOWNS.md` | **what we don't know** and must test before it may enter the schema: one row per candidate with the test at equal tokens, an "add if" rule and a priority; all rows are collected in [`00_TEST_BACKLOG.md`](00_TEST_BACKLOG.md) |
 | `claims.jsonl` | findings turned into claims, each with status (established, single-source, contested, refuted), schema part and a test |
 | `critique.md` | numbers corrected on re-check, contradictions, gaps and which closed |
 | `evidence_a` to `_d.jsonl` | raw evidence: a foundations, b replications and critiques, c language models, d gap search |
