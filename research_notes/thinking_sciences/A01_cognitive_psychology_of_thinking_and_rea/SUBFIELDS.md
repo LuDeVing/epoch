@@ -16,6 +16,22 @@ This field studies how people draw conclusions, test ideas and judge arguments. 
 | Syllogistic and conditional reasoning | Quantifiers, "if", atmosphere and matching effects [M] | Evans (1982) | Med | test items for S4 |
 | Inductive and category-based reasoning; probabilistic reasoning | Generalising from cases [M] | Osherson et al.; Heit; Oaksford and Chater | Med | S2: candidate rules; G5 probability handled in code |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Mental models theory | [`subfields/01_mental_models/DEEP.md`](subfields/01_mental_models/DEEP.md) | done, batch 1 (2026-10-21) |
+| Wason selection task and hypothesis testing | [`subfields/02_wason_selection_and_hypothesis_testing/DEEP.md`](subfields/02_wason_selection_and_hypothesis_testing/DEEP.md) | done, batch 1 (2026-10-21) |
+| Content effects | [`subfields/03_content_effects/DEEP.md`](subfields/03_content_effects/DEEP.md) | done, batch 1 (2026-10-21) |
+| Belief bias | [`subfields/04_belief_bias/DEEP.md`](subfields/04_belief_bias/DEEP.md) | done, batch 1 (2026-10-21) |
+| Dual-process theories | [`subfields/05_dual_process_theories/DEEP.md`](subfields/05_dual_process_theories/DEEP.md) | done, batch 1 (2026-10-21) |
+| Single-process versus two-process induction and deduction | | not started |
+| Dual-strategy model of deduction | | not started |
+| Syllogistic and conditional reasoning | | not started |
+| Inductive and category-based reasoning; probabilistic reasoning | | not started |
+
 ## Dig into next
 
 1. **Wason task and hypothesis testing.** Questions: (a) Which prompt forms make a model choose a disconfirming test over a confirming one, on rule-discovery tasks? (b) Can code build the single input where two surviving rules differ, and does running it beat a vote at equal tokens? (c) Does the effect depend on abstract versus social-exchange content? Evidence: rule-discovery suites, baseline versus counterexample arm, token counts. Maps to S7 and its [E] counterexample result.

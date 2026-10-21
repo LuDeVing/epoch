@@ -12,6 +12,23 @@ single mechanism; **Low** = mostly about traits, groups or the body, which do no
 
 ---
 
+## Deep research by subfield
+
+Subfields are researched in batches of five. Each gets a folder `<field>/subfields/NN_slug/` holding:
+
+| File | What it is |
+|---|---|
+| `DEEP.md` | **Read this.** 11 fixed sections: 1 what it is, 2 history and theories, 3 core findings with numbers, 4 mechanisms and models, 5 what holds up, 6 language models, **7 what our agent should take** (add now vs test first), **8 tests on our bench**, 9 what does not transfer, 10 open questions, 11 sources |
+| `claims.jsonl` | findings turned into claims, each with status (established, single-source, contested, refuted), schema part and a test |
+| `critique.md` | numbers corrected on re-check, contradictions, gaps and which closed |
+| `evidence_a` to `_d.jsonl` | raw evidence: a foundations, b replications and critiques, c language models, d gap search |
+
+| Batch | Date | Subfields | Index |
+|---|---|---|---|
+| 1 | 2026-10-21 | A01: mental models; Wason task and hypothesis testing; content effects; belief bias; dual-process theories | [`A01_.../SUBFIELDS.md`](A01_cognitive_psychology_of_thinking_and_rea/SUBFIELDS.md#deep-research) |
+
+---
+
 ## A. Psychology and cognitive science
 
 | # | Field | What it studies | Coverage | Priority |
