@@ -25,6 +25,23 @@ Together: a hypothesis is a scarce resource that succeeds when correct, yet real
 | LLM debugging | Self-debugging, SWE-bench | Chen et al.; Jimenez et al. | High | Direct evidence (from memory) |
 | Verbalisation (rubber duck) | Explaining code aloud | Folklore | Low | Contrast with 4b |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Cognitive breakdowns | | not started |
+| Hypotheses in debugging | [`subfields/02_hypotheses_in_debugging/DEEP.md`](subfields/02_hypotheses_in_debugging/DEEP.md) | done, batch 3 (2026-10-26) |
+| Mental model of the system | | not started |
+| Debugging as scientific method | | not started |
+| Program comprehension | | not started |
+| Tools and questions | | not started |
+| Fault localisation and repair | | not started |
+| Novices and education | | not started |
+| LLM debugging | [`subfields/09_llm_debugging/DEEP.md`](subfields/09_llm_debugging/DEEP.md) | done, batch 3 (2026-10-26) |
+| Verbalisation (rubber duck) | | not started |
+
 ## Dig into next
 
 **1. Hypotheses supplied as an aid.**

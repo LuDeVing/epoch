@@ -17,6 +17,23 @@ This field studies how to make a language model reason better without changing i
 | RL on verifiable rewards | Training for longer, better reasoning | DeepSeek-R1 line [M] | Low | background only (we do not train) |
 | Overthinking | Extra tokens lowering accuracy | alphaxiv 2604.10739 [M] | High | G11 |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Chain-of-thought prompting | | not started |
+| Sampling and voting (self-consistency) | | not started |
+| Test-time compute scaling | | not started |
+| Verification design | [`subfields/04_verification_design/DEEP.md`](subfields/04_verification_design/DEEP.md) | done, batch 3 (2026-10-26) |
+| Self-correction | | not started |
+| Learned refinement and self-verification | | not started |
+| Search over thoughts | | not started |
+| Adaptive stopping, metareasoning | [`subfields/08_adaptive_stopping_and_metareasoning/DEEP.md`](subfields/08_adaptive_stopping_and_metareasoning/DEEP.md) | done, batch 3 (2026-10-26) |
+| RL on verifiable rewards | | not started |
+| Overthinking | | not started |
+
 ## Dig into next
 
 1. **Verification design.** Which verifier type (symbolic or executable, generative, prompt-based) has the best true-positive rate per token on our task classes? Does a verifier that sees no authorship and no proposed answer (G5) keep its accuracy? Evidence: per-class verifier precision and recall at equal tokens on our suites.

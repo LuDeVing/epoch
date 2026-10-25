@@ -18,14 +18,14 @@ This field asks how people find a path from a start to a goal when the path is n
 
 ## Deep research
 
-One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
 
 | Subfield | Deep document | Status |
 |---|---|---|
 | Problem-space theory | [`subfields/01_problem_space_theory/DEEP.md`](subfields/01_problem_space_theory/DEEP.md) | done, batch 2 (2026-10-21) |
-| Means-ends analysis | | not started |
+| Means-ends analysis | [`subfields/02_means_ends_analysis/DEEP.md`](subfields/02_means_ends_analysis/DEEP.md) | done, batch 3 (2026-10-26) |
 | Impasse-driven subgoaling and chunking | | not started |
-| Problem solving strategies and the problem-solving cycle | | not started |
+| Problem solving strategies and the problem-solving cycle | [`subfields/04_problem_solving_strategies_and_cycle/DEEP.md`](subfields/04_problem_solving_strategies_and_cycle/DEEP.md) | done, batch 3 (2026-10-26) |
 | Representational change theory | | not started |
 | Gestalt insight and the "sudden insight" debate | | not started |
 | Progress monitoring | | not started |

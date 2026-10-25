@@ -16,6 +16,22 @@ Metacognition is thinking about and controlling one's own thinking. Flavell (197
 | LLM metacognitive harness | A harness separating monitoring from reasoning: use pre-task and post-answer self-assessments to decide to trust, retry with compact feedback, or aggregate; Claude Sonnet 4.6 pooled accuracy 48.3 to 56.9, as reported by the authors [V3] | Cao et al. (2026) | High | S0, S6, S7; single source, test at equal tokens |
 | Social, organisational and clinical metacognition | Beliefs about others' minds; metacognitive therapy [V2] | Wells; Demetriou | Low | does not transfer |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Monitoring and control framework | | not started |
+| Metamemory judgments | | not started |
+| Accuracy and dissociation of monitoring | [`subfields/03_accuracy_and_dissociation_of_monitoring/DEEP.md`](subfields/03_accuracy_and_dissociation_of_monitoring/DEEP.md) | done, batch 3 (2026-10-26) |
+| Metacognitive knowledge: declarative, procedural, conditional | | not started |
+| Metacognitive regulation | | not started |
+| Confidence and signal-detection measures | | not started |
+| Meta-reasoning | | not started |
+| LLM metacognitive harness | [`subfields/08_llm_metacognitive_harness/DEEP.md`](subfields/08_llm_metacognitive_harness/DEEP.md) | done, batch 3 (2026-10-26) |
+| Social, organisational and clinical metacognition | | not started |
+
 ## Dig into next
 
 1. **Monitoring accuracy and cheap signals.** Questions: (a) Which signals (token count, agreement across 3 short samples, answer entropy, pre-task self-rating of solvability) predict that an attempt is right, per class? (b) Does the LLM harness's "know when it knows" claim hold on our suites, and does acting on it beat our impasse detector? (c) How does it square with G4 (samples correlated)? Evidence: logged attempts; replicate the harness idea at equal tokens; calibration curves.

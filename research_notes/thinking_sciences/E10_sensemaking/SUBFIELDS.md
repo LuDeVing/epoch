@@ -15,6 +15,21 @@ Sensemaking is the study of how people turn confusing or surprising situations i
 | Analyst sensemaking | Foraging loop and sense loop | Pirolli and Card 2005 [M] | Med | State (represent); memory |
 | Manipulated sensemaking | Disinformation builds "deep stories" that set the frames used on later events; people prefer plausible to accurate accounts | Prochaska et al. 2024 [V]; qualitative, human rumours only | Med | Guardrail (S1 input hygiene) |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Data-frame theory | [`subfields/01_data_frame_theory_and_frame_activities/DEEP.md`](subfields/01_data_frame_theory_and_frame_activities/DEEP.md) | done, batch 3 (2026-10-26) |
+| Frame activities (elaborate, question, compare, preserve, reframe, seek) | covered in [`subfields/01_data_frame_theory_and_frame_activities/DEEP.md`](subfields/01_data_frame_theory_and_frame_activities/DEEP.md) | done, batch 3 (2026-10-26) |
+| Anomaly handling and fixation | [`subfields/03_anomaly_handling_and_fixation/DEEP.md`](subfields/03_anomaly_handling_and_fixation/DEEP.md) | done, batch 3 (2026-10-26) |
+| Weick's organisational sensemaking | | not started |
+| Reviews that map the field | | not started |
+| Sensemaking in defence and safety | | not started |
+| Analyst sensemaking | | not started |
+| Manipulated sensemaking | | not started |
+
 ## Dig into next
 
 1. **Data-frame theory and frame activities.** Questions: Can the activities be written as program-checked moves around one stored frame (the current rule in plain words)? Which activity fires on a failed check, and none on a schedule (G1)? Does "preserve" (explaining anomalies away) predict our wrong answers? Evidence needed: the 2007 paper itself (I opened only a one-paragraph summary page), coded outcomes from Klein's cases, and our logs of runs where a rule fit the examples but failed a held-out one.

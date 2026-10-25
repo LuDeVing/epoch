@@ -18,7 +18,7 @@ This field studies how people draw conclusions, test ideas and judge arguments. 
 
 ## Deep research
 
-One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
 
 | Subfield | Deep document | Status |
 |---|---|---|

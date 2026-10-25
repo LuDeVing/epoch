@@ -30,6 +30,7 @@ Subfields are researched in batches. Each gets a folder `<field>/subfields/NN_sl
 |---|---|---|---|
 | 1 | 2026-10-21 | A01: mental models; Wason task and hypothesis testing; content effects; belief bias; dual-process theories | [`A01_.../SUBFIELDS.md`](A01_cognitive_psychology_of_thinking_and_rea/SUBFIELDS.md#deep-research) |
 | 2 | 2026-10-21 | A01: single- versus two-process induction and deduction; dual-strategy model; syllogistic and conditional reasoning; inductive and probabilistic reasoning. A02: problem-space theory | [`A01_.../SUBFIELDS.md`](A01_cognitive_psychology_of_thinking_and_rea/SUBFIELDS.md#deep-research), [`A02_.../SUBFIELDS.md`](A02_problem_solving_research/SUBFIELDS.md#deep-research) |
+| 3 | 2026-10-26 | Top 2 subfields of A02, A04, A12, C01, C02, C09, E06, E08, E09, E10 (20 subfields), plus a `SYNTHESIS.md` for each of these fields | each field's `SUBFIELDS.md`, section "Deep research" |
 
 ---
 

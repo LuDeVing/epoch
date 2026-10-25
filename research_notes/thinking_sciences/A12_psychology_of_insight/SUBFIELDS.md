@@ -21,6 +21,23 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 
 Corrections from the first draft: the Jones 2003 record cites Knoblich, Ohlsson and Raney 2001 as the representational change source and gives the progress monitoring source as MacGregor et al. 2001. Evidence for sudden restructuring is described as inconclusive in search results (not opened).
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Representational change theory | [`subfields/01_representational_change/DEEP.md`](subfields/01_representational_change/DEEP.md) | done, batch 3 (2026-10-26) |
+| Constraint relaxation | covered in [`subfields/01_representational_change/DEEP.md`](subfields/01_representational_change/DEEP.md) | done, batch 3 (2026-10-26) |
+| Chunk decomposition | covered in [`subfields/01_representational_change/DEEP.md`](subfields/01_representational_change/DEEP.md) | done, batch 3 (2026-10-26) |
+| Progress monitoring theory | [`subfields/04_progress_monitoring_theory/DEEP.md`](subfields/04_progress_monitoring_theory/DEEP.md) | done, batch 3 (2026-10-26) |
+| Theory comparison | | not started |
+| Gestalt roots and fixation | | not started |
+| Dual-process and three-process accounts | | not started |
+| Stage model and incubation | | not started |
+| Neuroscience and individual differences | | not started |
+| Methods and measurement | | not started |
+
 ## Dig into next
 
 **1. Constraint relaxation and chunk decomposition.**

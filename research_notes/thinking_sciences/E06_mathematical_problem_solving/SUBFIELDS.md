@@ -20,6 +20,22 @@ What the 2025 preprint (arXiv 2509.14662, EMNLP 2025) labels and measured. It la
 | Problem posing, conjecture | "What if not", refutation | Brown and Walter; Lakatos | Med | O4 |
 | Beliefs and affect | Persistence, "5-minute" belief | Schoenfeld | Low | Background |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Polya's heuristics | [`subfields/01_polya_heuristics/DEEP.md`](subfields/01_polya_heuristics/DEEP.md) | done, batch 3 (2026-10-26) |
+| Schoenfeld framework | covered in [`subfields/04_episode_analysis_of_reasoning_models/DEEP.md`](subfields/04_episode_analysis_of_reasoning_models/DEEP.md) | done, batch 3 (2026-10-26) |
+| Metacognition and control | | not started |
+| Episode analysis of reasoning models | [`subfields/04_episode_analysis_of_reasoning_models/DEEP.md`](subfields/04_episode_analysis_of_reasoning_models/DEEP.md) | done, batch 3 (2026-10-26) |
+| Expert-novice schemas | | not started |
+| Worked examples | | not started |
+| Teaching heuristics | | not started |
+| Problem posing, conjecture | | not started |
+| Beliefs and affect | | not started |
+
 ## Dig into next
 
 **1. Coded impasse detector from episodes.**

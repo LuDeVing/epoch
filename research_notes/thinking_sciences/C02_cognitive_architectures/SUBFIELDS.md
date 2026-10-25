@@ -17,6 +17,23 @@ A cognitive architecture is a fixed program that models how a mind works: memori
 | Global workspace, LIDA | Broadcast and attention cycles | Baars; Franklin [M] | Low | background only |
 | Language agents as architectures | Mapping Soar and ACT-R parts to LLM agents | arXiv 2607.23942 [M] | High | design check |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Soar: operator selection and impasses | [`subfields/01_soar_operator_selection_and_impasses/DEEP.md`](subfields/01_soar_operator_selection_and_impasses/DEEP.md) | done, batch 3 (2026-10-26) |
+| Soar: impasse types | covered in [`subfields/01_soar_operator_selection_and_impasses/DEEP.md`](subfields/01_soar_operator_selection_and_impasses/DEEP.md) | done, batch 3 (2026-10-26) |
+| Soar: chunking | [`subfields/03_soar_chunking/DEEP.md`](subfields/03_soar_chunking/DEEP.md) | done, batch 3 (2026-10-26) |
+| Soar: other memories and RL | | not started |
+| ACT-R: production selection | | not started |
+| ACT-R: declarative memory | | not started |
+| ACT-R: production compilation | | not started |
+| Hybrid and connectionist (CLARION, Sigma) | | not started |
+| Global workspace, LIDA | | not started |
+| Language agents as architectures | | not started |
+
 ## Dig into next
 
 1. **Soar impasse types and substates.** Which impasse types map to our S6 triggers (no change = no pass in two rounds; tie = two candidates equal)? What is returned from a substate (only results) and should our subgoal return only its result? Evidence: Soar manual impasse chapter (not yet opened), a trace of Soar on the Water Jug task, our logs of which trigger fired.

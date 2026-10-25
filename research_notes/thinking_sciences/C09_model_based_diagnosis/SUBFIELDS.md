@@ -17,6 +17,23 @@ Model-based diagnosis finds which part of a system is faulty by comparing what a
 | Readings in model-based diagnosis | Standard reference | Hamscher, Console, de Kleer 1992 [V as citation] | Med | reading list |
 | Software, spreadsheet, KB debugging | Applying diagnosis to artefacts | Jannach et al. [M] | Med | S5 REVISE |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Consistency-based diagnosis | [`subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md`](subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md) | done, batch 3 (2026-10-26) |
+| Abductive diagnosis | | not started |
+| Conflict generation, GDE | covered in [`subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md`](subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md) | done, batch 3 (2026-10-26) |
+| Hitting-set tree search | | not started |
+| Efficient diagnosis algorithms | | not started |
+| Probing and measurement selection | [`subfields/06_probing_and_measurement_selection/DEEP.md`](subfields/06_probing_and_measurement_selection/DEEP.md) | done, batch 3 (2026-10-26) |
+| Diagnosability | | not started |
+| Spectrum-based fault localisation | | not started |
+| Readings in model-based diagnosis | | not started |
+| Software, spreadsheet, KB debugging | | not started |
+
 ## Dig into next
 
 1. **Probing and measurement selection.** Given surviving rules or suspect steps, how do we pick the input that best separates them? Can code compute the entropy over candidates? Evidence: a worked ARC case; how often the chosen probe removes at least one candidate; the Hamscher, Console, de Kleer readings (not yet obtained).

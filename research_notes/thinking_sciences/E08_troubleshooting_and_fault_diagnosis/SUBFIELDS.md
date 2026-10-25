@@ -19,6 +19,23 @@ Opened facts. The ASEE paper (Sabuncu et al.) summarises troubleshooting as a se
 | LLM help in hardware debugging | Chat with LLMs | Hu and Ash 2026 | Med | Overconfidence matches G10 |
 | Industrial fault detection | Statistical detection | Isermann | Low | Background |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Cognitive models of troubleshooting | | not started |
+| Expert-novice differences | | not started |
+| Hypothesis limits | [`subfields/03_hypothesis_limits/DEEP.md`](subfields/03_hypothesis_limits/DEEP.md) | done, batch 3 (2026-10-26) |
+| Search strategies | [`subfields/04_troubleshooting_search_strategies/DEEP.md`](subfields/04_troubleshooting_search_strategies/DEEP.md) | done, batch 3 (2026-10-26) |
+| Surface-cue heuristics | | not started |
+| Model-based diagnosis | | not started |
+| Training and tutors | | not started |
+| Complexity of expert troubleshooting | | not started |
+| LLM help in hardware debugging | | not started |
+| Industrial fault detection | | not started |
+
 ## Dig into next
 
 **1. Search strategy: half-split and cost-weighted tests.**
