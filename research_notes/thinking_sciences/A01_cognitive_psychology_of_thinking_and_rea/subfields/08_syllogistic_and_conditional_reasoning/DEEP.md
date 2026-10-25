@@ -1,6 +1,6 @@
 # Syllogistic and conditional reasoning: deep document
 
-Series: A01 cognitive psychology of thinking and reasoning, subfield 08. Written 2026-10-21 from evidence_a-d.jsonl (ids a01-a29, b01-b29, c01-c27, d01-d24), claims.jsonl (K01-K36) and critique.md. Earlier documents in this series (mental models, Wason, content effects, belief bias, dual process) are not repeated. Where they overlap, this file only points to them.
+Series: A01 cognitive psychology of thinking and reasoning, subfield 08. Written 2026-10-21 from evidence_a-d.jsonl (ids a01-a29, b01-b29, c01-c27, d01-d24), claims.jsonl (A01.08-K01-A01.08-K36) and critique.md. Earlier documents in this series (mental models, Wason, content effects, belief bias, dual process) are not repeated. Where they overlap, this file only points to them.
 
 Reading marks. [E] established, [S] single source, [C] contested. [V] source opened, [M] snippet or secondary table only. Evidence ids in brackets, e.g. (a03).
 
@@ -214,7 +214,7 @@ Treat "if p then q" as a 2 x 2 table over p and q.
 - Predictions: a high-probability conclusion effect for DA, AC and MT (a negated category is large, so negative conclusions look better); a low-probability premise effect for AC and DA; opposite effects for the converse inferences. With no exceptions MT is drawn regardless of probabilities (a29).
 - Held: first and third predictions. Second was weak or an artifact in Exp 2 and 3 (a29).
 - Implementation: given stated frequencies, compute the four conditional probabilities in code and compare with the model's acceptance. Use it as a calibration reference, not as ground truth for validity.
-- Caveat: the handling of negated propositions for DA and MT is challenged by Verschueren and Schaeken, seen only as an abstract record [M] (critique). Treat the model as contested for the denial inferences (K17).
+- Caveat: the handling of negated propositions for DA and MT is challenged by Verschueren and Schaeken, seen only as an abstract record [M] (critique). Treat the model as contested for the denial inferences (A01.08-K17).
 
 ### 4.5 Probability of the conditional
 
@@ -251,7 +251,7 @@ Pattern (Logic-LM, LINC, SemEval systems; c18, c19, d14-d17): LLM translates, a 
 - Translation unit: one proposition at a time into a fixed form (FOL as LaTeX then rewritten to Prover9 syntax; or A/B/C letter-abstracted standard form).
 - Decision: Prover9, Z3, or a lookup in the 24 valid forms.
 - Patches: existential import (add a non-empty fact for each term), structured output for extraction (Z3 parse failure fell from 22% to near zero, c20), fallback when parsing fails.
-- Report parse error rate and reasoning error rate separately (K33).
+- Report parse error rate and reasoning error rate separately (A01.08-K33).
 - Variant: dual-view. Parse twice, once from the native text and once with content terms replaced by symbols; a deterministic verifier decides (d17).
 - Variant: vote then solve. Five LLM classifiers vote; the solver is called only on 3-2 splits (c20, d24).
 
@@ -312,7 +312,7 @@ Did not work (or not reliably):
 - Telling the model to ignore plausibility helped "somewhat" but CE stayed high (d16).
 - Activation steering (Valentino et al.): up to 15% absolute gain, needs open weights (c21). Out of scope.
 
-### 5.5 Contested solver claim (K10)
+### 5.5 Contested solver claim (A01.08-K10)
 
 FregeLogic: vote with solver tiebreak 94.3% / CE 2.85 vs Z3 as main judge 74.7% / CE 26.28 vs Z3 veto 74.1% / 26.70 (c20). UFAL-CUNI: a 4B model with a Prover9 pipeline got 95.8% (d15). Ten SemEval systems hit 100% (d14). The difference is parse quality and the templated data. No paper compares vote-with-tiebreak and parse-then-prove at equal tokens. FregeLogic costs about 4,300 tokens and six calls per item (d24). Status: [C].
 
@@ -327,7 +327,7 @@ FregeLogic: vote with solver tiebreak 94.3% / CE 2.85 vs Z3 as main judge 74.7% 
 | 64-mood production, 9 options | Larger models above average humans on valid items, about 50% human vs 75% best PaLM 2. Near 0% on NVC under zero-shot CoT. Largest model not best | c01, c03, b24, b25 |
 | Same, open models | LLaMA-3 8B instruct 50.00% overall (78.15 valid, 30.28 invalid). 70B instruct 41.25% (54.44 valid, 32.50 invalid). 70B base 30.63%. Pythia-1.4B 14.22% | c04 |
 | Real-vs-nonce words | Content effects stay in zero-shot and in-context. Fine-tuning removes them only with pseudo-words | b23, c05 |
-| Chain length | 3 and 4 premise chains lower zero-shot accuracy; 280 items each | b23, K21 |
+| Chain length | 3 and 4 premise chains lower zero-shot accuracy; 280 items each | b23, A01.08-K21 |
 | Validity of a supplied conclusion, 2025-26 reasoning models | Near ceiling. GPT-5 variants 98.6 to 99.7% on belief-inconsistent valid items; Gemini 2.5 Flash 99.6% syntax accuracy | d19, d20, c11 |
 | Belief revision (suppression design) | Very low update accuracy, about 10 to 22% | d01-d03 |
 | Rule rigidity against world knowledge | GPT-4o 0.0022 paired accuracy on one MT subset | d04 |
@@ -350,11 +350,11 @@ FregeLogic: vote with solver tiebreak 94.3% / CE 2.85 vs Z3 as main judge 74.7% 
 - Eisape: near 0% under the generative zero-shot prompt. A binary yes/no format (Appendix B.3) gets markedly higher accuracy on NVC items. So part of the aversion is an elicitation effect (c03, critique 4).
 - Bertolazzi: in-context examples (including same-schema ones) do not fix it. SFT does, at the price of pattern-matching on the 64 schemas. In-context learning made answers more contradictory (LLaMA-3 8B contradictory answers: zero-shot CoT 1.09%, ICL-out 1.72%, ICL-in 3.12%, SFT 0.31%; Pythia-1.4B 18.91, 28.12, 28.28, 73.91 of which 70.47% were "nothing follows" plus another conclusion) (b22). LLaMA completeness (answer includes all valid conclusions): 43.14% zero-shot vs 96.93% SFT, 72.93 and 76.24 ICL (a27).
 - Ando and Mineshima: "neutral" 63.2% (Claude 3.5 Sonnet) vs 25.3% (GPT-4o-mini), labels only, no CoT. NeuBAROCO GPT-4: neutral about 30 points below other labels, often answered "contradiction" (d21, c14).
-- Reasoning-tuned models: o3 and GPT-5 reject invalid and import-dependent conclusions at 99.6 to 100% recall in a binary task (d12). Countermodel construction 99% (o3), 89% (Qwen3-32B), against 0 to 42% for conventional models (d18). But the model is told the argument is invalid in d18, and d12 supplies the conclusion. **Nobody has tested free production of NVC on the 37 items with a reasoning model.** [C] (K04).
+- Reasoning-tuned models: o3 and GPT-5 reject invalid and import-dependent conclusions at 99.6 to 100% recall in a binary task (d12). Countermodel construction 99% (o3), 89% (Qwen3-32B), against 0 to 42% for conventional models (d18). But the model is told the argument is invalid in d18, and d12 supplies the conclusion. **Nobody has tested free production of NVC on the 37 items with a reasoning model.** [C] (A01.08-K04).
 
 **Figural and conversion effects.** NeuBAROCO: lower accuracy on conversion and atmosphere items. GPT-3.5 atmosphere items 39.42%; fine-tuned NLI models 0% and 0.96% (b27). GPT-4o-mini conversion 52.6% in natural language, 36.8% with Euler diagrams, Claude 3.5 Sonnet 84.2% (d21).
 
-**Precision and recall.** One model: precision 99.2%, recall 42.8% on validity (rejects valid). Gemma 3 27B IT: recall 93.1%, precision 61.0% (accepts too much). Same accuracy, opposite error (c12, K23). Vanilla GPT-5 over-rejected: about 60% on valid items, 96% on invalid (d16).
+**Precision and recall.** One model: precision 99.2%, recall 42.8% on validity (rejects valid). Gemma 3 27B IT: recall 93.1%, precision 61.0% (accepts too much). Same accuracy, opposite error (c12, A01.08-K23). Vanilla GPT-5 over-rejected: about 60% on valid items, 96% on invalid (d16).
 
 **Existential import drift.** SemEval-2026 Task 11 uses the traditional reading (confirmed by organisers). Under it o3 and GPT-5 score Acct about 62.5% because they accept exactly the 15 modern-valid forms (EN+ 62.50 / 62.53; modern 100.00). Gemini-2.5-Pro 65.17 / 97.33; Gemini-3-Pro-Preview 63.48 / 99.00; Claude-3.7-Sonnet 70.33 / 92.00; Claude-4.5-Sonnet 70.01 / 92.52; GPT-4.1 80.04 / 82.38; GPT-4o 93.33 / 68.75 (traditional / modern). With an empty minor term, Gemini-3-Pro-Preview flips to 98.41 / 64.02 (d12). Thinking variants drift to the modern reading faster than instruct ones; Qwen3-Next-80B Thinking per-mood consistency ranges 8.33 to 62.50 across settings (d13). A benchmark score here may reflect the logic reading, not skill.
 
@@ -413,17 +413,17 @@ Schema parts: G guardrails (G1-G12), S states (S0-S9), O operators (O1-O8), M me
 
 | # | Take | Schema part | Status | Evidence |
 |---|---|---|---|---|
-| 1 | **Score valid and invalid items separately, and report false accept and false reject separately.** Never one pooled accuracy. Instruction tuning moved invalid up and valid down; two models with equal accuracy erred in opposite directions. | G7 (harness), M (class record) | [E] | c04, c01, c12, K08, K23; b24 |
+| 1 | **Score valid and invalid items separately, and report false accept and false reject separately.** Never one pooled accuracy. Instruction tuning moved invalid up and valid down; two models with equal accuracy erred in opposite directions. | G7 (harness), M (class record) | [E] | c04, c01, c12, A01.08-K08, A01.08-K23; b24 |
 | 2 | **Code-side contradiction check.** Reject any answer set holding A with O, E with I, or NVC with another conclusion. No model needed. | G5 (code selects), S4 | [E] direction (one paper's numbers) | a27, b22 |
-| 3 | **Normalise premise order (figure) and check agreement across both orders.** Disagreement between a problem and its term-swapped twin is a free inconsistency signal and an impasse trigger. | S1 (normalise), G1 (signal), G3 (mutated input) | [E] | a04, b05, c02, d10, d21, K03 |
-| 4 | **State the existential-import reading and the grading logic in the S0 / S1 restatement.** Which reading holds (24 or 15 valid forms) decides which syllogisms are valid. Benchmarks do not agree with frontier models by default. | S0 / S1 | [E] | a23, c09, d12-d15, K20, K32 |
-| 5 | **Weight MT separately; log it as its own item type.** MT is the weak valid form for people and models, with negation making it worse (35% with "if not-p then q"). | S4 test set, M | [E] | c15, b16, b17, d23, K18, K19 |
+| 3 | **Normalise premise order (figure) and check agreement across both orders.** Disagreement between a problem and its term-swapped twin is a free inconsistency signal and an impasse trigger. | S1 (normalise), G1 (signal), G3 (mutated input) | [E] | a04, b05, c02, d10, d21, A01.08-K03 |
+| 4 | **State the existential-import reading and the grading logic in the S0 / S1 restatement.** Which reading holds (24 or 15 valid forms) decides which syllogisms are valid. Benchmarks do not agree with frontier models by default. | S0 / S1 | [E] | a23, c09, d12-d15, A01.08-K20, A01.08-K32 |
+| 5 | **Weight MT separately; log it as its own item type.** MT is the weak valid form for people and models, with negation making it worse (35% with "if not-p then q"). | S4 test set, M | [E] | c15, b16, b17, d23, A01.08-K18, A01.08-K19 |
 | 6 | **Expect surface-pattern answers on invalid items; flag them in code.** Compute atmosphere / min-heuristic predictions in code. If the model's answer equals the heuristic prediction and the validity check disagrees, tag it. | G1 trigger, S4 | [E] direction for LLMs generally, [S] numbers | a05, a06, c06, a26 |
 | 7 | **Do not rely on few-shot examples to teach "nothing follows."** Use a structural step instead. | G-series, 4b adjacent | [S] strictly, but see #8 | b20, c05 |
-| 8 | **Any solver step needs a fallback and separate error counts.** Report parse errors and reasoning errors apart; fall back to the plain answer when the parse fails; patch existential import. | O (formal check), G6 | [E] | b28, c18, c19, d14, d15, K09, K33 |
-| 9 | **Check a formally valid conclusion against background knowledge before accepting it, and check an added premise for a defeater before keeping an MP conclusion.** Both failure directions are measured in LLMs. | G (premise-completeness), S4 | [E] for humans (suppression), [S] each for LLMs | a13, b09, b11, d01, d04, K11, K12 |
+| 8 | **Any solver step needs a fallback and separate error counts.** Report parse errors and reasoning errors apart; fall back to the plain answer when the parse fails; patch existential import. | O (formal check), G6 | [E] | b28, c18, c19, d14, d15, A01.08-K09, A01.08-K33 |
+| 9 | **Check a formally valid conclusion against background knowledge before accepting it, and check an added premise for a defeater before keeping an MP conclusion.** Both failure directions are measured in LLMs. | G (premise-completeness), S4 | [E] for humans (suppression), [S] each for LLMs | a13, b09, b11, d01, d04, A01.08-K11, A01.08-K12 |
 | 10 | **Do not conflate "probability of if" with P(C|A) in prompts; define which quantity is asked.** | S1 | [C]/[E] for the need to define | a18, a19, b13, b15 |
-| 11 | **Per-problem difficulty from the human table for effort allocation.** Spend more checking where human answers are spread (high entropy) and in figures 1 and 2 for NVC. | S0 / S3 budget (G12) | [E] for the human map | a02, b04, d08, d10, K01 |
+| 11 | **Per-problem difficulty from the human table for effort allocation.** Spend more checking where human answers are spread (high entropy) and in figures 1 and 2 for NVC. | S0 / S3 budget (G12) | [E] for the human map | a02, b04, d08, d10, A01.08-K01 |
 
 ### 7.2 Test first
 
@@ -431,24 +431,24 @@ Each item has a hypothesis; none is established for LLMs. Order is by value per 
 
 | # | Test | Schema part | Status | Evidence | Why test |
 |---|---|---|---|---|---|
-| T1 | **Counter-model search step for NVC.** Code enumerates region assignments and returns a counterexample to each candidate; the model reads it back. Compare against plain CoT on the 37 invalid items at equal tokens. | O (counterexample search), S4, S7 | [S] (human best-practice; LLM unproven) | a21, b03, b26, d18, K04, K30 | Gap 2 and gap 1. Might be unneeded on a reasoning base. |
+| T1 | **Counter-model search step for NVC.** Code enumerates region assignments and returns a counterexample to each candidate; the model reads it back. Compare against plain CoT on the 37 invalid items at equal tokens. | O (counterexample search), S4, S7 | [S] (human best-practice; LLM unproven) | a21, b03, b26, d18, A01.08-K04, A01.08-K30 | Gap 2 and gap 1. Might be unneeded on a reasoning base. |
 | T2 | **Per-candidate binary questions instead of "what follows?"** Loop over the 8 candidate conclusions with one yes/no each, plus NVC if none. | S3 / S4 | [S] | c03 | Eisape's binary format raised NVC accuracy. |
-| T3 | **Rules-in-prompt before any solver.** Aristotelian forms written into the prompt. | S1 / S4 | [S] | d16, K34 | +11.8 points at one model. |
-| T4 | **Parse-to-letters then reason in prose (abstraction).** | O6 (change representation), S1 | [C] | c07, d16, d17, d22, K22 | No clean test exists. |
-| T5 | **Requirement-vs-alternative classification state for any added premise.** | S4 / O (revise) | [S] | d01-d03, K27 | CoT and plan-and-solve added about 1 point. |
-| T6 | **Contrapositive rewrite on MT items.** | O5 (work backwards), O6 | [S] | c15, d03, d23, K18 | Cause of MT difficulty not isolated. |
-| T7 | **Knowledge-conflict probe before accepting a valid-form inference.** | G, S4 | [S] | d04, K28 | Counterbalances a solver front end. |
-| T8 | **Vote with solver tiebreak vs parse-then-prove vs plain vote at equal tokens.** | G4, G5, O (verify) | [C] | c20, d14-d16, d24, K10 | No equal-token comparison exists. |
-| T9 | **S0 existence line (traditional vs modern) on the nine import-dependent moods.** | S0 | [E] need, [S] size | d13, K32 | Prior-check helped 3 to 11 points; pin-traditional untested. |
-| T10 | **Style vote on conditional-probability items.** Sample five times, classify each as P(C|A), conjunction or material, test if the majority beats a single run. | G4, G5 | [S] | b15, d07, K16, K35 | Style classification does not exist for LLMs. |
-| T11 | **Relevance check before accepting an "if" claim as a premise.** | S1 | [S] | b18, d05, d06, K15, K29 | LLM slopes differ in shape from humans. |
-| T12 | **Counterexample enumeration depth for graded confidence.** Prompt for 0 to 4 disablers or alternatives; map the count to confidence in code. Watch the AC side effect. | S4 | [E] human, [S] LLM | b11, b12, K12 | Listing disablers raised AC in people. |
-| T13 | **Translate-to-logic then reason, gated on translation accuracy (>= about 90%).** | O (formal check) | [S] | d22, K36 | Gain for GPT-4, loss for GPT-3.5. |
-| T14 | **Chain decomposition into pairwise steps.** | O3 (decompose) | [S] | b23, K21 | Zero-shot accuracy falls with chain length. |
+| T3 | **Rules-in-prompt before any solver.** Aristotelian forms written into the prompt. | S1 / S4 | [S] | d16, A01.08-K34 | +11.8 points at one model. |
+| T4 | **Parse-to-letters then reason in prose (abstraction).** | O6 (change representation), S1 | [C] | c07, d16, d17, d22, A01.08-K22 | No clean test exists. |
+| T5 | **Requirement-vs-alternative classification state for any added premise.** | S4 / O (revise) | [S] | d01-d03, A01.08-K27 | CoT and plan-and-solve added about 1 point. |
+| T6 | **Contrapositive rewrite on MT items.** | O5 (work backwards), O6 | [S] | c15, d03, d23, A01.08-K18 | Cause of MT difficulty not isolated. |
+| T7 | **Knowledge-conflict probe before accepting a valid-form inference.** | G, S4 | [S] | d04, A01.08-K28 | Counterbalances a solver front end. |
+| T8 | **Vote with solver tiebreak vs parse-then-prove vs plain vote at equal tokens.** | G4, G5, O (verify) | [C] | c20, d14-d16, d24, A01.08-K10 | No equal-token comparison exists. |
+| T9 | **S0 existence line (traditional vs modern) on the nine import-dependent moods.** | S0 | [E] need, [S] size | d13, A01.08-K32 | Prior-check helped 3 to 11 points; pin-traditional untested. |
+| T10 | **Style vote on conditional-probability items.** Sample five times, classify each as P(C|A), conjunction or material, test if the majority beats a single run. | G4, G5 | [S] | b15, d07, A01.08-K16, A01.08-K35 | Style classification does not exist for LLMs. |
+| T11 | **Relevance check before accepting an "if" claim as a premise.** | S1 | [S] | b18, d05, d06, A01.08-K15, A01.08-K29 | LLM slopes differ in shape from humans. |
+| T12 | **Counterexample enumeration depth for graded confidence.** Prompt for 0 to 4 disablers or alternatives; map the count to confidence in code. Watch the AC side effect. | S4 | [E] human, [S] LLM | b11, b12, A01.08-K12 | Listing disablers raised AC in people. |
+| T13 | **Translate-to-logic then reason, gated on translation accuracy (>= about 90%).** | O (formal check) | [S] | d22, A01.08-K36 | Gain for GPT-4, loss for GPT-3.5. |
+| T14 | **Chain decomposition into pairwise steps.** | O3 (decompose) | [S] | b23, A01.08-K21 | Zero-shot accuracy falls with chain length. |
 
 ### 7.3 Do-not-add (consistent with SCHEMA 4b)
 
-- Do not hard-code one human-error theory into the agent (a01, K02). Use the theories only as detectors.
+- Do not hard-code one human-error theory into the agent (a01, A01.08-K02). Use the theories only as detectors.
 - Do not assume more CoT removes content effects: model-dependent (d24).
 - Do not add a "be careful with syllogisms" instruction: SCHEMA 4b already covers this class.
 - Do not treat a solver as the sole judge unless the parse is shown reliable (c20, b28).
@@ -475,20 +475,20 @@ All tests: both arms at equal tokens (G7). Pre-register the metric. Report per i
 | B11 | **Solver step.** 960-item templated set plus 100 free-text syllogisms | plain 5-vote vs 5-vote + solver tiebreak vs single parse-then-prove | Accuracy, content effect, parse error rate separately, tokens per item (FregeLogic about 4,300) | Templated: parse-then-prove near 96%+. Free text: parse failures rise; tiebreak safer. |
 | B12 | **Chain length.** 2, 3, 4 premises | whole vs pairwise reduction | Accuracy by length | Whole-chain accuracy falls with length; stepwise holds. |
 
-Calibration set: use the per-item human percentages of Table 6 of the meta-analysis as a difficulty ladder and compute Kendall tau between the agent's failure rank and human rank (K01). Interpret a low tau as the agent failing for different reasons than humans, which is informative, not bad.
+Calibration set: use the per-item human percentages of Table 6 of the meta-analysis as a difficulty ladder and compute Kendall tau between the agent's failure rank and human rank (A01.08-K01). Interpret a low tau as the agent failing for different reasons than humans, which is informative, not bad.
 
 ---
 
 ## 9. What does not transfer, and why
 
 - **Working-memory accounts.** First-in-first-out working memory as an explanation of the figural effect, and the .7 working-memory correlation. A language model has no limited-capacity buffer in that sense. The figural effect still shows up in LLMs (b24), so a different cause is at work. Do not copy working-memory fixes (chunking for load).
-- **Individual differences in strategy.** Human strategy classes (model builders vs not) need think-aloud data. We only see outputs. Response style classes in LLMs are untested (K35).
+- **Individual differences in strategy.** Human strategy classes (model builders vs not) need think-aloud data. We only see outputs. Response style classes in LLMs are untested (A01.08-K35).
 - **The Equation as a normative default.** Whether P(if) = P(q|p) is "the right answer" is contested (b13 vs a18). For an agent the right move is to define the quantity in the prompt, not to impose a view.
 - **Human suppression as the target.** Byrne's humans over-retract MP under an added requirement; LLMs under-retract (Belief-R) and also over-apply rules (RULEBREAKERS). The human pattern is not the goal and not the LLM failure. The agent's target is the correct defeasible answer, not the human one.
 - **Human NVC reluctance.** Humans are reluctant to say NVC (about 41% correct), models far more (near 0% in generative format), so copying human norms is not enough (c03).
 - **Atmosphere and matching as full explanations.** They explain surface agreement and some LLM errors, but fail on "only" premises (a05) and cannot produce NVC. Use as detectors only.
 - **PHM's assumption that reasoners cannot test validity.** True of many people, not true of a scaffolded agent with a code check (a06).
-- **mReasoner fits.** r = 0.82 to human data and a fit to LMs are diagnostics of a simulator with hand-set parameters. Not decision-relevant (K25).
+- **mReasoner fits.** r = 0.82 to human data and a fit to LMs are diagnostics of a simulator with hand-set parameters. Not decision-relevant (A01.08-K25).
 - **Small-model results.** Atmosphere fit is for one 8B model; many LLM numbers are from LLaMA-3 8B, Pythia, PaLM 2 and 7-8B open models. They may not describe current reasoning models (critique weak spots).
 - **Activation steering and fine-tuning.** Strong effects (up to 15% absolute; SFT near ceiling) but outside a scaffold-only agent (c21, c05).
 - **Templated benchmark results.** SemEval 100% systems exploit regular templates. Free text breaks parsing (FOLIO, c19; PrOntoQA, b28).

@@ -1,6 +1,6 @@
 # Wason selection task and hypothesis testing: deep document
 
-*Subfield 02 of A01 (cognitive psychology of thinking and reasoning). Written from evidence_a-d.jsonl (ids a01-a30, b01-b35, c01-c25, d01-d21), claims.jsonl (K01-K25) and critique.md. No new searching. Schema refs are to SINGLE_AGENT SCHEMA.md v0.2 (G1-G12, S0-S9, O1-O8, section 4b, memory).*
+*Subfield 02 of A01 (cognitive psychology of thinking and reasoning). Written from evidence_a-d.jsonl (ids a01-a30, b01-b35, c01-c25, d01-d21), claims.jsonl (A01.02-K01-A01.02-K25) and critique.md. No new searching. Schema refs are to SINGLE_AGENT SCHEMA.md v0.2 (G1-G12, S0-S9, O1-O8, section 4b, memory).*
 
 Status marks: **[E]** established (two or more independent sources), **[S]** single source, **[C]** contested. Evidence ids in brackets. Source marks in section 11: **[V]** opened this research, **[M]** snippet or second-hand only.
 
@@ -59,28 +59,28 @@ For the scaffold the five accounts agree on a practical rule [a30, our synthesis
 |---|---|---|---|
 | 2-4-6: most people announce wrong rules first | N=29: 6 no wrong rule, 13 one wrong, 9 two or more, 1 never | Wason 1960 [a01] | [E] pattern; Wason count itself single study |
 | Reworded rule kept after "no" | kept same rule in over half of cases; 3 + 3 protocols | Wason 1960 [a02, a03] | [S] |
-| Abstract selection task: logical answer rare | p and q 46%, p 33%, p+q+not-q 7%, p+not-q 4%; other sources 5 to 10% | [a11, a21, b01, b26] | [E] (K01) |
+| Abstract selection task: logical answer rare | p and q 46%, p 33%, p+q+not-q 7%, p+not-q 4%; other sources 5 to 10% | [a11, a21, b01, b26] | [E] (A01.02-K01) |
 | Pooled card counts, 34 tasks, 845 subjects | p 754, q 522, not-q 215, not-p 137 | O and C 1994 [a11] | [E] |
 | EIG model fit, negations | rho(16) = .92; 19 vs 5 pairwise agreements, p < .005 | O and C 1994 [b12] | [C] |
 | EIG model fit, 34 studies | G2(68) = 88.37, mean P(p) .22, P(q) .27 | O and C 2003 [a13] | [C] |
 | Probability manipulations | 28 conditions, mean G2(2) = 3.15; not-q never passed q in Exp 1 with real content | O, C, Grainger 1999 [a14] | [C] |
-| Selection pattern dependence | 99 of 228 experiments more redundant than 10,000 simulated independent runs | Ragni et al. [a27, b02] | [C] (K05) |
+| Selection pattern dependence | 99 of 228 experiments more redundant than 10,000 simulated independent runs | Ragni et al. [a27, b02] | [C] (A01.02-K05) |
 | Social contract vs descriptive | 75% vs 21% (Exp1), 71% vs 25% (Exp2); switched contracts 65% vs 0%, 80% vs 10% | Cosmides 1989 [a16, a17] | [C] |
 | Social contract replication | precaution 50, social contract 45, obligation 30, permission 20, situation control 15, action control 10 (n=20 each); deontic not above matched controls | Fiddick 2003 [a18] | [C] |
 | Relevance manipulation | 78% vs 26% (Exp1, n=27 per cell); 70% vs 25% (Exp3); 57% abstract (Exp4) | Sperber et al. 1995 [a20] | [S] |
 | Perspective instruction | Exp3: 50% and 58% p+not-q vs 3% and 0% in other perspective | Staller et al. 2000 [b28] | [S] |
 | Negated consequent | about 60% correct | Evans 1972 via [a21] | [E] pattern, mechanism [C] |
 | Matching bias with explicit negations | reduced not removed; about 75% inference / 25% guessing model fit; groups of 200-360 | Stahl et al. 2008 [a22] | [S] |
-| Experts still fail | Dutch judges 22.2% correct, 40% confirming only (n=27); maths majors and mathematicians under 50% on arbitrary rules | [b31, b17] | [E] (K17) |
+| Experts still fail | Dutch judges 22.2% correct, 40% confirming only (n=27); maths majors and mathematicians under 50% on arbitrary rules | [b31, b17] | [E] (A01.02-K17) |
 | Slow humans do better only on realistic rules | slowest 15% (over 80 s) above chance only on realistic; time z = 4.44 | Dasgupta [b16] | [S] |
 | Confirmatory question choice in social tests | certain testers ask mostly confirming questions; F(1,47) = 4.161 | Swann and Giuliano 1987 [b29] | [S] |
 | Confirmatory choice in clinical hypothesis tests | N=206; numeric group: confirm 25%, disconfirm 17.5%, both 45%, none 12.5%, chi2(3) = 9.80 | Godoy Avila et al. 2008 [b30] | [S] |
-| Tutoring | consequent logical choices about 37% to 66% (garbled table); transfer not shown | Osman 2007 [b25] | [S] (K18) |
+| Tutoring | consequent logical choices about 37% to 66% (garbled table); transfer not shown | Osman 2007 [b25] | [S] (A01.02-K18) |
 | Logic course alone fails | 12-week course no help; logic helps abstract only, permission examples deontic only, both help all | Cheng et al. 1986 [b26, b34 second-hand] | [S] |
 | Dual-goal DAX/MED (humans) | about 20% standard vs over 60% dual-goal | Gale and Ball 2006 [a26, abstract read] | [E] direction (with Tweney, Rossi) |
-| Contrast pair choice | 2-4-6/6-4-2 about 75%; 4-4-4 about 20%; 9-8-1 about 34% | Gale and Ball 2012 via Branchini [b24, d08] | [S] second-hand (K08) |
+| Contrast pair choice | 2-4-6/6-4-2 about 75%; 4-4-4 about 20%; 9-8-1 about 34% | Gale and Ball 2012 via Branchini [b24, d08] | [S] second-hand (A01.02-K08) |
 | Counterexample framing | Rossi 2001: about 2x test triples, over 4x negative feedback, over 50% first-attempt solutions | via Branchini [b24, d08] | [S] second-hand |
-| Thinking in opposites | 78.33% vs 38.33% (properties only) vs 36.66% (control); N=180, 60 per cell; chi2(2) = 27.986, p < .001 | Branchini et al. 2025 [b22, d07] | [S] (K07 marks as established through the family of contrast results) |
+| Thinking in opposites | 78.33% vs 38.33% (properties only) vs 36.66% (control); N=180, 60 per cell; chi2(2) = 27.986, p < .001 | Branchini et al. 2025 [b22, d07] | [S] (A01.02-K07 marks as established through the family of contrast results) |
 | Opposites gain mechanism | fewer repeated hypotheses, no more triples; solution earlier, F(2,89) = 5.702, p = .004 | [b23, d07] | [S] |
 
 Note: pooled effect sizes are almost absent in this field. The meta-analyses give pattern frequencies, not effect sizes (critique).
@@ -112,7 +112,7 @@ For noiseless deterministic hypotheses, EIG is highest for the input that splits
 - Counterexample framing [b24]: present the seed as a counterexample of the experimenter's rule.
 - The contrast must lie along the dimension that matters; a wrong contrast gave 20 to 34 percent [b24, second-hand].
 
-**4.6 Rewording check.** Run old and new hypothesis on the same held-out inputs. If no prediction changes, the revision is a rewording and is rejected (derived from a02, d13, d16; not yet measured for LLMs, K24).
+**4.6 Rewording check.** Run old and new hypothesis on the same held-out inputs. If no prediction changes, the revision is a rewording and is rejected (derived from a02, d13, d16; not yet measured for LLMs, A01.02-K24).
 
 **4.7 Test-budget bookkeeping (WILT).** Dedupe exact repeated tests in code (weak models repeat 6.7 to 9.8 tests per rule). Count how many of a random pool of 2000 candidate rules each test crosses off [c06]. Count distinct hypotheses, not tests [b23].
 
@@ -195,32 +195,32 @@ Status marks: [E] established, [S] single source, [C] contested.
 
 | # | Item | Schema part | Status | Evidence |
 |---|---|---|---|---|
-| A1 | When the hypothesis could be narrower than the truth, include at least one test that the hypothesis predicts will FAIL (a -Htest). Positive-only testing cannot expose a too-narrow rule. Reason it as set relation, not as a blanket "try to disprove". | S7 and S4 | [E] (theory plus 3 LLM benchmarks; the code-enforced version is untested, see 7B) | a04, a05, a06, b08, c08, c09, K02 |
-| A2 | Log in code the share of tests that could falsify the current hypothesis (I:C or positive-test share) per run. It predicts success. Use a stale-run signal (many positive tests in a row) as the trigger for a forced outside-the-hypothesis test, since G1 allows doubt on a signal. | section 6 logging, G1 | [E] as a correlate (correlational only) | c01, c08, c09, c10, d12, K09 |
-| A3 | Distrust stated reasoning and stated "I checked it". Domain experts and trained judges keep the confirming default. Judge by tests actually run. | G10 | [E] | b17, b31, b29, a03, K17 |
+| A1 | When the hypothesis could be narrower than the truth, include at least one test that the hypothesis predicts will FAIL (a -Htest). Positive-only testing cannot expose a too-narrow rule. Reason it as set relation, not as a blanket "try to disprove". | S7 and S4 | [E] (theory plus 3 LLM benchmarks; the code-enforced version is untested, see 7B) | a04, a05, a06, b08, c08, c09, A01.02-K02 |
+| A2 | Log in code the share of tests that could falsify the current hypothesis (I:C or positive-test share) per run. It predicts success. Use a stale-run signal (many positive tests in a row) as the trigger for a forced outside-the-hypothesis test, since G1 allows doubt on a signal. | section 6 logging, G1 | [E] as a correlate (correlational only) | c01, c08, c09, c10, d12, A01.02-K09 |
+| A3 | Distrust stated reasoning and stated "I checked it". Domain experts and trained judges keep the confirming default. Judge by tests actually run. | G10 | [E] | b17, b31, b29, a03, A01.02-K17 |
 | A4 | Block exact repeated tests in code. Weak models repeat 6.7 to 9.8 tests per rule; strong ones about 0.06. Count distinct hypotheses, not tests. | S4 | [E] on the pattern (mechanism is a symptom, not a proven cause) | c06, d04, b23 |
 | A5 | Make the counterexample explicit: state what a falsifying instance looks like before choosing tests. Perspective ("look for a violation of X") sets which counterexample is searched. | S2, S7 | [E] directionally (Ragni salience, Staller, Wason 1969, Sperber) | b03, b04, b28, a20 |
-| A6 | Do not rely on instructions to "be careful" or on importance framing, a bonus, or abstract logic teaching. Keep section 4b as is. | 4b | [E] | b30, b16, b26, K18 |
-| A7 | Do not assume a chain-of-thought lever is safe. Cap it per model and measure. CoT helped some models and hurt others by 15 to 20 points on the same task. | G11 | [C] on direction, [E] that it varies | d09, d10, d11, c25, K20 |
-| A8 | Generation of the right hypothesis is the bottleneck. Several independent hypothesis sets beat refining one set. Refinement rarely fixes a wrong idea. | S3 | [E] (3 sources) | d13, d05, d14, K21 |
-| A9 | A code-computed discriminating test between two surviving rules (the input where they disagree) is the right form of S7's counterexample search. Do not leave test choice to the model's opinion. | S7, G5 | [E] that LLM-proposed plus code-scored tests help on games with closed sets (3 sources); [S] on our task classes | c20, c21, c22, a10, K15 |
+| A6 | Do not rely on instructions to "be careful" or on importance framing, a bonus, or abstract logic teaching. Keep section 4b as is. | 4b | [E] | b30, b16, b26, A01.02-K18 |
+| A7 | Do not assume a chain-of-thought lever is safe. Cap it per model and measure. CoT helped some models and hurt others by 15 to 20 points on the same task. | G11 | [C] on direction, [E] that it varies | d09, d10, d11, c25, A01.02-K20 |
+| A8 | Generation of the right hypothesis is the bottleneck. Several independent hypothesis sets beat refining one set. Refinement rarely fixes a wrong idea. | S3 | [E] (3 sources) | d13, d05, d14, A01.02-K21 |
+| A9 | A code-computed discriminating test between two surviving rules (the input where they disagree) is the right form of S7's counterexample search. Do not leave test choice to the model's opinion. | S7, G5 | [E] that LLM-proposed plus code-scored tests help on games with closed sets (3 sources); [S] on our task classes | c20, c21, c22, a10, A01.02-K15 |
 | A10 | Tell the model true set sizes and base rates from code, since test value depends on them. | S1, S7 | [S] | a14, b13, a06 |
 
 ### 7B. Test first
 
 | # | Item | Schema part | Status | Evidence | What is unknown |
 |---|---|---|---|---|---|
-| T1 | **Code-gated falsification:** code rejects any round whose tests all fit the current hypothesis. | S4 | [S]/open | d20, K25 | No study compares code-enforced vs prompt-only at matched tokens. |
-| T2 | **Think-in-Opposites step:** for one property of the last test, build the opposite and test it (minimal pair). | S2 or O6 | [S] | c03, d01, b22, K11 | Jhaveri gain unmatched on tokens (+12 to 58 percent for thinking models). Human result has no independent replication. |
-| T3 | **Dual-goal (hypothesis plus complement):** keep rule A and not-A. | S2 | [C] | a26, c03, d01, K07 | Helps thinking models (+0.148), hurts non-thinking (-0.060). Per-model test only. |
-| T4 | **Role split:** test proposal separate from rule inference; inferer sees only outcomes. | S3 | [S] | c07, d03, K12 | Gain looks like a stronger-tester effect. Same-model split untested. |
-| T5 | **EIG tie-break among candidates** over an explicit hypothesis set, set refreshed each round. | S7, G5 | [C] | c21, c22, d05, K15 | When the same LLM builds the set, EIG gain disappeared on easy rules. |
-| T6 | **Rewording check:** a revision that changes no held-out prediction is rejected. | S5, G2 | open | a02, d13, d16, K24 | Not measured for LLMs. |
-| T7 | **Concrete re-expression (O6):** rewrite an abstract rule as a "who breaks the rule?" case. | O6, S2 | [C] | b15, b21, c14, K06 | Dasgupta vs Seals and Shalin conflict; no re-expression intervention study. |
-| T8 | **Negated-wording probe in S1:** reword the same logic with negations; a flip means matching, not reasoning. | S1 | [C] on mechanism | a22, b20, c15, K19 | One LLM study. |
-| T9 | **Explorer breadth and re-exploration at an impasse:** k independent hypothesis sets vs one refined k times. | S3, S6, O3 | [S] | d14, K22 | Gains at 125x to 310x cost; need token-matched best-of-n CoT arm. |
-| T10 | **Lessons for test choice (S9):** one-line lessons shown after the first attempt; test transfer to a differently worded item of the same class. | memory | [S] | b25, K18 | Human tutoring transfer not shown. |
-| T11 | **Sequential falsification gate (POPPER) for open scientific hypotheses.** | S8 | [S] | c18, c19, K16 | Not for ARC-like items. |
+| T1 | **Code-gated falsification:** code rejects any round whose tests all fit the current hypothesis. | S4 | [S]/open | d20, A01.02-K25 | No study compares code-enforced vs prompt-only at matched tokens. |
+| T2 | **Think-in-Opposites step:** for one property of the last test, build the opposite and test it (minimal pair). | S2 or O6 | [S] | c03, d01, b22, A01.02-K11 | Jhaveri gain unmatched on tokens (+12 to 58 percent for thinking models). Human result has no independent replication. |
+| T3 | **Dual-goal (hypothesis plus complement):** keep rule A and not-A. | S2 | [C] | a26, c03, d01, A01.02-K07 | Helps thinking models (+0.148), hurts non-thinking (-0.060). Per-model test only. |
+| T4 | **Role split:** test proposal separate from rule inference; inferer sees only outcomes. | S3 | [S] | c07, d03, A01.02-K12 | Gain looks like a stronger-tester effect. Same-model split untested. |
+| T5 | **EIG tie-break among candidates** over an explicit hypothesis set, set refreshed each round. | S7, G5 | [C] | c21, c22, d05, A01.02-K15 | When the same LLM builds the set, EIG gain disappeared on easy rules. |
+| T6 | **Rewording check:** a revision that changes no held-out prediction is rejected. | S5, G2 | open | a02, d13, d16, A01.02-K24 | Not measured for LLMs. |
+| T7 | **Concrete re-expression (O6):** rewrite an abstract rule as a "who breaks the rule?" case. | O6, S2 | [C] | b15, b21, c14, A01.02-K06 | Dasgupta vs Seals and Shalin conflict; no re-expression intervention study. |
+| T8 | **Negated-wording probe in S1:** reword the same logic with negations; a flip means matching, not reasoning. | S1 | [C] on mechanism | a22, b20, c15, A01.02-K19 | One LLM study. |
+| T9 | **Explorer breadth and re-exploration at an impasse:** k independent hypothesis sets vs one refined k times. | S3, S6, O3 | [S] | d14, A01.02-K22 | Gains at 125x to 310x cost; need token-matched best-of-n CoT arm. |
+| T10 | **Lessons for test choice (S9):** one-line lessons shown after the first attempt; test transfer to a differently worded item of the same class. | memory | [S] | b25, A01.02-K18 | Human tutoring transfer not shown. |
+| T11 | **Sequential falsification gate (POPPER) for open scientific hypotheses.** | S8 | [S] | c18, c19, A01.02-K16 | Not for ARC-like items. |
 
 **Recommended ordering for the schema.** Put A1, A2, A4 and A9 in S4/S7 as code rules now. A5 goes in S2 as a one-line step. Everything in 7B stays out of the schema until it wins at equal tokens (G7).
 
@@ -235,7 +235,7 @@ Common rules: each arm gets the same total token budget (count setup and all sam
 | B1 Code-gated falsification (T1) | Hidden-rule discovery: model proposes inputs, a code oracle answers yes/no, then a final rule guess is scored on held-out inputs. Include items whose first natural guess is a strict subset of the truth. | (a) plain; (b) prompt-only "include a test your hypothesis predicts will fail"; (c) code-gated (reject a round where all tests are in H) | success on held-out inputs; falsifying-test share | (c) > (b) > (a) on subset items; no effect where H is broad. A positive result on thinking models only would match Jhaveri. |
 | B2 Opposites vs plain (T2) | Same suite | plain vs TiO prompt; add a plain arm with extra sampled attempts to match TiO's extra tokens | success; success per token | Jhaveri: +0.06 non-thinking, +0.12 thinking, before token matching. Expect the gain to shrink at matched tokens. |
 | B3 Dual-goal (T3) | Same suite | plain vs dual-goal feedback | success per model class | Hurts non-thinking, helps thinking (Jhaveri). Keep only for models where it wins. |
-| B4 Wrong-dimension contrast control | Same suite | opposites on relevant property vs opposites on an irrelevant property | success | Relevant contrast wins (humans: 78 vs 38). Tests that "any contrast" is not enough (K08). |
+| B4 Wrong-dimension contrast control | Same suite | opposites on relevant property vs opposites on an irrelevant property | success | Relevant contrast wins (humans: 78 vs 38). Tests that "any contrast" is not enough (A01.02-K08). |
 | B5 Role split on one model (T4) | Same suite | combined call vs proposer/inferer split (same model both roles) vs split with a stronger tester | success | If gain comes only with a stronger tester, drop the same-model split. |
 | B6 EIG tie-break (T5) | Two or more live rules from a small enumerated hypothesis set (e.g. ARC-like transformations or number rules) | model-chosen test vs code-scored EIG test vs random | tests to converge; failures | Closed set: EIG wins (+37 points in 20 Questions). Self-generated set: EIG may tie random (Chari). Report both. |
 | B7 Rewording rate (T6) | Same suite, revise after a "no" | count revisions that change no held-out prediction; compare plain with a code gate that rejects them | rewording rate; success | A high rate in the plain arm would confirm the Wason 1960 pattern for LLMs; gate should reduce it. |
@@ -263,11 +263,11 @@ Common rules: each arm gets the same total token budget (count setup and all sam
 
 ## 10. Open questions
 
-1. Does a code-enforced falsifying test beat a prompt-only one at matched tokens, for thinking and non-thinking models? (K25, d20: no study found.)
+1. Does a code-enforced falsifying test beat a prompt-only one at matched tokens, for thinking and non-thinking models? (A01.02-K25, d20: no study found.)
 2. Does the Think-in-Opposites gain survive when the plain arm gets the same tokens? Thinking-model tokens rose 12 to 58 percent.
 3. Is the WILT role-split gain a stronger-tester effect or a split effect? Needs a same-model, both-roles control.
 4. How much of the +37 point EIG gain survives when the hypothesis set is generated by the same model? Chari: not reliably.
-5. How often is an LLM revision only a rewording? (K24: unmeasured.)
+5. How often is an LLM revision only a rewording? (A01.02-K24: unmeasured.)
 6. Does a concrete re-expression help abstract rule discovery? Dasgupta and Seals and Shalin conflict.
 7. Does longer reasoning help or hurt falsification in rule discovery? Wason evidence is mixed (llama up, gemma3-12b down).
 8. Is there an independent replication of thinking in opposites (Branchini N=180, country unstated, one group)? Rossi 2001 and Gale and Ball 2012 are known only second-hand.

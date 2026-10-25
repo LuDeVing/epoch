@@ -2,7 +2,7 @@
 
 Scope: generalising from cases. Category-based induction (Osherson et al., Heit, Kemp and Tenenbaum), Bayesian concept learning (the number game), rule induction, base-rate neglect and natural frequencies, the conjunction fallacy, probability judgment and its calibration, and what language models do on all of these, including hypothesis-search methods.
 
-Evidence base: 4 evidence files (a, b, c, d; about 100 lines), 36 claims (K01 to K36) and a cross-check critique. Evidence ids below (a01, b15, d07 and so on) point into those files. Claim ids (K..) point into claims.jsonl.
+Evidence base: 4 evidence files (a, b, c, d; about 100 lines), 36 claims (A01.09-K01 to A01.09-K36) and a cross-check critique. Evidence ids below (a01, b15, d07 and so on) point into those files. Claim ids (K..) point into claims.jsonl.
 
 How to read the status marks. [E] means two or more independent sources agree. [S] means one source, or one lab, or one paper counted several times. [C] means contested. Where a number was corrected by the cross-check, the corrected number is used here.
 
@@ -75,7 +75,7 @@ What the comparison teaches (a05, a06):
 - A memory-based raw prior reaches r = .81 to .96 on some sets but fails on diversity (a02). A 2D spatial model is poor on Osherson-mammals (r about .64), which needs diversity.
 - The authors state their account is computational-level. They model the content of intuitive theories as priors and are agnostic about process (a30).
 
-Strength and weakness. The fit is strong. But all of it is one lab, fitted to averaged ratings, with hand-chosen structures (K13). Treat it as a good description of what people do, not as a proven mechanism.
+Strength and weakness. The fit is strong. But all of it is one lab, fitted to averaged ratings, with hand-chosen structures (A01.09-K13). Treat it as a good description of what people do, not as a proven mechanism.
 
 ### 2.4 Context decides the structure
 
@@ -108,8 +108,8 @@ Status uses: established [E], single-source [S], contested [C]. "Source" gives e
 
 | Finding | Numbers | Source | Status |
 |---|---|---|---|
-| Natural frequencies raise Bayesian solving vs probabilities (Study 1, 60 Salzburg students, 15 problems, 1,774 coded solutions) | Bayesian algorithms: probability 16% (standard menu), 28% (short menu); frequency 46% (standard), 50% (short). Format effect about 29.9 and 21.6 points. Menu effect 12.1 and 3.7 points. Overall 34.9% Bayesian (620 of 1,774). Mammography: 43.3% gave 8 out of 103. | a11, a24, d07 | [E] (4 independent groups, K01) |
-| Relative frequencies (percent) do not help | Study 2, 15 Konstanz students: 60 Bayesian solutions with relative frequencies vs 66 with probabilities. These are counts of coded solutions, not percentages. | a12 | [S] (K03) |
+| Natural frequencies raise Bayesian solving vs probabilities (Study 1, 60 Salzburg students, 15 problems, 1,774 coded solutions) | Bayesian algorithms: probability 16% (standard menu), 28% (short menu); frequency 46% (standard), 50% (short). Format effect about 29.9 and 21.6 points. Menu effect 12.1 and 3.7 points. Overall 34.9% Bayesian (620 of 1,774). Mammography: 43.3% gave 8 out of 103. | a11, a24, d07 | [E] (4 independent groups, A01.09-K01) |
+| Relative frequencies (percent) do not help | Study 2, 15 Konstanz students: 60 Bayesian solutions with relative frequencies vs 66 with probabilities. These are counts of coded solutions, not percentages. | a12 | [S] (A01.09-K03) |
 | Frequency benefit is large only for the numerate | Chapman and Liu, 346 students (abstract says 342). High numerates (n = 190) correct with frequencies: 27% (medical), 31% (car); low numerates (n = 156): 7% and 10%. Format x numeracy chi2(1) = 13.29, p = .0003. Numeracy chi2(1) = 17.78; format main effect chi2(1) = 3.61, p = .06. | a13, a27 | [E] |
 | Most people still fail with frequencies | Weber et al., N = 180: 20% correct with probabilities, 36% with frequencies. Heroin task 51% vs car task 22% with frequencies. Meta-analysis figure quoted by them: 24% vs 4%. | b01, b02 | [E] (the 24% vs 4% is second-hand from McDowell and Jacobs 2017, not opened) |
 | Individual differences dominate | Marginal R2 = .065 (fixed effects), conditional R2 = .685 (with person intercepts). 49% of those shown frequencies still calculated with probabilities; 18% shown probabilities switched to frequencies. Correct by calculation format used: frequencies 61% (shown freq) and 53% (shown prob); probabilities 13% and 9%. | b01, b03, b04 | [S] |
@@ -118,25 +118,25 @@ Status uses: established [E], single-source [S], contested [C]. "Source" gives e
 | Linda frequency benefit may be a reference-class effect | With reference class held fixed, frequency and probability formats did equally well. Exp 1 N = 100 students (full tables not read). | d08 | [S] |
 | Conjunction fallacy in rank tests | Violation rates: naive Bill 92%, Linda 89%; informed Bill 86%, Linda 90%; sophisticated (decision science doctoral students) Bill 83%, Linda 85%. Choice T vs T&F: 85% chose T&F (N = 142). 9-point scale (N = 119): T mean 3.5, T&F mean 5.6; 82% rated T&F higher. | a14 | [E] |
 | Wording and betting reduce but do not remove the error | Bet on T or T&F: 56% fallacy (n = 60). "Whether or not" wording: T* vs T&F means 3.8 vs 5.1; 57% (n = 75) rated T&F higher, 16% lower. Argument choice: 65% (n = 58) picked the invalid resemblance argument. | a15 | [E] |
-| Frequency wording shrinks the conjunction error (heart-attack survey) | Percent version: 65% (N = 147) gave a strictly higher estimate to the conjunction. Frequency version "how many of 100": 25% (N = 117). Estimating both constituents first: 11% (N = 360). | a16 | [C] (K08) |
+| Frequency wording shrinks the conjunction error (heart-attack survey) | Percent version: 65% (N = 147) gave a strictly higher estimate to the conjunction. Frequency version "how many of 100": 25% (N = 117). Estimating both constituents first: 11% (N = 360). | a16 | [C] (A01.09-K08) |
 | Fallacy survives betting and hidden-sentence controls | Exp 1 (N = 45 per cell): probability 3.4 errors of 9 vs betting 3.2; 36 of 45 bettors erred at least once. Exp 3 (92 probability, 60 betting): 90 of 92 erred at least once; 4.33 vs 4.85 errors of 9 (p < .06); item rates correlate r = .96 across conditions. Houston Exp 2: 5.93 vs 4.86, p < .07. | b10, b11, b12 | [E] |
-| Category induction cluster (similarity, typicality, specificity, sample size, diversity) | Qualitative; diversity weakest; 74% diverse choices in children aged 5 to 8 (Heit and Hahn). | b05 to b09, a03 | [E] (K11) |
+| Category induction cluster (similarity, typicality, specificity, sample size, diversity) | Qualitative; diversity weakest; 74% diverse choices in children aged 5 to 8 (Heit and Hahn). | b05 to b09, a03 | [E] (A01.09-K11) |
 | Conclusion typicality raises strength | beta = -.12 (t(17) = -3.27); forced choice 58% (N = 48; 34 of 48 people; 17 of 22 items). | a07 | [S] |
 | Causal structure preferred over shared attributes | 13 of 16 and 14 of 16 participants predominantly causal. | a17 | [S] (tiny samples) |
-| Structured Bayesian fits | Tree + diffusion r = .96, .90, .95, .96, .85. Evolutionary .93, .92, .89, .98, .80 (a05). | a02, a05 | [S] (one lab, K13) |
+| Structured Bayesian fits | Tree + diffusion r = .96, .90, .95, .96, .85. Evolutionary .93, .92, .89, .98, .80 (a05). | a02, a05 | [S] (one lab, A01.09-K13) |
 | SumSim fails on general arguments | r = -.34 (Osherson general), -.02 (Smith set 5). MaxSim .79 and .84. | a05 | [S] |
-| Hypothesis search on ARC (GPT-4, 100 tasks, top-1) | Direct 17%; program only 23%; summarised hypotheses 30%; human-selected 33%; human-written 45%; Icecuber (non-LLM DSL) 43%. Chain of thought without code 19%. Only 49 of 100 tasks had a correct hypothesis; 33 of 49 (67%) converted by human selection. | a20, a21, b17, b18, c10, c11 | [S] (one paper, K15) |
-| Execution feedback rounds plateau | ARC summarised 24, 28, 28, 30 at rounds 0 to 3; human-selected 26, 31, 33, 33; human-written 38, 44, 45, 45. | a21, c11 | [E] with c06, c09 (K18) |
+| Hypothesis search on ARC (GPT-4, 100 tasks, top-1) | Direct 17%; program only 23%; summarised hypotheses 30%; human-selected 33%; human-written 45%; Icecuber (non-LLM DSL) 43%. Chain of thought without code 19%. Only 49 of 100 tasks had a correct hypothesis; 33 of 49 (67%) converted by human selection. | a20, a21, b17, b18, c10, c11 | [S] (one paper, A01.09-K15) |
+| Execution feedback rounds plateau | ARC summarised 24, 28, 28, 30 at rounds 0 to 3; human-selected 26, 31, 33, 33; human-written 38, 44, 45, 45. | a21, c11 | [E] with c06, c09 (A01.09-K18) |
 | Easier benchmarks gain more | 1D-ARC (108 tasks): 39.6 / 61.1 / 73.1 (direct / program / full). List Functions (100 tasks): 31 / 59 / 69. SyGuS (89 tasks): 94.3% both with and without hypotheses (CrossBeam 74.8%). | a22, b19 | [S] |
 | Pool vs selection (second study) | GPT-4o, 100 list functions, 11 trials, 5 runs: correct hypothesis in generator pool 46.4%; after model summary 34.5% (26% of correct ones dropped, 12.1 points lost). Both ok: test solved 95.9%. Generator ok, summariser failed: 75.3%. Both failed: 1,092 trials rescued (37.0% of that subset, 19.9% of all). Test mean accuracy: hypothesis search .487, humans .521, direct GPT-4o .359. | d01, d02 | [S] (one paper), but agrees with a21 on direction |
-| LMs propose rules well, apply them badly | GPT-4: ACRE 28.0 to 45.0 to 48.0; MiniSCAN 0.0 to 46.0; List Functions 39.6 to 52.0 (T=1,N=1; 42.4 at T=3,N=1). Applied by the LM itself, MiniSCAN falls from above 80% to almost 0. Self-refine with the LM as interpreter on ACRE: 32.0. Self-consistency on ACRE: 29.0. | b20, c06, c07 | [S] (one paper, K17) |
+| LMs propose rules well, apply them badly | GPT-4: ACRE 28.0 to 45.0 to 48.0; MiniSCAN 0.0 to 46.0; List Functions 39.6 to 52.0 (T=1,N=1; 42.4 at T=3,N=1). Applied by the LM itself, MiniSCAN falls from above 80% to almost 0. Self-refine with the LM as interpreter on ACRE: 32.0. Self-consistency on ACRE: 29.0. | b20, c06, c07 | [S] (one paper, A01.09-K17) |
 | Refinement is shallow | MiniARC: plain 13.8; refinement 3.8 (T=1,N=1), 9.2 (T=1,N=5), 14.6 (T=3,N=5). Edits mostly add if-else exceptions for the failing example. | c06, c09 | [E] on the plateau; MiniARC detail [S] |
-| Brute-force program sampling scales with log samples | About 8,000 programs per problem from GPT-4o, 50% on the ARC public test set (72% on a held-out train subset where humans score 85%); about +3 points per doubling of samples; revision fixes about 20% of the remaining wrong. | c12 | [E] with c13 (K20), but blog post |
+| Brute-force program sampling scales with log samples | About 8,000 programs per problem from GPT-4o, 50% on the ARC public test set (72% on a held-out train subset where humans score 85%); about +3 points per doubling of samples; revision fixes about 20% of the remaining wrong. | c12 | [E] with c13 (A01.09-K20), but blog post |
 | Induction and transduction solve different tasks | 2048 induction samples 18.78%; transduction 15.25%; ensemble 26.50%. Best system 56.75% vs average human 60.2%. | c13 | [S] (trained models) |
-| Fitting the examples is not proof | About 9% of ARC tasks: program fits train, fails test (c13). CodeARC, 1,114 functions: o3-mini first attempt 67.6% pass the 10 examples, 38.9% pass the oracle, 28.7% (640 problems) fit and are wrong. Wang et al.: one exception in 100 tasks. | c13, d06, a21 | [E] (K22); rate depends on how well examples pin the function down |
-| Number game: LLM anchoring on one example | 255 example sets, 10 trials. Rule bias .9 humans vs 1.0 GPT. Mean GPT-human divergence .87. At 4 examples GPT-Bayes divergence is comparable to human-Bayes. GPT best fit by maximum-likelihood without a prior. | c15, d05 | [C] (K23) |
+| Fitting the examples is not proof | About 9% of ARC tasks: program fits train, fails test (c13). CodeARC, 1,114 functions: o3-mini first attempt 67.6% pass the 10 examples, 38.9% pass the oracle, 28.7% (640 problems) fit and are wrong. Wang et al.: one exception in 100 tasks. | c13, d06, a21 | [E] (A01.09-K22); rate depends on how well examples pin the function down |
+| Number game: LLM anchoring on one example | 255 example sets, 10 trials. Rule bias .9 humans vs 1.0 GPT. Mean GPT-human divergence .87. At 4 examples GPT-Bayes divergence is comparable to human-Bayes. GPT best fit by maximum-likelihood without a prior. | c15, d05 | [C] (A01.09-K23) |
 | Noise breaks LLM induction | List Functions, 12.5% / 25% / 50% of 8 exemplars corrupted (1, 2 or 4 examples): accuracy falls from one bad example. SRR (diverse subsets plus code check) best in 10 of 14 cells at 10% noise, 2.1% average gap. | b21, c08, d16 | [S] |
-| Recalibration of probabilities | Human experts: single power parameter, relative Brier gain 0.569 (inflation), 0.452 (GDP), 0.574 (unemployment); 1-year horizon 0.621, 0.539, 0.623. LLMs: Platt scaling on 1,614 questions (trained on 7,824), Claude-Sonnet-4 Brier .146 to .129; Llama-3.3-70B .157 to .138 (isotonic .265); Qwen3-32B .158 to .137; Qwen3-8B .185 to .141; AUC .723 to .724; ECE .104 to .038; human crowd Brier .061. | b13, d14 | [C] (K27; ECE gains can hide lost resolution, d15) |
+| Recalibration of probabilities | Human experts: single power parameter, relative Brier gain 0.569 (inflation), 0.452 (GDP), 0.574 (unemployment); 1-year horizon 0.621, 0.539, 0.623. LLMs: Platt scaling on 1,614 questions (trained on 7,824), Claude-Sonnet-4 Brier .146 to .129; Llama-3.3-70B .157 to .138 (isotonic .265); Qwen3-32B .158 to .137; Qwen3-8B .185 to .141; AUC .723 to .724; ECE .104 to .038; human crowd Brier .061. | b13, d14 | [C] (A01.09-K27; ECE gains can hide lost resolution, d15) |
 
 ---
 
@@ -220,7 +220,7 @@ Fit on held-out (confidence, outcome) pairs. One-parameter version: transform pr
 ### 5.1 Replications and independent confirmations
 
 - **Natural frequencies help.** Independent confirmations: Gigerenzer and Hoffrage (a11), Chapman and Liu (a13), Weber et al. (b01), and the meta-analysis quoted by Weber (b02, 24% vs 4%, second-hand). Direction holds. Size is far smaller than the headline. The correct-answer level with frequencies is 24% to 36% in later work, not about half.
-- **The conjunction fallacy is robust in humans.** Tversky and Kahneman's rates of 83% to 92% in rank tests (a14) and Sides et al. (b10 to b12) agree: the fallacy survives betting and hidden-sentence controls (K07).
+- **The conjunction fallacy is robust in humans.** Tversky and Kahneman's rates of 83% to 92% in rank tests (a14) and Sides et al. (b10 to b12) agree: the fallacy survives betting and hidden-sentence controls (A01.09-K07).
 - **Category-induction cluster.** Similarity, typicality, specificity and sample size are robust in adults. Han et al. re-ran 11 phenomena with 110 people (c01): humans did not robustly show diversity, asymmetry or the inclusion fallacy, so even the textbook list is uneven.
 - **Fitting the examples is not proof.** Three independent sources: c13 (about 9%), d06 (28.7% of first attempts), and a21 (one exception in 100, the lowest rate). The rate depends on how tightly the examples fix the function.
 - **Refinement plateaus after about 2 rounds.** a21, c06, c09 agree.
@@ -232,9 +232,9 @@ Fit on held-out (confidence, outcome) pairs. One-parameter version: transform pr
 - **Why people still fail with frequencies.** Weber et al. say habit: 49% of people shown frequencies still compute with probabilities (b01, b04). The Einstellung explanation is read from written work, not manipulated.
 - **Conjunction fallacy: wording matters but cannot be the whole story.** Frequency wording dropped it from 65% to 25% (a16). Betting and hidden-sentence controls left it at the same level (b10 to b12). The polysemy account (b26) was not opened. The sizes are not comparable across papers.
 - **Diversity depends on culture and knowledge.** Itzaj Maya adults did not show it for disease-spread arguments (b06). Children 9 and under give mixed results (b05).
-- **Non-monotonicity as a pragmatic effect.** Humans judge {crow, peacock, rabbit} to birds weaker because a helpful speaker would not add rabbit. This is the authors' reading (c02). It was not tested in a model by changing the sampling assumption (K36).
+- **Non-monotonicity as a pragmatic effect.** Humans judge {crow, peacock, rabbit} to birds weaker because a helpful speaker would not add rabbit. This is the authors' reading (c02). It was not tested in a model by changing the sampling assumption (A01.09-K36).
 - **SCM is not cleanly refuted by conclusion typicality** (a08).
-- **Structured models.** One lab, averaged ratings, hand-chosen structures (K13).
+- **Structured models.** One lab, averaged ratings, hand-chosen structures (A01.09-K13).
 - **Hypothesis search value depends on the task.** On SyGuS, hypotheses add nothing (94.3% both ways, b19) because direct coding already works. On 1D-ARC and List Functions they add 12 to 38 points (a22). With Parsel, human hypotheses reached 47.5% vs 37.5% direct, but LLM hypotheses got worse (b19). Right-but-hard-to-code hypotheses and wording mismatches are failure causes (a23).
 - **Different versions of the Wang et al. paper quote different ARC numbers** (27.5% vs 12.5% on 40 tasks in a snippet, c10). The 100-task figures are from the PDF read.
 
@@ -276,7 +276,7 @@ Han et al. (a18, a19, c01 to c05) tested GPT-3.5 and GPT-4 on 11 phenomena with 
 - The .65 Spearman is a human-versus-1990 replication check (40 people on the 36 Osherson arguments), not a model score.
 - Base language models use both taxonomy and similarity when projecting nonce properties across 2,016 taxonomically related pairs. The two are not separable (d17).
 
-Caveats: GPT-3.5 and GPT-4 snapshots from 2023. No test of current models. No follow-up that adds a "why were these premises chosen" prompt was found (d18, K36).
+Caveats: GPT-3.5 and GPT-4 snapshots from 2023. No test of current models. No follow-up that adds a "why were these premises chosen" prompt was found (d18, A01.09-K36).
 
 ### 6.2 Base rates and probability
 
@@ -294,8 +294,8 @@ Caveats: GPT-3.5 and GPT-4 snapshots from 2023. No test of current models. No fo
 - Not just memory: Jiang et al. (d10) perturbed conjunction items (names, celebrity names, irrelevant narrative, hint tokens). Swapping Linda for Bob lowered accuracy for all models tested (gpt-3.5, gpt-4-turbo, gpt-4o, claude-3 opus and sonnet, llama-3, mistral-large). H1 n = 400, H2 n = 500, H3 n = 100. GPT-4o few-shot was near 100% and the null was not rejected there (p = 0.159, 1 discordant pair). Paired tests need discordant pairs, so very strong settings give no power.
 - Flipped logic: o1 answered a changed problem (where the correct answer is B) as always A, calling it the classic form (d11; one worked example; overall accuracy not extracted).
 - ChatGPT and Gemini handled the famous Linda but worse on a new problem of the same form (Mary) (c24, exploratory, abstract and intro only).
-- Hashing bias-inducing words: ChatGPT-4 and Gemini 0 of 20 without hashing; ChatGPT-4 with hashing and neutral descriptions 10 of 10; chain-of-thought models on the original text did well (Gemini 2 Flash Thinking 10/10, o3-mini 6/10) (c23). Tiny N, and the hashed words were chosen by looking at which words drove errors on the original prompt, so it is fitted to the test item (K10).
-- Conclusion (K09, contested): models pass the famous item and also mostly fresh items of the same form (GPT-4 .98) but fail under token swaps and flipped logic. Nobody tested memory vs pattern matching directly.
+- Hashing bias-inducing words: ChatGPT-4 and Gemini 0 of 20 without hashing; ChatGPT-4 with hashing and neutral descriptions 10 of 10; chain-of-thought models on the original text did well (Gemini 2 Flash Thinking 10/10, o3-mini 6/10) (c23). Tiny N, and the hashed words were chosen by looking at which words drove errors on the original prompt, so it is fitted to the test item (A01.09-K10).
+- Conclusion (A01.09-K09, contested): models pass the famous item and also mostly fresh items of the same form (GPT-4 .98) but fail under token swaps and flipped logic. Nobody tested memory vs pattern matching directly.
 
 ### 6.4 Rule induction and hypothesis search
 
@@ -340,11 +340,11 @@ Schema parts: G guardrail, S state, O operator, M memory. Evidence ids as above;
 |---|---|---|---|---|---|
 | A1 | **Probability arithmetic is done in code.** Any posterior, conjunction, union or normalisation step is computed by the program from numbers the model extracts. The model never does the division. | G5 | [E] | a13, a27, d13, a11, a12, b01 | Even humans given frequencies fail without arithmetic help (24% to 36% correct). Code removes the arithmetic floor; extraction accuracy is the open part (see T1). |
 | A2 | **Coherence checks on every stated probability.** P(A and B) <= min(P(A), P(B)); exclusive answers sum to 1. A violation triggers a re-ask. | G5 | [E] | a14, a15, b10, b11, b12, c19, d10 | Prompt reminders do not cure the human error (a15). A code check does not depend on the model's wording. |
-| A3 | **Fitting the given examples is not proof; hold one out and also test on fresh inputs.** Every induced rule is run on all examples, a held-out example and a few newly generated inputs on which candidate rules are compared. | G3, S4, S7 | [E] | c13, d06, a21 | Rate of train-fit and test-fail is 9% (ARC tasks), up to 28.7% of first attempts (CodeARC). Held-out alone will miss under-specification (K22). |
+| A3 | **Fitting the given examples is not proof; hold one out and also test on fresh inputs.** Every induced rule is run on all examples, a held-out example and a few newly generated inputs on which candidate rules are compared. | G3, S4, S7 | [E] | c13, d06, a21 | Rate of train-fit and test-fail is 9% (ARC tasks), up to 28.7% of first attempts (CodeARC). Held-out alone will miss under-specification (A01.09-K22). |
 | A4 | **Run proposed rules in an interpreter, not in the model's head.** The model proposes; code applies. | G5, G2 | [E] | b20, c06, c07, a20, c12 | The same model that writes a rule often cannot apply it (MiniSCAN above 80% to near 0). |
 | A5 | **Keep the whole hypothesis pool until code ranks it.** Do not let the model shortlist. | S3 to S7 | [E] on direction | a21, b18, d01, d02, c11 | The summariser dropped 26% of correct hypotheses; the pool had a correct one only 46.4% to 49 of 100 of the time. This is the main loss. |
 | A6 | **Cap execution-feedback rounds at 2.** | G2, S5 | [E] | a21, c06, c09 | Gains plateau after about 2 rounds; refinement edits are shallow exceptions. Matches the schema. |
-| A7 | **State the inductive context before generalising: blank taxonomic property, causal or ecological property, threshold.** The structure comes from a one-line S2 slot. | S2 | [E] for the human phenomenon; the prompt itself [S] | a01, a03, a17, a29, a07 | Same premises point opposite ways by context. Only the prompt effect is untested (K36). |
+| A7 | **State the inductive context before generalising: blank taxonomic property, causal or ecological property, threshold.** The structure comes from a one-line S2 slot. | S2 | [E] for the human phenomenon; the prompt itself [S] | a01, a03, a17, a29, a07 | Same premises point opposite ways by context. Only the prompt effect is untested (A01.09-K36). |
 | A8 | **State the reference class explicitly.** Name the superordinate category or population. | S1, S2 | [E] | a08, a07, d08 | Reference class changes the judgment and may be what the frequency format supplies in Linda. |
 | A9 | **Use MaxSim style coverage, never summed similarity, if a similarity score is ever used.** Diverse independent supports count more than many near-duplicate ones. | S2, S7 | [E] on humans | a05, a06, a02 | SumSim r = -.34 and -.02 on general arguments. Fits the schema's idea that same-model samples are not independent (G4). |
 | A10 | **Do not add bare "avoid the bias" or "use Bayes' rule" prompts.** | section 4b | [E] with schema | d12, c27, b16, b24, c22 | Judgment accuracy -4.4% in CogBias; Bayes-rule instruction did not change similarity-driven answers until the most forceful prompt. Consistent with the schema's existing ban on debiasing instructions. |
@@ -355,18 +355,18 @@ Schema parts: G guardrail, S state, O operator, M memory. Evidence ids as above;
 
 | # | Item | Schema part | Status | Evidence | Test (section 8 has details) |
 |---|---|---|---|---|---|
-| T1 | **Extract-then-compute arm for base-rate items.** The model extracts prior, hit rate and false-alarm rate into JSON; code applies Bayes. | G5, O6 | [S] | K04: d13, a24, a11 (indirect only) | No source tests this exact arm. Versus plain CoT and versus a natural-frequency rewrite, equal tokens. Top priority. |
+| T1 | **Extract-then-compute arm for base-rate items.** The model extracts prior, hit rate and false-alarm rate into JSON; code applies Bayes. | G5, O6 | [S] | A01.09-K04: d13, a24, a11 (indirect only) | No source tests this exact arm. Versus plain CoT and versus a natural-frequency rewrite, equal tokens. Top priority. |
 | T2 | **Count rewrite (O6): "of N cases".** The agent rewrites a probability problem as counts out of a fixed N, then reads the answer from the table in code. | O6 | [S] for LLMs; [E] for humans | a11, a12, a24, b01, d07 | Cross wording (probability vs frequency) with menu (standard vs short) and with and without code. Humans: format effect 22 to 30 points at fixed menu; no LLM study crosses them. |
 | T3 | **Percent vs absolute counts.** | O6 | [S] | a12 | Only 15 students. Cheap to include in T2. |
 | T4 | **Route by plain-pass first.** Apply the count/code route only where the plain model fails first. | S0 | [S] | a13, a27, b03 | Person differences dominate in humans; for the agent the analogue is per-class plain pass rate. |
-| T5 | **Hypothesis search with a code selector.** Propose N hypotheses, write code, rank by run results on examples plus a held-out example, with agreement and shortest-rule as tie-breaks. Compare with best-of-N at equal tokens. | S3, S4, S7 | [S] for the gain; the selector comparison untested | a20, c11, d01, d02 | Held-out vs agreement vs size prior not compared in any source (K16). |
+| T5 | **Hypothesis search with a code selector.** Propose N hypotheses, write code, rank by run results on examples plus a held-out example, with agreement and shortest-rule as tie-breaks. Compare with best-of-N at equal tokens. | S3, S4, S7 | [S] for the gain; the selector comparison untested | a20, c11, d01, d02 | Held-out vs agreement vs size prior not compared in any source (A01.09-K16). |
 | T6 | **Size-prior weighing in code (number-game recipe).** Model proposes 50 to 100 hypotheses and extensions; code applies (1/|h|)^n and averages predictions. | S2, S7 | [S] | c14, a10 | Ellis used 8 humans, with a tuned prior. Test against free model answers on one-example and few-example items. |
 | T7 | **Candidate-list evaluation instead of free generation.** After generating, ask the model to score every candidate against all examples. | S2 | [S] | d03, c16 | Evaluation picked better-fitting hypotheses than free generation, but a candidate list did not recover the Bayesian posterior (c16). Run both. |
 | T8 | **Induction plus transduction ensemble.** Route 1: write a program. Route 2: predict directly. Take route 1 first; use route 2 as fallback or when route 1 fails the held-out example. | S3, S7 | [S] | c13 | Their models were trained. Test with a scaffold. |
 | T9 | **Noisy-example handling: induce on diverse subsets, keep the rule fitting most examples, flag the misfits.** | G3, S2 | [S] | d16, b21 | Detect an injected bad example. SRR does not name the bad example. |
-| T10 | **Recalibrate confidence in code.** Fit slope and intercept (or one power parameter) on held-out logs; keep it only if Brier falls. | G5, M | [C] | b13, d14, d15 | Minimum data unknown; humans and LLM evidence differ (K27). |
+| T10 | **Recalibrate confidence in code.** Fit slope and intercept (or one power parameter) on held-out logs; keep it only if Brier falls. | G5, M | [C] | b13, d14, d15 | Minimum data unknown; humans and LLM evidence differ (A01.09-K27). |
 | T11 | **Teacher-assumption prompt for premise sets chosen by someone with a goal.** Ask "why was this premise set chosen?" before judging strength. | S1 | [S] | a18, c02, d18 | Untested in any model. Fixes non-monotonicity if the authors are right. |
-| T12 | **Name taxonomy or causal link first, for property induction.** | S2 | [S] | a01, a17, d17 | No LLM test exists (K36). |
+| T12 | **Name taxonomy or causal link first, for property induction.** | S2 | [S] | a01, a17, d17 | No LLM test exists (A01.09-K36). |
 | T13 | **Separate base-rate recall.** State the base rate in a separate call before seeing the description; combine in code. | S1, G5 | [S] | b15, b16 | Recall differed: 2% to 4% direct vs 10% to 30% inside a posterior. |
 | T14 | **Structure-only rewrite for conjunction items.** Strip content words, or name the reference class ("of 100 women like Linda"). | O6, G3 | [S] | c23, d08 | c23 is tiny and fitted to the item. Replicate before use. |
 | T15 | **Interactive probing for induction.** Let the agent propose new inputs and see an oracle's answer (when one exists). | S4, S7 | [S] | d06 | Success rises with more I/O budget and oracle calls. Applies only where the task has an oracle. |
@@ -379,7 +379,7 @@ All arms get equal tokens, counting setup, tool calls and all attempts (G7). Rep
 
 **Test 1. Base-rate items: extract and compute (T1, T2, T3, T4).**
 - Item type: 100 fresh word problems with prior, hit rate and false-alarm rate (medical, spam, quality control, fraud), several stories each, mammography as a unit test (must give 7.8%). Vary stereotype versus neutral description (b15).
-- Arms: (A) plain direct; (B) plain CoT; (C) probability prompt plus "use natural frequencies" instruction; (D) agent rewrites to counts out of N, model reads off the table; (E) model extracts JSON, code computes Bayes; (F) E plus the count table shown for audit. Cross wording (probability vs frequency) with menu (standard vs short) on arms A and B (K31).
+- Arms: (A) plain direct; (B) plain CoT; (C) probability prompt plus "use natural frequencies" instruction; (D) agent rewrites to counts out of N, model reads off the table; (E) model extracts JSON, code computes Bayes; (F) E plus the count table shown for audit. Cross wording (probability vs frequency) with menu (standard vs short) on arms A and B (A01.09-K31).
 - Metric: exact posterior within 1 point; extraction field accuracy; compliance (does the trace contain the counts).
 - Expected: E beats B and C if extraction is accurate; the gain should be largest on problems where B fails. C may not beat B (b24, d12). If the short menu helps B, then part of the human frequency effect is a clean statement of the numbers (d07). Predicted order: E > D > B >= C, with large uncertainty. Not measured by any source.
 
@@ -426,7 +426,7 @@ All arms get equal tokens, counting setup, tool calls and all attempts (G7). Rep
 - **The human frequency-format effect as a prompt trick.** It was measured in students who had to do the arithmetic. For an agent, the bottleneck is extraction and the division, which code removes. Telling the model to use natural frequencies was followed only in part (b24, c22). Use the count table as a code object, not as an instruction.
 - **Numeracy.** Numeracy explained more variance than format in humans (a13, a27). The model has no stable analogue. Per-class plain pass rate is the nearest thing.
 - **Individual-level habit (Einstellung).** The "school-trained switch to probability formulas" account (b04) has no clear model counterpart.
-- **Structured Bayesian models of human ratings (Kemp and Tenenbaum).** They fit averaged human ratings. The agent has no use for fitting people. Only the design lesson transfers: soft hypothesis weighting, and structure named by context (K13).
+- **Structured Bayesian models of human ratings (Kemp and Tenenbaum).** They fit averaged human ratings. The agent has no use for fitting people. Only the design lesson transfers: soft hypothesis weighting, and structure named by context (A01.09-K13).
 - **SCM as a procedure.** Needs a similarity function and only fits blank properties. GPT-4 already follows the main phenomena (c01), so the hand-coded model is not needed for easy cases.
 - **Developmental and cultural findings (children, Itzaj Maya).** Informative about boundary conditions of diversity; not a design input.
 - **Human-written or human-selected hypotheses in Wang et al. (33% and 45%).** They use human oracles (LARC). They are upper bounds, not methods (critique).
@@ -452,9 +452,9 @@ Ordered by decision value.
 8. Is the explicit-candidate-list prompt enough to fix one-example overgeneralisation, and does it transfer beyond the number game? (Gap 8)
 9. Can the scaffold detect which example is wrong? SRR keeps accuracy but does not name it. (Gap 9)
 10. Do structured priors named in the prompt help LLM property induction over similarity-only prompts? (Gap 10)
-11. Is the LLM success on famous items memory or pattern matching? Not tested directly (K09).
+11. Is the LLM success on famous items memory or pattern matching? Not tested directly (A01.09-K09).
 12. Do the Wang et al. gains survive on current reasoning models, which may do hypothesis search internally? All the hypothesis-search numbers come from GPT-4 or GPT-4o. (Weak spot in the critique.)
-13. Does the "mostly illogical errors" result (b23) hold for current models? Then human-bias fixes would not apply, and failures should be inspected case by case (K26).
+13. Does the "mostly illogical errors" result (b23) hold for current models? Then human-bias fixes would not apply, and failures should be inspected case by case (A01.09-K26).
 14. What is the real human baseline on the ARC test set? The 85% figure is a train-set number.
 
 ---

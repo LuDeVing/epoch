@@ -55,7 +55,7 @@ Rips (2001); Heit and Rotello (2010); Rotello and Heit (2009); Stephens, Dunn, H
 
 ## Gap search results
 
-Evidence is in evidence_d.jsonl (d01 to d18). Claims K03, K04, K12, K15, K18 and K19 were updated and K21 to K27 added. Web search quota ran out partway through, so searches on gaps 5 and 9 were cut short.
+Evidence is in evidence_d.jsonl (d01 to d18). Claims A01.06-K03, A01.06-K04, A01.06-K12, A01.06-K15, A01.06-K18 and A01.06-K19 were updated and A01.06-K21 to A01.06-K27 added. Web search quota ran out partway through, so searches on gaps 5 and 9 were cut short.
 
 Closed or mostly closed:
 - Gap 8 (Lassiter and Goodman): CLOSED as a verification. Full text read (d01, d02). Correction: 485 analysed of 507 recruited, 10,185 judgments. d' 1.15 vs 0.63 and the R2 values hold. Rank order across modal frames: mean Spearman .53, within the .49 to .64 the model plus noise predicts. R2 for necessary (.57) sits below its split-half ceiling (.70), so the model is not complete. The paper itself says it does not rule out a qualitative distinction. Still open: the same rank-order test on the agent.
@@ -74,7 +74,7 @@ Not advanced:
 - Gap 9 (mixing weight by item type): not advanced. OPEN.
 
 Corrections from this pass:
-- K03 N was given as 507; analysed N is 485.
+- A01.06-K03 N was given as 507; analysed N is 485.
 - Critique item 10 (Lassiter and Goodman not re-verified) is now resolved by d01 and d02.
 - The Stephens, Dunn & Hayes (2018) paper and Rips (2001) remain unopened; their base-rate and crossover details rest on Hayes et al. (2018).
 

@@ -1,6 +1,6 @@
 # Single-process versus two-process accounts of induction and deduction: deep document
 
-Scope: whether judgments of "is this argument valid?" (deduction) and "is this argument plausible or strong?" (induction) come from one process with two cutoffs, or from two processes. Built from evidence files a-d (ids a01-a27, b01-b29, c01-c27, d01-d18), the claims file (K01-K27) and the cross-check (critique.md). Evidence ids in brackets point to those files. Related deep documents in this series (mental models, Wason, content effects, belief bias, dual process) are not repeated; the overlaps are noted where they arise.
+Scope: whether judgments of "is this argument valid?" (deduction) and "is this argument plausible or strong?" (induction) come from one process with two cutoffs, or from two processes. Built from evidence files a-d (ids a01-a27, b01-b29, c01-c27, d01-d18), the claims file (A01.06-K01-A01.06-K27) and the cross-check (critique.md). Evidence ids in brackets point to those files. Related deep documents in this series (mental models, Wason, content effects, belief bias, dual process) are not repeated; the overlaps are noted where they arise.
 
 Reading note on honesty: three central papers were never opened in full (Rips 2001; Stephens, Dunn and Hayes 2018 in Psychological Review; Heit and Rotello 2010). Their content is known through papers that were opened. This is marked throughout.
 
@@ -23,7 +23,7 @@ The question is not settled in humans. It is partly open in models. The most use
 
 Rips gave two groups the same arguments. One judged deductive correctness (necessarily true). The other judged inductive strength (plausible). He found that the ordering of argument types flipped across groups. Under deduction instructions, valid-but-causally-inconsistent arguments were endorsed more. Under induction instructions, invalid-but-causally-consistent arguments were endorsed more. He tried three wordings per condition and found no differences between wordings. He read this as incompatible with a single strength scale plus shifted cutoff. [a01, b24, b03]
 
-Status: Rips (2001) was never opened here. Hayes et al. (2018) describe the pattern as close to a single dissociation, not a true crossover: a large gap between valid-unbelievable and invalid-believable under deduction, near zero gap under induction. A state-trace re-analysis of Rips data was consistent with one dimension. So the famous crossover is weaker than its reputation. [a02, b03, b24, K20]
+Status: Rips (2001) was never opened here. Hayes et al. (2018) describe the pattern as close to a single dissociation, not a true crossover: a large gap between valid-unbelievable and invalid-believable under deduction, near zero gap under induction. A state-trace re-analysis of Rips data was consistent with one dimension. So the famous crossover is weaker than its reputation. [a02, b03, b24, A01.06-K20]
 
 ### 2.2 Heit and Rotello (2005, 2010): signal detection
 
@@ -76,7 +76,7 @@ Stephens, Dunn, Hayes and Kalish (2020): a training test. Logic training improve
 
 ### 2.7 Where the debate stands (summary)
 
-Dissociations are real and replicable in humans. Whether they need two dimensions is contested. The most formal tests (STA, signed difference analysis) favour one dimension with two independently movable criteria. Their null results cannot rule out two latent variables with parallel effects, and the test populations are narrow (causal conditionals). Even proponents of two dimensions call the debate unsettled. [b16, K04, K05]
+Dissociations are real and replicable in humans. Whether they need two dimensions is contested. The most formal tests (STA, signed difference analysis) favour one dimension with two independently movable criteria. Their null results cannot rule out two latent variables with parallel effects, and the test populations are narrow (causal conditionals). Even proponents of two dimensions call the debate unsettled. [b16, A01.06-K04, A01.06-K05]
 
 ## 3. Core findings with exact numbers
 
@@ -86,7 +86,7 @@ Status key: established = two or more independent sources; single-source; contes
 |---|---|---|---|
 | Heit-Rotello Exp 1 (letters): deduction wording separates correct from incorrect better than induction wording | N=40 per condition, 8 arguments. Deduction .89 correct, .22 incorrect; induction .93 / .55. d' 1.68 vs 0.93, t(78)=3.11, p<.01. Interaction F(1,78)=9.67. zROC slopes .84 vs .60 | Heit and Rotello 2005 [a04, a06, b01] | Verified in text; effect contested as proof of two processes |
 | Heit-Rotello Exp 2 (category inclusion): same pattern | N=48 per condition, 16 arguments. Correct .92 vs .88; incorrect .24 vs .57. d' 1.69 vs 0.78, t(94)=4.39. Interaction F(1,94)=19.22. Typicality F(1,94)=6.91. zROC slopes .82 vs .71. Incorrect-typical .60 vs incorrect-atypical .53 under induction | Heit and Rotello 2005 [a05, b02, critique] | Verified in text |
-| Wording changes the false-alarm rate far more than the hit rate | Valid accepted .88-.94 under both wordings; invalid accepted .22-.24 (deduction) vs .55-.57 (induction) | [a04, a05, b01, b02] | Established across two sources (K01) |
+| Wording changes the false-alarm rate far more than the hit rate | Valid accepted .88-.94 under both wordings; invalid accepted .22-.24 (deduction) vs .55-.57 (induction) | [a04, a05, b01, b02] | Established across two sources (A01.06-K01) |
 | Rips (2001) crossover | Not read. Reported as: deduction favours valid-unbelievable, induction favours invalid-believable. Hayes et al.: close to a single dissociation, consistent with one dimension on state-trace re-analysis | Rips 2001 via [a02, b24] | Unverified, weaker than its reputation |
 | Gap reproduced within one person by one modal word | 507 recruited, 485 analysed, 10,185 judgments, 21 arguments each from a pool of 63 (36 invalid, 27 valid). Necessary: valid .82, invalid .41, d' 1.15 +/- .19. Plausible: valid .94, invalid .82, d' 0.63 +/- .27. Difference p<.05. Rips crossover not reproduced | Lassiter and Goodman 2012 [a08, b13, d01] | Single-source, full text read |
 | One-scale model with word-specific exponent fits | R2 certain .60, likely .55, necessary .57, plausible .42, possible .32, probable .41. Split-half ceilings .66, .57, .70, .37, .34, .47. Best-fit noise .12 | [a09, d02] | Single-source; model incomplete (necessary .57 < .70 ceiling) |
@@ -174,22 +174,22 @@ Stage 1 builds a validity evidence value. Stage 2 applies a criterion shifted by
 
 ### 5.1 Replicated or consistent
 
-1. **Wording moves the false-alarm rate most.** Two separate experiments by Heit and Rotello (letters and categories) plus Lassiter and Goodman's within-subject version all show valid items accepted at high rates under both wordings and invalid items accepted far more under "plausible". This is the most solid result. [K01, a04, a05, a08]
-2. **Capacity and speed.** Low capacity lowers validity sensitivity and raises reliance on belief, most under induction wording. Speeding cut validity sensitivity in both tasks. Concurrent load itself had little effect in two experiments. [K08, b05, b07, b18]
-3. **Belief acts like a threshold shift.** Constant-discriminability models fit belief bias in syllogisms. LLMs show the same response-bias pattern. [K07, b15, c05]
-4. **Yes-bias in models is large and prompt-dependent.** Raw-likelihood scoring made several models answer "valid" to everything. Precision 99.2% with recall 42.8% for one 80B model against precision 61.0% with recall 93.1% for another. [K22, d09, d11]
+1. **Wording moves the false-alarm rate most.** Two separate experiments by Heit and Rotello (letters and categories) plus Lassiter and Goodman's within-subject version all show valid items accepted at high rates under both wordings and invalid items accepted far more under "plausible". This is the most solid result. [A01.06-K01, a04, a05, a08]
+2. **Capacity and speed.** Low capacity lowers validity sensitivity and raises reliance on belief, most under induction wording. Speeding cut validity sensitivity in both tasks. Concurrent load itself had little effect in two experiments. [A01.06-K08, b05, b07, b18]
+3. **Belief acts like a threshold shift.** Constant-discriminability models fit belief bias in syllogisms. LLMs show the same response-bias pattern. [A01.06-K07, b15, c05]
+4. **Yes-bias in models is large and prompt-dependent.** Raw-likelihood scoring made several models answer "valid" to everything. Precision 99.2% with recall 42.8% for one 80B model against precision 61.0% with recall 93.1% for another. [A01.06-K22, d09, d11]
 
 ### 5.2 Disputed or failing
 
 1. **Rips' crossover.** Not reproduced by Lassiter and Goodman (footnote). Hayes et al. call it close to a single dissociation. [d01, a02]
-2. **d' gap as proof of two processes.** Reproduced by one word in one person, and fit by a one-scale model with a word-specific exponent (R2 .32-.60). But the model is flexible and incomplete (necessary R2 .57 below its .70 ceiling). [K02, K03]
-3. **State-trace evidence for one dimension.** Three experiments plus a database re-analysis (6 of 16 significant at SD .10, none at .20 or .30). Weakened by: nulls favour neither side (Ashby); only causal conditionals tested; load manipulations did nothing; same research group did the re-analysis. [K04, K05, K06]
+2. **d' gap as proof of two processes.** Reproduced by one word in one person, and fit by a one-scale model with a word-specific exponent (R2 .32-.60). But the model is flexible and incomplete (necessary R2 .57 below its .70 ceiling). [A01.06-K02, A01.06-K03]
+3. **State-trace evidence for one dimension.** Three experiments plus a database re-analysis (6 of 16 significant at SD .10, none at .20 or .30). Weakened by: nulls favour neither side (Ashby); only causal conditionals tested; load manipulations did nothing; same research group did the re-analysis. [A01.06-K04, A01.06-K05, A01.06-K06]
 4. **ROC curvature.** Linear aggregate ROCs fit better than curved ones in one commentary; curved ROCs in another. Equal-variance Gaussian assumption is the weak link on the two-process side. [b20, b21]
 5. **Dual-process dissociations in the wider literature** mostly disappear under STA at assumed SDs of .20-.30. Not exhaustive; summary statistics only; some studies had four conditions. [b11]
 
 ### 5.3 Moderators
 
-- Problem difficulty: easy forms (MP) show logic hurting belief judgments more; the hardest (three-term syllogisms) show belief hurting logic more. [b19, K09]
+- Problem difficulty: easy forms (MP) show logic hurting belief judgments more; the hardest (three-term syllogisms) show belief hurting logic more. [b19, A01.06-K09]
 - Form type: people keep validity for MP and drop it for MT. Negative-form inferences (MT, DA) are where plausibility-minded reasoners fail most. [a22, b21]
 - Argument length and item similarity move induction more than deduction. [a11, b17]
 - Natural predicates (enzymes, bones) pushed invalid acceptance far above novel-property stimuli and lowered d' in both wordings. [d01]
@@ -205,7 +205,7 @@ Stage 1 builds a validity evidence value. Stage 2 applies a criterion shifted by
 
 - Disfluent font did not make people more analytic; it lowered accuracy (d_a 0.51 vs 0.92). [b18]
 - Cognitive load did not shift reasoning in two experiments (but may have been too weak). [a15, a16]
-- Plain instruction and few-shot reduce LLM belief bias only modestly on syllogisms and Wason. [c06, K13]
+- Plain instruction and few-shot reduce LLM belief bias only modestly on syllogisms and Wason. [c06, A01.06-K13]
 - Zero-shot "think step by step" with a one-word answer showed no change across 14 models (McNemar p=.612). [c07, d09]
 - Temperature is not a clean criterion lever for models. [d14]
 
@@ -213,14 +213,14 @@ Stage 1 builds a validity evidence value. Stage 2 applies a criterion shifted by
 
 ### 6.1 Headline: nobody has run the real design
 
-No study found runs an LLM through the Rips / Heit-Rotello design (same arguments, deduction versus induction wording, ROC, d' or STA). Two limited searches (web and arXiv, both ended when the search quota ran out) found none. The nearest work is belief-by-validity interaction under one wording (Lampinen), accuracy gaps (Poddar), task framing with converted items (Abe), and a signal detection study on factual QA (Cacioli). [K18, c23, d18]
+No study found runs an LLM through the Rips / Heit-Rotello design (same arguments, deduction versus induction wording, ROC, d' or STA). Two limited searches (web and arXiv, both ended when the search quota ran out) found none. The nearest work is belief-by-validity interaction under one wording (Lampinen), accuracy gaps (Poddar), task framing with converted items (Abe), and a signal detection study on factual QA (Cacioli). [A01.06-K18, c23, d18]
 
 ### 6.2 Content effects are criterion-like and human-like
 
 - Language models and humans both say "valid" more often when the conclusion is believable and "invalid" more often when it clashes. Human baseline cited: about 90% wrongly accept invalid believable syllogisms. Models: Chinchilla, PaLM 2 (S/M/L), Flan-PaLM 2, GPT-3.5. Wason realistic-rule advantage in humans, Chinchilla, PaLM 2-L, GPT-3.5 (all z>2.2, p<0.03). [c05]
 - Belief x validity interaction: significant in humans, PaLM 2-L, Flan-PaLM 2 and GPT-3.5 (all z>5.9, p<.001). Belief-consistent conclusions get "valid" regardless of logic; belief-violating ones are judged with more validity sensitivity. [d11]
 - Few-shot examples take Chinchilla on natural language inference from heavily biased to near ceiling, but give only mild gains on syllogisms and Wason. Removing the instruction text did not change the overall result. Instruction-tuned Flan-PaLM 2 and GPT-3.5-instruct showed no consistent drop in content effects. [c06]
-- Instruction tuning and RLHF can make belief bias stronger (Flan-T5, Mistral-Instruct, GPT-3.5, GPT-4). Few-shot examples with fabricated words give a noticeable drop; format-only few-shot gives little. [c09, K13]
+- Instruction tuning and RLHF can make belief bias stronger (Flan-T5, Mistral-Instruct, GPT-3.5, GPT-4). Few-shot examples with fabricated words give a noticeable drop; format-only few-shot gives little. [c09, A01.06-K13]
 - Human Wason accuracy rises with response time (z=4.44). Authors argue a single transformer can show both biased and consistent behaviour without a dual-system add-on; no mechanistic evidence of conflict arbitration in models. [c25]
 
 ### 6.3 Ability scales with form accuracy
@@ -246,14 +246,14 @@ From reported precision, recall and the 47.5% valid base rate (derived by the ea
 
 ### 6.5 Chain of thought: conflicting results
 
-- Bertolazzi et al.: Qwen2.5-32B accuracy 81.62 (zero-shot) to 94.60 (CoT), content effect 0.348 to 0.096. Qwen3-14B 86.54 to 96.70, content effect 0.213 to 0.014. That is a cut of about 72% and 93%. Alignment between validity and plausibility directions does not differ by prompt style (Mann-Whitney p=.625). So CoT acts like a criterion adjustment on top of an unchanged strength signal. Authors cannot explain why CoT helps while the representation stays entangled. [c04, b29, K12]
+- Bertolazzi et al.: Qwen2.5-32B accuracy 81.62 (zero-shot) to 94.60 (CoT), content effect 0.348 to 0.096. Qwen3-14B 86.54 to 96.70, content effect 0.213 to 0.014. That is a cut of about 72% and 93%. Alignment between validity and plausibility directions does not differ by prompt style (Mann-Whitney p=.625). So CoT acts like a criterion adjustment on top of an unchanged strength signal. Authors cannot explain why CoT helps while the representation stays entangled. [c04, b29, A01.06-K12]
 - Poddar et al.: zero-shot CoT versus zero-shot, McNemar chi2=1, p=.612 (389 vs 374 discordant, N=6,720 per comparison) across 14 models. Few-shot was below zero-shot by 3.57 points (p_adj=.0495; Wilcoxon p_raw=.0195, p_adj=.0584 in another table). [c27, d09]
-- Why they differ: Poddar's cue was only "think step by step" with a one-word answer; Bertolazzi used open Qwen models and a different measure. No equal-token, closed-model study exists. Status contested. [d09, K12]
+- Why they differ: Poddar's cue was only "think step by step" with a one-word answer; Bertolazzi used open Qwen models and a different measure. No equal-token, closed-model study exists. Status contested. [d09, A01.06-K12]
 - Abstract-space work: models conflate plausibility with validity even when they write step-by-step explanations, so the rationale inherits the shortcut. [c12]
 
 ### 6.6 Form-first scaffolds
 
-Two-stage prompt (name the logical form from the premises, then check validity on that form). Content effect, baseline to Boethius: Llama3-8B 73.2 to 50.7; Llama3-70B 63.5 to 49.3; GPT-4o 61.8 to 50.2; Gemma2-9B 62.8 to 56.7; Llama3-1B 76.1 to 64.9. A deductive-only prompt moved CE only a few points (GPT-4o 61.8 to 59.2). Small models needed the two stages as separate prompts. CE stays near 50 for the best setup. Column labels in the extract were unclear. [c10, K14]
+Two-stage prompt (name the logical form from the premises, then check validity on that form). Content effect, baseline to Boethius: Llama3-8B 73.2 to 50.7; Llama3-70B 63.5 to 49.3; GPT-4o 61.8 to 50.2; Gemma2-9B 62.8 to 56.7; Llama3-1B 76.1 to 64.9. A deductive-only prompt moved CE only a few points (GPT-4o 61.8 to 59.2). Small models needed the two stages as separate prompts. CE stays near 50 for the best setup. Column labels in the extract were unclear. [c10, A01.06-K14]
 
 ### 6.7 Solvers and code
 
@@ -263,7 +263,7 @@ Two-stage prompt (name the logical form from the premises, then check validity o
 - LINC: FOLIO GPT-4 CoT 75.3% vs LINC 72.5% (McNemar p=0.58). ProofWriter LINC with GPT-3.5 96.4%, with GPT-4 98.3%. Premises per question 5.3 (FOLIO) vs 18.8 (ProofWriter). FOL syntax errors 38% StarCoder+, 24% GPT-3.5, 13% GPT-4. On FOLIO the solver says "Uncertain" 57% of the time against 41% for CoT. [d06]
 - SatLM (code-davinci-002): ProofWriter depth-5 CoT 80.1 vs 99.7; LSAT 23.5 vs 35.0; BoardgameQA 60.7 vs 79.4; CLUTRR 40.8 vs 68.3; GSM on par (71.8 vs 72.7). Can abstain on UNSAT or AMBIG. [d07]
 - Small models are the weak point of translation; two-stage translation (predicates, then formulas) plus an arity verifier reduces errors (abstract only). [d08]
-- All of these are 2023-era models; no token-matched comparison; none for current reasoning models. [K15]
+- All of these are 2023-era models; no token-matched comparison; none for current reasoning models. [A01.06-K15]
 
 ### 6.8 Induction in models
 
@@ -277,10 +277,10 @@ Two-stage prompt (name the logical form from the premises, then check validity o
 
 ### 6.9 Other model facts
 
-- Premise count hurts: LLaMA-3 8B zero-shot CoT 44.64 (2 premises), 39.64 (3), 31.79 (4). Pythia 1.4B 18.21, 11.07, 7.86. Supervised fine-tuning held 99.05, 94.17, 85.36. Zero-shot CoT in LLaMA-3 rarely says "nothing follows"; instruction tuning partly fixes this at the cost of valid items. Generation task, open small models. [d12, K21]
+- Premise count hurts: LLaMA-3 8B zero-shot CoT 44.64 (2 premises), 39.64 (3), 31.79 (4). Pythia 1.4B 18.21, 11.07, 7.86. Supervised fine-tuning held 99.05, 94.17, 85.36. Zero-shot CoT in LLaMA-3 rarely says "nothing follows"; instruction tuning partly fixes this at the cost of valid items. Generation task, open small models. [d12, A01.06-K21]
 - "Nothing follows" is hard. GPT-4 zero-shot deduction overall 72.22%, "Neither" 44.44%; few-shot 95.83% (Neither 94.44%). GPT-3.5 few-shot 46.30% (Neither 2.78%). Llama-3-70B few-shot deduction 84.72% vs abduction 75.46%. Different items for the two framings. [d15]
 - PaLM 2 models exceed human accuracy on 27 conclusion-licensing syllogisms (humans about 50%, best model about 75%) but are sure on the fallacy items and rarely answer "nothing follows" though it is correct for 37 of 64 types. [c08]
-- Signal detection of LLMs (Cacioli 2026, factual QA, pre-registered): 168,000 confidence trials, 6,000 forced-choice, Llama-3-8B-Instruct, Mistral-7B-Instruct-v0.3, Llama-3-8B-Base, seven temperatures. Temperature raised AUC by 0.071-0.146 while shifting criterion. z-ROC slopes 0.52-0.84 (instruct 0.52-0.63; base 0.77-0.87; human recognition memory about 0.80). Plain equal-variance d' is unsafe for models. [d14, K24]
+- Signal detection of LLMs (Cacioli 2026, factual QA, pre-registered): 168,000 confidence trials, 6,000 forced-choice, Llama-3-8B-Instruct, Mistral-7B-Instruct-v0.3, Llama-3-8B-Base, seven temperatures. Temperature raised AUC by 0.071-0.146 while shifting criterion. z-ROC slopes 0.52-0.84 (instruct 0.52-0.63; base 0.77-0.87; human recognition memory about 0.80). Plain equal-variance d' is unsafe for models. [d14, A01.06-K24]
 - Training on deduction, induction and abduction trajectories separately transfers to realistic tasks, up to 14.60 points (abstract only). Not relevant to a scaffold-only build. [c21]
 - Steering (K-CAST) can fix some unresponsive models, up to 15 points of formal accuracy gain (search summary only). [c11]
 
@@ -294,66 +294,66 @@ Format: item | schema part | status | evidence ids. Status is [E] established, [
 
 ### Add now (established)
 
-1. **Treat "does it follow?" and "is it plausible?" as different questions with different error profiles, and name which one is being asked.** Plausibility wording lets invalid items through (.55-.57 accepted vs .22-.24). Schema part: G4/O3. [E]. Evidence: a04, a05, b01, b02, a08, b13 (K01).
-2. **Never let the generating model's feeling of validity be the validity check.** Validity must come from a content-stripped restatement, a counterexample test or code. Models conflate the two; written rationales inherit the shortcut. Schema part: G2/G10, reinforces O3. [E for the human-and-model pattern of belief pulling validity; mechanism [S]]. Evidence: c05, c12, K13, c07, d11, K07 (K07 is [C] on the mechanism).
-3. **Measure and remove the global yes-bias before comparing any wordings or checkers.** Schema part: G4 and logging (section 6 of the schema). [E]. Evidence: d09, d11, d12, d15 (K22).
+1. **Treat "does it follow?" and "is it plausible?" as different questions with different error profiles, and name which one is being asked.** Plausibility wording lets invalid items through (.55-.57 accepted vs .22-.24). Schema part: G4/O3. [E]. Evidence: a04, a05, b01, b02, a08, b13 (A01.06-K01).
+2. **Never let the generating model's feeling of validity be the validity check.** Validity must come from a content-stripped restatement, a counterexample test or code. Models conflate the two; written rationales inherit the shortcut. Schema part: G2/G10, reinforces O3. [E for the human-and-model pattern of belief pulling validity; mechanism [S]]. Evidence: c05, c12, A01.06-K13, c07, d11, A01.06-K07 (A01.06-K07 is [C] on the mechanism).
+3. **Measure and remove the global yes-bias before comparing any wordings or checkers.** Schema part: G4 and logging (section 6 of the schema). [E]. Evidence: d09, d11, d12, d15 (A01.06-K22).
 4. **Report hit rate and false-alarm rate (or d_a / AUC), never one difference score, when judging a verifier.** Schema part: logging. [E]. Evidence: a12, b26, c24, d14.
-5. **Give validity checks enough budget; they degrade first under pressure.** Speeding and low capacity cut validity sensitivity before belief sensitivity. This is a caution against G11's thinking cap on the validity step. Schema part: G11/G12. [E]. Evidence: a11, a17, b05, b07, b18, b27 (K08).
-6. **Route validity checks by proof depth and translation success.** Shallow, short, forward-chaining or hard-to-formalise goes to model reasoning. Deep, clean, many-premise goes to a solver or code, with CoT fallback when the formula fails. Keep an "undecided" outcome. Schema part: O3 and S4/S8. [E]. Evidence: c20, d04, d05, d06, d07, b28 (K15, K27). All 2023 models.
-7. **Keep "undecided" as a third outcome of the check route.** The solver says "Uncertain" 57% vs 41% for CoT; SatLM abstains on UNSAT and AMBIG. Do not force yes/no. Schema part: O3, with G6 (never abstain on the first pass) governing the final answer, not the check. [E]. Evidence: d06, d07 (K27).
-8. **Induction by hypotheses plus execution beats direct prediction; the bottleneck is hypothesis generation.** Keep a wide hypothesis set and let execution, not a summary step, prune. Schema part: O2/O3, S3/S4. [E]. Evidence: c18, c19, c22 (K17). (Largely overlaps existing S3/S4/G3.)
-9. **Do not add bias checklists or "be careful/analytic" instructions as a fix for plausibility pull.** Consistent with schema 4b. Plain instruction is a modest remedy; instruction tuning can worsen belief bias. Schema part: 4b. [E]. Evidence: c06, c09 (K13).
+5. **Give validity checks enough budget; they degrade first under pressure.** Speeding and low capacity cut validity sensitivity before belief sensitivity. This is a caution against G11's thinking cap on the validity step. Schema part: G11/G12. [E]. Evidence: a11, a17, b05, b07, b18, b27 (A01.06-K08).
+6. **Route validity checks by proof depth and translation success.** Shallow, short, forward-chaining or hard-to-formalise goes to model reasoning. Deep, clean, many-premise goes to a solver or code, with CoT fallback when the formula fails. Keep an "undecided" outcome. Schema part: O3 and S4/S8. [E]. Evidence: c20, d04, d05, d06, d07, b28 (A01.06-K15, A01.06-K27). All 2023 models.
+7. **Keep "undecided" as a third outcome of the check route.** The solver says "Uncertain" 57% vs 41% for CoT; SatLM abstains on UNSAT and AMBIG. Do not force yes/no. Schema part: O3, with G6 (never abstain on the first pass) governing the final answer, not the check. [E]. Evidence: d06, d07 (A01.06-K27).
+8. **Induction by hypotheses plus execution beats direct prediction; the bottleneck is hypothesis generation.** Keep a wide hypothesis set and let execution, not a summary step, prune. Schema part: O2/O3, S3/S4. [E]. Evidence: c18, c19, c22 (A01.06-K17). (Largely overlaps existing S3/S4/G3.)
+9. **Do not add bias checklists or "be careful/analytic" instructions as a fix for plausibility pull.** Consistent with schema 4b. Plain instruction is a modest remedy; instruction tuning can worsen belief bias. Schema part: 4b. [E]. Evidence: c06, c09 (A01.06-K13).
 
 ### Test first
 
 Each of these is [S] or [C]. All must beat the plain model at equal tokens (G7) before entering the schema.
 
-1. **Explicit "assume premises true, ignore plausibility" or "name the form first" step before a validity verdict.** Schema part: O3/S4. [S]. Evidence: c10, d15, c09 (K14). Nearest support: two-stage prompt cut content effect to near 50; fabricated-word few-shot cut belief bias. No token-matched study.
-2. **Short written derivation before the verdict, rather than a bare yes/no.** Schema part: O3, interacts with G11. [C]. Evidence: c04, b29 vs c27, d09 (K12). Bertolazzi says content effect falls 72-93% in open models; Poddar finds nothing from a minimal cue.
-3. **Same item judged under two wordings in separate calls ("necessarily follows" vs "plausibly follows"), then compare rank order in code.** Disagreement in rank order, beyond what resampling noise explains, flags that something other than strength is at work. Schema part: S4/S7. [S]. Evidence: a09, d02 (K03).
-4. **Set the validity and plausibility thresholds separately from stated stakes or base rates (cost of false accept; expected share of valid items).** Human support exists (base-rate experiment moved the two criteria in opposite directions), but only second-hand and for causal conditionals. No LLM test. Schema part: G4 / S0. [S]. Evidence: d03, d17, b09, a19 (K25).
-5. **Form-first step on weak or small sub-models only; skip it for strong models.** Measure the congruent-minus-incongruent gap once per sub-model. Schema part: S0 gate / O3. [S]. Evidence: d10, d09 (K26).
-6. **Mixing score for conditional or plausibility-heavy judgments: P(conclusion) with and without "assume the premises", then fit a form weight per item type.** Schema part: G4. [S]. Evidence: a20, a21, a22 (K10).
-7. **Treat added premises as possibly weakening.** Ask for the effect of an odd premise by name, and record in code how each piece of evidence was gathered. Schema part: S2/G4. [S]. Evidence: c14, d13, d12 (K19, K21).
+1. **Explicit "assume premises true, ignore plausibility" or "name the form first" step before a validity verdict.** Schema part: O3/S4. [S]. Evidence: c10, d15, c09 (A01.06-K14). Nearest support: two-stage prompt cut content effect to near 50; fabricated-word few-shot cut belief bias. No token-matched study.
+2. **Short written derivation before the verdict, rather than a bare yes/no.** Schema part: O3, interacts with G11. [C]. Evidence: c04, b29 vs c27, d09 (A01.06-K12). Bertolazzi says content effect falls 72-93% in open models; Poddar finds nothing from a minimal cue.
+3. **Same item judged under two wordings in separate calls ("necessarily follows" vs "plausibly follows"), then compare rank order in code.** Disagreement in rank order, beyond what resampling noise explains, flags that something other than strength is at work. Schema part: S4/S7. [S]. Evidence: a09, d02 (A01.06-K03).
+4. **Set the validity and plausibility thresholds separately from stated stakes or base rates (cost of false accept; expected share of valid items).** Human support exists (base-rate experiment moved the two criteria in opposite directions), but only second-hand and for causal conditionals. No LLM test. Schema part: G4 / S0. [S]. Evidence: d03, d17, b09, a19 (A01.06-K25).
+5. **Form-first step on weak or small sub-models only; skip it for strong models.** Measure the congruent-minus-incongruent gap once per sub-model. Schema part: S0 gate / O3. [S]. Evidence: d10, d09 (A01.06-K26).
+6. **Mixing score for conditional or plausibility-heavy judgments: P(conclusion) with and without "assume the premises", then fit a form weight per item type.** Schema part: G4. [S]. Evidence: a20, a21, a22 (A01.06-K10).
+7. **Treat added premises as possibly weakening.** Ask for the effect of an odd premise by name, and record in code how each piece of evidence was gathered. Schema part: S2/G4. [S]. Evidence: c14, d13, d12 (A01.06-K19, A01.06-K21).
 8. **"Nothing follows" example in few-shot to shift the validity criterion.** Schema part: S1/S4. [S]. Evidence: d15.
 9. **Put premises and conclusion side by side for the validity check.** Schema part: S4. [S]. Evidence: a23.
 10. **Two-checker disagreement as a flag** (model and solver, or two differently framed model calls); the items where they disagree get the extra attention. Schema part: S4/S7, G4-compatible because the checkers differ in method. [S]. Evidence: d06, c20.
 
 ### Memory
 
-- Per problem class, record the plain model's hit and false-alarm rates under each wording, its measured criterion, and the congruent-minus-incongruent gap. Schema part: memory class record (section 5). [S]. Evidence: d09, d10, K22, K26.
+- Per problem class, record the plain model's hit and false-alarm rates under each wording, its measured criterion, and the congruent-minus-incongruent gap. Schema part: memory class record (section 5). [S]. Evidence: d09, d10, A01.06-K22, A01.06-K26.
 
 ## 8. Concrete tests on our bench
 
-Principles for all tests: equal total tokens in both arms (G7). Five samples per cell. Collect a 1 to 6 confidence rating or a token probability. Use d_a or AUC and fit z-ROC slope, never plain d' unless the slope is near 1. Remove global yes-bias first (K22). Use wording, not temperature, as the criterion lever (K24). Bootstrap over items.
+Principles for all tests: equal total tokens in both arms (G7). Five samples per cell. Collect a 1 to 6 confidence rating or a token probability. Use d_a or AUC and fit z-ROC slope, never plain d' unless the slope is near 1. Remove global yes-bias first (A01.06-K22). Use wording, not temperature, as the criterion lever (A01.06-K24). Bootstrap over items.
 
 ### Test 1: wording sensitivity and criterion (closes gaps 1, 2, 4)
 
 - Item type: 48 items crossed validity x believability x premise count (1, 2, 4).
 - Arms: (A) "necessarily follows" wording; (B) "plausibly follows" wording; (C) the same as A with a base-rate cue (20% vs 80% valid).
 - Metric: accept rates by cell; d_a and z-ROC slope per wording; Spearman across wordings with a split-half ceiling; state-trace plot with a monotone fit.
-- Expected effect: invalid-item accept rate higher under B than A, hit rate similar (matches K01). If d_a differs between A and B, that is a sensitivity effect; the one-scale model predicts the same rank order within the noise ceiling (Lassiter-Goodman: observed .53 vs .49-.64). Base-rate cue moves the false-alarm rate with discrimination unchanged, if the criterion account holds. [K01, K02, K03, K25, critique]
+- Expected effect: invalid-item accept rate higher under B than A, hit rate similar (matches A01.06-K01). If d_a differs between A and B, that is a sensitivity effect; the one-scale model predicts the same rank order within the noise ceiling (Lassiter-Goodman: observed .53 vs .49-.64). Base-rate cue moves the false-alarm rate with discrimination unchanged, if the criterion account holds. [A01.06-K01, A01.06-K02, A01.06-K03, A01.06-K25, critique]
 
 ### Test 2: state-trace for the agent (gap 2)
 
 - Item type: 12 to 24 conditions (belief x validity x length x premises).
 - Arms: A vs B wording as above.
 - Metric: mean accept rate under A against under B per condition; conjoint monotone regression with bootstrap; power check by simulating a two-dimension structure.
-- Expected effect: a monotone plot would support one shared scale with two cutoffs as a valid agent design. A reliable non-monotone departure would argue for running two separate checks and combining them in code. Uncertain; no LLM prior exists. [a14, b08, K04]
+- Expected effect: a monotone plot would support one shared scale with two cutoffs as a valid agent design. A reliable non-monotone departure would argue for running two separate checks and combining them in code. Uncertain; no LLM prior exists. [a14, b08, A01.06-K04]
 
 ### Test 3: explicit form-first step versus plausibility-first answer (gap 3)
 
 - Item type: believable-invalid, unbelievable-valid, neutral valid and invalid syllogisms and conditionals, plus a matched set of plausibility items.
 - Arms at equal total tokens: (A) plain "is it valid?"; (B) abstract the form first, then check validity; (C) "assume the premises are true, ignore plausibility" instruction. Also run each arm on plausibility items to measure what the step costs there.
 - Metric: congruent-minus-incongruent accuracy gap, false-accept rate on believable-invalid items, d_a, plus accuracy on plausibility items.
-- Expected effect: B reduces the gap (published prompt-only effect: content effect from about 62 to 50 for GPT-4o); C a smaller effect (plain instruction is a modest remedy). B costs nothing or little on plausibility items. [c10, c06, K14]
+- Expected effect: B reduces the gap (published prompt-only effect: content effect from about 62 to 50 for GPT-4o); C a smaller effect (plain instruction is a modest remedy). B costs nothing or little on plausibility items. [c10, c06, A01.06-K14]
 
 ### Test 4: chain of thought at equal tokens (gap 7)
 
 - Item type: matched believable and unbelievable syllogisms.
 - Arms: (A) bare verdict; (B) short written validity derivation; (C) same tokens spent on 3 short independent bare-verdict samples and a vote (G11).
 - Metric: content effect; accuracy; token cost.
-- Expected effect: B below A on content effect (Bertolazzi: 0.348 to 0.096); the Poddar null suggests B may do nothing with a weak cue. C tests G11's claim that parallel short attempts beat one long one. [c04, c27, K12]
+- Expected effect: B below A on content effect (Bertolazzi: 0.348 to 0.096); the Poddar null suggests B may do nothing with a weak cue. C tests G11's claim that parallel short attempts beat one long one. [c04, c27, A01.06-K12]
 
 ### Test 5: solver or code versus own judgment (gap 6)
 
@@ -367,27 +367,27 @@ Principles for all tests: equal total tokens in both arms (G7). Five samples per
 - Item type: induction items with 1 to 5 premises; items where an added odd premise should lower strength.
 - Arms: plain vs "record how evidence was collected, then rate".
 - Metric: share of odd-premise items where strength falls; accuracy by premise count.
-- Expected effect: at least some failure to lower strength (GPT-4 failed non-monotonicity). Accuracy falls with premise count on validity items (44.64 to 31.79 for LLaMA-3 8B). Decomposition or a solver step at high counts should help. [d12, d13, K21]
+- Expected effect: at least some failure to lower strength (GPT-4 failed non-monotonicity). Accuracy falls with premise count on validity items (44.64 to 31.79 for LLaMA-3 8B). Decomposition or a solver step at high counts should help. [d12, d13, A01.06-K21]
 
 ### Test 7: budget pressure on validity versus plausibility
 
 - Item type: matched validity and plausibility items.
 - Arms: tight token cap (G11-like) vs generous cap.
 - Metric: accuracy by item type and cap.
-- Expected effect: validity accuracy drops more than plausibility accuracy under the tight cap (human speeding result: validity effect .25 to .11). If true, exempt validity steps from the global cap. [b07, K08]
+- Expected effect: validity accuracy drops more than plausibility accuracy under the tight cap (human speeding result: validity effect .25 to .11). If true, exempt validity steps from the global cap. [b07, A01.06-K08]
 
 ### Test 8: wording, few-shot "nothing follows" (cheap)
 
 - Item type: syllogisms with a large share of "nothing follows" items.
 - Arms: zero-shot vs 2 to 3 same-task examples including a "nothing follows" case, equal tokens.
 - Metric: "nothing follows" recall and false-accept rate.
-- Expected effect: large gain in "nothing follows" accuracy (GPT-4 44.44% to 94.44% in the older study). [d15, K13]
+- Expected effect: large gain in "nothing follows" accuracy (GPT-4 44.44% to 94.44% in the older study). [d15, A01.06-K13]
 
 ### Test 9: per-sub-model belief gap
 
 - Item type: congruent versus incongruent syllogisms, each sub-model the agent calls.
 - Metric: congruent-minus-incongruent gap.
-- Expected effect: strong sub-models under 2 points; small ones large (up to +46.9 in the weakest study models). Turn the form-first step on only where the gap is large. [d10, K26]
+- Expected effect: strong sub-models under 2 points; small ones large (up to +46.9 in the weakest study models). Turn the form-first step on only where the gap is large. [d10, A01.06-K26]
 
 ## 9. What does not transfer, and why
 
@@ -397,11 +397,11 @@ Principles for all tests: equal total tokens in both arms (G7). Five samples per
 4. **Fluency manipulations.** Disfluent font lowering accuracy has no model equivalent. [b18]
 5. **Training results.** Cao et al. (training on separate deduction, induction and abduction trajectories) and fine-tuned premise-count results (99.05 on SFT) need training, which this project does not do. [c21, d12]
 6. **Steering and probe results.** Cosine alignments, steering vectors and the debiasing subtraction need white-box access. A closed API agent cannot do them. The prompt-level analogue (separate calls for form and believability, joined in code) is untested. [c01-c03, c11]
-7. **The human d' gap taken as proof of two processes.** A one-word change reproduces it within one judge, with one scale and a word-specific exponent. For our agent a wording effect on d' is expected; it does not prove two modules. [d01, K03]
+7. **The human d' gap taken as proof of two processes.** A one-word change reproduces it within one judge, with one scale and a word-specific exponent. For our agent a wording effect on d' is expected; it does not prove two modules. [d01, A01.06-K03]
 8. **Equal-variance d'.** Models show unequal-variance evidence (z-ROC slopes 0.52-0.63 for instruct models) and strong global yes-bias. Human d' formulas do not carry over unchanged. [d14]
-9. **Causal conditional results.** All STA evidence on one dimension is about modus ponens versus accepting the consequent on causal conditionals. Syllogisms may recruit more analytic processing. Do not generalise to longer or real-world arguments. [a18, K05]
-10. **2023-era model benchmarks.** Logic-LM, LINC, SatLM and Han et al. used models that are not the agent's. Rules of thumb (shallow to model, deep to solver) are hypotheses for the current model until re-measured. [K15, K19]
-11. **Open-weight small-model syllogism sets.** Bertolazzi (Qwen), Poddar (14 mostly open or small models) and Ranaldi (Llama, Gemma) bear on a different capability range than the agent's. Poddar's finding that strong models separate form from belief suggests the agent may need less scaffolding than weak models; this is unmeasured. [d10, K26]
+9. **Causal conditional results.** All STA evidence on one dimension is about modus ponens versus accepting the consequent on causal conditionals. Syllogisms may recruit more analytic processing. Do not generalise to longer or real-world arguments. [a18, A01.06-K05]
+10. **2023-era model benchmarks.** Logic-LM, LINC, SatLM and Han et al. used models that are not the agent's. Rules of thumb (shallow to model, deep to solver) are hypotheses for the current model until re-measured. [A01.06-K15, A01.06-K19]
+11. **Open-weight small-model syllogism sets.** Bertolazzi (Qwen), Poddar (14 mostly open or small models) and Ranaldi (Llama, Gemma) bear on a different capability range than the agent's. Poddar's finding that strong models separate form from belief suggests the agent may need less scaffolding than weak models; this is unmeasured. [d10, A01.06-K26]
 
 ## 10. Open questions
 
@@ -410,7 +410,7 @@ The ten gaps from the cross-check, with their state after the gap search:
 1. **d' versus criterion in an LLM under "necessary" vs "plausible" wording.** Closed to no study. OPEN. Method warnings: use d_a or AUC; remove yes-bias; wording not temperature as the lever. [d18, d14, d09, d11]
 2. **Is the LLM state-trace plot monotone?** No LLM data. Needs 12 to 24 conditions. OPEN. This decides whether one scale with two cutoffs is a valid design. [d03, a14]
 3. **Explicit "assume premises true" step at equal tokens versus plausibility-first answer?** No token-matched study. OPEN. Nearest: c10, d15, d09. [d18]
-4. **Does the criterion shift between wordings track base-rate beliefs in an LLM?** Human support only (second-hand). OPEN for LLMs. [d03, K25]
+4. **Does the criterion shift between wordings track base-rate beliefs in an LLM?** Human support only (second-hand). OPEN for LLMs. [d03, A01.06-K25]
 5. **Is the Heit-Rotello effect stable beyond causal conditionals and short categories?** Search hit the quota. Only a11 (length and similarity move induction more) and d01 (natural predicates raised invalid acceptance to .82 and lowered d' in both wordings) bear on it. OPEN.
 6. **When should the agent route a check to a solver or code?** Mostly closed for 2023 models (model wins short forward-chaining; solver wins with depth and premise count). No result for current reasoning models or at equal tokens. [d04-d08]
 7. **Does CoT reduce content effect on closed API models at equal total tokens?** Conflict between Bertolazzi and Poddar is a difference of design. OPEN. [d09]

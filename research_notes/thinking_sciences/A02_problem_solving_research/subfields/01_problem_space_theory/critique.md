@@ -1,6 +1,6 @@
 # Critique: Problem-space theory (cross-check)
 
-Checked: evidence_a, evidence_b, evidence_c (about 90 lines). Claims in claims.jsonl (K01-K21). Sources re-opened this session as PDF text: Newell, Shaw, Simon 1958; Yao 2023 (ToT); Hao 2023 (RAP); Zhou 2023 (LATS); Sel 2023 (AoT); Katz 2024 (Thought of Search); Valmeekam 2024 (o1 / Strawberry Fields); Lawsen 2025; Fansher et al. 2022.
+Checked: evidence_a, evidence_b, evidence_c (about 90 lines). Claims in claims.jsonl (A02.01-K01-A02.01-K21). Sources re-opened this session as PDF text: Newell, Shaw, Simon 1958; Yao 2023 (ToT); Hao 2023 (RAP); Zhou 2023 (LATS); Sel 2023 (AoT); Katz 2024 (Thought of Search); Valmeekam 2024 (o1 / Strawberry Fields); Lawsen 2025; Fansher et al. 2022.
 
 ## 1. Numbers re-checked
 
@@ -19,7 +19,7 @@ Confirmed exactly:
 
 1. c22 (Lawsen): the evidence said a 64k output limit puts the Hanoi ceiling near N=7-8. That was the paper's first version. The current version (v2) uses 10 tokens per move and the 2^N-1 move list; it gives a ceiling of N about 12-13 at 64k. Lawsen's point is then that observed collapse (before N=9) happens well below the token limit, so models stop early. Weaker than first recorded. Also the evidence is informal (a tweet replication, "preliminary", no count table).
 2. c01 (ToT cost): the finding "less than brute-force sampling" is wrong in dollars. ToT is $0.74 per case vs $0.47 for best-of-100 CoT. ToT used fewer completion tokens (5.5k vs 6.7k) and won on accuracy. The paper's own Table 7 text is inconsistent (garbled in extraction; prompt tokens 1.4k vs 2.2k also favour ToT, yet dollars favour CoT). Treat dollars as stated, tokens as uncertain. The "5 to 100 times CoT" line was not found in the paper text I read; unverified.
-3. a19 (Fansher transfer): 79.3% vs 65.4% is real but borderline (B=.98, p=.0488) and Exp 1 showed no such effect (B=-0.53, p=.57, wrong direction). Downgraded to contested (K13).
+3. a19 (Fansher transfer): 79.3% vs 65.4% is real but borderline (B=.98, p=.0488) and Exp 1 showed no such effect (B=-0.53, p=.57, wrong direction). Downgraded to contested (A02.01-K13).
 4. c05 / a24 (RAP "33% relative gain over GPT-4"): the headline is the paper's own average. Per length, RAP(20) beats GPT-4 CoT by a wide margin at 2 steps (1.00 vs 0.50) and 4 steps (0.88 vs 0.63) but at 6 steps only 0.42 vs 0.40. The gain is mostly on short plans. RAP also uses a 33B model and RAP search with 10-20 iterations; no token-matched GPT-4 baseline.
 5. a27/c09 (LATS node counts 84.05 / 70.60 / 66.65): the PDF table layout is garbled; the assignment of numbers to ToT, RAP, LATS is inferred from row order. Likely right, not certain.
 6. LATS HumanEval and HotPotQA numbers mix "LATS (n=10)", "LATS (CoT)", "LATS (ReAct)" variants. Compare like with like only.
@@ -38,7 +38,7 @@ Confirmed exactly:
 - No paper compares search and best-of-N at fully equal dollars and tokens on varied tasks. The only equal-ish comparison is ToT Table 7, and it is mixed.
 - Most numbers are single runs of closed models (2023 GPT-4 versions), small test sets (ToT crosswords 20 games, Game of 24 100 items, Long Sudoku 10 per size). No confidence intervals.
 - Independent replication is thin: the only one is a student project (b10), which found the tree-vs-chain gap shrinks with a good value function.
-- Evidence "independent_sources" counts in claims treat different papers by the same group (Kambhampati) as separate; this is generous (K09, K14).
+- Evidence "independent_sources" counts in claims treat different papers by the same group (Kambhampati) as separate; this is generous (A02.01-K09, A02.01-K14).
 
 ## 5. Only seen in snippets or not opened
 
@@ -49,7 +49,7 @@ Confirmed exactly:
 
 ## 6. Second pass (after evidence_a grew to a72, b to b35): re-checks and corrections
 
-Evidence added since the first pass: Logic Theorist and GPS reports (a35-a43), Simon 1972/1975 (a44-a49, a56-a58), Laird and Rosenbloom 1992 (a50-a54), Anderson and Douglass 2001 (a59-a61), Kotovsky and Simon 1990 and Kotovsky and Fallside 1988 (a62-a72), Brown 2024, Sprague 2024, Koh 2024, Valmeekam 2024b, Knoblich 1999 and others (b29-b35). Claims K22-K34 were added.
+Evidence added since the first pass: Logic Theorist and GPS reports (a35-a43), Simon 1972/1975 (a44-a49, a56-a58), Laird and Rosenbloom 1992 (a50-a54), Anderson and Douglass 2001 (a59-a61), Kotovsky and Simon 1990 and Kotovsky and Fallside 1988 (a62-a72), Brown 2024, Sprague 2024, Koh 2024, Valmeekam 2024b, Knoblich 1999 and others (b29-b35). Claims A02.01-K22-A02.01-K34 were added.
 
 Re-opened this session (PDF or abstract text): Brown 2024 (b29), Sprague 2024 (b30), Koh 2024 (b31), Valmeekam 2024 (b32, c12, c13), Kotovsky and Simon 1990 (a62-a67), Anderson and Douglass 2001 (a60, a61), Knoblich 1999 (b33), Fox et al. 2011 (b35, abstract via OpenAlex).
 
@@ -60,8 +60,8 @@ Corrections:
 8. a63: the 79.7 min mean for the Chinese ring includes non-solvers scored at the time cap (the paper says so in a footnote), so it is a floor, not a true mean. 24 of 41 did not solve in two hours.
 9. b31: the +51.0% (24.5 to 37.0) is with self-consistency (n=20) in the value function; without it the same search gets 28.5%. The "20 times more calls" is the paper's upper bound for c=20, per search iteration, not a measured average.
 10. b32: the cost table text is staggered, so row labels do not line up with numbers. The text confirms Sokoban 12.7 to 43.6 and graph coloring "up to 94%"; the 64 to 94 row in the table may be trip planning or graph coloring. Use the prose figures only.
-11. a68 / a70: the 2:1 and 16:1 isomorph ratios are quoted by the same school in later papers (Kotovsky and Simon 1990 confirmed the 16 times wording, Kotovsky and Fallside 1988 the 16:1 ratio). The 1974, 1977 and 1985 originals were not opened. K25 stays "established" because the Chinese Ring data are first hand, but the exact ratios are secondhand.
-12. K25 counts Kotovsky and Simon 1990 and Kotovsky and Fallside 1988 as separate sources; they are the same lab and school. Treat independence as about 2, not 3.
+11. a68 / a70: the 2:1 and 16:1 isomorph ratios are quoted by the same school in later papers (Kotovsky and Simon 1990 confirmed the 16 times wording, Kotovsky and Fallside 1988 the 16:1 ratio). The 1974, 1977 and 1985 originals were not opened. A02.01-K25 stays "established" because the Chinese Ring data are first hand, but the exact ratios are secondhand.
+12. A02.01-K25 counts Kotovsky and Simon 1990 and Kotovsky and Fallside 1988 as separate sources; they are the same lab and school. Treat independence as about 2, not 3.
 
 ## 7. New contradictions and weak spots
 
@@ -79,32 +79,32 @@ Newell and Simon 1972 (a30), Jeffries 1977 (a31), Kotovsky/Hayes/Simon 1985 (a32
 ## GAPS
 
 1. At equal total tokens and dollars, does tree search with a coded goal test beat best-of-N with the same coded verifier on our own task mix? (Brown 2024 and Valmeekam 2024b suggest sampling plus a checker is hard to beat; no paper runs the matched comparison.)
-2. How much of ToT/LATS/RAP gain is search and how much is the evaluator? Replace search by plain resampling with the same evaluator (K09 vs K03, K07).
-3. Does writing operators and goal test as code (Thought of Search, K11) transfer from puzzles to messy tasks, and what is the first-try failure rate of generated code?
-4. Is the Hanoi / River Crossing collapse real once state is held by a program and instances are valid? A clean rerun with counts at sizes around the threshold is missing (K15, K16, K32).
+2. How much of ToT/LATS/RAP gain is search and how much is the evaluator? Replace search by plain resampling with the same evaluator (A02.01-K09 vs A02.01-K03, A02.01-K07).
+3. Does writing operators and goal test as code (Thought of Search, A02.01-K11) transfer from puzzles to messy tasks, and what is the first-try failure rate of generated code?
+4. Is the Hanoi / River Crossing collapse real once state is held by a program and instances are valid? A clean rerun with counts at sizes around the threshold is missing (A02.01-K15, A02.01-K16, A02.01-K32).
 5. Does the search gain survive on the smaller model we would deploy? (GPT-3.5 ToT 19% vs GPT-4 74%, but Llama-3-70B gained most in relative terms in Koh; contradictory direction.)
-6. Where is the gating threshold (G1): what fraction of items a cheap first pass solves before search pays for itself, per task type; CoT gain is concentrated on symbolic steps (K23).
-7. Do LLMs show the Kotovsky operator-compatibility effect and move-demonstration effect (K25)? That is, does a worked move demonstration or an explicit legality check close a representation-driven gap at small token cost?
-8. Does a forced restructure operator (S7) help on insight problems where search stalls, and can an impasse be detected from state alone (K21, K31)?
-9. Do impasse triggers (Soar) beat confidence triggers for escalating from fast to deliberate mode in an LLM scaffold (K19)?
-10. Does keeping subgoals in a written, re-read goal stack beat the implicit stack in context at depth 5 or more, given that people lose goals (K27)?
+6. Where is the gating threshold (G1): what fraction of items a cheap first pass solves before search pays for itself, per task type; CoT gain is concentrated on symbolic steps (A02.01-K23).
+7. Do LLMs show the Kotovsky operator-compatibility effect and move-demonstration effect (A02.01-K25)? That is, does a worked move demonstration or an explicit legality check close a representation-driven gap at small token cost?
+8. Does a forced restructure operator (S7) help on insight problems where search stalls, and can an impasse be detected from state alone (A02.01-K21, A02.01-K31)?
+9. Do impasse triggers (Soar) beat confidence triggers for escalating from fast to deliberate mode in an LLM scaffold (A02.01-K19)?
+10. Does keeping subgoals in a written, re-read goal stack beat the implicit stack in context at depth 5 or more, given that people lose goals (A02.01-K27)?
 
 ## Gap search results
 
-Evidence in `evidence_d.jsonl` (d01 to d18, all opened as full text). Claims K35 to K43 are new; K03, K04, K07, K08, K11, K15, K16, K19, K21, K25, K27, K32 gained evidence; K08 moved to contested.
+Evidence in `evidence_d.jsonl` (d01 to d18, all opened as full text). Claims A02.01-K35 to A02.01-K43 are new; A02.01-K03, A02.01-K04, A02.01-K07, A02.01-K08, A02.01-K11, A02.01-K15, A02.01-K16, A02.01-K19, A02.01-K21, A02.01-K25, A02.01-K27, A02.01-K32 gained evidence; A02.01-K08 moved to contested.
 
 | Gap | Status | What the new evidence says |
 |---|---|---|
-| 1 Search vs best-of-N, coded checker, equal cost | Open (partly informed) | No paper runs it. Naive MCTS lost to sampling at every FLOP budget, reward-guided REBASE won with about 7x less compute (d03). With a learned verifier, tree search beat weighted voting by 0 to 4 points on GSM8K at 1 to 3x tokens (d17). Wang 2024: ToT wins at GPT-4, loses to self-consistency at GPT-3.5 (d01). K35 (contested). |
-| 2 Search vs evaluator | Partly closed | Random evaluator collapses ToT, cheap GPT-3.5 evaluator keeps 72% vs 76%, weak proposer gives 0.38 (d02). Still no arm that swaps the tree for resampling with the same evaluator. K36. |
-| 3 Code operators on messy tasks | Half closed | First-try failure rate is now known for puzzles: 1.2 to 2.8 tries for GPT-4 successor code, 2.0 to 10 calls with automatic tests, most errors in successor soundness and completeness (d06, d08, d09). Transfer to fuzzy rules is untested; every domain had exact short rules. K38. |
-| 4 Hanoi collapse rerun | Mostly closed for Hanoi, open for River Crossing | MAKER solved 20-disk Hanoi with zero errors using single-move calls, state in prompt, strategy given, per-step voting (d10, d11). One run, authors' system. A clean count table at sizes around the threshold with the same model on both designs is still missing, and nothing new on valid River Crossing instances. K39. |
-| 5 Small model | Partly closed | Direction depends on who judges. Small model plus strong evaluator gains (Llemma-7B beat 34B, d04); small model as proposer and judge loses (d01, d02). Small per-step error rates are enough for voting if p above 0.5 (d11). Our actual deployment model is untested. K08 now contested. |
-| 6 Gating threshold | Partly closed | Search hurts on easy items and helps mid items (d05, d04). Model-specific difficulty bins from a cheap pass beat labelled difficulty. Exact escalation share per task type for our mix is still unknown. K37 (established on math). |
-| 7 Kotovsky effects in LLMs | Open | Only an indirect analogue: 8 worked examples lifted GPT-4 base-9 addition from 38.6% to 85.8% (d18). No operator-compatibility or isomorph-ratio test. K40. |
-| 8 Forced restructure, impasse from state | Open | Riddle study shows many failures are non-endorsement of a correct candidate (5 to 39% of errors) (d13), pointing to a verify step. The mental-set paper is too small (d12). K41. |
-| 9 Impasse vs confidence trigger | Open | Verbalised confidence has AUROC about 0.52 (d14). A trained step router beat a binary switch (d15). No head-to-head of impasse and confidence in a scaffold. K42. |
-| 10 Written goal stack at depth 5+ | Open | Only HiAgent: subgoal text 10% to 40%, with summarised subgoal memory 60%, one task (d16). No depth sweep. K43. |
+| 1 Search vs best-of-N, coded checker, equal cost | Open (partly informed) | No paper runs it. Naive MCTS lost to sampling at every FLOP budget, reward-guided REBASE won with about 7x less compute (d03). With a learned verifier, tree search beat weighted voting by 0 to 4 points on GSM8K at 1 to 3x tokens (d17). Wang 2024: ToT wins at GPT-4, loses to self-consistency at GPT-3.5 (d01). A02.01-K35 (contested). |
+| 2 Search vs evaluator | Partly closed | Random evaluator collapses ToT, cheap GPT-3.5 evaluator keeps 72% vs 76%, weak proposer gives 0.38 (d02). Still no arm that swaps the tree for resampling with the same evaluator. A02.01-K36. |
+| 3 Code operators on messy tasks | Half closed | First-try failure rate is now known for puzzles: 1.2 to 2.8 tries for GPT-4 successor code, 2.0 to 10 calls with automatic tests, most errors in successor soundness and completeness (d06, d08, d09). Transfer to fuzzy rules is untested; every domain had exact short rules. A02.01-K38. |
+| 4 Hanoi collapse rerun | Mostly closed for Hanoi, open for River Crossing | MAKER solved 20-disk Hanoi with zero errors using single-move calls, state in prompt, strategy given, per-step voting (d10, d11). One run, authors' system. A clean count table at sizes around the threshold with the same model on both designs is still missing, and nothing new on valid River Crossing instances. A02.01-K39. |
+| 5 Small model | Partly closed | Direction depends on who judges. Small model plus strong evaluator gains (Llemma-7B beat 34B, d04); small model as proposer and judge loses (d01, d02). Small per-step error rates are enough for voting if p above 0.5 (d11). Our actual deployment model is untested. A02.01-K08 now contested. |
+| 6 Gating threshold | Partly closed | Search hurts on easy items and helps mid items (d05, d04). Model-specific difficulty bins from a cheap pass beat labelled difficulty. Exact escalation share per task type for our mix is still unknown. A02.01-K37 (established on math). |
+| 7 Kotovsky effects in LLMs | Open | Only an indirect analogue: 8 worked examples lifted GPT-4 base-9 addition from 38.6% to 85.8% (d18). No operator-compatibility or isomorph-ratio test. A02.01-K40. |
+| 8 Forced restructure, impasse from state | Open | Riddle study shows many failures are non-endorsement of a correct candidate (5 to 39% of errors) (d13), pointing to a verify step. The mental-set paper is too small (d12). A02.01-K41. |
+| 9 Impasse vs confidence trigger | Open | Verbalised confidence has AUROC about 0.52 (d14). A trained step router beat a binary switch (d15). No head-to-head of impasse and confidence in a scaffold. A02.01-K42. |
+| 10 Written goal stack at depth 5+ | Open | Only HiAgent: subgoal text 10% to 40%, with summarised subgoal memory 60%, one task (d16). No depth sweep. A02.01-K43. |
 
 Decision effect on the schema:
 - Keep G1 gating; Snell and Wu support it, and the cheap-pass first design is cheap to test.

@@ -14,7 +14,9 @@ single mechanism; **Low** = mostly about traits, groups or the body, which do no
 
 ## Deep research by subfield
 
-Subfields are researched in batches of five. Each gets a folder `<field>/subfields/NN_slug/` holding:
+Each field with researched subfields gets a `SYNTHESIS.md` at its top: established findings merged across subfields, contradictions, recurring mechanisms, merged tests. Established findings that could change the schema are collected in [`../single_agent/SCHEMA_CANDIDATES.md`](../single_agent/SCHEMA_CANDIDATES.md); claim ids are global (`A01.03-K12`).
+
+Subfields are researched in batches. Each gets a folder `<field>/subfields/NN_slug/` holding:
 
 | File | What it is |
 |---|---|

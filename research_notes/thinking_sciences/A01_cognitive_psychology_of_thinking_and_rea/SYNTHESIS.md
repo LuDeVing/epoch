@@ -1,0 +1,155 @@
+# Cognitive psychology of thinking and reasoning: synthesis
+
+*One view across the field's researched subfields. Built from each subfield's DEEP.md, claims.jsonl and UNKNOWNS.md.*
+
+Notes on use. "Established" means the claim's status in claims.jsonl, set before the stricter independence re-check that the user has asked for. Treat each row as a candidate until that check is done. "Contested" and "single-source" claims are named only where they matter for a contradiction or a gap. Schema column checked against `research_notes/single_agent/SCHEMA.md` v0.2.
+
+## 1. Coverage
+
+| Subfield | DEEP.md | Claims | Established |
+|---|---|---|---|
+| 01 Mental models | [DEEP](subfields/01_mental_models/DEEP.md) | 33 | 10 |
+| 02 Wason selection and hypothesis testing | [DEEP](subfields/02_wason_selection_and_hypothesis_testing/DEEP.md) | 25 | 8 |
+| 03 Content effects | [DEEP](subfields/03_content_effects/DEEP.md) | 41 | 17 |
+| 04 Belief bias | [DEEP](subfields/04_belief_bias/DEEP.md) | 31 | 7 |
+| 05 Dual process theories | [DEEP](subfields/05_dual_process_theories/DEEP.md) | 27 | 7 (+1 refuted) |
+| 06 Single vs two process, induction vs deduction | [DEEP](subfields/06_single_vs_two_process_induction_deduction/DEEP.md) | 27 | 7 |
+| 07 Dual strategy model of deduction | [DEEP](subfields/07_dual_strategy_model_of_deduction/DEEP.md) | 26 | 9 |
+| 08 Syllogistic and conditional reasoning | [DEEP](subfields/08_syllogistic_and_conditional_reasoning/DEEP.md) | 36 | 13 (+1 refuted) |
+| 09 Inductive, category and probabilistic reasoning | [DEEP](subfields/09_inductive_category_and_probabilistic_reasoning/DEEP.md) | 36 | 8 |
+| **Total** | | **282** | **86** |
+
+All nine subfields of A01 are covered. Contested claims: 65. Single-source claims: 123. Each subfield also has a UNKNOWNS.md with 10 to 15 test rows (123 in all).
+
+## 2. Established findings, merged
+
+Schema column: yes (where) / partly / no. Many "established" claims are about humans. For the agent they are design hints until tested on our model (see section 5).
+
+| # | Finding | Claim ids | Schema part | In SCHEMA.md? |
+|---|---|---|---|---|
+| F1 | In humans, confidence is the same on right and wrong answers for illusory inferences, so confidence cannot trigger doubt on that class. Untested for LLMs. | A01.01-K02 | G1 | partly (G1 doubt only on a signal; 4b bars stated confidence as a stop signal) |
+| F2 | Illusory inferences are systematic and confident, found by independent labs. | A01.01-K01 | G10 | no |
+| F3 | Difficulty is a stable property of the item. It tracks how many models must be held, and wrong answers vary more on hard items. | A01.01-K05, A01.08-K01 | S7, G12 | partly (G12 spends by difficulty; no model-count signal) |
+| F4 | "Nothing follows" is the hard case for humans and for older LLMs. Models drift to form-based answers, rarely enumerate possibilities, and answer correctly when asked a yes/no question per candidate. | A01.01-K06, A01.01-K22, A01.03-K34, A01.07-K10 | S3, S4, O3 | no |
+| F5 | Humans and 2023-24 LLMs share the same few syllogism errors. Scale gives no steady gain. Instruction tuning moves the yes/no balance and can raise belief bias. | A01.01-K07, A01.06-K13, A01.08-K07, A01.08-K08 | G4, G6 | partly (G4 correlated errors) |
+| F6 | Figure (term order) sets which conclusion direction is written (about 80% vs 20%). | A01.08-K03 | S4, S2 | no |
+| F7 | The default test is a confirming one. Positive testing is sound only when the hypothesis is about as broad as the truth. Only 4 to 10% pick p and not-q on the abstract task. Trained people also confirm. | A01.01-K14, A01.02-K01, A01.02-K02, A01.02-K17 | S7, S4 | yes (S7 counterexample search, marked E) |
+| F8 | Making the contrast or the logical relation explicit helps humans (dual-goal, thinking in opposites, necessity and sufficiency spelled out). | A01.02-K07, A01.03-K19 | S2, S1, O6 | partly (S1 restatement) |
+| F9 | In LLM rule games the share of falsifying tests tracks success (correlational). Thinking models do better and falsify more. | A01.02-K09, A01.02-K10 | S4, G11 | partly (conflicts with G11, see section 3) |
+| F10 | Generating the right hypothesis is the bottleneck, not checking it. Independent breadth beats refinement. Refinement mostly patches with exceptions and plateaus after about 2 rounds. Generate-and-run beats direct prediction. | A01.02-K21, A01.06-K17, A01.09-K18 | S3, S5, G2 | yes (S3 many draws then select; S5 at most 2 rounds) |
+| F11 | A program that fits every training example can still fail the test (9% to 28.7% in two studies). | A01.09-K22 | G3 | yes (G3) |
+| F12 | LLMs rarely find falsifying cases by themselves (under 9% of wrong solutions falsified; counterexample validity decays over rounds). Code verifiers are cheap and accurate. A counterexample from a solver helps only slowly. | A01.07-K12, A01.01-K30 | G2, G3, S7 | partly (S7 says the code-run discriminating test is S) |
+| F13 | LLMs show human-like content effects (Wason, syllogisms, belief). Item-level accuracy tracks human accuracy. World knowledge is used as a shortcut and breaks on counterfactual copies. Few-shot examples do not remove it. | A01.02-K13, A01.03-K11, A01.03-K16, A01.03-K25, A01.03-K36, A01.04-K13, A01.04-K14 | G1, S1, G3 | partly (S1 input hygiene; G3 held-out copy) |
+| F14 | Believable conclusions are accepted far more often, mostly on invalid arguments. Conflict items are slower and harder. | A01.04-K01, A01.04-K07, A01.04-K26 | G (anti-content guard), O (validity check) | no |
+| F15 | People split into counterexample users and statistical users (about a third each). The gap shows only on uncertain inferences and validity questions. Counterexample users resist belief bias; under deadlines statistical users drop to chance. Answer format changes the profile. | A01.04-K11, A01.07-K01, A01.07-K02, A01.07-K03, A01.07-K04, A01.07-K06, A01.07-K09, A01.07-K14 | S0, S4, G11, G12 | no (human result; agent analogue untested) |
+| F16 | Content helps only where a violation is clearly defined and worth finding (social contract, precaution). The final question and the perspective steer card choice. | A01.03-K01, A01.03-K02, A01.03-K03, A01.03-K04 | S1, O1 | partly (S1 restatement) |
+| F17 | Surface changes move LLM accuracy with logic fixed: premise order (over 30% drop), lexical negation, names and numbers, counterfactual worlds. | A01.01-K27, A01.03-K16, A01.03-K25, A01.08-K19 | G3, O2, S1 | partly (G3 mutated input; no order rule) |
+| F18 | Answer format and scoring change measured accuracy: a binary "does this follow?" beats "what follows?"; raw likelihood scoring produced yes-to-everything; absolute numbers in this field are fragile. | A01.03-K34, A01.03-K41, A01.06-K22 | S3, S4, harness | no |
+| F19 | Zero-shot CoT strongly cuts the content effect in strong open models; weak models still lose. Few-shot examples do not remove it. | A01.03-K12, A01.06-K13 | O reasoning step, S3 | partly (G11 limits CoT; no per-class rule) |
+| F20 | Step-by-step helps on math, symbolic and logic tasks and little elsewhere. It can lower accuracy where deliberation also hurts people. Always-slow wastes tokens on easy items. | A01.03-K40, A01.05-K07, A01.05-K08, A01.05-K09 | G11, G12 | yes (G11, G12) |
+| F21 | Cues meant to switch on analytic mode have failed in controlled replications. | A01.05-K06 | G7 | yes (4b: telling the model to slow down) |
+| F22 | On conflict problems the wrong first answer is mostly one dominant lure. Old models take the lure more than people; new chat models mostly do not, but principle-changed items bring the old method back. | A01.05-K02, A01.05-K11 | S4, G3 | partly (G3) |
+| F23 | Handing validity to an external solver after LLM translation beats model-only reasoning on most logic benchmarks, but CoT wins or ties on short, forward-chaining or hard-to-formalise items. Plan with the model, run symbolic steps in code. A solver is a strict judge and can say "undecided". Parse-then-check pipelines hit 100% on templated items. | A01.05-K19, A01.06-K15, A01.06-K27, A01.08-K09, A01.08-K33 | O3, G5 | partly (G5 code selects; no formalise operator) |
+| F24 | The text-to-logic step has its own failure direction. Provers lean toward "invalid" when extraction breaks valid chains. On strong models the room is about two points. | A01.03-K30, A01.03-K37, A01.04-K24 | O formalise-and-check | no |
+| F25 | Wording shifts the false-alarm rate more than discrimination ("necessarily" vs "plausibly"). LLMs carry a large global yes- or no-bias separate from discrimination. Capacity and speeding cut validity sensitivity more than belief sensitivity. | A01.06-K01, A01.06-K08, A01.06-K22 | G4, O3 | no |
+| F26 | Suppression: an added requirement premise cuts modus ponens, an added alternative cuts AC and DA. The effect is graded by the number of disablers or alternatives, and smaller in later work. | A01.08-K11, A01.08-K12 | G (defeater check) | no |
+| F27 | Modus tollens is the hardest valid conditional form for people and LLMs. Negation changes inference rates; step-by-step models collapse on lexical negation. | A01.08-K18, A01.08-K19 | O5, O6 | no |
+| F28 | Existential import is a hidden choice (24 valid forms vs 15). Benchmark and model can disagree on it, so the reading must be stated. | A01.08-K20, A01.08-K32 | S0 | no |
+| F29 | Several current reasoning-tuned models show near-zero belief bias on binary validity of supplied conclusions. Content effects are not tied to size. | A01.08-K31, A01.03-K30 | G (belief-neutral check) | partly (G7 says earn its place) |
+| F30 | People fail Bayes problems; natural frequencies raise correct answers but most still fail, and person differences outweigh format. Naive probability counts equiprobable models. | A01.01-K13, A01.09-K01, A01.09-K02 | G5, O6, S0 | partly (G5 normalise in code) |
+| F31 | The conjunction fallacy is robust in humans and not only a wording artefact. | A01.09-K07 | G5 | partly (G3 mutated input) |
+| F32 | Category induction shows a stable cluster (similarity, typicality, specificity, sample size, diversity). For non-blank properties people prefer causal structure over similarity. | A01.09-K11, A01.09-K12 | S2, O6 | no |
+| F33 | Brute-force sampling of programs filtered by examples scales slowly (about +3 points per doubling on ARC). | A01.09-K20 | G12 | yes (G11, G12) |
+
+Claims with no schema action (human background only): A01.03-K13 and A01.03-K38 are weight-level findings that a text scaffold cannot reach. See section 6.
+
+## 3. Contradictions between subfields
+
+| # | Where the subfields disagree | How to resolve |
+|---|---|---|
+| C1 | **Do current LLMs still show the content effect?** Present: A01.03-K11, A01.04-K13, A01.04-K14, A01.06-K13, A01.08-K07 (2023-24 models, log-probability scoring in places). Near zero: A01.08-K31, A01.03-K30, contested A01.03-K21 (Poddar: +0.8 to +1.4 for some, +31.6 for Llama 3.3 70B, not tied to size or thinking label). | Model-dependent. Do not assume either. Run the gap baseline on our model first (A01.04-U1, A01.03-U3, A01.06-U7). Every belief-bias row stays off until that gap exceeds the threshold. |
+| C2 | **Is chain of thought good or bad here?** Helps: A01.03-K12 (CE 0.348 to 0.096), A01.05-K07. Hurts or does nothing: A01.03-K40, A01.05-K08, contested A01.07-K23 (no systematic gain across 14 models), contested A01.08-K22 (CE rose for two models). | Both are true by class and model. Decide per class at equal tokens: A01.04-U2, A01.05-U4, A01.06-U6, A01.07-U9. Until then keep G11 (brief by default). |
+| C3 | **More thinking: help or harm?** A01.02-K10 and F9 say thinking models falsify more and solve more rule games. G11 and A01.05-K08/K09 say extra thinking lowers accuracy on easy items and distractors. | Not a real conflict if depth is spent where hypotheses must be searched. Test per class: A01.02-U12, A01.07-U8, A01.03-U3. Cap by class, not globally. |
+| C4 | **Counterexample search.** A01.07-K03 (counterexample users resist belief bias) and SCHEMA S7 (E) favour it. A01.07-K12 says LLMs are poor at finding falsifying cases and prompting a search barely helps. A01.01-K30 shows slow gains even with solver counterexamples. | The two fit together only if code runs the search and the model reads the result. Decide with A01.07-U1 (model-run vs code-run) and A01.08-U2. Do not prompt the model to "find a counterexample" as a bare instruction. |
+| C5 | **Solver offload.** Helps: A01.08-K09, A01.06-K15, A01.08-K33. Hurts or caps: A01.04-K24 (invalid-lean), A01.03-K37 (translation errors), A01.03-K30 (about two points on strong models), A01.06-K15 itself (PrOntoQA, FOLIO). Contested A01.08-K10: tie-break only (94.3%) beats solver as main judge (74.7%). | Use the solver only as a gated tie-break with "undecided" kept, and only when parse accuracy is shown. Test: A01.03-U10, A01.08-U11, A01.06-U13. |
+| C6 | **Is confidence or sample agreement a usable doubt signal?** F1 (A01.01-K02): human confidence is blind on illusions. Contested A01.05-K21 says disagreement beats stated confidence on older models. SCHEMA G4 says agreement is only a hint. A01.01-U5 asks whether wrong answers repeat across samples. | Treat stated confidence as barred. Treat agreement as a candidate trigger only after A01.05-U2, A01.03-U8 and A01.01-U5 pass. |
+| C7 | **One process or two.** A01.06-K01/K02 and A01.06-K04/K05 point to one strength scale with two cutoffs. A01.07-K01 to K03 point to two strategies. A01.05-K01 says define modes by function, not speed. Contested A01.04-K02/K03 reads belief bias as a response bias, not reasoning. | Theory cannot be settled by our bench (A01.06 open questions). For the agent, the useful question is whether wording moves sensitivity or only the cutoff: A01.06-U1, A01.06-U3, A01.07-U3. |
+| C8 | **Does content help or hurt?** Human content help: A01.03-K03 (social contracts), but contested A01.03-K05 (question reading) and A01.02-K06. LLM Wason shows the content effect (A01.02-K13, A01.03-K11) but contested A01.03-K35 says it is not reliable outside one setup. Stripping content to symbols is not safe for a pure LLM (contested A01.03-K39) while form extraction helps weak models (contested A01.03-K18). | Test the cause: content, the word "must", or format (A01.03-U2). Test form extraction with a renamed-copy check (A01.03-U4, A01.04-U7, A01.08-U6). |
+| C9 | **"Nothing follows" in reasoning models.** A01.01-K06, A01.03-K34 and A01.07-K10 say near 0% for older and open models. Contested A01.08-K04 says non-reasoning models avoid it, and leaves reasoning models open. | A01.08-U1 decides first. If a reasoning base already produces it, skip the NVC steps in A01.01-U4, A01.08-U2, A01.08-U3. |
+| C10 | **Time pressure.** A01.07-K06 says people shift to the statistical pattern under pressure. A01.05-K06 and refuted A01.05-K16 show time pressure does not make people more intuitive in cooperation. Contested A01.04-K06 and A01.04-K30 are mixed. | Different tasks and measures. Human time pressure data do not transfer to a model with no clock (A01.04 open questions). Use token caps as the model analogue: A01.06-U14, A01.07-U3. |
+| C11 | **Tree-style search with model self-evaluation.** A01.05-K19 reports a Game of 24 jump (4% to 74%) that relies on model scoring. SCHEMA G5 distrusts model judges. | Keep the search idea, move scoring to code. No new test needed; follow G5. |
+| C12 | **Training changes.** A01.06-K13 says instruction tuning can raise belief bias. A01.01-K07 says larger PaLM 2 models beat humans while keeping human fallacies. A01.08-K08 says scale is not steady. | Not a conflict, a warning: do not infer from model size or tuning label. Measure on the model we ship. |
+
+## 4. Recurring mechanisms
+
+| Mechanism | Subfields and claims | What it means for the agent |
+|---|---|---|
+| **Counterexample search** | 01 (A01.01-K14, K30), 02 (A01.02-K02, K09, K10), 04 (A01.04-K11), 07 (A01.07-K03, K12), 08 | Humans default to confirming. LLMs rarely falsify unprompted. Make code build and run the case (add, move, split on a finite model), then show the model the result. Gate it by item class, with a false-rejection check on valid items (A01.07-U5). |
+| **"Nothing follows"** | 01 (A01.01-K06, K22), 03 (A01.03-K34), 07 (A01.07-K10), 08 (A01.08-K04) | Three subfields describe the same failure: models answer from form (atmosphere, min heuristic) and do not offer "no conclusion". Fix once, as one binary-per-candidate loop with an explicit NVC option and a code counter-model. |
+| **Code-run checks and solvers** | 01 (A01.01-K30), 02 (A01.02-K21), 03 (A01.03-K37), 04 (A01.04-K24), 05 (A01.05-K19), 06 (A01.06-K15, K17, K27), 08 (A01.08-K09, K33), 09 (A01.09-K22) | Code is the judge, the model fills slots. The strongest result is "plan in the model, run in code". The recurring weakness is the translation step, so parse errors must be reported and "undecided" kept. |
+| **Form extraction and restatement** | 03 (A01.03-K19, K25, K36), 06 (U5), 08 (A01.08-K20, K32, K33), 09 (A01.09-K01) | State the form, the question and the assumed reading (existential import, which case is a violation) before reasoning. Helps weak models most; near-zero gain on strong ones (A01.03-K30). |
+| **Surface brittleness** | 01 (A01.01-K27), 03 (A01.03-K16, K36), 05 (A01.05-K11), 08 (A01.08-K19), 09 (A01.09-K22) | Accuracy moves with premise order, names, negation and counterfactual wording. Test every check on a mutated copy (G3). Famous items prove memory, not reasoning. |
+| **Belief or plausibility pull** | 03, 04, 06 (A01.06-K01, K08), 07 (A01.07-K03), 08 (A01.08-K31) | Same effect under four names. One gap baseline (A01.04-U1) gates all of it. |
+| **Conflict between prior belief and verdict** | 04 (A01.04-K07), 05 (A01.05-K02, K11), 08 | A candidate trigger for verification (A01.04-U3). Only the item-level flag is worth testing; human timing data do not transfer. |
+| **Hypothesis generation is the bottleneck** | 02 (A01.02-K21), 06 (A01.06-K17), 09 (A01.09-K18, K20, K22) | Spend tokens on independent breadth, then select by held-out fit, not on refinement rounds. |
+| **Wording and answer-format effects** | 04 (A01.04-K22, contested), 06 (A01.06-K01, K22), 07 (A01.07-K09), 03 (A01.03-K34, K41) | Fix the question wording, the scoring and the grader before comparing arms. Yes-bias and discrimination must be reported separately (d' and cutoff). |
+| **Think briefly, route by class** | 05 (A01.05-K07, K08, K09), 07 (A01.07-K04, K06), 03 (A01.03-K40) | Per-class depth rather than one global setting. Strategy and speed pressure matter most on uncertain inferences. |
+
+## 5. Merged tests
+
+Each row merges UNKNOWNS rows that share one design. Ids not listed in a row are covered by a neighbour with the same measurement.
+
+| # | Merged test | Unknown ids covered | One-line design | Priority |
+|---|---|---|---|---|
+| T1 | **Gap baseline for content, belief and illusion effects** | A01.04-U1, A01.03-U3, A01.06-U7, A01.01-U1, A01.01-U10, A01.01-U5 | Plain arm on code-built 4-cell banks (valid/invalid x believable/unbelievable, plus nonsense twins and illusion/control pairs); report d', cutoff, accuracy per cell, whether the wrong answer is the modal sample, and the gap at 4 token budgets. Gates T2 to T7. | High |
+| T2 | **NVC and counter-model loop** | A01.01-U4, A01.08-U1, A01.08-U2, A01.08-U3, A01.07-U2, A01.06-U10, A01.08-U12, A01.01-U11, A01.07-U12 | 64 syllogisms (37 NVC): plain, NVC option, yes/no per candidate, code counter-model, heuristic-match flag and recheck, 0 vs 2 to 3 worked NVC examples; NVC recall vs false rejection on valid items; split by figure. Run A01.08-U1 first. | High |
+| T3 | **Code-run counterexample search by item class** | A01.07-U1, A01.07-U5, A01.04-U5, A01.03-U6, A01.01-U3 | Plain vs model-run vs code-run search on invalid AC/DA, belief-conflict, strong-premise modus ponens and valid controls; accuracy per class and false-rejection rate; code signal vs always vs never. | High |
+| T4 | **Illusion case table** | A01.01-U2, A01.01-U7, A01.01-U6, A01.01-U13, A01.08-U10 | 40 pairs: plain, prose warning, prose split, code possibility table; modal, rulebreaker and spatial variants. Add only if it beats the best prose arm by 10 points with at most 3 points lost on controls. | Med |
+| T5 | **Form extraction, abstraction and rules-in-prompt** | A01.03-U4, A01.04-U7, A01.06-U5, A01.08-U5, A01.08-U6, A01.04-U12, A01.04-U8 | Plain vs form-first vs letters/nonsense relabel vs Aristotelian rules vs pairwise choice, at equal tokens, with a renamed and a counterfactual copy of every item; adopt the symbolic verdict on disagreement. | High |
+| T6 | **Solver route and tie-break** | A01.03-U10, A01.04-U6, A01.06-U13, A01.08-U11, A01.04-U11, A01.06-U12 | 5-vote vs vote + solver on split votes vs parse-then-prove vs a code table of the 24 valid forms; by proof depth and parse accuracy; keep "undecided"; two-checker disagreement as flag. | Med |
+| T7 | **Doubt and verify triggers** | A01.04-U3, A01.04-U4, A01.05-U2, A01.03-U8, A01.02-U13, A01.04-U13, A01.05-U5, A01.08-U7 | Compare triggers (belief-verdict flag, sample disagreement, stale-run, class pass rate, heuristic match) against verify-all, verify-random and none at equal tokens; AUROC, right-to-wrong flips, fresh-context vs seen-answer retry. | High |
+| T8 | **One long vs several short attempts, by class** | A01.04-U2, A01.05-U4, A01.06-U6, A01.07-U8, A01.07-U9, A01.02-U12, A01.06-U14, A01.01-U14 | At equal total tokens: one long CoT, 3 to 4 short attempts with code vote, thinking mode; per class (hard syllogisms, belief-conflict, defeasible generics, rule games); validity vs plausibility steps under a tight cap. | High |
+| T9 | **Mode gate and router** | A01.05-U3, A01.05-U6, A01.05-U9, A01.05-U12, A01.05-U13, A01.05-U14, A01.07-U4, A01.07-U7, A01.07-U10, A01.07-U14, A01.01-U12 | 200 to 400 mixed items: always-direct, always-steps, code-rule gate, class-record gate, agreement router, 3-level dial; code-computed model count and alternative count as inputs; per-class win record vs fixed router. | High |
+| T10 | **Principle-change trap and input hygiene** | A01.05-U1, A01.05-U7, A01.05-U8, A01.05-U10, A01.05-U11, A01.01-U8, A01.03-U7, A01.09-U7, A01.09-U14 | 40 items (famous, number-changed, principle-changed, new family): short, short + principle-change check, steps; restate, prohibition line, verified example, code-filtered opinions; premise reorder; mutation agreement on Linda-form items. | High |
+| T11 | **Test-choice gate for hypothesis search** | A01.02-U1, A01.02-U2, A01.02-U7, A01.02-U8, A01.02-U13, A01.02-U3, A01.02-U4, A01.02-U5, A01.02-U6 | 100 rule-discovery items: plain, prompt-only "include a test your guess predicts will fail", code gate on outside test, code EIG ranking, opposite-property test, dual-goal by model class, role split; log first-guess subset rate and rewording rate. | High |
+| T12 | **Breadth, selection and hold-out for induction** | A01.02-U11, A01.09-U4, A01.09-U5, A01.09-U6, A01.09-U9, A01.09-U10, A01.09-U11 | ARC, 1D-ARC and list-function tasks: k independent sets vs one refined k times vs best-of-n; selector chain (fit-all, held-out, probe inputs, agreement, size prior); program then direct fallback; corrupted-example robustness. | High |
+| T13 | **Wason-style restatement and rule typing** | A01.03-U1, A01.03-U2, A01.03-U5, A01.03-U9, A01.02-U9, A01.02-U10 | 40 Wason items (4 polarities x 10 contents) plus 2x2 norm/arbitrary x must/is; restate with the violating case named; rule typing before the violation step; negated-wording flip rate. | Med |
+| T14 | **Bayes extraction and count rewrite** | A01.09-U1, A01.09-U2, A01.09-U3, A01.09-U8, A01.01-U9 | 100 base-rate items: direct, CoT, "natural frequencies", extract-to-JSON then Bayes in code, count vs percent rewrite, base rate asked in a separate call; code state table vs sum-to-one normalising. | High |
+| T15 | **Conditional defeaters, MT, negation and import** | A01.08-U4, A01.08-U7, A01.08-U8, A01.08-U9, A01.08-U13, A01.08-U14, A01.08-U15 | Pin the existence reading in S0; classify an added premise (requirement vs alternative); defeater-count to confidence map; contrapositive rewrite for MT; pairwise chain steps; "if" reading vote; relevance check. | Med |
+| T16 | **Wording, cutoff and layout** | A01.06-U1, A01.06-U2, A01.06-U3, A01.06-U4, A01.06-U8, A01.06-U11, A01.04-U9, A01.04-U10, A01.04-U14 | "Necessarily" vs "plausibly" vs counterfactual wording on 48 items: d', cutoff, rank-order agreement, state-trace monotonicity, stakes cue, side-by-side layout, graded belief strength. | Med |
+| T17 | **Strategy-label stability and context order** | A01.07-U3, A01.07-U6, A01.07-U13, A01.07-U11 | 13-item diagnostic under 2 framings x 3 token caps; repeat across days and content sets (kappa); validity vs likelihood order in one context vs fresh contexts; weight of one code-found failing case. | Med |
+| T18 | **Memory lessons transfer** | A01.02-U14, A01.01-U11, A01.05-U13 | One-line lesson after the first attempt vs none, on reworded items; real-output feedback vs none between runs; split by valid and invalid held-out items. | Low |
+| T19 | **Premise provenance and calibration** | A01.06-U9, A01.09-U12, A01.09-U13 | Odd added premise lowers strength rating; name structure first; one-parameter recalibration vs Platt on at least 500 logged answers. | Low |
+
+Order to run: T1 first (it gates T4, T5, T16), then T2 and T8 (cheapest, widest), then T10 and T11. T3 and T12 follow.
+
+## 6. Not to add
+
+| Idea | Why not | Claim ids |
+|---|---|---|
+| Treating the model's stated confidence as a doubt trigger | Human confidence is the same for right and wrong illusions; LLM case untested; SCHEMA 4b already bars it | A01.01-K02 |
+| Time pressure, disfluency or "slow down" cues to switch on analytic mode | Failed in controlled replications; the causal cooperation claim is refuted | A01.05-K06, A01.05-K16 (refuted) |
+| Always-slow or forced step-by-step as default | Wastes tokens on easy items; lowers accuracy on tasks where deliberation also hurts people | A01.05-K08, A01.05-K09, A01.03-K40 |
+| Few-shot examples as the fix for content effects | Chinchilla Wason effect grew; belief bias reduced but not removed | A01.03-K12, A01.06-K13 |
+| Instruction tuning or model size as a proxy for fewer reasoning biases | Tuning can raise belief bias; scale is not steady | A01.06-K13, A01.08-K08 |
+| Unprompted "find a counterexample" as the only search step | LLMs falsify under 9% of wrong solutions; counterexample validity decays; training to always disprove destroyed true-claim handling | A01.07-K12 |
+| Solver as the main judge, with no tie-break, parse check or "undecided" | Invalid-lean from extraction errors; PrOntoQA and FOLIO show CoT matches or wins | A01.04-K24, A01.03-K37, A01.06-K15 |
+| Model self-evaluation inside a tree search | Conflicts with G5; the Game of 24 jump relies on it | A01.05-K19 |
+| Iterative refinement rounds as a main lever on hard induction | Patches with exceptions; gains plateau after about 2 rounds | A01.09-K18, A01.02-K21 |
+| Weight-level levers (debias vectors, steering, circuits) | Out of reach for a text scaffold | A01.03-K13, A01.03-K38 |
+| Relying on famous items or the original Linda item as proof of reasoning | Perturbed versions catch models; 95.9% of CRT errors reused the old method | A01.05-K11, A01.03-K16 |
+| The claim that no LLM study tests Byrne-style suppression | Refuted: Belief-R and Orth et al. test it | A01.08-K26 (refuted) |
+| The 63% to 95% "model method" teaching result | Contested; unpublished thesis; author reports disagree. Do not build on it | A01.01-K15 (contested) |
+| Stripping content to symbols as a universal fix | Hurt ChatGPT and GPT-4 on Symbolic Tree deduction (contested) | A01.03-K39 (contested) |
+
+## 7. Gaps
+
+- **No current-model data.** No d' or cutoff analysis of any current Claude, GPT-5 or o-series model on belief-bias syllogisms exists (A01.04-K31, unsupported). Most LLM figures come from 2023-24 models. T1 is the only way to fill this.
+- **No item bank or grader** on the bench for syllogisms, illusions, Wason items, conditionals or base-rate items. Bench has ARC and BRAINTEASER only (A01.04 open questions). A code generator with content-swapped twins and a fixed existential-import key is a precondition for T1 to T5.
+- **No equal-token comparison** of CoT, prover, selective verification and conflict-flag routing (A01.04-K25, A01.04-K31). Vendor "reasoning effort" is not equal tokens.
+- **Human-only mechanism questions stay open and cannot be decided here:** one scale vs two systems (C7), fast-then-slow vs parallel (A01.05-K14), selective scrutiny vs misinterpreted necessity (A01.04-K09, K10). They do not change the schema.
+- **Independence of "established" claims is unchecked.** The earlier cross-checker sometimes counted one paper twice (for example A01.01-K06 notes that c01 and a26/b25 are one paper). Section 2 should be re-run through the stricter check before any row enters SCHEMA.md.
+- **Single-lab human results:** the Markovits strategy diagnostic (A01.07-K26), thinking in opposites (one Italian sample), the "necessarily follows" wording effect (A01.04-K22).
+- **Untested topics:** abduction (A01.08-K24, 42% vs 72%, one study), generalised quantifiers ("most", "few"), belief updating over many turns (A01.09-K28), free-text syllogisms on a stated key, falsifying probes on ARC grids (no grid oracle), data-driven hypotheses with a statistical gate (A01.02-K16).
+- **No way to read internal state.** Why written reasoning cuts the content effect while validity and plausibility signals stay aligned (A01.06-K12) needs open weights.
+- **Primary papers unread:** Evans and Curtis-Holmes 2005, Newstead 1992, Heit and Rotello 2010, Stanovich and West 1998 and others listed in each UNKNOWNS "open questions". They would sharpen priors; none gates a test.

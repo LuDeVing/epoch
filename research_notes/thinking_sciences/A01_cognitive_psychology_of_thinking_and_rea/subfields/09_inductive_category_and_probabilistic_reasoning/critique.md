@@ -59,7 +59,7 @@ a09 (Tenenbaum 1999), a25 (Osherson et al. 1990), a26 (Heit 1998), b25 (Tversky 
 
 ## Gap search results
 
-Evidence is in evidence_d.jsonl (d01 to d18). Claims K02, K04, K09, K14, K16, K19, K22, K23, K25 and K27 were updated; K29 to K36 are new. Sources were opened as PDF or HTML text, except d18 (Han et al., snippet only).
+Evidence is in evidence_d.jsonl (d01 to d18). Claims A01.09-K02, A01.09-K04, A01.09-K09, A01.09-K14, A01.09-K16, A01.09-K19, A01.09-K22, A01.09-K23, A01.09-K25 and A01.09-K27 were updated; A01.09-K29 to A01.09-K36 are new. Sources were opened as PDF or HTML text, except d18 (Han et al., snippet only).
 
 Closed or mostly closed:
 - Gap 3 (menu confound), for humans only. Gigerenzer and Hoffrage crossed format and menu: frequency 46% (standard) and 50% (short) vs probability 16% and 28%. The format effect survives at fixed menu (22 to 30 points) but the short menu alone is worth 12 points. Neace et al. add that the Linda frequency benefit was confounded with giving a reference class. No LLM study crosses the two factors, so the LLM half of the gap stays open.

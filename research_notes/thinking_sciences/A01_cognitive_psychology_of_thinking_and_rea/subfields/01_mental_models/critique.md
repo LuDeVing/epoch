@@ -26,17 +26,17 @@ Sources that could not be re-opened: Johnson-Laird & Savary 1996 (web archive re
 - a08 vs b06/b07 (same paper, differently cited). a08 puts the instructed Exp 2 illusion accuracy at 50/38 in block 1 and "47%" overall; b06 gives 37% for illusions in Exp 2; b07 gives 38/38/63/56 vs 17/21/21/58 by problem type. These are not clearly the same quantities. Do not quote a single "instructed accuracy" number for this paper until re-read.
 - Year labelling: the disjunctive illusions paper is 2008 in a08/a09 and 2009 in b06/b07 (the URL is 2008). Same paper.
 - a21 vs b27: same paper, a21 mislabels experiments (fixed above).
-- b18 vs b19: the small retest finds a gain on both valid and no-valid-conclusion items and attributes it to more counterexample search. The N=100 retest finds a smaller gain on valid items only and attributes it to response bias. They partly contradict (claim K10: contested).
+- b18 vs b19: the small retest finds a gain on both valid and no-valid-conclusion items and attributes it to more counterexample search. The N=100 retest finds a smaller gain on valid items only and attributes it to response bias. They partly contradict (claim A01.01-K10: contested).
 - a15 vs b15 describe the same meta-analysis, so they are one source, not two.
 - Counting "independent sources": most lines trace to Johnson-Laird, Khemlani, Ragni or their students. Only Eisape et al., Bertolazzi et al., Singmann et al., Dames et al., Oberauer and Newstead are outside that network, and several of those were not opened.
 
 ## 3. Weak spots
 
 - Illusions: the best-attested effect has no independent replication or meta-analysis in the set. b12 says no study failed, which is the authors' claim (b12 limits). The only outside number is a search snippet (b14: 80-85% acceptance), not opened.
-- Illusions for LLMs: no line tests an LLM on illusory inferences. Everything about scaffold design (K03, K04) is extrapolated from humans.
+- Illusions for LLMs: no line tests an LLM on illusory inferences. Everything about scaffold design (A01.01-K03, A01.01-K04) is extrapolated from humans.
 - Instruction fixes lower control accuracy (93 to 79, 87 to 72). Any operator must be gated by a signal, otherwise it costs accuracy where not needed.
 - mReasoner fits are in-sample with free parameters (a23, b17) and by the theory's authors. Model-size and search values vary by study, and group differences are interpreted without a test.
-- Illusion "correct" answer is often "nothing follows" because the premises are self-contradictory (b04). Few participants noticed. This overlaps with the NVC difficulty (K06) and may be partly the same effect.
+- Illusion "correct" answer is often "nothing follows" because the premises are self-contradictory (b04). Few participants noticed. This overlaps with the NVC difficulty (A01.01-K06) and may be partly the same effect.
 - All human studies are student or small online samples, N 16 to 56 per experiment except the meta-analyses.
 - b28 (95% vs 63%) is the cheapest looking fix and the least verified.
 
@@ -44,7 +44,7 @@ Sources that could not be re-opened: Johnson-Laird & Savary 1996 (web archive re
 
 - b14 (Koralus & Mascarenhas): fetch empty, snippet numbers only.
 - b22 (Oberauer 2006): abstract in a search result.
-- b29 (Newstead et al.): search summary, no numbers. Claim K18 leans on it only for the mechanism.
+- b29 (Newstead et al.): search summary, no numbers. Claim A01.01-K18 leans on it only for the mechanism.
 - b11 (Goldvarg & Johnson-Laird 2000, 57%): second-hand via Yang & Johnson-Laird.
 - b05 (Johnson-Laird & Goldvarg 1997): cited, not opened.
 - a14 (Girotto & Gonzalez 53% vs 8%): cited from the naive probability paper.
@@ -64,35 +64,35 @@ Sources that could not be re-opened: Johnson-Laird & Savary 1996 (web archive re
 9. Do the second-hand numbers (b11 57%, a14 53% vs 8%, a10 summary percentages) hold in their original papers? Re-open Goldvarg & Johnson-Laird 2000 and Girotto & Gonzalez.
 10. Does code-expanded counting of models (full state table) fix LLM probability errors of the kind seen in naive-probability and unique-event studies, beyond what sum-to-one normalisation already gives?
 
-## Gap search results (evidence_d.jsonl, d01 to d21; claims K01 to K04, K06, K07, K09, K10, K15, K18 updated; K19 to K24 added)
+## Gap search results (evidence_d.jsonl, d01 to d21; claims A01.01-K01 to A01.01-K04, A01.01-K06, A01.01-K07, A01.01-K09, A01.01-K10, A01.01-K15, A01.01-K18 updated; A01.01-K19 to A01.01-K24 added)
 
 Search note: WebSearch hit its session quota after about 8 calls. The rest was done by direct downloads from modeltheory.org, arXiv and Springer, and by arXiv and OpenAlex API queries. An arXiv title/abstract query for "illusory inferences" returned one paper (Koralus & Wang-Mascianica 2023). OpenAlex 2023+ searches for illusions in LLMs, mReasoner with LLMs, and counterexample search for LLMs found nothing that tests those directly. Absence in these indexes is weak evidence, not proof.
 
 Status by gap:
 
-1. LLMs on illusions. PARTLY CLOSED. Two LLM studies exist, both from the Oxford erotetic-theory group (d01: 38 models, 383 fallacy items, mean correct 40.6%, no link to capability, wrong answers increasingly the predicted fallacy; d02: GPT-4 fallacy production 34%). They show LLMs fall for disjunction fallacies. Still open: a human-rate comparison on the same items, matched controls, and any confidence or self-consistency test. So the enumeration operator is justified as a test, not as an established fix (K19).
+1. LLMs on illusions. PARTLY CLOSED. Two LLM studies exist, both from the Oxford erotetic-theory group (d01: 38 models, 383 fallacy items, mean correct 40.6%, no link to capability, wrong answers increasingly the predicted fallacy; d02: GPT-4 fallacy production 34%). They show LLMs fall for disjunction fallacies. Still open: a human-rate comparison on the same items, matched controls, and any confidence or self-consistency test. So the enumeration operator is justified as a test, not as an established fix (A01.01-K19).
 2. Table vs plain vs prose warning at equal tokens. OPEN. The only prose-vs-control LLM data (d02) shows no gain for GPT-4 (8/19 vs 7/19). Human control cost confirmed in the original (d05: 93 to 79 and 87 to 72). The code-built table has never been tested on an LLM.
-3. Model method 95% vs 63%. OPEN, and weaker than before. The source is an unpublished thesis; Johnson-Laird's own two reports disagree (65% vs 63%, 25 s vs 24 s) (d11). K15 is now "contested".
-4. Independent replication of illusions. PARTLY CLOSED. Espino, Orenes & Moreno-Rios 2024 (d08; N=80, Spanish) replicates the conditional illusion at large size: correct 83% on controls vs 6% on illusions, r=.87, confidence equal. They are only partly independent. Rips, Tabossi, Mascarenhas & Koralus (human data), Walsh originals were not obtained in full. The Mascarenhas & Koralus human figure (about 60% endorse the illusory "Mary has an ace") is second-hand through d01. Pragmatic and item-order controls are still not quantified. Boundary conditions found: framing (physical vs logical disjunction 84% vs 19%), response format (63% vs 19%), co-reference (d06, d07, d09; K20).
-5. Frontier LLMs on the 64 syllogisms, model count, NVC plus search. OPEN. No frontier or reasoning model study with a model-count curve was found. 2025 work (d14) judges validity, not conclusion generation. d15 warns that the answer key must fix existential import (K23).
+3. Model method 95% vs 63%. OPEN, and weaker than before. The source is an unpublished thesis; Johnson-Laird's own two reports disagree (65% vs 63%, 25 s vs 24 s) (d11). A01.01-K15 is now "contested".
+4. Independent replication of illusions. PARTLY CLOSED. Espino, Orenes & Moreno-Rios 2024 (d08; N=80, Spanish) replicates the conditional illusion at large size: correct 83% on controls vs 6% on illusions, r=.87, confidence equal. They are only partly independent. Rips, Tabossi, Mascarenhas & Koralus (human data), Walsh originals were not obtained in full. The Mascarenhas & Koralus human figure (about 60% endorse the illusory "Mary has an ace") is second-hand through d01. Pragmatic and item-order controls are still not quantified. Boundary conditions found: framing (physical vs logical disjunction 84% vs 19%), response format (63% vs 19%), co-reference (d06, d07, d09; A01.01-K20).
+5. Frontier LLMs on the 64 syllogisms, model count, NVC plus search. OPEN. No frontier or reasoning model study with a model-count curve was found. 2025 work (d14) judges validity, not conclusion generation. d15 warns that the answer key must fix existential import (A01.01-K23).
 6. Trigger for counterexample search. OPEN. The mReasoner fit (d18) is in-sample and gives no trigger rule; individual parameters show no concordance (W=.28, p=.33). The trigger-by-code-signal idea remains a hypothesis.
 7. Practice gain: bias shift or deeper checking. PARTLY CLOSED for humans. Full text of Dames 2021 read (d10): gains on valid items only (valid 55.5% to 60.3%, invalid 46.1% to 47.2%), with fewer NVC answers, and the authors themselves offer two explanations without separating them. The LLM test (history shifts only the NVC rate) is not in the literature I could find.
 8. Content and belief effects in current LLMs. PARTLY CLOSED. 2024 open models show the effect (d13) and 14 models in 2025 show a mean +10.81 pp belief bias (d14), but top models under 2 pp. Whether counterexample search removes it has no test. Reasoning-tuned models were not separately tested for belief bias in anything I opened.
 9. Second-hand figures. PARTLY CLOSED. Goldvarg & Johnson-Laird 57% is a table cell (possibility illusions after the check; overall 71% vs 30% for no help) (d04). The same-paper conflict for Khemlani & Johnson-Laird 2008/2009 is resolved toward the 2009 text (d07: controls 95%, illusions 19%; instructed gap 34 points vs 79). Girotto & Gonzalez 53% vs 8% could not be opened (d21).
-10. Code-expanded counting for LLM probability errors. OPEN. LLM probability judgments are incoherent (d20) and the human JPD violation rate is 56% (d19), but nobody tested a counting table or compared it with sum-to-one normalisation (K24).
+10. Code-expanded counting for LLM probability errors. OPEN. LLM probability judgments are incoherent (d20) and the human JPD violation rate is 56% (d19), but nobody tested a counting table or compared it with sum-to-one normalisation (A01.01-K24).
 
 Corrections to earlier lines found on re-reading:
 - b11 "57% after the remedial check" is the possibility-illusion cell only; the overall figure is 71%.
-- b28 / K15 numbers differ between Johnson-Laird's 2012 and 2024 texts.
+- b28 / A01.01-K15 numbers differ between Johnson-Laird's 2012 and 2024 texts.
 - a02/a03 (Johnson-Laird & Savary 1996) still not re-opened; a08/b06/b07 only reconciled for the 2009 journal text.
 
-Status changes in claims.jsonl: K01 and K02 now "established" (human illusion and confidence results hold in a second lab, partly independent); K15 "contested"; K19 to K24 new. K05 to K08, K11 to K14, K16, K17 unchanged.
+Status changes in claims.jsonl: A01.01-K01 and A01.01-K02 now "established" (human illusion and confidence results hold in a second lab, partly independent); A01.01-K15 "contested"; A01.01-K19 to A01.01-K24 new. A01.01-K05 to A01.01-K08, A01.01-K11 to A01.01-K14, A01.01-K16, A01.01-K17 unchanged.
 
 What the gap search says about the schema: the enumeration operator (O3) and G10 (do not trust confidence on this class) are supported for humans and plausibly for LLMs, but the schema should keep the table as a gated, tested operator. The cost on controls (about 15 points in humans) and the lack of any LLM table test are the reasons.
 
 ## Addendum: cross-check of evidence_c.jsonl (32 lines, c01 to c32)
 
-The first pass above did not see evidence_c. This addendum covers it. Claims K04, K06, K07, K19, K22 were updated and K25 to K30 added (30 claims now).
+The first pass above did not see evidence_c. This addendum covers it. Claims A01.01-K04, A01.01-K06, A01.01-K07, A01.01-K19, A01.01-K22 were updated and A01.01-K25 to A01.01-K30 added (30 claims now).
 
 Numbers re-opened from full text (arXiv PDFs, pdftotext, this session):
 - c07/c08 Koralus & Wang-Masciantica 2023: confirmed 59/77/75% ETR-predicted, 18/33/34% human-like fallacies, 4/17 vs 14/17 (p=.0045) for GPT-3.5, 8/19 vs 7/19 for GPT-4. Note: c07/c08 and d02 are the SAME paper. They count as one source.
@@ -107,17 +107,17 @@ Numbers re-opened from full text (arXiv PDFs, pdftotext, this session):
 Not re-opened: c03, c04 (not read by agent C), c05, c10, c11, c13 beyond abstract, c14, c15, c16, c17, c18, c21, c23 table, c25, c26, c27 (abstract only), c28 to c32 (abstract or no extraction).
 
 New tensions:
-- c08 vs a05/b02 (K03, K04): a procedural prompt can block a fallacy for GPT-3.5 (14/17 vs 4/17) but not GPT-4 (7/19 vs 8/19). The retest used only previously failed items, so regression to the mean is possible. K04 downgraded to contested.
+- c08 vs a05/b02 (A01.01-K03, A01.01-K04): a procedural prompt can block a fallacy for GPT-3.5 (14/17 vs 4/17) but not GPT-4 (7/19 vs 8/19). The retest used only previously failed items, so regression to the mean is possible. A01.01-K04 downgraded to contested.
 - c09 vs the assumption that explicit logic structure helps: chain of thought and symbolic translation raised ordinary accuracy but lowered rulebreaker accuracy. A truth-table operator might do the same (over-apply the formal rule). Needs a test on both item types.
 - c12 vs c10: visualisation helps on some spatial tasks and not on ring navigation or on added views; no consistent rule for when.
-- Counting independent sources: c01=a26=b25; c07=c08=d02. Several c lines are not about mental models theory itself (c13, c18, c21, c27 use "mental model" for world knowledge or are generic); they were used only for K27 and not as support for the theory.
+- Counting independent sources: c01=a26=b25; c07=c08=d02. Several c lines are not about mental models theory itself (c13, c18, c21, c27 use "mental model" for world knowledge or are generic); they were used only for A01.01-K27 and not as support for the theory.
 
 Additional weak spots: c-lines on LLMs are mostly 2023 to 2024 models; Koralus tested one sample per item through a chat interface; most new LLM numbers come from papers that do not use Johnson-Laird's illusion items.
 
 ## GAPS (final, most decision-relevant first)
 
 1. Do current frontier and reasoning LLMs fall for Johnson-Laird's own illusory inferences (propositional, quantified, embedded disjunction) at human rates, with matched controls and a confidence or self-consistency test? Only 2023 chat models and a 38-model disjunction set were tested (G1, G10).
-2. Does a code-built possibility table (premise A true and B false, then the reverse), filled in by the model, beat plain and beat a prose warning at equal tokens on illusion items, and what does it cost on controls (human cost 93 to 79 and 87 to 72)? Include rulebreaker and modal-fallacy items (K25, K26) since formal structure can hurt there.
+2. Does a code-built possibility table (premise A true and B false, then the reverse), filled in by the model, beat plain and beat a prose warning at equal tokens on illusion items, and what does it cost on controls (human cost 93 to 79 and 87 to 72)? Include rulebreaker and modal-fallacy items (A01.01-K25, A01.01-K26) since formal structure can hurt there.
 3. What triggers counterexample search for a model? Is search on a code-detected signal (answer disagreement, premises conflict with knowledge, multiple-model item) better than always-on at equal tokens?
 4. Do frontier and reasoning LLMs accept "nothing follows" when it is right, and does an explicit NVC option plus counterexample search lift NVC accuracy without raising false rejections (64 syllogisms, fixed existential-import key)?
 5. Is the "list the possibilities" model method (95% vs 63%, 15 s vs 24 s) real? The source is an unpublished thesis recalled by Johnson-Laird, with his own two reports disagreeing. Find the original data or an independent replication.
@@ -129,10 +129,10 @@ Additional weak spots: c-lines on LLMs are mostly 2023 to 2024 models; Koralus t
 
 ## Gap search results (evidence_d.jsonl, d01 to d28; claims now 33)
 
-New this pass: d22 to d28. d01 to d21 came from an earlier interrupted pass and were kept. Claims K31 to K33 added; K01, K09, K18, K19, K27 got extra evidence ids and short notes. No status flipped. K01 independent sources raised to 3.
+New this pass: d22 to d28. d01 to d21 came from an earlier interrupted pass and were kept. Claims A01.01-K31 to A01.01-K33 added; A01.01-K01, A01.01-K09, A01.01-K18, A01.01-K19, A01.01-K27 got extra evidence ids and short notes. No status flipped. A01.01-K01 independent sources raised to 3.
 
 Closed or half closed:
-- Gap 5 (model method 95% vs 63%): closed as "unverifiable". d11 shows the source is an unpublished 1999 thesis and Johnson-Laird's two reports give different numbers (65 to 95%, 25 to 15 s; 95 vs 63%, 15 vs 24 s). No independent replication exists. K15 stays contested. Do not quote 95%.
+- Gap 5 (model method 95% vs 63%): closed as "unverifiable". d11 shows the source is an unpublished 1999 thesis and Johnson-Laird's two reports give different numbers (65 to 95%, 25 to 15 s; 95 vs 63%, 15 vs 24 s). No independent replication exists. A01.01-K15 stays contested. Do not quote 95%.
 - Gap 7 (practice gain): half closed. Dames 2021 (d10) says the gain is inside session 1 and on valid items only, which favours a response-bias shift over deeper checking. No LLM test of in-context history was found.
 - Gap 6 (independent illusion replication): half closed. Sable-Meyer & Mascarenhas 2021 (d24, N=64 and 70 analysed, controls 87/26 and 90/20) replicate the disjunction illusion in an independent lab, and show the trigger is knowledge links, not only word overlap. Ghasemi 2023 (d25) gives a matching-heuristic rival for related effects. Espino 2024 (d08) is still the only conditional-illusion replication. Still missing: item-order and pragmatics controls, quantified and modal illusions outside the Johnson-Laird lab.
 - Gap 8 (belief bias): half closed. d14 (14 models, top under 2 points) and d22 (ten open models, content effect falls with chain of thought, most above 89% accuracy) say belief bias shrinks in strong models. Counterexample step vs flag-and-reason is not tested.
@@ -141,8 +141,8 @@ Closed or half closed:
 
 Still open (no outside evidence found, d28 is the search log):
 - Gap 1: no test of current frontier or reasoning models on the classic illusions with controls and a confidence check. Only 2023 chat models (d02) and the 38-model disjunction set (d01, up to 91.7% correct for the best, so top models may now beat humans on that type).
-- Gap 2: no test of a code-built possibility table. Human cost on controls (93 to 79, 87 to 72, d05) is the only number. Rulebreaker and modal sets (K25, K26) are tested only plain or with chain of thought.
-- Gap 4: d12, d13, d14 show models rarely say "nothing follows" and fine-tuning fixes it where in-context examples do not. No frontier test of an explicit NVC option with counterexample search. K23 (existential-import key) must be fixed before scoring.
+- Gap 2: no test of a code-built possibility table. Human cost on controls (93 to 79, 87 to 72, d05) is the only number. Rulebreaker and modal sets (A01.01-K25, A01.01-K26) are tested only plain or with chain of thought.
+- Gap 4: d12, d13, d14 show models rarely say "nothing follows" and fine-tuning fixes it where in-context examples do not. No frontier test of an explicit NVC option with counterexample search. A01.01-K23 (existential-import key) must be fixed before scoring.
 - Gap 10: d26 is training-based on small models; d27 is moral reasoning. No premise-order or rulebreaker test on current frontier models; no code-reordering test.
 
 What this means for the schema: the evidence for the possibility-table operator (O3) and for G10 is still from humans and 2023-24 models. The first harness tests, in order: (1) illusion items and controls on the current model, plain vs warning vs code table, all at equal tokens, with a control-cost readout; (2) NVC option with code counterexample search on the 64 syllogisms; (3) triggered vs always-on search with a code item signal. Keep the table gated until test 1 reports a control cost.

@@ -38,18 +38,18 @@ a24, a25, a26, a27, a28, b05, b24, b28 to b31, c28, c29.
 8. Do independent labs replicate the Markovits instrument's results (belief bias, deadlines)? None found.
 9. Can a cheap router, triggered by G1-style signals, pick search versus estimate better than always searching (Beeson's meta-reasoning selection)?
 
-## Gap search results (evidence_d.jsonl, d01 to d23; claims K18 to K26 added)
+## Gap search results (evidence_d.jsonl, d01 to d23; claims A01.07-K18 to A01.07-K26 added)
 
 Tool notes: OpenAlex and Semantic Scholar rate-limited, web search quota ran out partway, APA full texts (2013, 2023) are paywalled. Europe PMC abstracts, the open 2024 review and arXiv PDFs were read.
 
-1. LLM on the Markovits diagnostic and framing/budget flip. STAYS OPEN. No study found (K17 updated). Nearest: Hasan 2026 (d15, 29 models, fixed Yes/No priors, wording matters, only 9 beat the floor, direct answers only) and BIS 2026 (d17, effort 69 vs 99 for GPT-5-nano, weak effect for Qwen3-32B; all items valid, so it hides accept-everything bias).
+1. LLM on the Markovits diagnostic and framing/budget flip. STAYS OPEN. No study found (A01.07-K17 updated). Nearest: Hasan 2026 (d15, 29 models, fixed Yes/No priors, wording matters, only 9 beat the floor, direct answers only) and BIS 2026 (d17, effort 69 vs 99 for GPT-5-nano, weak effect for Qwen3-32B; all items valid, so it hides accept-everything bias).
 2. Code-run counterexample search vs plain CoT at equal tokens. STAYS OPEN. Partial: Logic-LM (d18) shows code beats CoT on 4 of 5 sets with GPT-4 and loses on PrOntoQA (83.20 vs 98.79); Poddar 2025 (d14) shows CoT is no uniform fix. No equal-token test on invalid AC/DA or belief conflict.
 3. Test-retest. STAYS OPEN, now with a negative search record (d22). Only within-session stability and the review's "short term" wording.
 4. Time-pressure switch, real or guessing. PARTLY CLOSED. 2013 abstract opened (d01): direction and confidence result confirmed, numbers still unopened. New: fast answers follow semantic availability and carry validity information (d07, d09, d10): about 15% respond to form alone at 5 s. So fast answers are cue-driven, not random guesses, and not usually logic.
 5. Deliberate strategy choice. PARTLY CLOSED. Abstract of Markovits and Thompson 2023 opened (d02): N=885 over two studies, following is limited by spontaneous strategy, effect carried over to the next task. Per-study sizes, effect sizes and durability still unknown.
 6. Item classes. PARTLY CLOSED. Strategy matters for belief bias, base rates, denominator neglect, social bias; not for the conjunction fallacy (d04, d12). On MP the groups flip with premise type (d05). Quantified and planning classes: only LLM-side data (d16, d19), no human strategy split.
 7. PHM min/atmosphere in LLMs and a 'nothing follows' probe. PARTLY CLOSED on the first half: NeuBAROCO atmosphere items give GPT-3.5 39.42%, BERT-type about 0% (d16), and fixed Yes/No priors across 29 models (d15). The probe itself is untested.
-8. Independent replication. STAYS OPEN as a negative finding (d23, K26): about 20 papers, all from the Markovits network. Newman, Gibb and Thompson 2017 (d07) is a near-independent deadline study without the diagnostic.
+8. Independent replication. STAYS OPEN as a negative finding (d23, A01.07-K26): about 20 papers, all from the Markovits network. Newman, Gibb and Thompson 2017 (d07) is a near-independent deadline study without the diagnostic.
 9. Cheap router. STAYS OPEN. Analogue only: Guo 2026 (d21) router beat random, self-select and always-think on ranking at about half the tokens. Human signals that could drive a rule: confidence (d11, N=289) and alternative count (d09).
 
-New caveats from this pass: most d-lines are abstract-level (marked in limits). The 2013 and 2023 papers still need a full-text copy to close gaps 4 and 5. Skipped as too weak: arXiv 2512.04228 (proposal paper, no usable numbers). One correction to K02: the "groups answer alike on MP" statement holds only for plain MP (d05).
+New caveats from this pass: most d-lines are abstract-level (marked in limits). The 2013 and 2023 papers still need a full-text copy to close gaps 4 and 5. Skipped as too weak: arXiv 2512.04228 (proposal paper, no usable numbers). One correction to A01.07-K02: the "groups answer alike on MP" statement holds only for plain MP (d05).

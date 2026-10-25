@@ -1,8 +1,8 @@
 # Content effects: why reasoning changes with content
 
-Subfield 03 of A01 (cognitive psychology of thinking and reasoning). Deep document. Written 2026-10-21 from `evidence_a.jsonl` to `evidence_d.jsonl` (a01-a32, b01-b25, c01-c35, d01-d35), `claims.jsonl` (K01-K41) and `critique.md`.
+Subfield 03 of A01 (cognitive psychology of thinking and reasoning). Deep document. Written 2026-10-21 from `evidence_a.jsonl` to `evidence_d.jsonl` (a01-a32, b01-b25, c01-c35, d01-d35), `claims.jsonl` (A01.03-K01-A01.03-K41) and `critique.md`.
 
-Reading guide. Evidence ids (a01, b05, d20 ...) point to lines in the evidence files. Claim ids (K01 ...) point to `claims.jsonl`. Status marks follow the schema: **[E]** established (two or more independent sources), **[S]** single source, **[C]** contested. A line from the Cosmides group, from the Sperber group, or from the Fiddick chapter is one lab speaking about its own work, so many "agreements" below are weaker than they look. Where a number is second hand, this is said.
+Reading guide. Evidence ids (a01, b05, d20 ...) point to lines in the evidence files. Claim ids (A01.03-K01 ...) point to `claims.jsonl`. Status marks follow the schema: **[E]** established (two or more independent sources), **[S]** single source, **[C]** contested. A line from the Cosmides group, from the Sperber group, or from the Fiddick chapter is one lab speaking about its own work, so many "agreements" below are weaker than they look. Where a number is second hand, this is said.
 
 ---
 
@@ -17,7 +17,7 @@ Content effects are changes in reasoning accuracy when the logical form stays th
 ### 2.1 Baseline and the first content results
 
 - Wason's abstract task (1966, 1968) gave very low correct rates. Wason (1968), as tabulated by Oaksford and Chater: P chosen 100 percent, not-P 17, Q 78, not-Q 28. Evans and Lynch (1973) control: P 100, not-P 6, Q 69, not-Q 12 (a17). Johnson-Laird and Wason (1970): 96 percent chose a wrong pattern (a10, as cited). "Not even 10 percent" solve it (a29).
-- Early thematic versions: Wason and Shapiro (1971) and Johnson-Laird (1972) seemed to show that realistic content helps. Manktelow and Evans (1979) did not replicate. Griggs and Cox (1982) found the drinking-age rule ("if a person is drinking beer, then the person must be over 19") easy and blamed prior experience (a01). Cosmides (1989) later argued familiarity could not be the cause (d03). The failure of the early thematic studies is why "adding realism" is not a rule (K02 [E]).
+- Early thematic versions: Wason and Shapiro (1971) and Johnson-Laird (1972) seemed to show that realistic content helps. Manktelow and Evans (1979) did not replicate. Griggs and Cox (1982) found the drinking-age rule ("if a person is drinking beer, then the person must be over 19") easy and blamed prior experience (a01). Cosmides (1989) later argued familiarity could not be the cause (d03). The failure of the early thematic studies is why "adding realism" is not a rule (A01.03-K02 [E]).
 - Evans and Lynch (1973) showed that abstract "if P then NOT Q" rules are routinely solved, and Evans (1989) explained this as matching bias: people pick the cards named in the rule (a07).
 
 ### 2.2 The main theories
@@ -39,11 +39,11 @@ Content effects are changes in reasoning accuracy when the logical form stays th
 
 Three separate debates run at once.
 
-1. Is the cheater result about cheaters or about the question? Cosmides' group says cheater detection is a specialized system (a11, a13). Sperber and Girotto say the cheater instruction names the target category and its two traits, which turns the Wason task into a categorization task; a neutral category does as well (b03, b07). Gigerenzer and Hug sit between: social contract plus a cheating cue plus perspective (d07, d08). All three sides have data the other side explains in its own way (K05 [C]).
-2. Is there one general permission/deontic schema or several domain-specific systems? Cheng and Holyoak say schema; Cosmides says several systems and cites Exps 1-2 (a15). Kroger et al. 1993 (the schema group) show permission rules gain only with a violation-checking frame plus explicit negatives (d06) (K07 [C]).
-3. What causes the abstract-task error? Matching bias, probability effects, mental models or shallow reading? Fits exist for each (a16, b08, b10) and none is settled (K09 [C]).
+1. Is the cheater result about cheaters or about the question? Cosmides' group says cheater detection is a specialized system (a11, a13). Sperber and Girotto say the cheater instruction names the target category and its two traits, which turns the Wason task into a categorization task; a neutral category does as well (b03, b07). Gigerenzer and Hug sit between: social contract plus a cheating cue plus perspective (d07, d08). All three sides have data the other side explains in its own way (A01.03-K05 [C]).
+2. Is there one general permission/deontic schema or several domain-specific systems? Cheng and Holyoak say schema; Cosmides says several systems and cites Exps 1-2 (a15). Kroger et al. 1993 (the schema group) show permission rules gain only with a violation-checking frame plus explicit negatives (d06) (A01.03-K07 [C]).
+3. What causes the abstract-task error? Matching bias, probability effects, mental models or shallow reading? Fits exist for each (a16, b08, b10) and none is settled (A01.03-K09 [C]).
 
-What most sources do agree on, from different sides: the answer depends on how the reader takes the rule and what the final question asks, and not only on its logical form (K01, K04 [E]).
+What most sources do agree on, from different sides: the answer depends on how the reader takes the rule and what the final question asks, and not only on its logical form (A01.03-K01, A01.03-K04 [E]).
 
 ---
 
@@ -53,37 +53,37 @@ Status marks: [E] established, [S] single source, [C] contested. "Human" rows ar
 
 | # | Finding | Numbers | Source (evidence ids) | Status |
 |---|---|---|---|---|
-| 1 | Abstract Wason: few choose P and not-Q | under 10 percent usually; 5 to 30 percent across studies; Klauer: "typically fewer than 10 percent", about 75 percent inference and 25 percent guessing, 16 of 18 data sets fit, six online experiments of about 300 each | Wikipedia, Cosmides 2010, Klauer 2007 (a29, a11, b10) | [E] K01 |
-| 2 | Unfamiliar social contract with cheater cue beats abstract and descriptive | Cosmides 1989 Exp 1/2 (n=24 each): social contract 75 / 71 percent, unfamiliar descriptive 21 / 25, abstract 25 / 29, familiar descriptive 46 / 38. Exps 5-6 (n=40): 75 and 80 vs permission without cost-benefit 30 and 45 | Cosmides 1989 (d03, d04) | [E] K03 |
-| 3 | Switched contracts flip the choice to not-P and Q | Exps 3-4 (n=24): 67 and 75 percent. Exps 8-9 (n=40): 65 and 80 percent vs 0 and 10 for the switched non-social-contract rule | d04 | [E] K03, one lab for the n |
-| 4 | An independent lab finds the same direction, larger | Gigerenzer and Hug (n=93): cheating 94 percent vs no-cheating 44. Permission rules +33 points, obligation rules +44 with a cheating cue. Social contract without the cue about 45 percent, the same as non-social rules (44) | d07 | [E] K03 |
-| 5 | Perspective flips the cards | Day-off rule: employee view P and not-Q 75 percent, employer view not-P and Q 61. Pension rule (n=93): P and not-Q 70 vs 11; not-P and Q 0 vs 64. Subsidy: 81 vs 17 and 59 vs 0 | Gigerenzer and Hug (d08, a09, b02) | [E] K04 |
-| 6 | The final question steers the choice | Sperber and Girotto Exp 2 (N=120, 30 per cell): "see whether anyone cheated you" 33 and 43 percent P and not-Q vs "made an exchange with you" 10 and 0. Fiddick Exp 3 (N=120): same poison-dart rule 70 percent P and not-Q when asked about risk, 5 when asked about abusing a privilege | b04, b01 | [E] K04 |
-| 7 | Same descriptive rule, goal changed to precaution | 16.7 vs 50.0 percent P and not-Q (n=30 per cell), rule text identical | Fiddick et al. 2000 (d29) | [S] K23, K31 (advocate lab) |
-| 8 | A neutral target category does as well as cheaters | Sperber and Girotto Exp 1 (N=100, 35/35/30): cheater 68 percent, arbitrary category ("Wason's selection") 91, glider 73. Cheater vs arbitrary chi2(1,N=70)=4.37, p<.05. Replication of glider group N=20: 65 | b03 | [C] K05 |
+| 1 | Abstract Wason: few choose P and not-Q | under 10 percent usually; 5 to 30 percent across studies; Klauer: "typically fewer than 10 percent", about 75 percent inference and 25 percent guessing, 16 of 18 data sets fit, six online experiments of about 300 each | Wikipedia, Cosmides 2010, Klauer 2007 (a29, a11, b10) | [E] A01.03-K01 |
+| 2 | Unfamiliar social contract with cheater cue beats abstract and descriptive | Cosmides 1989 Exp 1/2 (n=24 each): social contract 75 / 71 percent, unfamiliar descriptive 21 / 25, abstract 25 / 29, familiar descriptive 46 / 38. Exps 5-6 (n=40): 75 and 80 vs permission without cost-benefit 30 and 45 | Cosmides 1989 (d03, d04) | [E] A01.03-K03 |
+| 3 | Switched contracts flip the choice to not-P and Q | Exps 3-4 (n=24): 67 and 75 percent. Exps 8-9 (n=40): 65 and 80 percent vs 0 and 10 for the switched non-social-contract rule | d04 | [E] A01.03-K03, one lab for the n |
+| 4 | An independent lab finds the same direction, larger | Gigerenzer and Hug (n=93): cheating 94 percent vs no-cheating 44. Permission rules +33 points, obligation rules +44 with a cheating cue. Social contract without the cue about 45 percent, the same as non-social rules (44) | d07 | [E] A01.03-K03 |
+| 5 | Perspective flips the cards | Day-off rule: employee view P and not-Q 75 percent, employer view not-P and Q 61. Pension rule (n=93): P and not-Q 70 vs 11; not-P and Q 0 vs 64. Subsidy: 81 vs 17 and 59 vs 0 | Gigerenzer and Hug (d08, a09, b02) | [E] A01.03-K04 |
+| 6 | The final question steers the choice | Sperber and Girotto Exp 2 (N=120, 30 per cell): "see whether anyone cheated you" 33 and 43 percent P and not-Q vs "made an exchange with you" 10 and 0. Fiddick Exp 3 (N=120): same poison-dart rule 70 percent P and not-Q when asked about risk, 5 when asked about abusing a privilege | b04, b01 | [E] A01.03-K04 |
+| 7 | Same descriptive rule, goal changed to precaution | 16.7 vs 50.0 percent P and not-Q (n=30 per cell), rule text identical | Fiddick et al. 2000 (d29) | [S] A01.03-K23, A01.03-K31 (advocate lab) |
+| 8 | A neutral target category does as well as cheaters | Sperber and Girotto Exp 1 (N=100, 35/35/30): cheater 68 percent, arbitrary category ("Wason's selection") 91, glider 73. Cheater vs arbitrary chi2(1,N=70)=4.37, p<.05. Replication of glider group N=20: 65 | b03 | [C] A01.03-K05 |
 | 9 | Cheater detection needs three factors (Cosmides' reading) | Exp 4 (2x2x2): 64 percent with benefit, intention and ability; 46 with two; 26 with one; 26 with none. F(1,342)=7.30, 10.22, 4.87. Exp 1 (N=25 per rule): 80, 52, 44; precautionary garbage 72. Exp 2: 72 vs 48, 32. Exp 3: 68, 45, 27 | Cosmides et al. 2010 (a12, a13, critique) | [S] (additive factors from one paper) |
-| 10 | Abstract permission schema (second hand) | 61 percent vs 19 for a nondeontic rule (Cheng and Holyoak 1985 Exp 2, first problem only, N unknown; read via Cosmides) | d05, a03 | [C] K07 |
-| 11 | Permission schema needs frame and negatives | Kroger et al. Exp 1A: violation-checking plus explicit negatives: permission 47 percent (n=38) vs arbitrary 5 (n=40), chi2(1)=18.35. Without negatives: 18 (n=45) vs 8 (n=40) n.s. Hypothesis-testing frame: 16 vs 6. Exp 2 (131 students): 22 vs 6 | d06 | [C] K07 |
-| 12 | Abstract deontic rules are hard | Fiddick (n=20 per group): precaution 50, social contract 45, obligation 30, permission 20, situation control 15, action control 10. Adaptive pooled 48 vs deontic 25. h=.83 (social contract vs action control), h=.93 (precaution) | a04 | [S] K08 |
-| 13 | Relevance manipulations move descriptive rules | Exp 1 (n=27 within): 78 vs 26 percent. Exp 2 (17 / 19): 65 vs 16. Exp 3 (20 per cell): 70 vs 25. Exp 4 (n=21 per cell): effect+/effort- 57, effect+/effort+ 38, effect-/effort- 38, effect-/effort+ 5 | Sperber, Cara, Girotto (d09, d10) | [S] K06, K23 (authors of the theory) |
-| 14 | Deontic rule "no longer in force" gives the descriptive error | Cholera rule: 62 percent P and not-Q in force; 15 percent when not in force, 71 percent P and Q | b06 (cited) | [S] K06 |
-| 15 | Spelling out necessity and sufficiency helps | Ahn and Graham (n=22): 50 percent P and not-Q for unnecessary-but-sufficient vs 18 control; abstract rules 50.0 percent normative over explicated conditions vs social 57.1 | d11 | [E] K19 (with d06, d12) |
-| 16 | "Necessarily follows" cuts belief bias in people | Macchi et al. (N=130): invalid-believable correct 4 percent (untrained), 10 (trained) with "follow"; 66 and 77 with "necessarily"; 41 and 67 with "criteria of logic" | d12 | [E] K19 |
-| 17 | Goal framing alone | Same descriptive rule 16.7 vs 50.0 (row 7). Trade problem with no if-then and no modal: 50.0 percent (want) vs 66.7 (conditional), n=30 each, Z=1.31 n.s. | d28, b01 | [S] K31 |
-| 18 | Slow responders show the realistic advantage | N=625 plus 360. Slowest 15 percent (over 80 s) above chance on realistic rules, near chance on others. z=4.44 for time vs accuracy. A bonus changed nothing | a22, b13 | [S] K15 |
-| 19 | Fast belief, slow logic in humans | Modus ponens, conflict vs no conflict: belief judgments .63 vs .93, logic judgments .73 vs .97; MT .67 vs .91 and .69 vs .86; overall .68 vs .92. For three-term complex syllogisms belief interfered more with validity | Trippas 2017 (d33) | [S] K32 |
-| 20 | Cognitive ability and selection | Over 800 participants; abstract tasks tied to ability; two deontic tasks not (abstract only; later review says "mostly same direction") | d18, b21, a18 | [S] K17 |
-| 21 | Hidden-possibility hints | A hint to consider every hidden side lowered the irreversibility parameter; correct selections rose "modestly" | Klauer 2007 (b11) | [S] K10 |
-| 22 | LLM content effects (old models) | Syllogisms: significant belief advantage in humans and all five models (z>=2.25). Wason: realistic > arbitrary for Chinchilla, PaLM 2-L, GPT-3.5 (z>2.2) and humans; PaLM 2-M and Flan-PaLM 2 marginal (p about .08). NLI: no content effect (all p>.2) | Lampinen et al. (a20, c01) | [E] K11 |
-| 23 | Item-level match to humans | Items humans got right are the items models got right: NLI t(832)=3.49, syllogisms t(345)=4.98 | a21 | [E] K11 (one paper) |
-| 24 | Belief-inconsistent items are hardest | NeuBAROCO GPT-3.5: symbol 61.05, consistent 56.89, inconsistent 31.37 (95/167/102 items). LLaMA-3 8B valid believable 70.74 vs unbelievable 52.59 | b17, a25 | [E] K11 |
-| 25 | Belief gap in 2025-2026 models is uneven | Congruent minus incongruent: Llama 3.2 3B +46.9, Llama 3.3 70B +31.6, Qwen3-Next Thinking +28.0, Gemini 2.5 Pro +1.4, Gemini 2.5 Flash +0.9, GPT-OSS-20B +0.8, Qwen3-Next Instruct -7.9. Mean +10.81, d=0.66, 12 of 14 positive | Poddar (d01) | [C] K21 |
-| 26 | LLM deontic advantage on Wason | +5 to +45 points over descriptive, every model and prompt. Zero-shot deontic: gpt-oss-120b 100.0, qwen3-32b 98.8, qwen3-14b 97.5 (+45), gemma3-4b 17.5 (+5) | Abe et al. (a28, d02) | [S] K14; confounded (K22) |
-| 27 | Few-shot does not fix it | Chinchilla 5-shot: syllogism effect weakened slightly, Wason effect grew. 14 models: few-shot mean 79.1 vs zero-shot 82.7 (paired t41=2.50, p=.0165) | a23, d01 | [E] K12 |
-| 28 | Zero-shot CoT cuts the effect in strong open models | Qwen2.5-32B CE 0.348 to 0.096; Qwen3-14B 0.213 to 0.014. Weak LLaMA still loses on unbelievable valid items | b15, a25 | [E] K12 |
-| 29 | Counterfactual and symbol versions cost accuracy | FOLIO (81 items) GPT-4 93.8 vs 74.1 no CoT; 98.8 vs 82.7 with CoT. Symbolic Tree ChatGPT/GPT-4 semantics 71.8/90.0 vs symbols 53.7/67.6. Base 10 100.0 vs base 9 23.4 | Wu, Tang (c03, c04, c06) | [E] K36, K25 |
-| 30 | Irrelevant clauses and renaming | GSM-NoOp up to 65 percent drop (Phi-3-mini); o1-preview -17.5; best-worst gap over 12 percent (Gemma2-9B) | Mirzadeh (c31) | [E] K16, K25 |
-| 31 | Premise order | Shuffled premises: 20-30 points (GPT-4-turbo, PaLM 2-L), over 40 for Gemini 1.0 Pro and GPT-3.5-turbo; R-GSM GPT-4-turbo 94.1 to 85.0 | Chen et al. (c32, d32) | [S] K28 |
+| 10 | Abstract permission schema (second hand) | 61 percent vs 19 for a nondeontic rule (Cheng and Holyoak 1985 Exp 2, first problem only, N unknown; read via Cosmides) | d05, a03 | [C] A01.03-K07 |
+| 11 | Permission schema needs frame and negatives | Kroger et al. Exp 1A: violation-checking plus explicit negatives: permission 47 percent (n=38) vs arbitrary 5 (n=40), chi2(1)=18.35. Without negatives: 18 (n=45) vs 8 (n=40) n.s. Hypothesis-testing frame: 16 vs 6. Exp 2 (131 students): 22 vs 6 | d06 | [C] A01.03-K07 |
+| 12 | Abstract deontic rules are hard | Fiddick (n=20 per group): precaution 50, social contract 45, obligation 30, permission 20, situation control 15, action control 10. Adaptive pooled 48 vs deontic 25. h=.83 (social contract vs action control), h=.93 (precaution) | a04 | [S] A01.03-K08 |
+| 13 | Relevance manipulations move descriptive rules | Exp 1 (n=27 within): 78 vs 26 percent. Exp 2 (17 / 19): 65 vs 16. Exp 3 (20 per cell): 70 vs 25. Exp 4 (n=21 per cell): effect+/effort- 57, effect+/effort+ 38, effect-/effort- 38, effect-/effort+ 5 | Sperber, Cara, Girotto (d09, d10) | [S] A01.03-K06, A01.03-K23 (authors of the theory) |
+| 14 | Deontic rule "no longer in force" gives the descriptive error | Cholera rule: 62 percent P and not-Q in force; 15 percent when not in force, 71 percent P and Q | b06 (cited) | [S] A01.03-K06 |
+| 15 | Spelling out necessity and sufficiency helps | Ahn and Graham (n=22): 50 percent P and not-Q for unnecessary-but-sufficient vs 18 control; abstract rules 50.0 percent normative over explicated conditions vs social 57.1 | d11 | [E] A01.03-K19 (with d06, d12) |
+| 16 | "Necessarily follows" cuts belief bias in people | Macchi et al. (N=130): invalid-believable correct 4 percent (untrained), 10 (trained) with "follow"; 66 and 77 with "necessarily"; 41 and 67 with "criteria of logic" | d12 | [E] A01.03-K19 |
+| 17 | Goal framing alone | Same descriptive rule 16.7 vs 50.0 (row 7). Trade problem with no if-then and no modal: 50.0 percent (want) vs 66.7 (conditional), n=30 each, Z=1.31 n.s. | d28, b01 | [S] A01.03-K31 |
+| 18 | Slow responders show the realistic advantage | N=625 plus 360. Slowest 15 percent (over 80 s) above chance on realistic rules, near chance on others. z=4.44 for time vs accuracy. A bonus changed nothing | a22, b13 | [S] A01.03-K15 |
+| 19 | Fast belief, slow logic in humans | Modus ponens, conflict vs no conflict: belief judgments .63 vs .93, logic judgments .73 vs .97; MT .67 vs .91 and .69 vs .86; overall .68 vs .92. For three-term complex syllogisms belief interfered more with validity | Trippas 2017 (d33) | [S] A01.03-K32 |
+| 20 | Cognitive ability and selection | Over 800 participants; abstract tasks tied to ability; two deontic tasks not (abstract only; later review says "mostly same direction") | d18, b21, a18 | [S] A01.03-K17 |
+| 21 | Hidden-possibility hints | A hint to consider every hidden side lowered the irreversibility parameter; correct selections rose "modestly" | Klauer 2007 (b11) | [S] A01.03-K10 |
+| 22 | LLM content effects (old models) | Syllogisms: significant belief advantage in humans and all five models (z>=2.25). Wason: realistic > arbitrary for Chinchilla, PaLM 2-L, GPT-3.5 (z>2.2) and humans; PaLM 2-M and Flan-PaLM 2 marginal (p about .08). NLI: no content effect (all p>.2) | Lampinen et al. (a20, c01) | [E] A01.03-K11 |
+| 23 | Item-level match to humans | Items humans got right are the items models got right: NLI t(832)=3.49, syllogisms t(345)=4.98 | a21 | [E] A01.03-K11 (one paper) |
+| 24 | Belief-inconsistent items are hardest | NeuBAROCO GPT-3.5: symbol 61.05, consistent 56.89, inconsistent 31.37 (95/167/102 items). LLaMA-3 8B valid believable 70.74 vs unbelievable 52.59 | b17, a25 | [E] A01.03-K11 |
+| 25 | Belief gap in 2025-2026 models is uneven | Congruent minus incongruent: Llama 3.2 3B +46.9, Llama 3.3 70B +31.6, Qwen3-Next Thinking +28.0, Gemini 2.5 Pro +1.4, Gemini 2.5 Flash +0.9, GPT-OSS-20B +0.8, Qwen3-Next Instruct -7.9. Mean +10.81, d=0.66, 12 of 14 positive | Poddar (d01) | [C] A01.03-K21 |
+| 26 | LLM deontic advantage on Wason | +5 to +45 points over descriptive, every model and prompt. Zero-shot deontic: gpt-oss-120b 100.0, qwen3-32b 98.8, qwen3-14b 97.5 (+45), gemma3-4b 17.5 (+5) | Abe et al. (a28, d02) | [S] A01.03-K14; confounded (A01.03-K22) |
+| 27 | Few-shot does not fix it | Chinchilla 5-shot: syllogism effect weakened slightly, Wason effect grew. 14 models: few-shot mean 79.1 vs zero-shot 82.7 (paired t41=2.50, p=.0165) | a23, d01 | [E] A01.03-K12 |
+| 28 | Zero-shot CoT cuts the effect in strong open models | Qwen2.5-32B CE 0.348 to 0.096; Qwen3-14B 0.213 to 0.014. Weak LLaMA still loses on unbelievable valid items | b15, a25 | [E] A01.03-K12 |
+| 29 | Counterfactual and symbol versions cost accuracy | FOLIO (81 items) GPT-4 93.8 vs 74.1 no CoT; 98.8 vs 82.7 with CoT. Symbolic Tree ChatGPT/GPT-4 semantics 71.8/90.0 vs symbols 53.7/67.6. Base 10 100.0 vs base 9 23.4 | Wu, Tang (c03, c04, c06) | [E] A01.03-K36, A01.03-K25 |
+| 30 | Irrelevant clauses and renaming | GSM-NoOp up to 65 percent drop (Phi-3-mini); o1-preview -17.5; best-worst gap over 12 percent (Gemma2-9B) | Mirzadeh (c31) | [E] A01.03-K16, A01.03-K25 |
+| 31 | Premise order | Shuffled premises: 20-30 points (GPT-4-turbo, PaLM 2-L), over 40 for Gemini 1.0 Pro and GPT-3.5-turbo; R-GSM GPT-4-turbo 94.1 to 85.0 | Chen et al. (c32, d32) | [S] A01.03-K28 |
 
 ---
 
@@ -145,7 +145,7 @@ From memory, standard form. Two hypotheses: M_D (P implies Q, with a small excep
 
 ### 4.6 Inference-guessing model (Klauer et al. 2007; b10)
 
-Each response pattern (16 in all) arises either from inference (about 75 percent) or from independent guessing per card (about 25 percent). Inside inference, only about 10 percent is "reversible" (the hidden side is considered). Targeted fix: ask the solver to consider the hidden side for each card. Reported effect is small (K10).
+Each response pattern (16 in all) arises either from inference (about 75 percent) or from independent guessing per card (about 25 percent). Inside inference, only about 10 percent is "reversible" (the hidden side is considered). Targeted fix: ask the solver to consider the hidden side for each card. Reported effect is small (A01.03-K10).
 
 ### 4.7 mReasoner (Eisape et al. 2024; c10; from Khemlani and Johnson-Laird, not opened)
 
@@ -185,7 +185,7 @@ Validity and plausibility are aligned linear directions (cosine 0.48-0.64 vs 0.1
 
 ### 5.3 Boundary conditions and moderators
 
-- **Content must make a violation salient.** Realistic content alone is not enough (K02). The permission schema works only in a regulation-like context (d05, Holyoak and Cheng 1995).
+- **Content must make a violation salient.** Realistic content alone is not enough (A01.03-K02). The permission schema works only in a regulation-like context (d05, Holyoak and Cheng 1995).
 - **Explicit negatives and a violation frame** matter together (d06); the same tricks do nothing for arbitrary rules (Kroger: 5 and 8 percent).
 - **Violation instructions are not universal.** They helped a thematic permission rule but not obligation or abstract rules (Valina et al., instruction by content interaction, d17). Platt and Griggs' roughly 80 percent abstract result needed an explained rule and a request for reasons (second hand); the schema authors dispute how Platt and Griggs read their cost-benefit result (d30, d17).
 - **Complexity.** Belief wins over logic mainly on the most complex syllogisms (d33).
@@ -223,32 +223,32 @@ LLMs reproduce the human content effects on three tasks (c01, a20): NLI (no cont
 | SemEval baselines (CE in points) | Qwen3 14B 97.38 / 4.23; Qwen3 8B 95.81 / 4.23; Phi-4 15B 83.33 / 14.89; Qwen2.5 14B 67.50 / 44.54; Gemma3 7B 71.70 / 29.75; Llama 3.1 8B 64.17 / 32.15 | d23 |
 | Strong model direct (Gemini 3 Flash) | 98.43, CE 2.13 (n=192); after normalise+parse 100, CE 0.0 | d21 |
 
-Reading: the effect is large in old and mid-size models and near zero in the best current models on plain syllogisms. It does not follow size or the word "thinking": Qwen3-Next Thinking is at +28.0 while its Instruct sibling is at -7.9 (d01; different checkpoints; majority-vote adaptive stopping). Model generation and reasoning training seem to matter more than size (d23, K21 [C]). Poddar's formal accuracy (81.7 mean) far exceeds believability judging (56.2), and top models give the same answer on natural and nonsense versions (consistency 99.2, Gemini 2.5 Flash) (c20).
+Reading: the effect is large in old and mid-size models and near zero in the best current models on plain syllogisms. It does not follow size or the word "thinking": Qwen3-Next Thinking is at +28.0 while its Instruct sibling is at -7.9 (d01; different checkpoints; majority-vote adaptive stopping). Model generation and reasoning training seem to matter more than size (d23, A01.03-K21 [C]). Poddar's formal accuracy (81.7 mean) far exceeds believability judging (56.2), and top models give the same answer on natural and nonsense versions (consistency 99.2, Gemini 2.5 Flash) (c20).
 
 ### 6.3 What changed it, and by how much
 
 | Lever | Result | Source | Verdict |
 |---|---|---|---|
-| Few-shot examples | Chinchilla 5-shot: syllogism effect only slightly weaker, Wason effect larger. 14 models: 79.1 vs 82.7 zero-shot. Llama 4 Maverick CE 3.83 to 10.11 with few-shot CoT | a23, d01, d20 | does not fix; can hurt [E] K12, K40 |
+| Few-shot examples | Chinchilla 5-shot: syllogism effect only slightly weaker, Wason effect larger. 14 models: 79.1 vs 82.7 zero-shot. Llama 4 Maverick CE 3.83 to 10.11 with few-shot CoT | a23, d01, d20 | does not fix; can hurt [E] A01.03-K12, A01.03-K40 |
 | Simple instruction | On NLI "substantially reduced" bias; Chinchilla near ceiling with a few examples | a24, d35 | works on easy tasks |
-| Zero-shot CoT | Qwen2.5-32B CE 0.348 to 0.096; Qwen3-14B 0.213 to 0.014. BPA average 58.1 to 72.0 for 7B-14B models (Qwen-2.5-7B 50.8 to 81.7; Gemma-2-9B 51.8 to 69.9; Mistral-7B 30.2 to 34.3) | b15, d25 | cuts a lot in strong open models; residual in weak ones [E] K12, [S] K33 |
-| Thinking effort | GPT-5-nano 69.2 (minimum) vs 98.8 (medium). Qwen3-32B 99.58 without thinking vs 99.12 with | d13, d24 | two-level contrast only; no sweep [S] K15 |
-| Logic-focus prompt that names the conflict | Of 100 GPT-4o failures: basic 5, casual 3, polite 65, focus-logic 76, CoT 87 percent recovered | d14, c22 | errors-only, unequal length [S] K20 |
+| Zero-shot CoT | Qwen2.5-32B CE 0.348 to 0.096; Qwen3-14B 0.213 to 0.014. BPA average 58.1 to 72.0 for 7B-14B models (Qwen-2.5-7B 50.8 to 81.7; Gemma-2-9B 51.8 to 69.9; Mistral-7B 30.2 to 34.3) | b15, d25 | cuts a lot in strong open models; residual in weak ones [E] A01.03-K12, [S] A01.03-K33 |
+| Thinking effort | GPT-5-nano 69.2 (minimum) vs 98.8 (medium). Qwen3-32B 99.58 without thinking vs 99.12 with | d13, d24 | two-level contrast only; no sweep [S] A01.03-K15 |
+| Logic-focus prompt that names the conflict | Of 100 GPT-4o failures: basic 5, casual 3, polite 65, focus-logic 76, CoT 87 percent recovered | d14, c22 | errors-only, unequal length [S] A01.03-K20 |
 | Human-style debiasing instruction (counterexamples) | Rule-discovery task: success 42 to 56 percent, but Qwen3-32B thinking tokens per turn about 1,030 to 1,450 | d34 | helps but costs tokens |
 | SFT | LLaMA-3 8B reaches about 96 percent, CE 4.68 percent | a25, c16 | training; outside our scheme |
 | Activation steering | CE 0.348 to 0.072; BPA 97.0 average; up to +15 points | c17, d25, c18 | needs weights |
-| Extract the form (small and mid models) | Qwen3 4B Thinking FOL plus prover 95.83 vs 84.17 direct; LLM-as-prover on the same formulas 79.22 (CE 20.21) | d22 | helps weak models [C] K18 |
-| Z3 as tiebreaker | +0.9 accuracy, net +8 of 960 items, inside one sd | d20 | tiny [S] K29 |
-| Z3 veto or Z3 alone | 74.1 and 74.7 vs 93.4 ensemble | d20, c24 | harmful [E] K37 |
+| Extract the form (small and mid models) | Qwen3 4B Thinking FOL plus prover 95.83 vs 84.17 direct; LLM-as-prover on the same formulas 79.22 (CE 20.21) | d22 | helps weak models [C] A01.03-K18 |
+| Z3 as tiebreaker | +0.9 accuracy, net +8 of 960 items, inside one sd | d20 | tiny [S] A01.03-K29 |
+| Z3 veto or Z3 alone | 74.1 and 74.7 vs 93.4 ensemble | d20, c24 | harmful [E] A01.03-K37 |
 | Translate to logic then explain (GPT-4) | translation 96.67 correct; final 77.78 to 83.33 (predicate), 80.00 (set); GPT-3.5 no gain | c12 | small |
-| Binary validity format | 'nothing follows' accuracy from near 0 to markedly higher | c09 | [E] K34 |
-| Step-Back / QuaSAR | small over CoT on strong models; hurts small ones | d31, d15 | [S] K26 |
+| Binary validity format | 'nothing follows' accuracy from near 0 to markedly higher | c09 | [E] A01.03-K34 |
+| Step-Back / QuaSAR | small over CoT on strong models; hurts small ones | d31, d15 | [S] A01.03-K26 |
 
 ### 6.4 Wason with current open models (Abe et al., a28, d02, d26)
 
 Nine open models, 160 problems (80 deontic, 80 descriptive; 20 per polarity), temperature 0 for non-reasoning models, exact-match multi-select. Zero-shot deontic accuracy (gain): gpt-oss-20b 67.5 (+27.5), gpt-oss-120b 100.0 (+30), qwen3-14b 97.5 (+45), qwen3-32b 98.8 (+38.8), gemma3-4b 17.5 (+5), gemma3-12b 58.8 (+30.1), gemma3-27b 77.5 (+38.7), llama-3.3-70b 62.5 (+10), olmo-2-32b 36.2 (+15). Few-shot: gpt-oss-20b 91.2 (+41.2). CoT: llama-3.3-70b 83.8 (+38.8). Errors on deontic rules fit matching bias better than confirmation bias. Selection rates for gpt-oss-20b zero-shot on deontic rules (TA/FA/TC/FC): pos-pos 100/0/45/55; pos-neg 100/0/5/95; neg-pos 80/20/60/40; neg-neg 90/10/10/90. The text says the gain range is 5.0 to 41.2; Table 2 shows +45 (critique correction).
 
-The comparison is not a paired rewrite. Deontic items are everyday norms with "must / must not / need to / not allowed"; descriptive items are arbitrary if-then rules with no modal. Content, modal word and format change together (d02, d26). Permission and "need not" rules were left out. So the LLM deontic advantage cannot be split into content vs "must" (K22).
+The comparison is not a paired rewrite. Deontic items are everyday norms with "must / must not / need to / not allowed"; descriptive items are arbitrary if-then rules with no modal. Content, modal word and format change together (d02, d26). Permission and "need not" rules were left out. So the LLM deontic advantage cannot be split into content vs "must" (A01.03-K22).
 
 ### 6.5 Other LLM findings
 
@@ -256,7 +256,7 @@ The comparison is not a paired rewrite. Deontic items are everyday norms with "m
 - Seals and Shalin (7B-class, 70 social and 70 non-social problems): realistic vs shuffled OR 1.30 [1.05-1.62]; social rule x content interaction OR 1.59 [1.26-2.02]; switched social rules below standard; models solve social problems about 30 percent vs 70 for people (c14, d27).
 - Eisape et al.: PaLM 2 more logical than people but best about 75 percent; nearly 0 on "nothing follows" under CoT; Llama 2 similar to humans (c09, b16).
 - Bertolazzi et al. 2024: pretrained models almost never say "nothing follows"; ICL raises accuracy on valid forms but makes answers more contradictory (c16).
-- Wu et al. and Tang et al. show the same family of effects outside syllogisms: counterfactual worlds and symbols cost accuracy (K36, K39).
+- Wu et al. and Tang et al. show the same family of effects outside syllogisms: counterfactual worlds and symbols cost accuracy (A01.03-K36, A01.03-K39).
 - BIS Reasoning: Claude 3 Sonnet 20.34 and Opus 7.18 on belief-inconsistent Japanese syllogisms but 78.44 and 61.07 on NeuBAROCO (c21). Deprecated models; a 7 percent score on a binary task implies format failure or systematic error.
 - Search note: no LLM study of cheater detection, Cheng-Holyoak schema prompts or relevance theory was found in about 8 + 3 targeted searches (c35, d-pass). Absence is not proof.
 
@@ -270,35 +270,35 @@ Schema parts: G guardrail, S state, O operator, M memory, H harness. Status mark
 
 | # | Item | Schema part | Mark | Evidence |
 |---|---|---|---|---|
-| A1 | **Fix answer format, scoring code and seeds before comparing any two arms.** Direction of content effects is stable across scoring; size is not. Report spread with every gap. | H, G7 | [E] | K41; c02, c09, c13, d01 |
-| A2 | **Test the final answer on a renamed or counterfactual copy** of the item and flag any flip. Models lean on stored knowledge and on familiar surface. | G3, S8 | [E] | K36, K25, K16; c03, c04, c06, c08, c31, b19 |
-| A3 | **Ask categorical validity as a binary check per candidate conclusion, scored in code**, instead of "what follows". Always include the "nothing follows" option. | S3/S4, G5 | [E] | K34; c09, b16, c16 |
-| A4 | **Never make step-by-step or few-shot the default.** Add reasoning only on a signal (this restates G1, G11). Few-shot lowered accuracy and raised content effect in several tests. | G1, G11 | [E] | K40, K12; c05, c07, d20, d01 |
-| A5 | **Gate any belief-debias step on a measured gap for the model in use.** For strong models the headroom on plain syllogisms is about two points (98.43, CE 2.13). Do not add it as a default. | S0 gate, G7, G12 | [E] | K30, K21 [C]; d21, d19, d22, d23 |
-| A6 | **If a solver is used, never as a veto and never alone.** Translation is the weak link; solver-only fell to 74.1-74.7 percent. Keep fallback to the plain answer (G6). | O (formalise-and-check) | [E] | K37; c12, c24, c27, d20, d22 |
-| A7 | **Do not build a cheater-detection module or a permission-schema operator.** The theories are contested; they depend on the question and on rule reading. This matches 4b (do not hard-code a theory). | none | [C] negative | K05, K07, K08, K09; b03, d06, a15 |
-| A8 | **S1 restate slot: put the goal and whose violation is checked into the one-sentence restatement.** Fixing perspective and final question is established in humans (K04, K19). This costs no extra call because S1 already restates. It stays only if A/B test T1 passes (G7). | S1 | [E] in humans, [S] for LLMs | K04, K19, K20, K23, K31; b04, d07, d08, d11, d12, d29 |
+| A1 | **Fix answer format, scoring code and seeds before comparing any two arms.** Direction of content effects is stable across scoring; size is not. Report spread with every gap. | H, G7 | [E] | A01.03-K41; c02, c09, c13, d01 |
+| A2 | **Test the final answer on a renamed or counterfactual copy** of the item and flag any flip. Models lean on stored knowledge and on familiar surface. | G3, S8 | [E] | A01.03-K36, A01.03-K25, A01.03-K16; c03, c04, c06, c08, c31, b19 |
+| A3 | **Ask categorical validity as a binary check per candidate conclusion, scored in code**, instead of "what follows". Always include the "nothing follows" option. | S3/S4, G5 | [E] | A01.03-K34; c09, b16, c16 |
+| A4 | **Never make step-by-step or few-shot the default.** Add reasoning only on a signal (this restates G1, G11). Few-shot lowered accuracy and raised content effect in several tests. | G1, G11 | [E] | A01.03-K40, A01.03-K12; c05, c07, d20, d01 |
+| A5 | **Gate any belief-debias step on a measured gap for the model in use.** For strong models the headroom on plain syllogisms is about two points (98.43, CE 2.13). Do not add it as a default. | S0 gate, G7, G12 | [E] | A01.03-K30, A01.03-K21 [C]; d21, d19, d22, d23 |
+| A6 | **If a solver is used, never as a veto and never alone.** Translation is the weak link; solver-only fell to 74.1-74.7 percent. Keep fallback to the plain answer (G6). | O (formalise-and-check) | [E] | A01.03-K37; c12, c24, c27, d20, d22 |
+| A7 | **Do not build a cheater-detection module or a permission-schema operator.** The theories are contested; they depend on the question and on rule reading. This matches 4b (do not hard-code a theory). | none | [C] negative | A01.03-K05, A01.03-K07, A01.03-K08, A01.03-K09; b03, d06, a15 |
+| A8 | **S1 restate slot: put the goal and whose violation is checked into the one-sentence restatement.** Fixing perspective and final question is established in humans (A01.03-K04, A01.03-K19). This costs no extra call because S1 already restates. It stays only if A/B test T1 passes (G7). | S1 | [E] in humans, [S] for LLMs | A01.03-K04, A01.03-K19, A01.03-K20, A01.03-K23, A01.03-K31; b04, d07, d08, d11, d12, d29 |
 
-Check against 4b. The schema says "do not add debiasing instructions or bias checklists" [E]. A8 is a task restatement (name the violation case, the goal, what is needed vs enough), not a debias reminder, and its human evidence is strong (K19 [E]). But the only LLM evidence is single-source and unequal in tokens (K20). So A8 is allowed only as wording inside S1, and it must be tested against a "be logical" control arm and a plain arm (T1). If it ties, drop it.
+Check against 4b. The schema says "do not add debiasing instructions or bias checklists" [E]. A8 is a task restatement (name the violation case, the goal, what is needed vs enough), not a debias reminder, and its human evidence is strong (A01.03-K19 [E]). But the only LLM evidence is single-source and unequal in tokens (A01.03-K20). So A8 is allowed only as wording inside S1, and it must be tested against a "be logical" control arm and a plain arm (T1). If it ties, drop it.
 
 ### 7.2 Test first (single-source, contested, or untested for LLMs)
 
 | # | Item | Schema part | Mark | Evidence |
 |---|---|---|---|---|
-| B1 | **Violation-naming restatement vs "be logical" vs CoT vs plain**, equal tokens, congruent and incongruent items. Human support is strong; LLM support is one errors-only test. | S1, O | [S] | K19 [E] human, K20 [S]; d14, d29, d11, d12 |
-| B2 | **Rule typing before the violation step.** Sort the rule as descriptive (test truth, look for counterexample) or prescriptive (look for violators) and apply the step only to prescriptive or exchange-like rules. Not tested anywhere; violation framing helps only some rule types. | S1 | [S] | K24, a08, a10, d17 |
-| B3 | **Hidden-side enumeration and falsifier search.** "For each case, what could be on the other side; which case would show the rule false." Human gain modest; relevance gains large (57 vs 5). | O (enumerate), S7 counterexample | [S] | K10, K23; b11, d10, b09 |
-| B4 | **Form extraction (canonical form or placeholders, then map back).** Contested: big gain for small and mid models, about 2 points for strong ones, can hurt small models with prompts only. | O6 change representation | [C] | K18, K39, K26; d19, d21, d22, d15, c06 |
-| B5 | **Formalise-and-check as a tie-break** when two independent passes disagree. Gain was +0.9 points at about 4,300 tokens per item. | S7 select | [S] | K29, K27; d20, c23 |
-| B6 | **Premise reordering into dependency order.** Order matters 20 to over 40 points; no reorder step has been tested. | S1 | [S] | K28; c32, d32 |
-| B7 | **Complexity-scaled checking.** Belief gains ground on complex problems in humans. Scale the check with item complexity. | S0, G12 | [S] | K32, K15; d33 |
-| B8 | **Thinking-budget sweep on belief items with congruent controls.** Only two-level contrasts exist. | S3, G11, G12 | [S] | K15; d13, d24 |
-| B9 | **Deontic rewrite**: restate an indicative rule as an obligation or prohibition before testing. Large LLM deontic gaps exist, but they are confounded with wording and format. | S1, O6 | [S] | K14, K22; a28, d02, d26 |
+| B1 | **Violation-naming restatement vs "be logical" vs CoT vs plain**, equal tokens, congruent and incongruent items. Human support is strong; LLM support is one errors-only test. | S1, O | [S] | A01.03-K19 [E] human, A01.03-K20 [S]; d14, d29, d11, d12 |
+| B2 | **Rule typing before the violation step.** Sort the rule as descriptive (test truth, look for counterexample) or prescriptive (look for violators) and apply the step only to prescriptive or exchange-like rules. Not tested anywhere; violation framing helps only some rule types. | S1 | [S] | A01.03-K24, a08, a10, d17 |
+| B3 | **Hidden-side enumeration and falsifier search.** "For each case, what could be on the other side; which case would show the rule false." Human gain modest; relevance gains large (57 vs 5). | O (enumerate), S7 counterexample | [S] | A01.03-K10, A01.03-K23; b11, d10, b09 |
+| B4 | **Form extraction (canonical form or placeholders, then map back).** Contested: big gain for small and mid models, about 2 points for strong ones, can hurt small models with prompts only. | O6 change representation | [C] | A01.03-K18, A01.03-K39, A01.03-K26; d19, d21, d22, d15, c06 |
+| B5 | **Formalise-and-check as a tie-break** when two independent passes disagree. Gain was +0.9 points at about 4,300 tokens per item. | S7 select | [S] | A01.03-K29, A01.03-K27; d20, c23 |
+| B6 | **Premise reordering into dependency order.** Order matters 20 to over 40 points; no reorder step has been tested. | S1 | [S] | A01.03-K28; c32, d32 |
+| B7 | **Complexity-scaled checking.** Belief gains ground on complex problems in humans. Scale the check with item complexity. | S0, G12 | [S] | A01.03-K32, A01.03-K15; d33 |
+| B8 | **Thinking-budget sweep on belief items with congruent controls.** Only two-level contrasts exist. | S3, G11, G12 | [S] | A01.03-K15; d13, d24 |
+| B9 | **Deontic rewrite**: restate an indicative rule as an obligation or prohibition before testing. Large LLM deontic gaps exist, but they are confounded with wording and format. | S1, O6 | [S] | A01.03-K14, A01.03-K22; a28, d02, d26 |
 | B10 | **Consistency over repeated runs as the doubt signal.** Content-driven low confidence is not an error signal on valid-unbelievable items. | G1, G4 | [S] | a21, c13 |
 
 ### 7.3 Do not take
 
-Representation steering, SFT, and the Bertolazzi/Valentino/Maraia methods (K13, K38, K18): they need weights. Human "ability moderation" (K17) until the full paper is read. The 5-factor cheater result (K03 factors) as a design target (single source).
+Representation steering, SFT, and the Bertolazzi/Valentino/Maraia methods (A01.03-K13, A01.03-K38, A01.03-K18): they need weights. Human "ability moderation" (A01.03-K17) until the full paper is read. The 5-factor cheater result (A01.03-K03 factors) as a design target (single source).
 
 ---
 
@@ -310,9 +310,9 @@ Common rules. Use the `bench` harness. Each test has arms at equal total tokens 
 - Items: 40 abstract conditional-test (Wason-style) items, written as 4 polarity patterns x 10 contents (abstract, arbitrary-but-concrete, realistic-neutral, deontic). Add 100 syllogisms congruent and 100 incongruent (valid x believable cells balanced).
 - Arms (same token budget, matched by padding or by capping): plain; "be logical" instruction; CoT; violation-naming restatement (name the violating case, whose violation, what is needed vs enough) with a short answer; the restatement plus CoT.
 - Metric: exact card set (Wason); accuracy and CE = acc(congruent) - acc(incongruent) (syllogisms).
-- Expected: human data say +30 to +50 points on abstract rules (d11, d29). For a frontier model, little headroom (K30). The restatement arm should beat "be logical" on abstract Wason items and tie CoT at fewer tokens (d14: 76 vs 87). If it does not beat "be logical", drop A8.
+- Expected: human data say +30 to +50 points on abstract rules (d11, d29). For a frontier model, little headroom (A01.03-K30). The restatement arm should beat "be logical" on abstract Wason items and tie CoT at fewer tokens (d14: 76 vs 87). If it does not beat "be logical", drop A8.
 
-**T2. 2x2 content x modal word (B9, K22).**
+**T2. 2x2 content x modal word (B9, A01.03-K22).**
 - Items: the same four-card logic written as norm content vs arbitrary content, each with "must / must not" or plain "is / is not", plus one cell that changes only the final question (look for violations vs test the rule), plus a switched-contract item and a "may" rule. 20 problems per cell.
 - Arms: plain; CoT.
 - Metric: exact card set; matching-bias rate (cards named in the rule).
@@ -362,13 +362,13 @@ Common rules. Use the `bench` harness. Each test has arms at equal total tokens 
 ## 9. What does not transfer, and why
 
 - **Evolutionary claims** (domain-specific modules for cheating, hazards) concern human adaptation. A language model has no such history; the cheater result can be re-read as a question-reading effect (b03). We use only the practical part: state the goal and the party.
-- **Cheater, contract and social factors** (benefit, intention, ability, K03) were measured with n=25 per cell by one lab. No LLM test exists (c35). Do not code them.
+- **Cheater, contract and social factors** (benefit, intention, ability, A01.03-K03) were measured with n=25 per cell by one lab. No LLM test exists (c35). Do not code them.
 - **Permission schema production rules** are equivalent to the logical answer for "must" rules. They do not add a new operator beyond "find the violating cases" (4.1).
 - **Human response-time effects** (slow responders) do not map to token count one to one (a22). In LLMs, adding tokens did not remove the gap in the one mid-size contrast (Qwen3-Next Thinking, d01).
 - **Student sample sizes and tasks.** Most human cells are 17 to 35 people (critique). Effect sizes are suggestive, not planning numbers.
 - **Old-model LLM results.** Chinchilla, PaLM 2, GPT-3.5, Llama 2 and 7B models (a20, c14, b17) were scored by log-probability. Current reasoning models are near ceiling on deontic Wason (97.5 to 100, a28) and near zero belief gap at the top (d01). The content effect on current frontier models on classic tasks may be small; the practical risk has moved to mid-size models and to messy real tasks.
-- **Weight-level methods** (steering, SFT, circuit edits) cannot run through an API (K13, K38).
-- **Absolute scores** across papers cannot be compared: scoring, languages, prompts and item sets differ (K41). BIS is Japanese, valid-unbelievable only. SemEval scores are participant-reported under different prompts (d23).
+- **Weight-level methods** (steering, SFT, circuit edits) cannot run through an API (A01.03-K13, A01.03-K38).
+- **Absolute scores** across papers cannot be compared: scoring, languages, prompts and item sets differ (A01.03-K41). BIS is Japanese, valid-unbelievable only. SemEval scores are participant-reported under different prompts (d23).
 - **Math and logic benchmarks** (GSM-Symbolic, PrOntoQA, FOLIO) are form-sensitivity tests, not human-style belief effects. They support the rename-and-recheck test but not a claim of human-like bias.
 - **Self-reported reasoning.** Reasoning and final answer can disagree (c13); G10 says decide from outputs.
 - **Human "think harder" instructions.** "Judge only logic" left a conflict cost (d33); the schema already says not to add careful-thinking prompts (4b). Only wording that names the violation or "necessarily follows" is a candidate.
@@ -379,18 +379,18 @@ Common rules. Use the `bench` harness. Each test has arms at equal total tokens 
 
 Ordered by value (from the critique's second pass, with additions).
 
-1. Does a violation-naming restatement beat plain CoT and a "be logical" control at equal tokens on current LLMs? No equal-token test exists (K20, K30). This is the one run that would change the schema.
-2. Is the LLM deontic advantage content, the word "must", or format? Needs the 2x2 plus a question-only cell and a switched-contract item (K22). Seals and Shalin did not vary the modal word.
-3. Does the belief gap shrink with thinking budget on one mid-size model, with congruent controls? Only two-level contrasts exist (K15).
-4. What are the Ragni et al. 2018 Table 4 effect sizes, and do relevance manipulations transfer to LLMs? Paywalled; three searches found no LLM study (K23).
+1. Does a violation-naming restatement beat plain CoT and a "be logical" control at equal tokens on current LLMs? No equal-token test exists (A01.03-K20, A01.03-K30). This is the one run that would change the schema.
+2. Is the LLM deontic advantage content, the word "must", or format? Needs the 2x2 plus a question-only cell and a switched-contract item (A01.03-K22). Seals and Shalin did not vary the modal word.
+3. Does the belief gap shrink with thinking budget on one mid-size model, with congruent controls? Only two-level contrasts exist (A01.03-K15).
+4. What are the Ragni et al. 2018 Table 4 effect sizes, and do relevance manipulations transfer to LLMs? Paywalled; three searches found no LLM study (A01.03-K23).
 5. What did Cheng and Holyoak 1985 (N per cell), Cosmides and Tooby 1992, Platt and Griggs 1993, Fiddick and Rutherford 2006 and Stanovich and West 1998 actually report? Not read.
-6. Is "abstract, solve, map back" worth its tokens against plain CoT on current models? QuaSAR and Step-Back give small gains and no token counts (K26).
-7. Is there any evidence that sorting rules as descriptive or prescriptive before reasoning helps, in humans or models? None found (K24).
+6. Is "abstract, solve, map back" worth its tokens against plain CoT on current models? QuaSAR and Step-Back give small gains and no token counts (A01.03-K26).
+7. Is there any evidence that sorting rules as descriptive or prescriptive before reasoning helps, in humans or models? None found (A01.03-K24).
 8. Why does Qwen3-Next Thinking have a +28.0 belief gap while its Instruct sibling is at -7.9 (d01)? One pair of checkpoints, adaptive voting.
 9. Does cognitive ability map to model size or reasoning mode as a moderator? Indirect fit only (d18, d23).
-10. Is the cheater result mostly a question-reading effect? Both camps have data the other explains (K05).
-11. Can a solver beat one strong pass with more thinking at equal tokens? Missing comparison (K29, d20).
-12. Do results hold with free-text output and reasoning models on the classic tasks? Most studies use log-probability or exact-match with fixed formats (K41).
+10. Is the cheater result mostly a question-reading effect? Both camps have data the other explains (A01.03-K05).
+11. Can a solver beat one strong pass with more thinking at equal tokens? Missing comparison (A01.03-K29, d20).
+12. Do results hold with free-text output and reasoning models on the classic tasks? Most studies use log-probability or exact-match with fixed formats (A01.03-K41).
 13. Duplicate-number caution: ITLC Table 1 "syllogism notation" (98.95 / 2.13 / 46.23) equals the Proofbusters official row; count as one source until clarified (critique).
 
 ---

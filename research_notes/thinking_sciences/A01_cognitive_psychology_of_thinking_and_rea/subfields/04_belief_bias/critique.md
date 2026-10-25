@@ -38,7 +38,7 @@
 9. Does a conflict flag (prior belief versus derived verdict) predict LLM errors well enough to route extra verification?
 10. How does belief strength (graded plausibility) predict LLM error rate, and does it show the human dose-response (b19)?
 
-## Gap search results (evidence_d.jsonl, d01-d20; claims K19-K27 added, K16 now contested)
+## Gap search results (evidence_d.jsonl, d01-d20; claims A01.04-K19-A01.04-K27 added, A01.04-K16 now contested)
 Search note: WebSearch quota ran out after about 10 calls; I continued with the arXiv API, OpenAlex and direct PDF downloads. The Semantic Scholar API was rate limited. Several human-literature PDFs (Evans 1983, Evans and Curtis-Holmes 2005, Newstead 1992, Evans 2001) were not obtainable, so those stay abstract-level.
 
 1. Frontier content effect, plain prompt: PARTLY CLOSED. Recent strong models (Gemini 2.5 Pro/Flash, GPT-OSS-20B, GLM-4.6) show only +0.8 to +1.9 pp congruent-minus-incongruent on easy syllogisms; Kimi-K2 and DeepSeek V3.1 about +7.5 to +7.9 (d01). Those are ceiling accuracy differences, not d-prime. The only SDT-style numbers are mine, from GPT-4 (2023) cells in BaRDa: d' 1.21 vs 1.96 and criterion -0.81 vs +0.30 (d05). No current Claude model was tested anywhere I found; Claude-3 models appear only on a valid-only benchmark (d03). Still open for a proper d-prime run on hard items.
@@ -54,7 +54,7 @@ Search note: WebSearch quota ran out after about 10 calls; I continued with the 
 
 New cautions: (a) accuracy-gap metrics at 99% ceiling hide the bias; (b) valid-only benchmarks (BIS) cannot separate skill from a response-criterion shift; (c) the Poddar, FregeLogic and SemEval numbers are preprints tuned on small sets.
 
-## Gap search results, second pass (evidence_d.jsonl d21-d30; claims K26 resolved, K28-K31 added)
+## Gap search results, second pass (evidence_d.jsonl d21-d30; claims A01.04-K26 resolved, A01.04-K28-A01.04-K31 added)
 Search note: WebSearch worked for about eight queries; arXiv API and OpenAlex covered the rest. Evans and Curtis-Holmes 2005, Newstead 1992 and Evans 2001 still have no open PDF.
 
 CLOSED

@@ -4,7 +4,7 @@ Subfield: reasoning by building models of possibilities (Johnson-Laird, Byrne, K
 Parent field: A01, cognitive psychology of thinking and reasoning.
 Written for the single-agent thinking schema (`research_notes/single_agent/SCHEMA.md`, v0.2).
 Built only from the evidence files in this folder: `evidence_a-d.jsonl` (a01-a27, b01-b29, c01-c32, d01-d28),
-`claims.jsonl` (K01-K33) and `critique.md`. Evidence ids are given in brackets, for example [a04]. Claim ids are K-numbers.
+`claims.jsonl` (A01.01-K01-A01.01-K33) and `critique.md`. Evidence ids are given in brackets, for example [a04]. Claim ids are K-numbers.
 
 Status marks used here: **[E]** established, **[S]** single source, **[C]** contested. A claim marked [E] can still be
 established for people only. Where this matters it is said in the text.
@@ -114,41 +114,41 @@ Status is the claims-file status (K-number). "Human only" means no LLM test exis
 
 | # | Finding | Numbers | Source | Status |
 |---|---|---|---|---|
-| 1 | Probability illusion, cards (Exp 1) | N=24 Princeton. Controls 71% correct, illusions 17%. 20 of 24 better on controls, 2 ties, p<.001. 21 of 24 picked an impossible card at least once | Johnson-Laird and Savary 1996 [a02] | K01 [E], human |
-| 2 | Probability illusions across connectives (Exp 2) | N=20. Illusions 13% correct, controls 64% (T=1, n=18, p<<.005). 17 of 20 worse on illusions. Two-model controls 52% vs one-model 83%. Only 56% of illusion responses matched the exact prediction | 1996 [a03] | K01 [E], human |
-| 3 | Core illusion, conditionals | N=16. 100% of conclusions on illusions were the predicted invalid one. Controls 88% and 100%. Confidence 4.4 vs 4.3 of 5. All 16 better on controls | Johnson-Laird and Savary 1999 Exp 1 [a04, b01] | K01, K02 [E] |
-| 4 | Same, web sample | N=20. 15 of 20 gave the illusory "there is an ace", 5 said indeterminate. 15 right on control | 1999 Exp 2 [b03] | K01 [E] |
-| 5 | Illusion without conditionals | N=40. Illusion 1: 85% fallacy. Illusions 3 and 4: 63% and 68%. Control 98% correct. 33 of 40 drew an illusory conclusion and passed control | 1999 Exp 3 [b04] | K01 [E] |
-| 6 | Modal illusions | N=20 (Exp 1). Controls 91%, illusions 15%. Exp 2: controls 79%, illusions 22%. Confidence 4.17 vs 4.24 | Goldvarg and Johnson-Laird 2000 [d03, d04] | K01, K02 [E] |
-| 7 | Quantified illusions | N=20 each. Controls 90% vs illusions 54% (Exp 1); 93% vs 51% (Exp 2). Illusions of impossibility much weaker (about 54% pooled) | Yang and Johnson-Laird 2000a [a06, b08] | K01 [E], human |
-| 8 | Embedded disjunction illusions | Exp 1 N=18: illusions 17% and 22% correct, controls 100% and 78%. Exp 2: controls 95%, illusions 19%. Exp 3 (yes/no format): controls 81%, illusions 63% | Khemlani and Johnson-Laird 2008/2009 [a08, b06, d07] | K01 [E] |
-| 9 | Conditional illusion replicated, Spanish lab | N=80. Controls 83% vs illusions 6% correct (z=7.82, r=.87). Illusory answer "ace" 69% (if-then); "only if" shifts to "may or may not" 64%. Confidence 3.9 vs 4.0. Exp 3: 68% vs 30% (r=.64) | Espino et al. 2024 [d08] | K01 [E], partly independent |
-| 10 | Disjunction illusion replicated, independent lab (Paris) | Exp 1 analysed N=64: valid control accepted 87%, invalid control 26%; link strength predicts target acceptance (slope .97, R2=.9, 7 items). Exp 2 N=70: 90% and 20%; slope .69, R2=.58 | Sable-Meyer and Mascarenhas 2021 [d24] | K01, K32 [E] |
-| 11 | Confidence does not flag illusions | 4.4 vs 4.3 (5-pt); 4.17 vs 4.24; 3.9 vs 4.0; 5.45-6.26 of 7, no reliable differences | [a04, d03, d04, d07, d08] | K02 [E], human only |
-| 12 | Illusion size depends on framing and format | Physical vs logical disjunctions 84% vs 19% correct; yes/no format 63% vs 19% in open choice; co-reference: illusions 10% vs controls 78% (N=35) | Santamaria and JL 2000, K&JL 2009, Walsh and JL 2004 [d06, d07, d09] | K20 [S] |
-| 13 | Prose warning or rubric does not remove illusions | Tricky-warning slowed people, fallacies stayed (no counts). Rubric "one true, one false": 15/20 still fell | [a05, b02, b03] | K03 [S] |
-| 14 | Two-case procedure helps but costs | One-case: illusions 33 to 65%, controls 93 to 79% (z=3.27, 2.31). Two-case: illusions 39 to 71%, controls 87 to 72% (z=3.72, 1.99); gap gone (z=0.44) | Yang and JL 2000b [a07, b09, b10, d05] | K04 [C], K21 [S] |
-| 15 | Check instruction in modal task | Exp 3 N=20 in two groups. Second half, illusions: help 71%, no help 30% (U=10, p<.002). Possibility illusions 0% to 57% in the help group | Goldvarg and JL 2000 [d04] | K03 [S] |
-| 16 | Embedded-disjunction instruction | Group difference n.s. (z=1.7, p=.09); gap smaller when instructed (z=2.2, p<.05). Gap 34 vs 79 points in block 2 | [b07, d07] | K03 [S] |
-| 17 | Model count drives difficulty (syllogisms) | One-model 80% vs multiple-model 21% vs no-valid-conclusion 50% (N=20) | Bucciarelli and JL 1999 [a17] | K05 [E] |
-| 18 | Model count (set membership) | 92% vs 51% (z=3.21, Cliff's delta .56); only one-vs-multiple was a significant predictor (b=3.31, SE .42) | Khemlani, Lotstein, JL 2014 [a24] | K05 [E] |
-| 19 | Model count (relations) | Transitive 98%, pseudo-transitive 72%, non-transitive 8%. Second-order 84% vs third-order 56% (z=3.00). Shallow vs deep 91% vs 93% | Goodwin and JL 2005 [a19] | K05 [E] |
-| 20 | Exception: embedded disjunctions | 3-model illusions 17-22% correct; 4-model controls 78-100% | [a09] | K05 boundary |
-| 21 | Refuting conclusions with cut-outs | 19 people. Correct refutation 59%, correct "cannot refute" 71%. One-model 71%, multiple-model 70%, no-valid-conclusion 50% | Bucciarelli and JL 1999 Exp 3 [a18] | K06 [E] |
-| 22 | Syllogism theories meta-analysis | 6 datasets, N=156. Hits: mental models 95%, verbal 63%. Correct rejections: conversion 93%, verbal 90%, mental models 74%. Overall: verbal 84%, mental models 78%. Model-based 76% vs heuristic 66%. Verbal I2=52% | Khemlani and JL 2012 [a15, b15] | K08 [C] |
-| 23 | Syllogism difficulty is stable | Kendall's W=.86 (27 valid), .64 (37 invalid) over six studies. Easiest valid 90%, hardest valid 1%. Easiest invalid 76%, hardest 12%. Entropy vs accuracy r=-.52 | [a16] | K07 [E] |
-| 24 | mReasoner fit | Aggregate r=.80, RMSE=.13 (meta-analysis fit r=.82 in 2016). Individuals: mean best fit r=.70. Groups r=.78, .83, .91. Poor group size 2.0, search .4; best group size 4.5, search .8, reconclude .6. Kendall W=.28, p=.33 for parameter concordance. Set membership: search .58, R2=.75 | [a22, a23, b16, b17, d18, a24] | K09 [S], in-sample |
-| 25 | Practice gain, small retest | N=20. 58% to 68%, 19 of 20 improved, 27.5 changes per person, 95.9% kept polarity | Ragni et al. 2018 [b18] | K10 [C] |
-| 26 | Practice gain, larger retest | N=100. Overall 50.1% to 52.7%. Valid 55.5% to 60.3%, invalid 46.1% to 47.2%. Slope significant only for valid items in session 1; fewer NVC answers | Dames, Klauer, Ragni 2021 [b19, d10] | K10 [C] |
-| 27 | Conditional suppression | N=24 (8 per group). Modus ponens 96% simple vs 38% additional requirement; modus tollens 92% vs 33%; denial of antecedent 46% vs 4% (alternative); affirmation of consequent 71% vs 13% | Byrne 1989 [a20] | K11 [S] |
-| 28 | Conditional meta-analysis | 39 experiments, 15 studies, 2378 people. Patterns more redundant than 10,000 independent-choice simulations | Ragni, Dames, JL 2019 [b21] | K17 [C] |
-| 29 | Possibility judgments | Exp 1 N=53: 80% of model-theory predictions vs 56% for modal logic K (z=6.1); r2 .99 vs .01. Exp 2 N=51: 83% vs 50%. Exp 3 N=50: where they differ, Yes 89%, No 76% in the theory's favour | Ragni and JL 2018 [a21, b27] (corrected by critique) | K12 [S] |
-| 30 | Naive probability | Biased problems 1.1 of 8 unbiased vs controls 5.6 of 9 (N=25). Subadditivity: "at least A" 60% vs 45%+44%. Unique-event conjunctions violate the joint distribution on 56% of trials (N=39); 34% verbal vs 68% numeric (N=18) | [a12, a13, b26, d19] | K13 [E] |
-| 31 | Selection task meta-analysis | 228 experiments (99 with all 16 selections). Mean informativeness 2.14 bits of 4. Feedback moves choices toward counterexamples | Ragni and Kola 2018 [b20] | K14 [E] |
-| 32 | Counterexample use | Correct rejection 92% (inconsistent) vs 74% (merely consistent). Counterexample use 51% vs 21% | Cited in Johnson-Laird 2010 [a11] | K14 [E], second-hand |
-| 33 | Fluency of valid conclusions | Replicated, then vanished once content was randomised across valid and invalid | Singmann et al. 2014 [b23] | K16 [S], failed replication of a spin-off |
-| 34 | "Model method" training | Reported 95% vs 63%, 15 s vs 24 s after 2 minutes. 2012 text: 65% to 95%, 25 s to 15 s. Unpublished 1999 thesis, no N | [b28, d11] | K15 [C], do not quote |
-| 35 | Spatial models vs plain logic | 4 datasets (N=33, 30, 49, 51). Best model 71.9-79.1%; transitive closure 73.4-75% | Ragni, Brand, Riesterer 2021 [c25] | K29 [S] |
+| 1 | Probability illusion, cards (Exp 1) | N=24 Princeton. Controls 71% correct, illusions 17%. 20 of 24 better on controls, 2 ties, p<.001. 21 of 24 picked an impossible card at least once | Johnson-Laird and Savary 1996 [a02] | A01.01-K01 [E], human |
+| 2 | Probability illusions across connectives (Exp 2) | N=20. Illusions 13% correct, controls 64% (T=1, n=18, p<<.005). 17 of 20 worse on illusions. Two-model controls 52% vs one-model 83%. Only 56% of illusion responses matched the exact prediction | 1996 [a03] | A01.01-K01 [E], human |
+| 3 | Core illusion, conditionals | N=16. 100% of conclusions on illusions were the predicted invalid one. Controls 88% and 100%. Confidence 4.4 vs 4.3 of 5. All 16 better on controls | Johnson-Laird and Savary 1999 Exp 1 [a04, b01] | A01.01-K01, A01.01-K02 [E] |
+| 4 | Same, web sample | N=20. 15 of 20 gave the illusory "there is an ace", 5 said indeterminate. 15 right on control | 1999 Exp 2 [b03] | A01.01-K01 [E] |
+| 5 | Illusion without conditionals | N=40. Illusion 1: 85% fallacy. Illusions 3 and 4: 63% and 68%. Control 98% correct. 33 of 40 drew an illusory conclusion and passed control | 1999 Exp 3 [b04] | A01.01-K01 [E] |
+| 6 | Modal illusions | N=20 (Exp 1). Controls 91%, illusions 15%. Exp 2: controls 79%, illusions 22%. Confidence 4.17 vs 4.24 | Goldvarg and Johnson-Laird 2000 [d03, d04] | A01.01-K01, A01.01-K02 [E] |
+| 7 | Quantified illusions | N=20 each. Controls 90% vs illusions 54% (Exp 1); 93% vs 51% (Exp 2). Illusions of impossibility much weaker (about 54% pooled) | Yang and Johnson-Laird 2000a [a06, b08] | A01.01-K01 [E], human |
+| 8 | Embedded disjunction illusions | Exp 1 N=18: illusions 17% and 22% correct, controls 100% and 78%. Exp 2: controls 95%, illusions 19%. Exp 3 (yes/no format): controls 81%, illusions 63% | Khemlani and Johnson-Laird 2008/2009 [a08, b06, d07] | A01.01-K01 [E] |
+| 9 | Conditional illusion replicated, Spanish lab | N=80. Controls 83% vs illusions 6% correct (z=7.82, r=.87). Illusory answer "ace" 69% (if-then); "only if" shifts to "may or may not" 64%. Confidence 3.9 vs 4.0. Exp 3: 68% vs 30% (r=.64) | Espino et al. 2024 [d08] | A01.01-K01 [E], partly independent |
+| 10 | Disjunction illusion replicated, independent lab (Paris) | Exp 1 analysed N=64: valid control accepted 87%, invalid control 26%; link strength predicts target acceptance (slope .97, R2=.9, 7 items). Exp 2 N=70: 90% and 20%; slope .69, R2=.58 | Sable-Meyer and Mascarenhas 2021 [d24] | A01.01-K01, A01.01-K32 [E] |
+| 11 | Confidence does not flag illusions | 4.4 vs 4.3 (5-pt); 4.17 vs 4.24; 3.9 vs 4.0; 5.45-6.26 of 7, no reliable differences | [a04, d03, d04, d07, d08] | A01.01-K02 [E], human only |
+| 12 | Illusion size depends on framing and format | Physical vs logical disjunctions 84% vs 19% correct; yes/no format 63% vs 19% in open choice; co-reference: illusions 10% vs controls 78% (N=35) | Santamaria and JL 2000, K&JL 2009, Walsh and JL 2004 [d06, d07, d09] | A01.01-K20 [S] |
+| 13 | Prose warning or rubric does not remove illusions | Tricky-warning slowed people, fallacies stayed (no counts). Rubric "one true, one false": 15/20 still fell | [a05, b02, b03] | A01.01-K03 [S] |
+| 14 | Two-case procedure helps but costs | One-case: illusions 33 to 65%, controls 93 to 79% (z=3.27, 2.31). Two-case: illusions 39 to 71%, controls 87 to 72% (z=3.72, 1.99); gap gone (z=0.44) | Yang and JL 2000b [a07, b09, b10, d05] | A01.01-K04 [C], A01.01-K21 [S] |
+| 15 | Check instruction in modal task | Exp 3 N=20 in two groups. Second half, illusions: help 71%, no help 30% (U=10, p<.002). Possibility illusions 0% to 57% in the help group | Goldvarg and JL 2000 [d04] | A01.01-K03 [S] |
+| 16 | Embedded-disjunction instruction | Group difference n.s. (z=1.7, p=.09); gap smaller when instructed (z=2.2, p<.05). Gap 34 vs 79 points in block 2 | [b07, d07] | A01.01-K03 [S] |
+| 17 | Model count drives difficulty (syllogisms) | One-model 80% vs multiple-model 21% vs no-valid-conclusion 50% (N=20) | Bucciarelli and JL 1999 [a17] | A01.01-K05 [E] |
+| 18 | Model count (set membership) | 92% vs 51% (z=3.21, Cliff's delta .56); only one-vs-multiple was a significant predictor (b=3.31, SE .42) | Khemlani, Lotstein, JL 2014 [a24] | A01.01-K05 [E] |
+| 19 | Model count (relations) | Transitive 98%, pseudo-transitive 72%, non-transitive 8%. Second-order 84% vs third-order 56% (z=3.00). Shallow vs deep 91% vs 93% | Goodwin and JL 2005 [a19] | A01.01-K05 [E] |
+| 20 | Exception: embedded disjunctions | 3-model illusions 17-22% correct; 4-model controls 78-100% | [a09] | A01.01-K05 boundary |
+| 21 | Refuting conclusions with cut-outs | 19 people. Correct refutation 59%, correct "cannot refute" 71%. One-model 71%, multiple-model 70%, no-valid-conclusion 50% | Bucciarelli and JL 1999 Exp 3 [a18] | A01.01-K06 [E] |
+| 22 | Syllogism theories meta-analysis | 6 datasets, N=156. Hits: mental models 95%, verbal 63%. Correct rejections: conversion 93%, verbal 90%, mental models 74%. Overall: verbal 84%, mental models 78%. Model-based 76% vs heuristic 66%. Verbal I2=52% | Khemlani and JL 2012 [a15, b15] | A01.01-K08 [C] |
+| 23 | Syllogism difficulty is stable | Kendall's W=.86 (27 valid), .64 (37 invalid) over six studies. Easiest valid 90%, hardest valid 1%. Easiest invalid 76%, hardest 12%. Entropy vs accuracy r=-.52 | [a16] | A01.01-K07 [E] |
+| 24 | mReasoner fit | Aggregate r=.80, RMSE=.13 (meta-analysis fit r=.82 in 2016). Individuals: mean best fit r=.70. Groups r=.78, .83, .91. Poor group size 2.0, search .4; best group size 4.5, search .8, reconclude .6. Kendall W=.28, p=.33 for parameter concordance. Set membership: search .58, R2=.75 | [a22, a23, b16, b17, d18, a24] | A01.01-K09 [S], in-sample |
+| 25 | Practice gain, small retest | N=20. 58% to 68%, 19 of 20 improved, 27.5 changes per person, 95.9% kept polarity | Ragni et al. 2018 [b18] | A01.01-K10 [C] |
+| 26 | Practice gain, larger retest | N=100. Overall 50.1% to 52.7%. Valid 55.5% to 60.3%, invalid 46.1% to 47.2%. Slope significant only for valid items in session 1; fewer NVC answers | Dames, Klauer, Ragni 2021 [b19, d10] | A01.01-K10 [C] |
+| 27 | Conditional suppression | N=24 (8 per group). Modus ponens 96% simple vs 38% additional requirement; modus tollens 92% vs 33%; denial of antecedent 46% vs 4% (alternative); affirmation of consequent 71% vs 13% | Byrne 1989 [a20] | A01.01-K11 [S] |
+| 28 | Conditional meta-analysis | 39 experiments, 15 studies, 2378 people. Patterns more redundant than 10,000 independent-choice simulations | Ragni, Dames, JL 2019 [b21] | A01.01-K17 [C] |
+| 29 | Possibility judgments | Exp 1 N=53: 80% of model-theory predictions vs 56% for modal logic K (z=6.1); r2 .99 vs .01. Exp 2 N=51: 83% vs 50%. Exp 3 N=50: where they differ, Yes 89%, No 76% in the theory's favour | Ragni and JL 2018 [a21, b27] (corrected by critique) | A01.01-K12 [S] |
+| 30 | Naive probability | Biased problems 1.1 of 8 unbiased vs controls 5.6 of 9 (N=25). Subadditivity: "at least A" 60% vs 45%+44%. Unique-event conjunctions violate the joint distribution on 56% of trials (N=39); 34% verbal vs 68% numeric (N=18) | [a12, a13, b26, d19] | A01.01-K13 [E] |
+| 31 | Selection task meta-analysis | 228 experiments (99 with all 16 selections). Mean informativeness 2.14 bits of 4. Feedback moves choices toward counterexamples | Ragni and Kola 2018 [b20] | A01.01-K14 [E] |
+| 32 | Counterexample use | Correct rejection 92% (inconsistent) vs 74% (merely consistent). Counterexample use 51% vs 21% | Cited in Johnson-Laird 2010 [a11] | A01.01-K14 [E], second-hand |
+| 33 | Fluency of valid conclusions | Replicated, then vanished once content was randomised across valid and invalid | Singmann et al. 2014 [b23] | A01.01-K16 [S], failed replication of a spin-off |
+| 34 | "Model method" training | Reported 95% vs 63%, 15 s vs 24 s after 2 minutes. 2012 text: 65% to 95%, 25 s to 15 s. Unpublished 1999 thesis, no N | [b28, d11] | A01.01-K15 [C], do not quote |
+| 35 | Spatial models vs plain logic | 4 datasets (N=33, 30, 49, 51). Best model 71.9-79.1%; transitive closure 73.4-75% | Ragni, Brand, Riesterer 2021 [c25] | A01.01-K29 [S] |
 
 Corrections carried over from the critique: the "89% yes, 76% no" modal figures belong to Exp 3, not Exp 2; Exp 2 N is 51, not 50;
 for Khemlani and Johnson-Laird do not quote a single "instructed accuracy" number from the 2008 version, use the 2009 text [d07];
@@ -263,17 +263,17 @@ built a counter-model for every invalid one, and handled 3 to 12 terms (up to ab
   but that is the authors' claim, and the 128-person study it cites is the authors' own. Espino et al. are only partly independent (they worked with the same network); Sable-Meyer and Mascarenhas
   are independent but favour a rival account. Tabossi, Rips, Walsh and Koralus originals were not read in full. No meta-analysis of illusions exists in our set.
 - **Syllogism difficulty is stable** across six studies (W=.86 and .64) [a16].
-- **Confidence fails to flag illusions** in three labs (K02).
-- **Model-count difficulty** in syllogisms, set membership and relations (K05), all from one network.
+- **Confidence fails to flag illusions** in three labs (A01.01-K02).
+- **Model-count difficulty** in syllogisms, set membership and relations (A01.01-K05), all from one network.
 
 ### 5.2 Failures, moderators and boundary conditions
 
-- **The model-theory program over-predicts.** Hits 95% but correct rejections 74%. No theory is adequate [a15, K08].
+- **The model-theory program over-predicts.** Hits 95% but correct rejections 74%. No theory is adequate [a15, A01.01-K08].
 - **Not every predicted illusion works.** Illusions of impossibility were near 54% pooled and vary by item [a06]. An inclusive-inclusive embedded disjunction illusion was weak (58% correct) [b06].
   Only 56% of illusion responses matched the exact model prediction in one study [a03]. The theory predicts direction better than each answer.
 - **Framing.** Physical disjunctions 84% correct vs logical 19% [d06]. Response format: 63% with yes/no vs 19% in open choice [d07]. Co-reference changes rates (10% vs 78%) [d09].
-  Human results are not one number (K20).
-- **Practice effects.** Small retest: 58 to 68%. Larger retest: gain only on valid items inside session 1, fewer NVC answers, so possibly a response-bias shift rather than deeper checking [b18, b19, d10]. Contested (K10).
+  Human results are not one number (A01.01-K20).
+- **Practice effects.** Small retest: 58 to 68%. Larger retest: gain only on valid items inside session 1, fewer NVC answers, so possibly a response-bias shift rather than deeper checking [b18, b19, d10]. Contested (A01.01-K10).
 - **Failed replication of a spin-off.** The claim that valid conclusions feel more fluent vanished when conclusion content was randomised [b23].
 - **Rival explanation for related effects.** Matching heuristics produce the apparent intuitive-logic effect and go below chance when matching and logic disagree (N=409, four experiments) [d25].
   Knowledge links, not only word overlap, drive the disjunction illusion [d24].
@@ -284,18 +284,18 @@ built a counter-model for every invalid one, and handled 3 to 12 terms (up to ab
 
 | Intervention | Result | Status |
 |---|---|---|
-| Generic warning ("beware, tricky") | Slowed people down, fallacies stayed (no counts) [a05, b02] | not effective, K03 [S] |
+| Generic warning ("beware, tricky") | Slowed people down, fallacies stayed (no counts) [a05, b02] | not effective, A01.01-K03 [S] |
 | Explicit rubric "one is true, one is false" | 15 of 20 still fell for the illusion [b03] | not effective |
-| Check one premise at a time (modal) | Illusions 30% to 71% second half, overall still far from ideal; possibility illusions 57% [d04] | partial, K03 [S] |
+| Check one premise at a time (modal) | Illusions 30% to 71% second half, overall still far from ideal; possibility illusions 57% [d04] | partial, A01.01-K03 [S] |
 | One-case instruction (quantified) | Illusions 33 to 65%, controls 93 to 79% [a07, b09] | partial, with a cost |
-| Two-case instruction (quantified) | Illusions 39 to 71%, controls 87 to 72%; gap gone; 29% error remains [b10, d05] | partial, with a cost, K04 [C], K21 [S] |
+| Two-case instruction (quantified) | Illusions 39 to 71%, controls 87 to 72%; gap gone; 29% error remains [b10, d05] | partial, with a cost, A01.01-K04 [C], A01.01-K21 [S] |
 | Instruction for embedded disjunctions | Group difference n.s. (p=.09), gap shrank (p<.05) [b07, d07] | weak |
-| Reframe to physical objects | Illusion accuracy 19% to 84% [d06] | strong but changes content, K20 [S] |
+| Reframe to physical objects | Illusion accuracy 19% to 84% [d06] | strong but changes content, A01.01-K20 [S] |
 | Yes/no response format | 19% to 63% correct [d07] | format effect |
-| Feedback in selection task | Choices move toward counterexamples [b20] | K14 [E] |
+| Feedback in selection task | Choices move toward counterexamples [b20] | A01.01-K14 [E] |
 | Concrete integer cases ("out of 10 chances") | 53% vs 8% [a14, d21] | second-hand, do not quote |
 | "Model method" | 95% vs 63% [b28, d11] | unverified, do not quote |
-| Practice, no feedback | small gains, maybe bias shift [b18, b19, d10] | K10 [C] |
+| Practice, no feedback | small gains, maybe bias shift [b18, b19, d10] | A01.01-K10 [C] |
 
 Pattern: instructions that change the procedure help partly and cost accuracy on easy items. Generic warnings do nothing. Reframing the content works best but is not general.
 
@@ -312,7 +312,7 @@ Pattern: instructions that change the procedure help partly and cost accuracy on
   The atmosphere heuristic predicts 92.31% of correct valid answers and 82.97% (invalid) / 62.79% (valid) of errors. In-context examples did not teach "nothing follows" and made models more self-contradictory;
   supervised fine-tuning fixed it (near ceiling, 0.31% contradictory) [a27, b24, c06, d13]. Fine-tuning is training, so out of scope for us.
   More premises lowers zero-shot CoT accuracy [c06].
-- **Existential import.** Larger and "thinking" models drift toward modern logic (abstract-level) [d15]. The answer key must state the convention (K23).
+- **Existential import.** Larger and "thinking" models drift toward modern logic (abstract-level) [d15]. The answer key must state the convention (A01.01-K23).
 - **Belief bias in 2025 models.** 14 models, 160 items, validity judgement task: mean belief bias +10.81 pp (p=.028, d=0.66), 12 of 14 positive, top models under 2 pp, worst +46.9 pp; correlation of ability and bias -0.565 [d14].
   Ten open models (2025-26): all content effects shrink with chain of thought, all above 89% accuracy [d22]. Open 2024 models lose 8-40% on valid unbelievable items; the largest instruct model does not [d13].
   Human-like content effects appear in Chinchilla, PaLM 2, GPT-3.5 and are stronger on harder tasks [c05].
@@ -349,7 +349,7 @@ Pattern: instructions that change the procedure help partly and cost accuracy on
 
 ### 6.4 Other LLM patterns
 
-- Models do not spontaneously enumerate possibilities. Symbolic (truth-table) strategy is rare. Llama-2-70B reasoned soundly in 31.7% of cases [d16]. Models rarely answer "nothing follows" [K06, K22].
+- Models do not spontaneously enumerate possibilities. Symbolic (truth-table) strategy is rare. Llama-2-70B reasoned soundly in 31.7% of cases [d16]. Models rarely answer "nothing follows" [A01.01-K06, A01.01-K22].
 - Models read premises well (GPT-4 translation to predicate logic 87/90 English, 86/90 Japanese) but fail at the inference step; neutral items are about 30 points harder [c03].
 - Premises that contradict world knowledge cost an average of 14% across 11 models [c22]. Rulebreakers: rigid rule application beats knowledge [c09].
 - LLM probability judgements are incoherent in human-like ways (GPT-4, GPT-3.5, LLaMA-2; 24 event pairs) [d20].
@@ -370,19 +370,19 @@ These are cheap, low-risk, and supported by two or more sources. Most are bench 
 
 | # | Item | Schema part | Status | Evidence | What to do |
 |---|---|---|---|---|---|
-| A1 | Confidence and self-report are not an error signal on the illusion class. Keep doubt triggers in code (G1), not in felt certainty. | G1, G10 | [E] (human). Not tested on LLMs | K02; a04, d03, d04, d07, d08 | Do not use stated confidence as a trigger for the case-table or counterexample step. Note for the S0 gate: do not rely on "model feels sure". |
-| A2 | Add an explicit "no valid conclusion" candidate to S4 harvest, and let code test it. | S4 | [E] that models rarely produce it; the lift from adding it is untested | K06, K22; a17, a18, a26, b24, c01, d12, d13, d16 | Always include "nothing follows" in the candidate list for questions that ask what follows. Count it in the class record (S9). |
-| A3 | Counterexample search is where error drops: keep S7's discriminating test, and widen it so it also fires for conclusions that are consistent with but not entailed by the premises. | S7 | [E] (already in schema); human basis K14 | K14; b20, a11 | Note: a11 is second-hand and b29 was a snippet, so the "two sources" are thin. Keep as is, do not strengthen. |
-| A4 | When code finds a counter-model, pass the concrete counter-model back, not a bare "wrong". | S5, G2 | [E] | K30; c20, c23 | Bare "wrong" feedback gave +9.37 points (gpt-3.5) and +2.62 (gpt-4o) over 10 rounds with 111 and 51 tasks never solved. Concrete failing cases are the working pattern in planning. |
-| A5 | Log the number of models per item as a class feature. | S0, S9, G12 | [E] for humans; LLM curve untested | K05; a17, a24, a19, a09 | Cheap logging only. Do not assume the human curve (21% for multiple-model syllogisms) for our model. |
-| A6 | Probability combination, probability normalising and counting are done in code. | G5 | [E] | K13; a12, a13, b26, d19, d20 | Already in G5. Evidence strengthens it: human violation rates 56% (N=39), LLM identity violations in four models. |
-| A7 | Bench hygiene: fix the answer format and report it; randomise referents and content across valid and invalid; state the existential-import convention in the key; use matched controls on the same premises with a different question. | bench design | [E]/[S] | K16, K20, K23, K32; b23, d07, d06, d09, d15 | Format can move correct rate from 19% to 63% on the same premises. Same-premise, different-question is the right ablation design [b05]. |
-| A8 | Do not use fluency or a sense of validity as a signal. | G10 | [S] (b23) | K16 | Listed here because it is a never-do. Single source but a clean failed replication. |
-| A9 | Do not quote or build on the "model method" 95% vs 63%. | none | [C] | K15; b28, d11 | A no-add note for 4b. |
+| A1 | Confidence and self-report are not an error signal on the illusion class. Keep doubt triggers in code (G1), not in felt certainty. | G1, G10 | [E] (human). Not tested on LLMs | A01.01-K02; a04, d03, d04, d07, d08 | Do not use stated confidence as a trigger for the case-table or counterexample step. Note for the S0 gate: do not rely on "model feels sure". |
+| A2 | Add an explicit "no valid conclusion" candidate to S4 harvest, and let code test it. | S4 | [E] that models rarely produce it; the lift from adding it is untested | A01.01-K06, A01.01-K22; a17, a18, a26, b24, c01, d12, d13, d16 | Always include "nothing follows" in the candidate list for questions that ask what follows. Count it in the class record (S9). |
+| A3 | Counterexample search is where error drops: keep S7's discriminating test, and widen it so it also fires for conclusions that are consistent with but not entailed by the premises. | S7 | [E] (already in schema); human basis A01.01-K14 | A01.01-K14; b20, a11 | Note: a11 is second-hand and b29 was a snippet, so the "two sources" are thin. Keep as is, do not strengthen. |
+| A4 | When code finds a counter-model, pass the concrete counter-model back, not a bare "wrong". | S5, G2 | [E] | A01.01-K30; c20, c23 | Bare "wrong" feedback gave +9.37 points (gpt-3.5) and +2.62 (gpt-4o) over 10 rounds with 111 and 51 tasks never solved. Concrete failing cases are the working pattern in planning. |
+| A5 | Log the number of models per item as a class feature. | S0, S9, G12 | [E] for humans; LLM curve untested | A01.01-K05; a17, a24, a19, a09 | Cheap logging only. Do not assume the human curve (21% for multiple-model syllogisms) for our model. |
+| A6 | Probability combination, probability normalising and counting are done in code. | G5 | [E] | A01.01-K13; a12, a13, b26, d19, d20 | Already in G5. Evidence strengthens it: human violation rates 56% (N=39), LLM identity violations in four models. |
+| A7 | Bench hygiene: fix the answer format and report it; randomise referents and content across valid and invalid; state the existential-import convention in the key; use matched controls on the same premises with a different question. | bench design | [E]/[S] | A01.01-K16, A01.01-K20, A01.01-K23, A01.01-K32; b23, d07, d06, d09, d15 | Format can move correct rate from 19% to 63% on the same premises. Same-premise, different-question is the right ablation design [b05]. |
+| A8 | Do not use fluency or a sense of validity as a signal. | G10 | [S] (b23) | A01.01-K16 | Listed here because it is a never-do. Single source but a clean failed replication. |
+| A9 | Do not quote or build on the "model method" 95% vs 63%. | none | [C] | A01.01-K15; b28, d11 | A no-add note for 4b. |
 | A10 | Scaffold strength must be gated by model strength; heavy scaffolds hurt small models. | G7 | [S] | c21 | Matches G7. Measure the plain baseline each time. |
 
-Candidate additions to schema 4b ("not to add"): (a) generic "beware, this may be a trick" warnings on reasoning items [K03, a05, b02, b03] (note that for GPT-4 a plain control prompt blocked as many
-fallacies as the erotetic prompt [d02]); (b) the 95% model method as a justification; (c) fluency or felt validity as a signal [K16]. Each is single-source or human-only, so they would enter 4b only as [S].
+Candidate additions to schema 4b ("not to add"): (a) generic "beware, this may be a trick" warnings on reasoning items [A01.01-K03, a05, b02, b03] (note that for GPT-4 a plain control prompt blocked as many
+fallacies as the erotetic prompt [d02]); (b) the 95% model method as a justification; (c) fluency or felt validity as a signal [A01.01-K16]. Each is single-source or human-only, so they would enter 4b only as [S].
 
 ### 7.2 Test first
 
@@ -390,16 +390,16 @@ These enter as [S] or [D] with the equal-token test in section 8. None is justif
 
 | # | Item | Schema part | Status | Evidence | Why test first |
 |---|---|---|---|---|---|
-| T1 | **Possibility case table** for "exactly one is true" and disjunction items: code builds the rows (premise i true, others false), the model fills each row, code enumerates and applies the modal readout. | O3, S4, S7 | [C] (K04) | a07, b09, b10, d05, c08, d02, K21 | Human gain 33-65% / 39-71% on illusions at a cost of about 15 points on controls. For LLMs: GPT-3.5 14/17 vs 4/17, GPT-4 7/19 vs 8/19, retested failures only. Code-built version untested. Gate it (G1). |
-| T2 | **Trigger for the table or counterexample search.** Item-structure triggers from code (multiple-model item, "only one is true" rubric, "nothing follows" candidate present, modal wording) versus sample disagreement versus always-on. | G1, S7, O5 | [S] (K09, K31) | a22, d18, d23 | Disagreement triggers beat always-on on math and commonsense (82.1% at 0.592K vs 80.0% at 1.458K) but cannot catch errors that repeat across samples, which is what illusions and syllogism errors do (K02, K07). |
-| T3 | **NVC option plus code counterexample search** on the 64 syllogisms. | S4, S7, O5 | [E] for the gap, [S] for the fix | K06, K22; a26, d12, d13, c06 | No frontier or reasoning-model test. Fix existential import first (K23). |
-| T4 | **Counting table for probability**: code expands the full state table, the model fills cells, code counts. | O3, G5 | [S] (K24) | a12, a13, d20, d19 | LLM incoherence is shown; nobody compared a counting table with sum-to-one normalisation (which already cuts error about 35%, G5). |
-| T5 | **Code-reordered premises**: sort independent premises into a chain before model building. | S1, O2 | effect [E], remedy [S] (K27) | c13, d01, d26, d27 | Effect: drop over 30% in 2023-24 models. No measurement on frontier or reasoning models. d27 order effect is moral, not deduction. Dependent steps cannot be reordered freely. |
-| T6 | **Rulebreaker / knowledge-block check**: "does background knowledge make this rule's conclusion unacceptable?" before applying a formal pattern. | G1, O3 | [S] (K26) | c09 | CoT and symbolic translation helped ordinary items and hurt rulebreakers; a table or form-based step could do the same. Test on both item types. |
-| T7 | **Content swap or flag-and-reason** for belief bias. | S1, G2 | [C] (K18) | d14, d22, c22, a27, b24, c05 | Belief bias is small in top models (under 2 pp) and 8-40% in 2024 open models. Counterexample vs flag-and-reason is untested. |
-| T8 | **Modal check**: before judging "might" and "must" conclusions, list the possibilities each premise allows, then check. | O3 | [S] (K25) | c02, d17, a21 | Nearly all 2024 LLMs accept two invalid modal patterns. Human norm is parsimonious (K12), so define the norm per benchmark. |
-| T9 | **Spatial state table**: write coordinates or the grid after every step, in a table. | O3, memory | [C] (K28) | c12, c10, c11 | VoT gains on some tasks, not on ring navigation; gain in MindCube was small unless trained. |
-| T10 | **Practice and history**: does an in-context history of earlier items change accuracy on held-out items, or only the NVC rate. | memory | [C] (K10) | b18, b19, d10 | Human gain may be only a bias shift. Score valid and invalid items separately. |
+| T1 | **Possibility case table** for "exactly one is true" and disjunction items: code builds the rows (premise i true, others false), the model fills each row, code enumerates and applies the modal readout. | O3, S4, S7 | [C] (A01.01-K04) | a07, b09, b10, d05, c08, d02, A01.01-K21 | Human gain 33-65% / 39-71% on illusions at a cost of about 15 points on controls. For LLMs: GPT-3.5 14/17 vs 4/17, GPT-4 7/19 vs 8/19, retested failures only. Code-built version untested. Gate it (G1). |
+| T2 | **Trigger for the table or counterexample search.** Item-structure triggers from code (multiple-model item, "only one is true" rubric, "nothing follows" candidate present, modal wording) versus sample disagreement versus always-on. | G1, S7, O5 | [S] (A01.01-K09, A01.01-K31) | a22, d18, d23 | Disagreement triggers beat always-on on math and commonsense (82.1% at 0.592K vs 80.0% at 1.458K) but cannot catch errors that repeat across samples, which is what illusions and syllogism errors do (A01.01-K02, A01.01-K07). |
+| T3 | **NVC option plus code counterexample search** on the 64 syllogisms. | S4, S7, O5 | [E] for the gap, [S] for the fix | A01.01-K06, A01.01-K22; a26, d12, d13, c06 | No frontier or reasoning-model test. Fix existential import first (A01.01-K23). |
+| T4 | **Counting table for probability**: code expands the full state table, the model fills cells, code counts. | O3, G5 | [S] (A01.01-K24) | a12, a13, d20, d19 | LLM incoherence is shown; nobody compared a counting table with sum-to-one normalisation (which already cuts error about 35%, G5). |
+| T5 | **Code-reordered premises**: sort independent premises into a chain before model building. | S1, O2 | effect [E], remedy [S] (A01.01-K27) | c13, d01, d26, d27 | Effect: drop over 30% in 2023-24 models. No measurement on frontier or reasoning models. d27 order effect is moral, not deduction. Dependent steps cannot be reordered freely. |
+| T6 | **Rulebreaker / knowledge-block check**: "does background knowledge make this rule's conclusion unacceptable?" before applying a formal pattern. | G1, O3 | [S] (A01.01-K26) | c09 | CoT and symbolic translation helped ordinary items and hurt rulebreakers; a table or form-based step could do the same. Test on both item types. |
+| T7 | **Content swap or flag-and-reason** for belief bias. | S1, G2 | [C] (A01.01-K18) | d14, d22, c22, a27, b24, c05 | Belief bias is small in top models (under 2 pp) and 8-40% in 2024 open models. Counterexample vs flag-and-reason is untested. |
+| T8 | **Modal check**: before judging "might" and "must" conclusions, list the possibilities each premise allows, then check. | O3 | [S] (A01.01-K25) | c02, d17, a21 | Nearly all 2024 LLMs accept two invalid modal patterns. Human norm is parsimonious (A01.01-K12), so define the norm per benchmark. |
+| T9 | **Spatial state table**: write coordinates or the grid after every step, in a table. | O3, memory | [C] (A01.01-K28) | c12, c10, c11 | VoT gains on some tasks, not on ring navigation; gain in MindCube was small unless trained. |
+| T10 | **Practice and history**: does an in-context history of earlier items change accuracy on held-out items, or only the NVC rate. | memory | [C] (A01.01-K10) | b18, b19, d10 | Human gain may be only a bias shift. Score valid and invalid items separately. |
 | T11 | **Harvest-and-test the NVC and weaker conclusion** (mReasoner's "reconclude"): when a counter-model exists, drop to a weaker supported claim. | S7 | [S] | a22, b16 | Parameter value .6 in both extreme groups, so it does not separate good from poor reasoners. |
 
 ---
@@ -410,14 +410,14 @@ General design for every test below: both arms get the **same token budget**, co
 Report accuracy on **both** target items and matched controls, because the human cost of the case-table procedure was on controls. At least 20 items per type (bigger for subgroup claims). Fix and report the answer format.
 Items are built by code so the key is exact. Score "nothing follows" separately.
 
-### Test 1: illusion items with matched controls (decides T1, T2; K33 gaps 1, 2)
+### Test 1: illusion items with matched controls (decides T1, T2; A01.01-K33 gaps 1, 2)
 
 - **Item type.** Code-generated pairs on the same premises, one question that exposes the illusion and one that does not.
   Types: embedded disjunction ("A or else (B or else C)"), conditional pairs ("If K then A, or else if not K then A; K"), quantified, modal ("only one is true; is X possible?"),
-  plus items where matching and logic disagree and items where a knowledge link triggers it (K32, d24, d25).
+  plus items where matching and logic disagree and items where a knowledge link triggers it (A01.01-K32, d24, d25).
 - **Arms.** (a) plain; (b) plain + warning; (c) plain + rubric "one true, one false"; (d) prose case-split ("assume premise 1 true and 2 false, then reverse");
   (e) code-built case table with the model filling each row; (f) (e) fired only on a code trigger.
-- **Metric.** Accuracy on illusions and on controls; the gap; the number of fallacy answers of the predicted kind; stated confidence and sample agreement for right vs wrong answers (K02 test); tokens per item.
+- **Metric.** Accuracy on illusions and on controls; the gap; the number of fallacy answers of the predicted kind; stated confidence and sample agreement for right vs wrong answers (A01.01-K02 test); tokens per item.
 - **Expected effect (hypothesis, not a result).** Arm (c) at or near plain, as in humans and for GPT-4 (8/19 vs 7/19). Arm (e) closes most of the illusion gap, with some control cost.
   Human reference points: illusions 33 to 65% and 39 to 71%, controls down 93 to 79 and 87 to 72. Arm (f) keeps most of the gain and loses less on controls.
   If top models already do well on illusions (the best of 38 models reached 91.7% on disjunction items [d01]), the operator is not needed for those models. Record it and gate it off.
@@ -434,7 +434,7 @@ Items are built by code so the key is exact. Score "nothing follows" separately.
 - **Item type.** Mixed set: illusions, syllogisms, set-membership items, controls.
 - **Arms at equal tokens.** never; always; on sample disagreement; on a code item signal (multiple-model item, "only one is true" rubric, "nothing follows" candidate present).
 - **Metric.** Share of errors each trigger catches; accuracy; tokens.
-- **Expected effect.** Disagreement misses uniform errors (illusions, repeated syllogism fallacies [d23, K07]); the item-signal trigger beats always-on at equal tokens. First check whether errors repeat across fresh samples (K07 test).
+- **Expected effect.** Disagreement misses uniform errors (illusions, repeated syllogism fallacies [d23, A01.01-K07]); the item-signal trigger beats always-on at equal tokens. First check whether errors repeat across fresh samples (A01.01-K07 test).
 
 ### Test 4: counting table for probability (T4; gap 9)
 
@@ -512,16 +512,16 @@ First three tests to run, in this order (from the critique): Test 1, Test 2, Tes
 
 ## 10. Open questions
 
-1. Do current frontier and reasoning LLMs fall for Johnson-Laird's own illusions (propositional, quantified, embedded disjunction, modal) at human rates, with matched controls, and is their confidence or sample agreement uninformative about the errors? Only 2023 chat models and a disjunction-type set exist (K19, K33).
-2. Does a code-built possibility table beat plain and beat a prose warning at equal tokens, and what does it cost on controls (human cost about 15 points)? Include rulebreaker and modal items (K25, K26), where formal structure can hurt.
-3. What should trigger counterexample search for a model? Item-structure signal vs disagreement vs always-on (K09, K31).
-4. Do frontier and reasoning LLMs accept "nothing follows" when it is right, and does an explicit option plus code search lift NVC accuracy without raising false rejections (K06, K23)?
-5. Is the "model method" real? The original data are unavailable (K15).
+1. Do current frontier and reasoning LLMs fall for Johnson-Laird's own illusions (propositional, quantified, embedded disjunction, modal) at human rates, with matched controls, and is their confidence or sample agreement uninformative about the errors? Only 2023 chat models and a disjunction-type set exist (A01.01-K19, A01.01-K33).
+2. Does a code-built possibility table beat plain and beat a prose warning at equal tokens, and what does it cost on controls (human cost about 15 points)? Include rulebreaker and modal items (A01.01-K25, A01.01-K26), where formal structure can hurt.
+3. What should trigger counterexample search for a model? Item-structure signal vs disagreement vs always-on (A01.01-K09, A01.01-K31).
+4. Do frontier and reasoning LLMs accept "nothing follows" when it is right, and does an explicit option plus code search lift NVC accuracy without raising false rejections (A01.01-K06, A01.01-K23)?
+5. Is the "model method" real? The original data are unavailable (A01.01-K15).
 6. Is there an independent replication of illusions with proper pragmatic and item-order controls? Tabossi, Rips, Walsh and Koralus originals were not read in full. Espino et al. 2024 is the only conditional replication.
-7. Is the human practice gain a bias shift or deeper checking, and does in-context history shift only the NVC rate in an LLM (K10)?
-8. Does belief or content bias remain in frontier and reasoning models once forms are fixed, and does counterexample search remove it better than flag-and-reason (K18)?
-9. Does a code counting table fix LLM probability incoherence beyond sum-to-one normalisation (K24)?
-10. Do premise-order drops and rulebreaker failures persist in current frontier models, and does code reordering or checking fix them (K26, K27)?
+7. Is the human practice gain a bias shift or deeper checking, and does in-context history shift only the NVC rate in an LLM (A01.01-K10)?
+8. Does belief or content bias remain in frontier and reasoning models once forms are fixed, and does counterexample search remove it better than flag-and-reason (A01.01-K18)?
+9. Does a code counting table fix LLM probability incoherence beyond sum-to-one normalisation (A01.01-K24)?
+10. Do premise-order drops and rulebreaker failures persist in current frontier models, and does code reordering or checking fix them (A01.01-K26, A01.01-K27)?
 11. Is the LLM illusion partly a surface-matching effect (d25) and partly a representation effect? The two predict different fixes.
 12. Why is the best of 38 models at 91.7% while the mean is 40.6%? What do the best models do, and is it a procedure we can copy?
 13. How should reasoning-model "thinking" be compared to a code-run scaffold on these items (schema slot "thinking-mode baseline")? No study found.

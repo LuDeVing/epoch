@@ -1,6 +1,6 @@
 # Belief bias: deep document
 
-Subfield: accepting believable conclusions over valid ones. Built from `evidence_a-d.jsonl` (a01-a37, b01-b27, c01-c27, d01-d30), `claims.jsonl` (K01-K31) and `critique.md`. Written for the single-agent thinking schema (`research_notes/single_agent/SCHEMA.md`, v0.2).
+Subfield: accepting believable conclusions over valid ones. Built from `evidence_a-d.jsonl` (a01-a37, b01-b27, c01-c27, d01-d30), `claims.jsonl` (A01.04-K01-A01.04-K31) and `critique.md`. Written for the single-agent thinking schema (`research_notes/single_agent/SCHEMA.md`, v0.2).
 
 Marks: **[E]** established, **[S]** single source, **[C]** contested. Source marks: **[V]** opened (full text or page text read), **[M]** snippet or abstract only. Where a "[V]" source was read only through a secondary page, the source list says so.
 
@@ -8,7 +8,7 @@ Marks: **[E]** established, **[S]** single source, **[C]** contested. Source mar
 
 ## 1. What it is
 
-Belief bias is the tendency to judge an argument by whether its conclusion sounds true, not by whether the conclusion follows from the premises. People accept believable conclusions of invalid arguments and reject unbelievable conclusions of valid ones. The classic task is the categorical syllogism with four cells: valid or invalid, crossed with believable or unbelievable conclusion. The robust human finding is that believable-invalid arguments are accepted almost as often as believable-valid ones (66 to 92 percent across the three original experiments). Three questions drive the field. Does belief change reasoning quality or only the willingness to say "valid"? Is the effect a fast default that slow logic must override? Is it concentrated where the logic is inconclusive? Large language models show the same pattern, with a shape that depends on the model generation, the answer format and the amount of reasoning allowed. [K01, K13, K26]
+Belief bias is the tendency to judge an argument by whether its conclusion sounds true, not by whether the conclusion follows from the premises. People accept believable conclusions of invalid arguments and reject unbelievable conclusions of valid ones. The classic task is the categorical syllogism with four cells: valid or invalid, crossed with believable or unbelievable conclusion. The robust human finding is that believable-invalid arguments are accepted almost as often as believable-valid ones (66 to 92 percent across the three original experiments). Three questions drive the field. Does belief change reasoning quality or only the willingness to say "valid"? Is the effect a fast default that slow logic must override? Is it concentrated where the logic is inconclusive? Large language models show the same pattern, with a shape that depends on the model generation, the answer format and the amount of reasoning allowed. [A01.04-K01, A01.04-K13, A01.04-K26]
 
 ---
 
@@ -35,7 +35,7 @@ Belief bias is the tendency to judge an argument by whether its conclusion sound
 
 ### 2.2 The original experiments (primary, read in full)
 
-EBP 1983 (Memory and Cognition 11(3), 295-306). [d21-d23, K26, V]
+EBP 1983 (Memory and Cognition 11(3), 295-306). [d21-d23, A01.04-K26, V]
 
 | Exp | N | VB | VU | IB | IU | Correct when logic agrees with belief / conflicts |
 |---|---|---|---|---|---|---|
@@ -58,7 +58,7 @@ Cells are percent who accepted the conclusion as following. VB valid-believable,
 | Formal | Klauer et al. 2000 MPT | Reasoning succeeds with some probability. On failure a guess stage uses belief, atmosphere and the expected base rate of valid items. | Base-rate manipulations interact with belief only in the guess stage. |
 | Formal | Signal detection (Dube et al. 2010) | One graded argument-strength axis. Belief shifts the response criterion, not discriminability. | Curved ROCs. No accuracy gap after correcting for criterion. |
 
-The original authors offered the first two ideas themselves and could not separate them from the data. In Exp 2, people who accepted valid-unbelievable conclusions cited premises more (X2=24.61, p<.001) and irrelevant facts less (X2=15.11, p<.001). Verbal protocols may be rationalisations. [d24, K28]
+The original authors offered the first two ideas themselves and could not separate them from the data. In Exp 2, people who accepted valid-unbelievable conclusions cited premises more (X2=24.61, p<.001) and irrelevant facts less (X2=15.11, p<.001). Verbal protocols may be rationalisations. [d24, A01.04-K28]
 
 ### 2.4 How the theories differ in practice
 
@@ -68,7 +68,7 @@ The original authors offered the first two ideas themselves and could not separa
 - Parallel models say there is no sequence. Conflict is detected early and often not resolved.
 - SDT says there is nothing to fix in reasoning, only the threshold. The 2018 meta-analysis supports this on average, but the field still disputes the method (section 5.2).
 
-Evidence tilts against strict selective scrutiny: inspection and eye-tracking data fit parallel or selective-processing patterns, and Thompson et al. 2003 found more time on believable conclusions, the opposite of the prediction. [K10 contested; a02, a10, a31] Newstead et al. 1992 found the interaction vanished when only determinate syllogisms were used, supporting misinterpreted necessity, but Exps 3-5 supported mental models. [a09, a36, d08; abstract level]
+Evidence tilts against strict selective scrutiny: inspection and eye-tracking data fit parallel or selective-processing patterns, and Thompson et al. 2003 found more time on believable conclusions, the opposite of the prediction. [A01.04-K10 contested; a02, a10, a31] Newstead et al. 1992 found the interaction vanished when only determinate syllogisms were used, supporting misinterpreted necessity, but Exps 3-5 supported mental models. [a09, a36, d08; abstract level]
 
 ---
 
@@ -76,28 +76,28 @@ Evidence tilts against strict selective scrutiny: inspection and eye-tracking da
 
 | # | Finding | Numbers | Source (ids) | Status |
 |---|---|---|---|---|
-| 1 | Believable conclusions are accepted far more than unbelievable ones | EBP Exp 1 N=24: 92/46/92/8 (VB/VU/IB/IU). Exp 2 N=64: 86/62/66/13. Exp 3 N=32: 91/53/67/6. Stupple and Ball N=48: AB-BC figure valid 76/72, invalid 71/36 (believable/unbelievable); BA-CB figure valid 88/60, invalid 61/25 | d21-d23, a01 | [E] (K01, K26) |
-| 2 | Belief effect larger on invalid than valid (the interaction) | Logic x belief F(1,47)=9.15, p=.004 (S&B). EBP Exp 2 p<.01, Exp 3 p=.067. In the harder BA-CB figure the interaction vanished | a01, d22, d23 | [C] as to meaning (K02); the raw-rate pattern is replicated |
-| 3 | Correct answers fall when logic and belief conflict | EBP: 92 vs 27, 87 vs 48, 97 vs 43. Trippas 2017 Exp 2 (N=82): conflict .68 vs no-conflict .83, OR 1.58. Complex syllogisms under logic instructions, conflict items: .50 (chance) | d21-d23, a23, b14 | [E] (K07) |
-| 4 | Conflict items take longer | Premise inspection logic x belief F(1,47)=9.74, p=.003; Exp 1 of Trippas 2017: 4786 vs 4503 ms (d=0.17) | a02, b14 | [E] (K07) |
-| 5 | Believability does not change discriminability on average (ROC meta-analysis) | 22 studies, N=993. BF 7.34 for no difference in da. Equal-variance fit BF 17.28 (believable), 11.84 (unbelievable). Mean "valid" endorsement .92 believable vs .27 unbelievable. Choice-focus effect -.03 [-.08, .02], BF 69.72 | b01-b03 | [C] (K03) |
-| 6 | Believability does cost accuracy on complex items and in able reasoners | Trippas 2013: accuracy effect on complex, not simple syllogisms. Gone under time pressure and for low capacity. Trippas 2014 N=76: higher-ability fluent group t(15)=3.37, BF 11.34; lower-ability t(21)=0.28, BF 0.23 | a17, b07, b09, d27 | [S] (K05) |
-| 7 | Time limit raises belief bias (10 s deadline) | Effect on conflict items mostly. No numbers read (abstract level). Deadline is 10 s, not the 2 s on Wikipedia | a24, a37, b16 | [C] (K06, K30) |
-| 8 | Time pressure effect is task-specific | Speeded conditional inference: belief bias size unchanged. Under time pressure the accuracy cost of belief vanished in ROC analysis | d26, d27 | [C] (K30) |
-| 9 | Complexity decides which of belief or logic interferes more | Modus ponens: validity interfered with belief judgments more. Hardest syllogisms: belief interfered with validity more. Exp 1 N=45, Exp 2 N=84 | a22, b14, d17 | [S] (K06) |
-| 10 | Wording of the validity question | One item per condition, N=130 (Exp 1), N=162 (Exp 2). Plain wording IB correct: 4% untrained, 10% trained. "Necessarily follow": 66%, 77%. "Criteria of logic": 41%, 67% | a27, a28, d07 | [S] (K08, K22) |
-| 11 | Instruction effects in older multi-item studies | Newstead 1992 Exp 5 long instructions: IB correct 83%. Evans 1994 same instructions: 56%. "Must be true" alone did not remove the bias | d06, a26 | [C] (K22) |
-| 12 | Misinterpreted necessity: bias sits in indeterminate invalid items | Newstead 1992 Exps 1-2: interaction disappears with determinate items only | a09, a36, d08 | [C] (K09), abstract level |
-| 13 | Individual differences | Ability: ability on logic index F(1,72)=21.01; on belief response bias F(1,72)=9.59, p=.003. Skeptics vs believers on conflict accuracy t(85)=2.73, p=.008, N=91. Statistical-strategy reasoners more swayed (d=1.66 vs 1.04 for counterexample reasoners; N=170 in Study 1). Older adults and children worse on conflict items | b09, b17, b18, a34 | [E] (K11) |
-| 14 | Belief strength is a dose | N=102: prototypical 2.65, nonprototypical 2.25, nonword 1.43 of 5 invalid items accepted | b19 | [S] (K18) |
-| 15 | Disfluent text did not help | N=76: da .92 fluent vs .51 disfluent, F(1,74)=6.22, p=.015, BF 3.30. Belief response bias unaffected | a19, b08 | [S] (K12) |
+| 1 | Believable conclusions are accepted far more than unbelievable ones | EBP Exp 1 N=24: 92/46/92/8 (VB/VU/IB/IU). Exp 2 N=64: 86/62/66/13. Exp 3 N=32: 91/53/67/6. Stupple and Ball N=48: AB-BC figure valid 76/72, invalid 71/36 (believable/unbelievable); BA-CB figure valid 88/60, invalid 61/25 | d21-d23, a01 | [E] (A01.04-K01, A01.04-K26) |
+| 2 | Belief effect larger on invalid than valid (the interaction) | Logic x belief F(1,47)=9.15, p=.004 (S&B). EBP Exp 2 p<.01, Exp 3 p=.067. In the harder BA-CB figure the interaction vanished | a01, d22, d23 | [C] as to meaning (A01.04-K02); the raw-rate pattern is replicated |
+| 3 | Correct answers fall when logic and belief conflict | EBP: 92 vs 27, 87 vs 48, 97 vs 43. Trippas 2017 Exp 2 (N=82): conflict .68 vs no-conflict .83, OR 1.58. Complex syllogisms under logic instructions, conflict items: .50 (chance) | d21-d23, a23, b14 | [E] (A01.04-K07) |
+| 4 | Conflict items take longer | Premise inspection logic x belief F(1,47)=9.74, p=.003; Exp 1 of Trippas 2017: 4786 vs 4503 ms (d=0.17) | a02, b14 | [E] (A01.04-K07) |
+| 5 | Believability does not change discriminability on average (ROC meta-analysis) | 22 studies, N=993. BF 7.34 for no difference in da. Equal-variance fit BF 17.28 (believable), 11.84 (unbelievable). Mean "valid" endorsement .92 believable vs .27 unbelievable. Choice-focus effect -.03 [-.08, .02], BF 69.72 | b01-b03 | [C] (A01.04-K03) |
+| 6 | Believability does cost accuracy on complex items and in able reasoners | Trippas 2013: accuracy effect on complex, not simple syllogisms. Gone under time pressure and for low capacity. Trippas 2014 N=76: higher-ability fluent group t(15)=3.37, BF 11.34; lower-ability t(21)=0.28, BF 0.23 | a17, b07, b09, d27 | [S] (A01.04-K05) |
+| 7 | Time limit raises belief bias (10 s deadline) | Effect on conflict items mostly. No numbers read (abstract level). Deadline is 10 s, not the 2 s on Wikipedia | a24, a37, b16 | [C] (A01.04-K06, A01.04-K30) |
+| 8 | Time pressure effect is task-specific | Speeded conditional inference: belief bias size unchanged. Under time pressure the accuracy cost of belief vanished in ROC analysis | d26, d27 | [C] (A01.04-K30) |
+| 9 | Complexity decides which of belief or logic interferes more | Modus ponens: validity interfered with belief judgments more. Hardest syllogisms: belief interfered with validity more. Exp 1 N=45, Exp 2 N=84 | a22, b14, d17 | [S] (A01.04-K06) |
+| 10 | Wording of the validity question | One item per condition, N=130 (Exp 1), N=162 (Exp 2). Plain wording IB correct: 4% untrained, 10% trained. "Necessarily follow": 66%, 77%. "Criteria of logic": 41%, 67% | a27, a28, d07 | [S] (A01.04-K08, A01.04-K22) |
+| 11 | Instruction effects in older multi-item studies | Newstead 1992 Exp 5 long instructions: IB correct 83%. Evans 1994 same instructions: 56%. "Must be true" alone did not remove the bias | d06, a26 | [C] (A01.04-K22) |
+| 12 | Misinterpreted necessity: bias sits in indeterminate invalid items | Newstead 1992 Exps 1-2: interaction disappears with determinate items only | a09, a36, d08 | [C] (A01.04-K09), abstract level |
+| 13 | Individual differences | Ability: ability on logic index F(1,72)=21.01; on belief response bias F(1,72)=9.59, p=.003. Skeptics vs believers on conflict accuracy t(85)=2.73, p=.008, N=91. Statistical-strategy reasoners more swayed (d=1.66 vs 1.04 for counterexample reasoners; N=170 in Study 1). Older adults and children worse on conflict items | b09, b17, b18, a34 | [E] (A01.04-K11) |
+| 14 | Belief strength is a dose | N=102: prototypical 2.65, nonprototypical 2.25, nonword 1.43 of 5 invalid items accepted | b19 | [S] (A01.04-K18) |
+| 15 | Disfluent text did not help | N=76: da .92 fluent vs .51 disfluent, F(1,74)=6.22, p=.015, BF 3.30. Belief response bias unaffected | a19, b08 | [S] (A01.04-K12) |
 | 16 | Forced choice removes most bias | Presenting a valid and an invalid argument together: no belief bias on accuracy initially (abstract level). One at a time: unbelievable judged more accurately | b24, b23 | [S] |
-| 17 | LLMs show the human pattern | Item-level human-model correlation t(345)=4.98. Interaction significant in PaLM 2-L, Flan-PaLM 2, GPT-3.5 (p<.001). None in Chinchilla and PaLM 2-M (answered mostly by content) | c01-c04 | [E] (K13) |
-| 18 | Older open models are poor at "invalid" and "nothing follows" | LLaMA-3 8B ZS-CoT 30.31% on believable set, 0.83% on invalid. Atmosphere heuristic predicts 82.97% of invalid-schema errors. Zero-shot CoT accuracy on 37 "nothing follows" syllogisms close to 0% (PaLM 2) | c05, c07, c08 | [E] (K14) |
-| 19 | GPT-3.5 and GPT-4 (2023) lose accuracy on belief-conflicting items | NeuBAROCO GPT-3.5: consistent 56.89, inconsistent 31.37. GPT-4 NLI English 82.92 vs 67.23 congruent vs incongruent. GPT-4 multiple choice (no "none follows" option): 90.00 vs 80.00 English, 97.5 vs 100 Japanese | c10, b26, d25 | [E] for older models; format dependent (K29) |
-| 20 | GPT-4 in SDT terms (my calculation from BaRDa cells) | Believable: hit .921, FA .579, d' 1.21, c -0.81. Unbelievable: hit .752, FA .100, d' 1.96, c +0.30. GPT-3.5: d' 0.81 vs 1.22, c -0.90 vs +0.41 | d05 | [S] (K20) |
-| 21 | Recent strong models show a small gap on easy syllogisms | 14 models, 160 items. Gemini 2.5 Pro +1.4 pp, Flash +0.9, GPT-OSS-20B +0.8, GLM-4.6 +1.9, Kimi-K2 +7.5, DeepSeek V3.1 +7.9, Llama 3.2 3B +46.9. Mean +10.81 pp, d=0.66, 12 of 14 positive | d01 | [S] (K19) |
-| 22 | Reasoning effort is the lever on valid-unbelievable items for one model | GPT-5-nano 69.2% (minimum effort) to 98.8% (medium). GPT-4o 79.5%. Claude-3-sonnet 20.3%, Claude-3-opus 7.2% (deprecated, valid-only items) | d03 | [S] (K21) |
+| 17 | LLMs show the human pattern | Item-level human-model correlation t(345)=4.98. Interaction significant in PaLM 2-L, Flan-PaLM 2, GPT-3.5 (p<.001). None in Chinchilla and PaLM 2-M (answered mostly by content) | c01-c04 | [E] (A01.04-K13) |
+| 18 | Older open models are poor at "invalid" and "nothing follows" | LLaMA-3 8B ZS-CoT 30.31% on believable set, 0.83% on invalid. Atmosphere heuristic predicts 82.97% of invalid-schema errors. Zero-shot CoT accuracy on 37 "nothing follows" syllogisms close to 0% (PaLM 2) | c05, c07, c08 | [E] (A01.04-K14) |
+| 19 | GPT-3.5 and GPT-4 (2023) lose accuracy on belief-conflicting items | NeuBAROCO GPT-3.5: consistent 56.89, inconsistent 31.37. GPT-4 NLI English 82.92 vs 67.23 congruent vs incongruent. GPT-4 multiple choice (no "none follows" option): 90.00 vs 80.00 English, 97.5 vs 100 Japanese | c10, b26, d25 | [E] for older models; format dependent (A01.04-K29) |
+| 20 | GPT-4 in SDT terms (my calculation from BaRDa cells) | Believable: hit .921, FA .579, d' 1.21, c -0.81. Unbelievable: hit .752, FA .100, d' 1.96, c +0.30. GPT-3.5: d' 0.81 vs 1.22, c -0.90 vs +0.41 | d05 | [S] (A01.04-K20) |
+| 21 | Recent strong models show a small gap on easy syllogisms | 14 models, 160 items. Gemini 2.5 Pro +1.4 pp, Flash +0.9, GPT-OSS-20B +0.8, GLM-4.6 +1.9, Kimi-K2 +7.5, DeepSeek V3.1 +7.9, Llama 3.2 3B +46.9. Mean +10.81 pp, d=0.66, 12 of 14 positive | d01 | [S] (A01.04-K19) |
+| 22 | Reasoning effort is the lever on valid-unbelievable items for one model | GPT-5-nano 69.2% (minimum effort) to 98.8% (medium). GPT-4o 79.5%. Claude-3-sonnet 20.3%, Claude-3-opus 7.2% (deprecated, valid-only items) | d03 | [S] (A01.04-K21) |
 | 23 | Same model knows plausibility poorly even when logic is perfect | Syntax accuracy 81.7% vs believability accuracy 56.2% across models; Gemini 2.5 Flash 99.6 vs 51.7 | d02 | [S] |
 
 ---
@@ -173,7 +173,7 @@ Atmosphere: the quantifier mood of the premises primes the conclusion. It explai
 
 ### 4.8 Representational model of LLMs [c14, c12]
 
-Validity and plausibility are each linearly encoded. Cosine similarity of the two direction vectors is 0.48 to 0.64 (controls 0.10 to 0.13 and -0.12 to -0.17). Across 10 instruction-tuned models (Qwen-2.5, Qwen-3, Gemma-3, 4B to 32B), more aligned directions go with a bigger content effect (beta=0.557, p=0.017). Steering that pulls them apart cuts the effect. This needs open-weight access, so it is not available to a prompt-only scaffold. It does tell us why introspection fails: the two signals are tangled inside. Separation has to happen outside the model. [K13-K15]
+Validity and plausibility are each linearly encoded. Cosine similarity of the two direction vectors is 0.48 to 0.64 (controls 0.10 to 0.13 and -0.12 to -0.17). Across 10 instruction-tuned models (Qwen-2.5, Qwen-3, Gemma-3, 4B to 32B), more aligned directions go with a bigger content effect (beta=0.557, p=0.017). Steering that pulls them apart cuts the effect. This needs open-weight access, so it is not available to a prompt-only scaffold. It does tell us why introspection fails: the two signals are tangled inside. Separation has to happen outside the model. [A01.04-K13-A01.04-K15]
 
 ### 4.9 Dual-process timing models
 
@@ -186,17 +186,17 @@ Default-interventionist: belief answer first, logic intervenes later. It predict
 ### 5.1 Replicated and robust
 
 1. The raw-rate pattern: believable conclusions accepted more, and IB acceptance at 66 to 92 percent. Replicated across EBP's three experiments and Stupple and Ball (71 and 61 percent). [d21-d23, a01]
-2. Conflict items are harder and slower. Three independent lines: EBP, Stupple and Ball, Trippas 2017. [K07]
-3. Ability and analytic disposition help. Religious skeptics, higher Raven scores, counterexample strategy users, younger adults all made fewer conflict errors. [K11]
-4. LLMs of 2022-2024 show the pattern, in several model families, in several labs. [K13]
-5. Prompts alone do not fix it in older models: no change with few-shot or instruction tuning (Dasgupta), ICL did not remove it (Bertolazzi), few-shot was the worst strategy in a 14-model study (79.1% vs 82.7% zero-shot, paired t41=2.50, p=.0165, Holm p=.0495, d=-0.39). [c04, c06, d02, K14]
+2. Conflict items are harder and slower. Three independent lines: EBP, Stupple and Ball, Trippas 2017. [A01.04-K07]
+3. Ability and analytic disposition help. Religious skeptics, higher Raven scores, counterexample strategy users, younger adults all made fewer conflict errors. [A01.04-K11]
+4. LLMs of 2022-2024 show the pattern, in several model families, in several labs. [A01.04-K13]
+5. Prompts alone do not fix it in older models: no change with few-shot or instruction tuning (Dasgupta), ICL did not remove it (Bertolazzi), few-shot was the worst strategy in a 14-model study (79.1% vs 82.7% zero-shot, paired t41=2.50, p=.0165, Holm p=.0495, d=-0.39). [c04, c06, d02, A01.04-K14]
 
 ### 5.2 Contested
 
-- **Meaning of the interaction.** Dube et al. (2010, 2011) and Heit and Rotello (2014): the interaction is an artefact of difference scores. Belief is a response bias. Klauer and Kellen (2011): ROCs for binary responses are linear. Dube's own data fit misinterpreted necessity. Singmann and Kellen (2014): the 2x2 SDT design is unidentifiable. The 2018 meta-analysis favours Dube on the average, but the authors overlap with that camp. [K02-K04, a13-a16, a20, b01-b04]
+- **Meaning of the interaction.** Dube et al. (2010, 2011) and Heit and Rotello (2014): the interaction is an artefact of difference scores. Belief is a response bias. Klauer and Kellen (2011): ROCs for binary responses are linear. Dube's own data fit misinterpreted necessity. Singmann and Kellen (2014): the 2x2 SDT design is unidentifiable. The 2018 meta-analysis favours Dube on the average, but the authors overlap with that camp. [A01.04-K02-A01.04-K04, a13-a16, a20, b01-b04]
 - **Moderators hide inside the null.** Pooled null (BF 7.34) means no average gap, not no gap in anyone. Participant, item and study heterogeneity all had credible intervals above 0. [b05]
-- **Time pressure.** Evans and Curtis-Holmes (10 s) support the fast-belief story. Evans, Handley, Bacon 2009 (conditional inference) and Trippas 2013 (SDT) show boundary conditions. Trippas 2017 favours parallel processing. No direct failed replication of the deadline was found, and it was not searched exhaustively. [K06, K30]
-- **Selective scrutiny versus misinterpreted necessity.** Never separated. [K09, K10, K28]
+- **Time pressure.** Evans and Curtis-Holmes (10 s) support the fast-belief story. Evans, Handley, Bacon 2009 (conditional inference) and Trippas 2013 (SDT) show boundary conditions. Trippas 2017 favours parallel processing. No direct failed replication of the deadline was found, and it was not searched exhaustively. [A01.04-K06, A01.04-K30]
+- **Selective scrutiny versus misinterpreted necessity.** Never separated. [A01.04-K09, A01.04-K10, A01.04-K28]
 - **Complexity by belief.** Evans and Pollard (1990) found complexity changed discrimination but not the belief effect. Klauer et al. (2000) reread the same data and argued belief mattered more in complex groups. [a04, second-hand]
 
 ### 5.3 Failed or partly failed
@@ -238,17 +238,17 @@ Few-shot examples (including a belief-trap example), instruction tuning alone in
 
 | Generation | Models | Pattern | Evidence |
 |---|---|---|---|
-| 2022-23 base | Chinchilla, PaLM 2 M/L, Flan-PaLM 2, GPT-3.5 | Human-like. "Valid" for believable conclusions, high sensitivity, low specificity. Chinchilla and GPT-3.5 said "valid" to nearly all nonsense propositions. Item-level t(345)=4.98 | c01, c02, K13 |
+| 2022-23 base | Chinchilla, PaLM 2 M/L, Flan-PaLM 2, GPT-3.5 | Human-like. "Valid" for believable conclusions, high sensitivity, low specificity. Chinchilla and GPT-3.5 said "valid" to nearly all nonsense propositions. Item-level t(345)=4.98 | c01, c02, A01.04-K13 |
 | 2023 chat | GPT-3.5, GPT-4 | NeuBAROCO GPT-3.5 inconsistent 31.37 vs consistent 56.89. GPT-4 NLI 82.92 vs 67.23. BaRDa GPT-4 d' 1.96 to 1.21 and c +0.30 to -0.81 (both sensitivity and criterion move) | c10, b26, d25, d05 |
 | 2024 open | LLaMA-3, Pythia 160M to 70B | Mostly fail on invalid items. LLaMA-3 8B 0.83% on invalid. Instruction tuning raises invalid accuracy and lowers valid | c05 |
 | 2025 small instruction-tuned | Qwen2.5/3, Gemma-3 4B-32B | CoT cuts content effect strongly (see 5.4). Models in the 14-model study differ widely: Gemma 3 27B -13.7 and Qwen3-Next Instruct -7.9 show the reverse sign | c15, d01 |
 | 2025-26 frontier / reasoning | Gemini 2.5, GPT-OSS, GLM-4.6, GPT-5 family, Kimi-K2, DeepSeek V3.1 | Near ceiling on easy syllogisms (99 percent). Gap 0.8 to 7.9 pp. Reasoning effort matters inside a model | d01, d03 |
-| Claude | Claude-3 only, deprecated | On valid-only items 20.3% and 7.2%. This cannot separate skill from over-rejection. No current Claude model was found tested anywhere | d03, d30, K31 |
+| Claude | Claude-3 only, deprecated | On valid-only items 20.3% and 7.2%. This cannot separate skill from over-rejection. No current Claude model was found tested anywhere | d03, d30, A01.04-K31 |
 
 ### 6.2 What changed it, and by how much
 
 - **Model generation and reasoning effort** matter most. GPT-5-nano 69.2 to 98.8 by effort alone. [d03]
-- **CoT**: contradictory. Weak for older open models, strong for newer small models (Qwen3-14B CE 0.213 to 0.014), not uniform for FregeLogic's open models (Maverick few-shot CoT CE 3.83 to 10.11, simple CoT lowest mean CE 5.24). [c05, c15, d10] No equal-token test exists. [K15]
+- **CoT**: contradictory. Weak for older open models, strong for newer small models (Qwen3-14B CE 0.213 to 0.014), not uniform for FregeLogic's open models (Maverick few-shot CoT CE 3.83 to 10.11, simple CoT lowest mean CE 5.24). [c05, c15, d10] No equal-token test exists. [A01.04-K15]
 - **Instruction**: a CoT prompt rescued 87 percent of GPT-4o failures. A belief-conflict warning rescued 76 percent. [d04] These are selected failures, so partly regression to the mean.
 - **Few-shot**: no help on syllogisms. Large help on easy NLI for Chinchilla ("highly content-biased" to "near ceiling"). [c04, d02]
 - **Answer format**: multiple choice without a "none follows" option hides the bias for GPT-4 (90.00 vs 80.00), NLI shows it (82.92 vs 67.23). [d25] LLMs almost never answer "nothing follows" on abstract syllogisms (37 of 64 items need it; accuracy near 0). [c08]
@@ -278,30 +278,30 @@ Schema labels: G guardrail, S state, O operator, memory = section 5 of SCHEMA.md
 
 | # | Item | Schema part | Status | Evidence |
 |---|---|---|---|---|
-| A1 | Never let the model judge validity from content alone. A validity check must be run on structure: the premises restated in neutral terms, a refutation attempt, or code. The model's feeling that an answer is right is not a check. | G10 (reasoning text is not evidence), S4 TEST | [E] | K01, K13, K14; c01, c02, c13, c14, d19 |
-| A2 | S4 treats every candidate the same way, including answers that look believable. Do not make scrutiny depend on whether the answer feels right. This is consistent with the evidence against strict selective scrutiny and with the parallel-process results. | S4, G3 | [E] as a design rule (the mechanism is [C]) | K10; a03, a04, a06, a31, b04 |
-| A3 | Input hygiene: S1 restates the problem and fixes the reading of quantifiers ("some" means at least one and possibly all, use only the given information) before reasoning. Misreading premises looks like belief bias. | S1 | [E] for misreading as a confound; the specific prompt text is [S] | a26, a35, b20, K09 |
-| A4 | Report belief effects with per-cell numbers: hit rate, false-alarm rate, d' and c by believability cell, plus raw cell accuracy. Include invalid items and a "does not follow" option. Never score the agent with the difference-score interaction index alone. | measurement (section 6 logging) | [E] as a method rule (the theory behind it is [C]) | K02-K04, a13, a16, a18, a20, d03, d25, c18 |
-| A5 | Log conflict items separately: label items where the answer the agent prefers disagrees with its derived verdict. Conflict items are slower and harder. | section 6 logging | [E] | K07; a02, a22, a23, b14 |
-| A6 | Do not add "be careful", "think logically" or belief-trap few-shot examples as fixes. They are already in 4b and the belief-bias evidence repeats it. | 4b | [E] | K14; c04, c06, d02, a26 |
-| A7 | Keep the S7 counterexample search. A counterexample strategy is the protective one in humans (belief score 1.47 vs 2.47, d=1.04 vs 1.66). | S7, O | [E] (already marked E in the schema) | K11; b18, a08 |
-| A8 | Offer a "does not follow / nothing follows" option, and keep the check for it in code. LLMs rarely choose it. | S4, S7 | [E] | c05, c08, d25, K14 |
+| A1 | Never let the model judge validity from content alone. A validity check must be run on structure: the premises restated in neutral terms, a refutation attempt, or code. The model's feeling that an answer is right is not a check. | G10 (reasoning text is not evidence), S4 TEST | [E] | A01.04-K01, A01.04-K13, A01.04-K14; c01, c02, c13, c14, d19 |
+| A2 | S4 treats every candidate the same way, including answers that look believable. Do not make scrutiny depend on whether the answer feels right. This is consistent with the evidence against strict selective scrutiny and with the parallel-process results. | S4, G3 | [E] as a design rule (the mechanism is [C]) | A01.04-K10; a03, a04, a06, a31, b04 |
+| A3 | Input hygiene: S1 restates the problem and fixes the reading of quantifiers ("some" means at least one and possibly all, use only the given information) before reasoning. Misreading premises looks like belief bias. | S1 | [E] for misreading as a confound; the specific prompt text is [S] | a26, a35, b20, A01.04-K09 |
+| A4 | Report belief effects with per-cell numbers: hit rate, false-alarm rate, d' and c by believability cell, plus raw cell accuracy. Include invalid items and a "does not follow" option. Never score the agent with the difference-score interaction index alone. | measurement (section 6 logging) | [E] as a method rule (the theory behind it is [C]) | A01.04-K02-A01.04-K04, a13, a16, a18, a20, d03, d25, c18 |
+| A5 | Log conflict items separately: label items where the answer the agent prefers disagrees with its derived verdict. Conflict items are slower and harder. | section 6 logging | [E] | A01.04-K07; a02, a22, a23, b14 |
+| A6 | Do not add "be careful", "think logically" or belief-trap few-shot examples as fixes. They are already in 4b and the belief-bias evidence repeats it. | 4b | [E] | A01.04-K14; c04, c06, d02, a26 |
+| A7 | Keep the S7 counterexample search. A counterexample strategy is the protective one in humans (belief score 1.47 vs 2.47, d=1.04 vs 1.66). | S7, O | [E] (already marked E in the schema) | A01.04-K11; b18, a08 |
+| A8 | Offer a "does not follow / nothing follows" option, and keep the check for it in code. LLMs rarely choose it. | S4, S7 | [E] | c05, c08, d25, A01.04-K14 |
 | A9 | Do not rely on a prompt to fix content effects in a mid-size model. Where a cheap exact check exists (categorical syllogism forms: 24 valid forms), run it in code after the model labels mood and figure. | G5 (code selects), S4 | [S] for the lookup; [E] that prompts alone are weak | c24 (snippet), c17, c06 |
 
 ### 7.2 Test first (single-source, contested or unsupported)
 
 | # | Item | Schema part | Status | Evidence |
 |---|---|---|---|---|
-| T1 | Conflict flag: if the agent's prior belief about the conclusion disagrees with its derived verdict, route extra verification. No LLM test exists. | G1 (doubt on a signal), S6 | [S] humans detect conflict cheaply; LLM test none | a02, a29, K07, K23, K27 |
-| T2 | Verify only on conflict vs verify all vs random subset at equal tokens. | S4, S8 | unsupported | K10, K23, K27; d11 |
-| T3 | "Necessarily follow" wording. | S1 or S4 wording | [S] (one item, humans) | a28, d07, K08, K22 |
-| T4 | Counterexample step split by determinate and indeterminate invalid items. | S7, O4 | [C] | a09, d08, K09, K27 |
-| T5 | Neutral-symbol reasoning compared with the real-content run, adopt the symbolic verdict on disagreement. | S1, S2, O6 | [S] | c20, d14, K17 |
-| T6 | Prover or canonical-form parser: LLM translates, code decides. Re-extract when the prover says "invalid" on an item the model believed valid. | O, G5 | [C] | K16, K24, K25; c17, d12-d14 |
+| T1 | Conflict flag: if the agent's prior belief about the conclusion disagrees with its derived verdict, route extra verification. No LLM test exists. | G1 (doubt on a signal), S6 | [S] humans detect conflict cheaply; LLM test none | a02, a29, A01.04-K07, A01.04-K23, A01.04-K27 |
+| T2 | Verify only on conflict vs verify all vs random subset at equal tokens. | S4, S8 | unsupported | A01.04-K10, A01.04-K23, A01.04-K27; d11 |
+| T3 | "Necessarily follow" wording. | S1 or S4 wording | [S] (one item, humans) | a28, d07, A01.04-K08, A01.04-K22 |
+| T4 | Counterexample step split by determinate and indeterminate invalid items. | S7, O4 | [C] | a09, d08, A01.04-K09, A01.04-K27 |
+| T5 | Neutral-symbol reasoning compared with the real-content run, adopt the symbolic verdict on disagreement. | S1, S2, O6 | [S] | c20, d14, A01.04-K17 |
+| T6 | Prover or canonical-form parser: LLM translates, code decides. Re-extract when the prover says "invalid" on an item the model believed valid. | O, G5 | [C] | A01.04-K16, A01.04-K24, A01.04-K25; c17, d12-d14 |
 | T7 | Pairwise forced choice between a valid and an invalid candidate rather than a single argument. | S7 | [S] | b23, b24 |
-| T8 | Budget effect: short vs long reasoning, scored as d' and c separately. | G11, G12 | [C] | K06, K30, K21; d03, d26, d27 |
-| T9 | Disagreement routing (verify only when attempts split). | G1, G4 | [S] | d11, K23 |
-| T10 | Graded belief strength as a predictor of error. | S0 gate | [S] humans only | b19, K18 |
+| T8 | Budget effect: short vs long reasoning, scored as d' and c separately. | G11, G12 | [C] | A01.04-K06, A01.04-K30, A01.04-K21; d03, d26, d27 |
+| T9 | Disagreement routing (verify only when attempts split). | G1, G4 | [S] | d11, A01.04-K23 |
+| T10 | Graded belief strength as a predictor of error. | S0 gate | [S] humans only | b19, A01.04-K18 |
 | T11 | Restating premises with neutral labels before reading the conclusion (hide conclusion until premises are stated). | S1, S2 | [S] eye-tracking suggests conclusion anchors the re-reading | a31, a32 |
 | T12 | Memory lesson "this class has belief traps" shown after the first attempt. | memory | [D] | schema section 5 |
 
@@ -321,13 +321,13 @@ The bench today is ARC and BRAINTEASER. This is a new item type: it needs an ite
 
 | Test | Item type | Arms (equal tokens) | Metric | Expected effect |
 |---|---|---|---|---|
-| B0 baseline | 4-cell bank, easy and hard, believable / unbelievable / nonsense | plain model, direct answer | Per-cell accuracy, d', c, raw gap vs null | Easy: gap near 1-8 pp for a strong model (d01). Hard: larger. Unknown for our model (K31). Needed before any other test. |
+| B0 baseline | 4-cell bank, easy and hard, believable / unbelievable / nonsense | plain model, direct answer | Per-cell accuracy, d', c, raw gap vs null | Easy: gap near 1-8 pp for a strong model (d01). Hard: larger. Unknown for our model (A01.04-K31). Needed before any other test. |
 | B1 CoT vs plain at equal tokens (T8) | Hard 4-cell bank | A: one long CoT. B: 3-4 short independent attempts plus code vote (G11) | CE as accuracy gaps, d', c | Medium-sized models may drop a lot with CoT (Qwen3-14B CE 0.213 to 0.014); for a frontier model likely near zero on easy items. The question is whether the bank is hard enough to show anything. |
 | B2 Conflict flag routing (T1, T2) | 4-cell bank | A: verify all. B: verify only when stated prior belief about conclusion disagrees with derived verdict. C: verify a random subset of equal size. D: no verification | Accuracy on IB and VU, tokens, how many flips right to wrong | B at least equal to C at lower tokens if the flag carries signal. Prediction is risky: IB errors are made without conflict being felt by the model. Expect B to beat C only if the flag is informative. Unknown. |
 | B3 Counterexample search by determinacy (T4) | Indeterminate invalid, determinate invalid, and valid believable items | A: plain. B: add a "find a counterexample, then answer" step | Rate of correct rejection on IB, split by determinacy; false rejection on VB | If misinterpreted necessity holds, gain on indeterminate IB items and no gain on determinate. If selective processing holds, gain on both. |
 | B4 Wording (T3) | Many invalid-believable items (40+) | A: "Does it follow?" B: "Does it necessarily follow?" C: "Could the conclusion be false while the premises are true?" | Correct rejection of IB, false rejection of VB, d', c | The wording may shift c only. Human evidence suggests a big effect on one item, none on many. Expect small. |
 | B5 Neutral symbols (T5) | 4-cell bank | A: real content. B: restate with variables and reason. C: both, adopt B's verdict on disagreement | Accuracy, agreement rate, tokens | B and C help most on IB. Predicate-argument abstraction was worse (d14), so use canonical syllogism notation, not a loose abstraction. |
-| B6 Prover or form lookup (T6) | Categorical syllogisms | A: CoT. B: model labels mood and figure, code looks up the 24 valid forms. C: B plus re-extraction when the lookup says "invalid" on an item the model had judged valid | Accuracy, d', c, tokens | For a strong model small or no gain on accuracy, but exact control of the criterion. Watch the invalid lean (K24). |
+| B6 Prover or form lookup (T6) | Categorical syllogisms | A: CoT. B: model labels mood and figure, code looks up the 24 valid forms. C: B plus re-extraction when the lookup says "invalid" on an item the model had judged valid | Accuracy, d', c, tokens | For a strong model small or no gain on accuracy, but exact control of the criterion. Watch the invalid lean (A01.04-K24). |
 | B7 Forced choice (T7) | Pairs (one valid, one invalid) with believability crossed | A: single-argument validity. B: pairwise choice | Accuracy by cell | Human forced choice removed most belief bias; expect a gain in IB accuracy. |
 | B8 Graded belief (T10) | Conclusions rated 1 to 5 for plausibility by a separate model call or fixed ratings | one arm: plain | Error rate against plausibility rating | Positive dose-response if the human pattern transfers. |
 | B9 Disagreement routing (T9) | 4-cell bank | A: vote of 3 attempts. B: vote plus extra check only on a split. C: extra check on all | Accuracy, tokens | FregeLogic saw 8 net items on 960. Expect a small gain at best. |
@@ -339,9 +339,9 @@ Each test reports G7 verdicts: keep, restrict, or remove.
 
 ## 9. What does not transfer, and why
 
-- **Time pressure.** The 10 s deadline takes away the analytic search from a human. A token cap on an LLM does not stop a parallel process of the same kind, and the human findings themselves are mixed (K30). Do not carry "rushed means more belief bias" into the agent.
+- **Time pressure.** The 10 s deadline takes away the analytic search from a human. A token cap on an LLM does not stop a parallel process of the same kind, and the human findings themselves are mixed (A01.04-K30). Do not carry "rushed means more belief bias" into the agent.
 - **Individual differences.** Raven scores, religious belief, age and thinking disposition do not apply to one model. The analogue is model size and generation, and the LLM data on size are mixed (bigger is not always less biased). [c09]
-- **Disfluency, fonts, mouse-contingent displays.** No LLM analogue. [K12]
+- **Disfluency, fonts, mouse-contingent displays.** No LLM analogue. [A01.04-K12]
 - **Eye-tracking and inspection times.** The agent has tokens, not gaze. Used here only as theory evidence.
 - **Verbal protocols.** Reports of what people did are rationalisations, as the schema's G10 says for the model.
 - **Activation steering, fine-tuning, probes.** Valid but need weights or training. Our scaffold is prompt and code. They only tell us belief and validity are separable directions. [c12, c14, c06]
@@ -355,15 +355,15 @@ Each test reports G7 verdicts: keep, restrict, or remove.
 
 ## 10. Open questions
 
-From critique.md and claims K27, K31. These need our own experiments, not more reading.
+From critique.md and claims A01.04-K27, A01.04-K31. These need our own experiments, not more reading.
 
-1. Content effect for a current frontier model with plain prompting, scored by d' and c on hard items (indeterminate invalid, believable and unbelievable). No current Claude, GPT-5 or o-series d' analysis found. [K31, d30]
-2. CoT at equal tokens for frontier models. [K15]
-3. Whether the "necessarily follows" wording effect holds across many items, and whether it transfers to LLMs. [K22]
-4. Counterexample search on indeterminate vs determinate invalid items in LLMs. [K09, K27]
-5. Verify only conflicts vs verify all vs random at equal tokens. [K10, K23]
-6. A belief-versus-verdict conflict flag as an error predictor in LLMs. Only ensemble disagreement was tested. [K23]
-7. Prover vs prompt abstraction at equal tokens. [K16, K25]
+1. Content effect for a current frontier model with plain prompting, scored by d' and c on hard items (indeterminate invalid, believable and unbelievable). No current Claude, GPT-5 or o-series d' analysis found. [A01.04-K31, d30]
+2. CoT at equal tokens for frontier models. [A01.04-K15]
+3. Whether the "necessarily follows" wording effect holds across many items, and whether it transfers to LLMs. [A01.04-K22]
+4. Counterexample search on indeterminate vs determinate invalid items in LLMs. [A01.04-K09, A01.04-K27]
+5. Verify only conflicts vs verify all vs random at equal tokens. [A01.04-K10, A01.04-K23]
+6. A belief-versus-verdict conflict flag as an error predictor in LLMs. Only ensemble disagreement was tested. [A01.04-K23]
+7. Prover vs prompt abstraction at equal tokens. [A01.04-K16, A01.04-K25]
 8. Failed replications of the logic-by-belief interaction in raw rates, and of the 10 s deadline. Not searched exhaustively. [critique]
 9. Graded belief strength in LLMs. All LLM studies use binary plausibility. [b19, d18]
 10. Whether the SDT reading (belief shifts the criterion) holds for models. The BaRDa numbers say both d' and c move for GPT-4, but those are 2023 data and my own calculation. [d05]

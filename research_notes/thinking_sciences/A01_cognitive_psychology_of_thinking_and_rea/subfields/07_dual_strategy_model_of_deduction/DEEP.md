@@ -2,9 +2,9 @@
 
 Scope: the claim that people judge deductive validity in one of two ways. One way searches for a counterexample (mental-model style). The other estimates how likely the conclusion is (probability-heuristic style). This file covers the human evidence, the formal models, the language-model evidence, and what our single-agent scaffold (SCHEMA 0.2) should take from it.
 
-Evidence ids (a01 to d23) point to the lines in evidence_a.jsonl to evidence_d.jsonl in this folder. Claim ids (K01 to K26) point to claims.jsonl. Overlap with the earlier deep documents (mental models, Wason, content effects, belief bias, dual process) is referred to, not repeated.
+Evidence ids (a01 to d23) point to the lines in evidence_a.jsonl to evidence_d.jsonl in this folder. Claim ids (A01.07-K01 to A01.07-K26) point to claims.jsonl. Overlap with the earlier deep documents (mental models, Wason, content effects, belief bias, dual process) is referred to, not repeated.
 
-Honest framing up front. Almost all human evidence comes from one research network (Markovits and collaborators) and one instrument. No independent replication of the diagnostic was found (d23, K26). Treat effect sizes as upper bounds. No study has run the diagnostic on a language model (c30, K17).
+Honest framing up front. Almost all human evidence comes from one research network (Markovits and collaborators) and one instrument. No independent replication of the diagnostic was found (d23, A01.07-K26). Treat effect sizes as upper bounds. No study has run the diagnostic on a language model (c30, A01.07-K17).
 
 ---
 
@@ -28,7 +28,7 @@ Honest framing up front. Almost all human evidence comes from one research netwo
 
 A counterexample reasoner ignores the stated odds, because any exception kills validity. A statistical reasoner follows the odds. That is the whole logic of the test.
 
-**The shares.** Roughly a third each of counterexample and statistical, about a quarter unclassifiable. They vary by sample: statistical 28% (n=107 students, 2015), 45% (n=139 adults, 2020), 37% (n=2,122 Prolific, 2021) (b04, b06, b19, K01).
+**The shares.** Roughly a third each of counterexample and statistical, about a quarter unclassifiable. They vary by sample: statistical 28% (n=107 students, 2015), 45% (n=139 adults, 2020), 37% (n=2,122 Prolific, 2021) (b04, b06, b19, A01.07-K01).
 
 **Formal specifications.** Beeson, Stupple, Schofield and Staples (2019) is a theory review, not a data paper. It proposes Mental Models Theory as the counterexample strategy and the Probability Heuristics Model (PHM, Chater and Oaksford 1999) as the statistical one (a14, b22). It adds no new experiments. Its proposals are untested.
 
@@ -157,7 +157,7 @@ elif R90 == 4:            type = "intermediate"    # counterexample who sometime
 else:                     type = "other"
 ```
 
-A continuous score (10% acceptances minus 50% acceptances) correlated r=.97 with the dichotomy in b06. The classification is one session of one item type. No reliability is published (d22, K25).
+A continuous score (10% acceptances minus 50% acceptances) correlated r=.97 with the dichotomy in b06. The classification is one session of one item type. No reliability is published (d22, A01.07-K25).
 
 ### 4.3 The PHM statistical strategy
 
@@ -210,7 +210,7 @@ A rule-based selector that uses these signals is our design hypothesis [D], not 
 ### 5.1 Strong inside the lab
 
 - The two response patterns exist and are stable within a session (b04, b06, d03).
-- The gap shows on validity questions about uncertain forms (AC, DA, invalid syllogisms) and vanishes on probability questions (b02, b16, a11, K02). This was shown in three papers.
+- The gap shows on validity questions about uncertain forms (AC, DA, invalid syllogisms) and vanishes on probability questions (b02, b16, a11, A01.07-K02). This was shown in three papers.
 - Belief-bias interaction replicated across three studies within the same paper and again in de Chantal (2020) and Markovits (2021) (a07, a08, a09).
 - Strategy predicts performance beyond IQ in three of four tasks (d04).
 
@@ -225,21 +225,21 @@ A rule-based selector that uses these signals is our design hypothesis [D], not 
 
 ### 5.3 Failures, null results, tensions
 
-- **Working memory story.** Verschueren: more working memory, more counterexample use, but the shift was about 9 points and the interaction was p=.055 (a01). de Chantal (2020): WM beta -.21, p=.07 (b07). Markovits (2021): WM and strategy correlate r=.12 (a09), and under 4 s WM has no effect while strategy does (b12). Raven correlates r=.33 with strategy (b13). So WM matters mostly with unlimited time (K05, contested).
+- **Working memory story.** Verschueren: more working memory, more counterexample use, but the shift was about 9 points and the interaction was p=.055 (a01). de Chantal (2020): WM beta -.21, p=.07 (b07). Markovits (2021): WM and strategy correlate r=.12 (a09), and under 4 s WM has no effect while strategy does (b12). Raven correlates r=.33 with strategy (b13). So WM matters mostly with unlimited time (A01.07-K05, contested).
 - **Probability instructions.** Brisson Study 3 found no validity-by-strategy interaction under probability instructions, unlike earlier studies (a11).
 - **Disconfirmation interaction** is tiny (eta2p .004, a20/b18). Treat as marginal.
 - **Conjunction fallacy:** strategy does not predict it (d04).
 - **Causal tasks:** eta2p .036 to .038 (a19). Small.
-- **Free-text challenge.** About 42% to 46% of answers explain uncertainty by a counterexample, and only about 23% to 29% by probability (a21, b25, b26). The authors suspect hedge words were coded as probabilistic, so the real counterexample share may be higher. This does not fit a clean two-type split built on rating scales (K15, contested).
+- **Free-text challenge.** About 42% to 46% of answers explain uncertainty by a counterexample, and only about 23% to 29% by probability (a21, b25, b26). The authors suspect hedge words were coded as probabilistic, so the real counterexample share may be higher. This does not fit a clean two-type split built on rating scales (A01.07-K15, contested).
 - **Speed paradox.** Kosourikhina and Handley (2025): under speed, invalid forms feel valid to most people (a22). This conflicts with "counterexample reasoners reject quickly" unless counterexample reasoners are the minority (about 15% logical at 5 s, d10).
 - **Fast-answer interpretation.** Semantic availability (Markovits) vs formal-validity intuition (De Neys 2023) vs matching (Ghasemi 2022) (d13). Unresolved.
 - **A transcription slip.** The 2024 review once says counterexample responding was "significantly faster" in 2013. Every other source says slower. Treated as a slip (a04).
 
 ### 5.4 Replication status
 
-- No independent-lab replication of the 50/90 diagnostic. About 20 papers, all with Markovits or a close collaborator as author (d23, K26).
+- No independent-lab replication of the 50/90 diagnostic. About 20 papers, all with Markovits or a close collaborator as author (d23, A01.07-K26).
 - Near-independent work tests neighbouring questions: Newman, Gibb and Thompson (2017, deadlines, d07), Kosourikhina and Handley (2025, a22), Knauff and Gazzo Castaneda (2025, a21).
-- No test-retest. Stability is documented only inside a session (d22, K25).
+- No test-retest. Stability is documented only inside a session (d22, A01.07-K25).
 
 ### 5.5 Interventions
 
@@ -262,7 +262,7 @@ A rule-based selector that uses these signals is our design hypothesis [D], not 
 
 ### 6.1 Headline
 
-No study runs the diagnostic on a language model or tests a counterexample-versus-statistical prompt switch (c30, K17). Everything below is indirect.
+No study runs the diagnostic on a language model or tests a counterexample-versus-statistical prompt switch (c30, A01.07-K17). Everything below is indirect.
 
 ### 6.2 The estimate signature (form heuristic, rare "nothing follows")
 
@@ -325,22 +325,22 @@ Status: [E] established, [S] single-source, [C] contested. "Part" = SCHEMA part 
 
 ### Add now (established)
 
-1. **Treat the verdict question as a design variable. Set it in code, not by default.** Ask "does it necessarily follow" for necessity items. Ask "how likely" for likelihood items. Never mix them in one request. **Part:** S1/S4. **[E]** a10, b02, b16, a11, a12, K02, K09.
-2. **Do not assume one reasoner type. Do not use a model's graded output as proof it reasoned probabilistically.** The scale can create the pattern. **Part:** G10. **[E]** K01, K09; **[C]** a21 on how much.
-3. **Put the counterexample check in code, not in the model's judgment.** Models falsify under 9% in REFUTE, validity decays over iterations, and the LLM judge accepts about twice as many counterexamples as humans. Code verifiers were 97.7% accurate on 177 audited decisions. **Part:** G2/G3/G8, S4. **[E]** c18, c19, c20, c21, d20, K12 (the 60% vs 32% judge figure is single-source, K13).
-4. **Add a code-triggered "nothing follows" probe on invalid-looking forms.** Models almost never answer it, and weaker models follow atmosphere/min heuristics. Trigger on form (AC/DA, invalid-looking quantified premises), not on a schedule. **Part:** S4, O4 (drop a constraint, as the checking move). **[E]** a23, c02, c06, d16, K10. The probe itself is untested.
-5. **Do not rely on a step-by-step prompt to produce counterexample behaviour.** CoT gives no systematic gain across 14 models on belief conflict, hurts on generics, and gives about +1 on belief revision. **Part:** G11 ("think briefly by default"), SCHEMA 4b. **[E]** d14, c17, c16, K23 (the overall status is contested because Holliday shows large CoT gains for weak models, c09).
-6. **Do not claim a counterexample step removes belief effects.** In humans the belief effect shrank (d from 1.66 to 1.04) but did not vanish. **Part:** S8. **[E]** b09, a07, K03.
-7. **Do not map "search" to "more correct".** Strategy is an information-processing style (MP flips with premise strength and disabler count). Gate the search by item class. **Part:** G1, S4. **[S]** d05, K18. Reasoning is sound, but the effect is one paper.
-8. **Fast answers are cue driven, not guesses, and not logic.** On a capped path, assume the invalid-but-plausible forms are wrong about half the time (66% vs 73% endorsement in Kosourikhina). Verify those specifically. **Part:** G11/S0. **[E]** a22, d10, d09, d07, K04, K16 (K16 is single-source; the rest are two sources).
+1. **Treat the verdict question as a design variable. Set it in code, not by default.** Ask "does it necessarily follow" for necessity items. Ask "how likely" for likelihood items. Never mix them in one request. **Part:** S1/S4. **[E]** a10, b02, b16, a11, a12, A01.07-K02, A01.07-K09.
+2. **Do not assume one reasoner type. Do not use a model's graded output as proof it reasoned probabilistically.** The scale can create the pattern. **Part:** G10. **[E]** A01.07-K01, A01.07-K09; **[C]** a21 on how much.
+3. **Put the counterexample check in code, not in the model's judgment.** Models falsify under 9% in REFUTE, validity decays over iterations, and the LLM judge accepts about twice as many counterexamples as humans. Code verifiers were 97.7% accurate on 177 audited decisions. **Part:** G2/G3/G8, S4. **[E]** c18, c19, c20, c21, d20, A01.07-K12 (the 60% vs 32% judge figure is single-source, A01.07-K13).
+4. **Add a code-triggered "nothing follows" probe on invalid-looking forms.** Models almost never answer it, and weaker models follow atmosphere/min heuristics. Trigger on form (AC/DA, invalid-looking quantified premises), not on a schedule. **Part:** S4, O4 (drop a constraint, as the checking move). **[E]** a23, c02, c06, d16, A01.07-K10. The probe itself is untested.
+5. **Do not rely on a step-by-step prompt to produce counterexample behaviour.** CoT gives no systematic gain across 14 models on belief conflict, hurts on generics, and gives about +1 on belief revision. **Part:** G11 ("think briefly by default"), SCHEMA 4b. **[E]** d14, c17, c16, A01.07-K23 (the overall status is contested because Holliday shows large CoT gains for weak models, c09).
+6. **Do not claim a counterexample step removes belief effects.** In humans the belief effect shrank (d from 1.66 to 1.04) but did not vanish. **Part:** S8. **[E]** b09, a07, A01.07-K03.
+7. **Do not map "search" to "more correct".** Strategy is an information-processing style (MP flips with premise strength and disabler count). Gate the search by item class. **Part:** G1, S4. **[S]** d05, A01.07-K18. Reasoning is sound, but the effect is one paper.
+8. **Fast answers are cue driven, not guesses, and not logic.** On a capped path, assume the invalid-but-plausible forms are wrong about half the time (66% vs 73% endorsement in Kosourikhina). Verify those specifically. **Part:** G11/S0. **[E]** a22, d10, d09, d07, A01.07-K04, A01.07-K16 (A01.07-K16 is single-source; the rest are two sources).
 
 ### Test first
 
-1. **Run the diagnostic on the agent.** 13 items, 90% vs 50% alternatives, under "valid?" and "how likely?" framings, at several token caps. Expect statistical-like at low cap and "valid?" framing. **Part:** S0/G11. **[S]** K17, c30.
-2. **Cheap-by-default, search-on-signal routing.** Use a quick estimate. Switch to code-run counterexample search when the signal fires. Candidate signals: low agreement across short samples (analogue of low feeling of rightness, d11), many available alternatives (d09), form flag (AC/DA). Compare with always-search at equal tokens. **Part:** G1/G12/S0. **[S]** K06, K21, K24. Router evidence is from ranking (d21) and the human signals are from one lab.
-3. **Instruction steering.** "Reason by counterexample" vs "reason by likelihood" per item class. Expect larger effect on weaker models (human analogue: statistical reasoners changed most, d02). **Part:** S0. **[S]** K07.
-4. **Order effect.** Likelihood questions before validity questions in one context vs fresh contexts. Supports fresh context per attempt (S3). **Part:** S1/S3. **[S]** b03, K08. Effect size small in humans (eta2p .048).
-5. **Alternative-count gate.** Count generated alternatives in code and see whether the answer tracks the count more than the form in capped mode. **Part:** G11/S0. **[C]** K19.
+1. **Run the diagnostic on the agent.** 13 items, 90% vs 50% alternatives, under "valid?" and "how likely?" framings, at several token caps. Expect statistical-like at low cap and "valid?" framing. **Part:** S0/G11. **[S]** A01.07-K17, c30.
+2. **Cheap-by-default, search-on-signal routing.** Use a quick estimate. Switch to code-run counterexample search when the signal fires. Candidate signals: low agreement across short samples (analogue of low feeling of rightness, d11), many available alternatives (d09), form flag (AC/DA). Compare with always-search at equal tokens. **Part:** G1/G12/S0. **[S]** A01.07-K06, A01.07-K21, A01.07-K24. Router evidence is from ranking (d21) and the human signals are from one lab.
+3. **Instruction steering.** "Reason by counterexample" vs "reason by likelihood" per item class. Expect larger effect on weaker models (human analogue: statistical reasoners changed most, d02). **Part:** S0. **[S]** A01.07-K07.
+4. **Order effect.** Likelihood questions before validity questions in one context vs fresh contexts. Supports fresh context per attempt (S3). **Part:** S1/S3. **[S]** b03, A01.07-K08. Effect size small in humans (eta2p .048).
+5. **Alternative-count gate.** Count generated alternatives in code and see whether the answer tracks the count more than the form in capped mode. **Part:** G11/S0. **[C]** A01.07-K19.
 6. **Disconfirmation weight.** Have code decide how much one failing case counts. In humans it differs by mode (CE 0.14 vs stat 1.75). **Part:** G2. **[S]** a20, but the interaction was tiny (b18).
 7. **Syllogism figure as a load probe.** Non-contiguous middle terms should hurt a premise-reordering counterexample search but not a heuristic. **Part:** S4. Untested even in humans (a14, b22).
 8. **mReasoner moves as operators.** Add / move / split as code-checked model-building moves on quantified items. **Part:** O4/O6 with code check. **[S]** c04.
@@ -349,7 +349,7 @@ Status: [E] established, [S] single-source, [C] contested. "Part" = SCHEMA part 
 ### Memory
 
 - Class record: log per item class whether the estimate or the search won. This is the memory form of the "which strategy wins on which item class" question. **Part:** memory. **[D]**.
-- Treat any measured "strategy label" for the agent as a within-run measurement (K25).
+- Treat any measured "strategy label" for the agent as a within-run measurement (A01.07-K25).
 
 ---
 
@@ -368,7 +368,7 @@ All arms at equal tokens. Counting setup cost (G7).
 | T7 | Belief-conflict and base-rate items at two token budgets | Short vs long reasoning with a code check | Accuracy by item; items that get worse with more tokens | Some conflict items worsen with longer thinking (d08). |
 | T8 | Instruction arms: "reason by counterexample" vs "reason by likelihood" | Per item class | Gain per class; weak vs strong model | Larger shift on the weaker model; per-class pattern differs (human analogue d02). |
 | T9 | Mixed set with defeasible generics ("birds fly") | Plain; CoT; search | Accuracy; CoT effect | CoT can lower accuracy (11.14 points in c17). |
-| T10 | Re-run of T1 on another day and with fresh content sets | Same agent | Type agreement | Fills the missing test-retest gap (K25). |
+| T10 | Re-run of T1 on another day and with fresh content sets | Same agent | Type agreement | Fills the missing test-retest gap (A01.07-K25). |
 
 Report per item class and per model, not averages. Report false rejections next to correct rejections.
 
@@ -379,29 +379,29 @@ Report per item class and per model, not averages. Report false rejections next 
 - **Working memory.** The founding trade-off ties strategy to working memory. A model has no span. Context length and token budget are only loose analogues. Even in humans the WM link is modest (9 points; beta -.21, p=.07).
 - **Time pressure in seconds.** Deadlines of 3.5 to 5 s are human processing limits. A token cap is a weak analogue. Reasoning effort settings are vendor-defined, not equal tokens (d17).
 - **Think-aloud and eye tracking.** Process evidence in humans (premise fixation d=.57) does not map to model text. Chain text is not evidence of the process (G10, c13).
-- **Fixed types.** Human types are partly stable within a session. A model is a function of its prompt. A "type" label for a model is a measurement of one prompt condition, not a trait (K25). The single-run diagnostic is a short test with no reliability data.
+- **Fixed types.** Human types are partly stable within a session. A model is a function of its prompt. A "type" label for a model is a measurement of one prompt condition, not a trait (A01.07-K25). The single-run diagnostic is a short test with no reliability data.
 - **Soft normativism.** Humans may read "does it follow" as "is it probable" and be reasonable (a14, b23). A model task has a stated norm. The scaffold should state the norm, so this ambiguity should not exist for us.
 - **Content and sample effects.** Students on an invented planet, French-speaking, paper or online (b01, b04). Small samples. The 50/90 stated-odds items may not reflect everyday inference.
 - **The "Other" group.** About a quarter of people are dropped. Removing them can inflate the apparent separation (b19).
 - **Counterexample ability itself.** In humans counterexample search is a mental act. In models it is weak (under 9% in REFUTE). The scaffold must therefore put it in code, which is a different mechanism from the human one.
 - **Training results.** Counterexample training (CounterMATH, Zouak) needs weight updates. Our agent has no training, so only the code-checked scaffold parts apply (c24, d20).
 - **PHM fit.** PHM was fitted to human syllogism data with about six parameters. Its min/atmosphere predictions fit LLaMA-3 8B well (82.97% of errors on invalid schemas) but that is a pattern match, not proof of the same mechanism (a23, c06).
-- **Social, causal and contingency generalisations.** Small effects (eta2p .004 to .038), mostly relevant to people. Low priority for the agent (K14).
+- **Social, causal and contingency generalisations.** Small effects (eta2p .004 to .038), mostly relevant to people. Low priority for the agent (A01.07-K14).
 
 ---
 
 ## 10. Open questions
 
-1. What does an LLM do on the 13-item diagnostic, and does it flip with "valid?" vs "how likely?" and with token budget? (c30, K17.)
-2. Does a code-run counterexample search beat plain CoT at equal tokens on invalid AC/DA and belief-conflict items? On which item classes does it lose, and what is its false-rejection rate? (K22.)
-3. Test-retest reliability of the diagnostic, across days and content sets. None found. (d22, K25.)
+1. What does an LLM do on the 13-item diagnostic, and does it flip with "valid?" vs "how likely?" and with token budget? (c30, A01.07-K17.)
+2. Does a code-run counterexample search beat plain CoT at equal tokens on invalid AC/DA and belief-conflict items? On which item classes does it lose, and what is its false-rejection rate? (A01.07-K22.)
+3. Test-retest reliability of the diagnostic, across days and content sets. None found. (d22, A01.07-K25.)
 4. How much of the time-pressure switch (Markovits 2013) is a true strategy change vs guessing? The 2013 numbers were never opened. Fast answers are cue driven (d07, d09), but the share is not quantified. (d01.)
 5. Can strategy be chosen on purpose? The 2023 instruction study (N=885) needs full text: per-study N, effect sizes, durability. (d02.)
-6. Which item classes does each strategy win on outside belief-bias syllogisms: quantified, planning, causal? Human data show tiny effects in causal tasks. (K14.)
-7. Does a "nothing follows" probe fix min/atmosphere errors without raising false rejections? (K10, d16.)
-8. Does an independent lab replicate the diagnostic effects? None found. (d23, K26.)
-9. Can a cheap router pick search vs estimate better than always-search? Analogue is only a ranking router. (d21, K24.)
-10. Is the two-type split real, or is it two modes of one person made visible by scales? (a21, b25, b26, K15.)
+6. Which item classes does each strategy win on outside belief-bias syllogisms: quantified, planning, causal? Human data show tiny effects in causal tasks. (A01.07-K14.)
+7. Does a "nothing follows" probe fix min/atmosphere errors without raising false rejections? (A01.07-K10, d16.)
+8. Does an independent lab replicate the diagnostic effects? None found. (d23, A01.07-K26.)
+9. Can a cheap router pick search vs estimate better than always-search? Analogue is only a ranking router. (d21, A01.07-K24.)
+10. Is the two-type split real, or is it two modes of one person made visible by scales? (a21, b25, b26, A01.07-K15.)
 11. What is the semantic-cue vs formal-intuition vs matching explanation for fast answers? (d13.)
 12. Do mid-sized reasoners show a strategy effect at all? Every LLM paper here uses its own framing; none uses the diagnostic. (c30.)
 13. Beeson's untested proposals: syllogism figure should hurt only counterexample reasoners; strategy selection is meta-reasoning. (a14.)
