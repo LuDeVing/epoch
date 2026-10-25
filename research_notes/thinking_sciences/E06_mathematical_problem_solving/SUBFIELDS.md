@@ -22,7 +22,7 @@ What the 2025 preprint (arXiv 2509.14662, EMNLP 2025) labels and measured. It la
 
 ## Deep research
 
-One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
 
 | Subfield | Deep document | Status |
 |---|---|---|
