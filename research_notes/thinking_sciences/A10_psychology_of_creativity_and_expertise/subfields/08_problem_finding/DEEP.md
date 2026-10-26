@@ -469,3 +469,10 @@ Judging rule for all: judges never see authorship, are not of the generator's fa
 - [V] Williamson, Ji, Dwyer (2025) syntactic blind spots: https://arxiv.org/pdf/2510.01831 (d17)
 - [M] CRTBench logical reformulation consistency (search summary): https://www.alphaxiv.org/abs/2607.14528 (d18)
 - Search records of absence: a35, d19 (no LLM test of the Getzels paradigm; no paired open-mode, harm-rate or template tests found).
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A10.08-K05** (now single-source: the sources are not independent). Numbers verified (N=90, verbal flexibility r=.71-.76, figural .14-.31, fluency moderator CI -.084 to .625) but both the Frontiers 2021 study and the meta-analysis dissertation are by the same author (Abdulla Alabbasi), and the mixed/negative earlier links (Arlin, Getzels and Smilansky, Lee and Cho, Ambrosio, Runco and Okuda) were only read second-hand through them; also r up to .76 means verbal DT and problem finding overlap heavily.
+- **A10.08-K13** (now single-source: only one opened source, code check).

@@ -340,3 +340,10 @@ All arms at equal total tokens. Seeded-flaw items: plans, programs, schedules or
 - [M] Davis and Stan (1984) RAND R-3235 (c29, via Snow Globe)
 - [M] Bakhtin et al. (2022) Cicero (c30, via Richelieu)
 - [M] Jensen et al., actor-identity effects (b13, via Elbaum and Panter)
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E12.02-K25** (reworded: the sources support less). Payne (21 games, 29-64%) and Adl & Williams (3,604 games, 10.7% to 28.6%) verified, but Solopova et al. does not show models pick more cooperative actions than graduate students (only their explanations are cooperative in framing; some models were more coercive on economic choices), and Payne's models did sometimes reduce violence (return to start line) though never chose accommodation or withdrawal. Corrected claim: In Payne's 21 model-vs-model nuclear-crisis games no model ever chose accommodation or surrender (only de-escalation as far as returning to the start line) and strategic-threat level was reached in 29-64% of games depending on the model; in Solopova et al.'s menu simulations models' explanations were cooperative in framing but their actions were mixed against graduate-student players (some more coercive); one-line framing moved escalation from 10.7% to 28.6% in 3,604 games (Adl and Williams). No Lamparth replication with experts was found.
+- **E12.02-K06** (now single-source: only one opened source, code check).

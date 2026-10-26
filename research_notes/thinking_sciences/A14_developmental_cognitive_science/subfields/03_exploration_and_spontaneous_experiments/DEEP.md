@@ -383,3 +383,9 @@ All arms get the same token budget per item. Run on renamed machines or new task
 - Own toy simulation (no LLM calls): D:/research_scratch/A14.03/tmp/A14.03_gate_sim.py (d11)
 
 Critique note: the re-open pass in critique.md confirmed Cook, Kosoy, Siegel, Samiei and Jhaveri numbers. Alderete, GX-Chen and Pan were re-read in the gap pass (d05, d07, d10) for the numbers shown above, and their figure-only values stay unverified.
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A14.03-K18** (reworded: the sources support less). Lidayan et al. do show entropy and empowerment (not information gain) track human exploration in Crafter, but Pan et al.'s Little Alchemy 2 regression uses uncertainty and empowerment only and never tests information gain, and neither source tests the 'info gain is right in closed hypothesis sets' half. Corrected claim: In a large open world (Crafter), entropy and empowerment track human exploration progress while information gain does not consistently (Lidayan et al., children and adults); in Little Alchemy 2 humans balance uncertainty and empowerment while most LLMs rely on uncertainty alone (Pan et al.; information gain not tested). Information gain as the test selector is supported in small closed hypothesis sets by separate studies (e.g. Zendo, blicket), not by these sources.

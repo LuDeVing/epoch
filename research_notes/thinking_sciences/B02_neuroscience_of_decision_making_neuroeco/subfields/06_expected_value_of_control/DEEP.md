@@ -416,3 +416,10 @@ Rules for all tests: both arms at equal measured total tokens (report realised m
 - Search records, not sources: d19 (https://www.semanticscholar.org/), d20 (https://arxiv.org/).
 
 Caveat on newer preprints: Mirzaei, Bulut, Oladri, Jali, Kassenaar are 2026 preprints from small teams, not peer reviewed.
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 10 established claims: 8 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B02.06-K02** (reworded: the sources support less). Payoff-minus-cost (EVC) is Shenhav et al.'s theoretical proposal, not a rule shown by the data; Westbrook's results are consistent with it, and the delay-discounting link is modest (R2=0.14, n=33). Corrected claim: Effort-based choice is consistent with a payoff-minus-cost account (EVC theory): in Westbrook et al. 2013 people trade money against n-back load, discounting rises with load, larger offers are discounted less, and effort discounting correlates modestly with delay discounting (B=0.30, P=0.03, R2=0.14, n=33).
+- **B02.06-K12** (now single-source: the sources are not independent). The R1-32B AIME numbers (55.8 at 12K, 54.9 at 16K; difficulty optima 1.5K and 8K) all come from one arXiv preprint (Zhou 2026, 60 AIME problems, v1) listed twice (c06, c07); the other listed papers (Liu, Sprague) concern chain-of-thought hurting, not token-budget curves.

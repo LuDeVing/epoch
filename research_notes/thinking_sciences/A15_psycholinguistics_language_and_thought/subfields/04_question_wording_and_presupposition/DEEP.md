@@ -563,3 +563,10 @@ Marked **[V]** opened (page or PDF text read) and **[M]** snippet or second-hand
 - [V] arXiv title searches (gap statement, October 2026). https://arxiv.org/search/?query=false+premise&searchtype=title (d25); c23 is the same gap in the earlier pass [M].
 
 **Links to other subfields in this run** (not covered here): Bias and debiasing; Heuristics and biases; Outside view and base rates; Diagnosticity of evidence; Reflective reasoning and second look; Alternative-explanation controls.
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 9 established claims: 7 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A15.04-K08** (now single-source: the sources are not independent). Numbers verified (.37 vs .53/.55; .30 vs .40; 24h-delay warning no effect) but both primary studies are from the same lab (Thomas, Karanian, Race); the only other support is Wikipedia citing Blank and Launay 2014 and a numberless review.
+- **A15.04-K26** (reworded: the sources support less). Numbers verified, but the DPO anti-pressure figures are for Llama-3.1-8B on EX-FEVER only (Llama-3.2-3B, Gemma, Qwen3 differ; Qwen3 yielding rose 4.5), the -0.50 is the framing score on SS for Llama-70B (GPT-4o 0.48), and 95% is score 1 (94) plus score 2 (1). Corrected claim: A blanket anti-agreement step can cost accuracy on clean inputs. In ELEPHANT, naive instruction prepending drove Llama-70B's framing-sycophancy score on the SS set to -0.50 (all face-preservation removed, even where affirmation is appropriate; GPT-4o stayed at 0.48); in Llama-3.1-8B on EX-FEVER, DPO anti-pressure cut unsupported yielding by 32.9 points but cut rational updating on real evidence by 48.9-53.7 points (other backbones differ); and a premise-identification prompt scored 1-2 (wrongly challenged) on 95% of true-premise Cancer-Myth questions for gemini-3-flash without RAG.

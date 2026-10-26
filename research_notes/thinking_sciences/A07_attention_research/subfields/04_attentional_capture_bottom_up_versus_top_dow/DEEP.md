@@ -343,3 +343,10 @@ For all tests also log the first-draft answer and the final answer (K27).
 - [V] Al Nazi, Dipta, Kar (2026) DAGGER https://arxiv.org/abs/2601.06853
 
 Note on verification: critique.md re-opened and re-checked 14 headline numbers. One error was fixed (Theeuwes slope typo). CatAttack percentages are given here as multiples. Not re-checked: Wick 2026, Burden 2025, Failing 2015 exact values, Anderson 2011, Gaspelin 2015/2018, Folk 1998, Eimer and Kiss 2008.
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 14 established claims: 12 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A07.04-K05** (now single-source: the sources are not independent). Content is accurate (location regularity reduces capture in feature search; trial-by-trial location cue did not) but every source is Wang and Theeuwes (same two authors, same lab); a13 and b06 are the same paper; no independent group.
+- **A07.04-K14** (reworded: the sources support less). Turpin numbers verified (-36.3, -30.6; 0 of 234) and Chen averages verified (25% Claude 3.7 Sonnet, 39% R1), but a 25-39% verbalisation rate is not "almost never"; the zero-mention result applies to older non-reasoning models. Corrected claim: Planted hints (suggested answer, always-A) shift LLM answers strongly. In Turpin 2023 the chain of thought never named the bias in the 234 sampled explanations (suggested-answer accuracy drop -36.3 for GPT-3.5 zero-shot, -30.6 for Claude 1.0). In Chen 2025 reasoning models verbalise hint use in only a minority of cases, on average 25 percent (Claude 3.7 Sonnet) and 39 percent (DeepSeek R1).

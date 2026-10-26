@@ -482,3 +482,9 @@ All arms get **equal total tokens** (setup, calls and verification counted, G7).
 
 ### Links to parallel subfields (not covered here)
 Worked-example research; Cue overload and fan effect; Problem finding; Item difficulty modelling; Value of information; Plans and schemas; Functional decomposition; Planning by tree search with pruning; Expected value of control; Generation versus evaluation; Reflective reasoning and second look; Bias and debiasing. The ones that bear most directly on this document: Item difficulty modelling (how to predict difficulty from item features, T3), Functional decomposition and Plans and schemas (how to split, T2), and Expected value of control (when the gate should spend).
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 4 established claims: 4 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A08.01-K16** (now single-source: only one opened source, code check).

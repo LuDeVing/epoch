@@ -415,3 +415,8 @@ All arms get the same total token budget (including setup, G7). Report mean and 
 - [V] Yang et al. (2025) GSM-DC. https://arxiv.org/pdf/2505.18761 (d11)
 - [V] Schuster, Gautam, Markert (2026) Whose facts win. https://arxiv.org/pdf/2601.03746 (d15; negative use only)
 - [M] Search note on large replications of Byrne. https://eprints.illc.uva.nl/1529/ (d18)
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 12 established claims: 12 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

@@ -533,3 +533,17 @@ Operational rule for all of them: add an element to SCHEMA.md only if it wins at
 - [M] Search coverage and gap logs (c29, d18, b27): notes, not sources.
 
 *Opened:false lines in the evidence files (treat as unverified): a14 (partly checked in critique), a19, a20, a30, c05 (replaced by d14), c22 (numbers re-checked in critique), c24, c25 (replaced by d09), c26, c27, c29.*
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 9 established claims: 7 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C10.01-K06** (reworded: the sources support less). Forbus et al. 2017 gives O(n^2 log n) and the 52 of 56 (93%) figure, but it is a 1990 test (Forbus and Oblinger) of a simple early version of greedy merge, not the current multi-mapping version; the two cited SME sources are the same paper and the SMTB paper does not report it. Corrected claim: SME's greedy merge keeps mapping construction polynomial (O(n^2 log n)); in an early 1990 test of a simple version of greedy merge on 56 analogies, it produced the same best mapping as exhaustive merge in 52 (93%), and failed in 4 where many large kernels conflicted (reported in Forbus et al. 2017).
+- **C10.01-K17** (number corrected). Webb numbers (OR=0.37 p=.0003; GPT-3 far p=.065; GPT-4 far two-sided binomial p=.0039) are right, but p=.0039 corresponds to 27 of 36 correct (18 stories x 2 orders; Lewis and Mitchell list Webb's GPT-4 total as 27/36), not 8 of 8 (8/8 two-sided is .0078); also the r=-.032 in Inani et al. is between humans and a BERT sentence-embedding model, not LLM errors. Corrected claim: On the Gentner et al. 1993 story analogies, GPT-3 was worse than students (OR=.37, p=.0003; far analogy not above chance, p=.065), while GPT-4 reached significance on far (27 of 36 comparisons, two-sided binomial p=.0039); GPT-4 is correct more often when the right answer is listed first (Lewis and Mitchell: 1.00 vs .72). Item-level work (Inani et al.) finds a BERT embedding model's item difficulty does not track human difficulty (r=-.03, p=.899).
+- **C10.01-K04** (now single-source: only one opened source, code check).
+- **C10.01-K10** (now single-source: only one opened source, code check).
+- **C10.01-K15** (now single-source: only one opened source, code check).
+- **C10.01-K16** (now single-source: only one opened source, code check).
+- **C10.01-K21** (now single-source: only one opened source, code check).
+- **C10.01-K24** (now single-source: only one opened source, code check).
+- **C10.01-K25** (now single-source: only one opened source, code check).

@@ -454,3 +454,8 @@ All tests: both (or all) arms at equal total tokens (input plus output plus tool
 - [V] d21. Qwen Team 2025. https://arxiv.org/abs/2505.09388
 
 **Cautions carried from critique.md.** PAL text and table disagree on CoT GSM-Hard (20.1% vs 23.1%); use "about 20-23% vs about 61%". Mind's Eye has two gain figures (27.9/46.0 table; 18.4/34.2 average over sizes). The Lanham AQuA -4.69 figure is HellaSwag, and AQuA has the least post-hoc reasoning. ReAct comparison should include CoT-SC alone (33.4 on HotpotQA). SLEUTH per-hop gains are +11.9, +10.4, +10.9. Some table rows (Chen cost table, DART Table 1, QuestBench, Pedrozo Qwen3-8B rows) were garbled in extraction; only readable cells were used. Qwen3 figures are builder-reported.
+
+## Source audit (2026-10-27)
+
+Fresh auditors re-opened the sources of 13 established claims: 13 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
