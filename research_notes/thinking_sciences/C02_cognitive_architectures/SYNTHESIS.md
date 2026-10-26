@@ -116,3 +116,5 @@ Most of these repeat 4b. Only the store rules and the Soar-count point are new.
 - Subfields 02 and 04 to 10 are not researched. ACT-R utility, activation and compilation remain open.
 - Human data on impasses and learning curves read as abstracts only.
 - Our bench lacks long-horizon tasks, tool failures and a store large enough to see retrieval cost.
+
+**Audit (code check, 2026-10-26):** C02.01-K01, C02.01-K05 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

@@ -136,3 +136,5 @@ Order: T1 and T2 first (they decide whether search and escalation stay). T13 and
 - **Oracle gaps may be inflated** (A02.04-K30 counts one lucky run per paradigm).
 - **Human-only items do not transfer:** think-aloud effects (A02.01-K30, contested), the intelligence link (A02.04-K23), mental-then-external transfer (A02.01-K13).
 - **No bench for these tests.** The bench holds ARC and BRAINTEASER only. Hanoi-like, Blocksworld-like, multi-goal and hidden-rule item generators with code checkers are a precondition for T1 to T7.
+
+**Audit (code check, 2026-10-26):** A02.01-K01, A02.01-K02, A02.02-K01 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

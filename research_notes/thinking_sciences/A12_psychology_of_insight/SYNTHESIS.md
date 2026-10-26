@@ -112,3 +112,5 @@ Order to run: T1 first (cheapest, from logs we hold), then T2 (its bank feeds T3
 - **Unresearched subfields** listed in section 1, notably methods and measurement and Gestalt fixation.
 - **Bench limits.** Rush Hour 6x6 is too easy for frontier models (about 92%), NoveltyBench has no single-answer check, and effects shrink with model strength. Rerun on the model we ship.
 - **No open-ended progress measure** for tasks without a distance (research, writing).
+
+**Audit (code check, 2026-10-26):** A12.04-K10 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

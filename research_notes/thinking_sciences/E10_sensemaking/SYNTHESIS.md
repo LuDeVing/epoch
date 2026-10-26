@@ -141,3 +141,5 @@ All 36 unknown ids are covered. Cross-cutting: every test above also needs the S
 - **Token cost.** Most gain figures omit cost, so none can be judged at equal tokens yet.
 - **Frontier models.** Several 2026 results name models we cannot cross-check; rerun key arms on the models we deploy.
 - **Cross-field.** Compare with A12 (insight), C09 (model-based diagnosis), E08 and E09 when their syntheses exist.
+
+**Audit (code check, 2026-10-26):** E10.01-K25 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

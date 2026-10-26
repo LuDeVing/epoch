@@ -118,3 +118,5 @@ Run order: T1, then T2 with T4, then T3, then T7, T6, T8.
 - Only the A01 synthesis exists to cross-check; section 3 compares against A01 alone.
 - No probe cost model (tokens, wall-clock, irreversibility).
 - 43 of 67 claims are single-source or contested; the stricter independence re-check is still pending.
+
+**Audit (code check, 2026-10-26):** C09.01-K26, C09.06-K12 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

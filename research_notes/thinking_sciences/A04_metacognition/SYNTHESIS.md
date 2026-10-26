@@ -111,3 +111,5 @@ Run order: T1 first (precondition, and its logs seed T3), then T2 and T4 on the 
 - Long-horizon agent control by confidence has no published test with irreversible steps.
 - Whether metacognitive skills form one faculty is open (monitoring and answering skill do not rank together; A04.08-K17).
 - Several sources were seen as abstract or snippet only (the 33-model atlas, Koriat 1997, the meta-analysis tables). Do not quote their numbers as verified.
+
+**Audit (code check, 2026-10-26):** A04.03-K01, A04.03-K20 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

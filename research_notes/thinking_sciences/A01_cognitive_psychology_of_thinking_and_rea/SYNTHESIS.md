@@ -153,3 +153,5 @@ Order to run: T1 first (it gates T4, T5, T16), then T2 and T8 (cheapest, widest)
 - **Untested topics:** abduction (A01.08-K24, 42% vs 72%, one study), generalised quantifiers ("most", "few"), belief updating over many turns (A01.09-K28), free-text syllogisms on a stated key, falsifying probes on ARC grids (no grid oracle), data-driven hypotheses with a statistical gate (A01.02-K16).
 - **No way to read internal state.** Why written reasoning cuts the content effect while validity and plausibility signals stay aligned (A01.06-K12) needs open weights.
 - **Primary papers unread:** Evans and Curtis-Holmes 2005, Newstead 1992, Heit and Rotello 2010, Stanovich and West 1998 and others listed in each UNKNOWNS "open questions". They would sharpen priors; none gates a test.
+
+**Audit (code check, 2026-10-26):** A01.02-K07 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

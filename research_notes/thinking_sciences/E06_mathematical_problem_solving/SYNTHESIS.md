@@ -97,3 +97,5 @@ For the agent, human results are design hints until tested on our model (section
 - Selection versus execution split of operators is unmeasured (needs hand-written plans).
 - Frontier models with hidden reasoning: shapes of traces unknown.
 - Hembree effect sizes and the Schoenfeld 1979 replication at scale are missing; only human calibration depends on them.
+
+**Audit (code check, 2026-10-26):** E06.01-K04 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
