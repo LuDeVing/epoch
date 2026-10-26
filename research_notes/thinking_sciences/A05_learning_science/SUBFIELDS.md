@@ -17,6 +17,23 @@ Learning science studies how people acquire knowledge and skill and how to teach
 | Scaffolding and guided discovery | Support then withdrawal [M] | Wood, Bruner, Ross; Kirschner, Sweller, Clark | Med | S0 mode |
 | Motivation, mindset, classroom factors | [M] | Dweck | Low | does not transfer |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Worked-example research | [`subfields/01_worked_example_research/DEEP.md`](subfields/01_worked_example_research/DEEP.md) | done, batch 5 (2026-10-27) |
+| Expertise reversal and fading | | not started |
+| Testing effect (retrieval practice) | | not started |
+| Desirable difficulties | | not started |
+| Transfer of learning | | not started |
+| Productive failure | | not started |
+| Self-explanation | | not started |
+| Intelligent tutoring and knowledge tracing | | not started |
+| Scaffolding and guided discovery | | not started |
+| Motivation, mindset, classroom factors | | not started |
+
 ## Dig into next
 
 1. **Worked examples with fading.** Questions: (a) Does showing one solved subgoal of the same class beat none at equal tokens? (b) Do partly completed examples work as well as full ones, as Paas found? (c) Does a second, more complex example raise transfer (Reed and Bolstad)? Evidence: library ablation by class pass rate; expertise reversal predicts a cross-over.

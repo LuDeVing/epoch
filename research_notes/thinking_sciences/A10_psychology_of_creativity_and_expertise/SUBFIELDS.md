@@ -17,6 +17,23 @@ This area joins two literatures: the psychology of creativity (how people create
 | Creative process models | Wallas stages; Csikszentmihalyi five phases; incubation [V5] | Wallas (1926); Csikszentmihalyi | Low | descriptive only |
 | Naturalistic decision making | Experts decide by recognition [M] | Klein | Med | S0 quick mode |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Einstellung (set) effect | | not started |
+| Expert flexibility and adaptive expertise | | not started |
+| Chunking and templates | | not started |
+| Deliberate practice | | not started |
+| Limits of deliberate practice | | not started |
+| Expertise research programmes | | not started |
+| Expert versus novice problem representation | | not started |
+| Problem finding | [`subfields/08_problem_finding/DEEP.md`](subfields/08_problem_finding/DEEP.md) | done, batch 5 (2026-10-27) |
+| Creative process models | | not started |
+| Naturalistic decision making | | not started |
+
 ## Dig into next
 
 1. **Einstellung.** Questions: (a) How often does our model keep a familiar longer method when a simpler one exists (Luchins items)? (b) Luchins found a short warning ("Don't be blind") worked on people; does an equivalent work on the model, given our note that careful-thinking prompts do not help? Test it. (c) Does forced harvest of dropped candidates or an assigned alternative direction cut the trap? Evidence: Luchins and Bilalic items with known better solutions; trap rate by arm.

@@ -17,6 +17,23 @@ Judgment and decision making (JDM) studies how people estimate, predict and choo
 | Dual-process accounts of judgment | System 1 and System 2 | Kahneman (2011) | Low | contested; see A01 |
 | Intertemporal and social choice | Delay discounting, fairness [M] | Loewenstein; Fehr | Low | does not transfer |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Heuristics and biases | [`subfields/01_heuristics_and_biases/DEEP.md`](subfields/01_heuristics_and_biases/DEEP.md) | done, batch 5 (2026-10-27) |
+| Fast and frugal heuristics, ecological rationality | | not started |
+| Prospect theory and risky choice | | not started |
+| Framing and preference construction | | not started |
+| Debiasing by training | | not started |
+| Debiasing by structure: incentives, nudges, reference class forecasting | | not started |
+| Calibration and overconfidence | | not started |
+| Expert judgment and forecasting | | not started |
+| Dual-process accounts of judgment | | not started |
+| Intertemporal and social choice | | not started |
+
 ## Dig into next
 
 1. **Heuristics and biases: anchoring and input cues.** Questions: (a) How much does a stated wrong guess or irrelevant number move our model's answers, by class and size? (b) Does S1's marked block restore accuracy? (c) Does placing the hint after the first attempt help? Evidence: matched items with and without planted cues at equal tokens.

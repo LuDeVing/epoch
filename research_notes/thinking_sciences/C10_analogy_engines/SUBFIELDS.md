@@ -17,6 +17,23 @@ Analogy engines are programs that find and use a correspondence between two stru
 | Vector-space relational similarity | Relational similarity from text statistics | Turney 2006 [V via Wikipedia] | Med | cheap similarity |
 | Analogical prompting for LLMs | Model recalls its own related problems | Yasunaga et al., arXiv 2310.01714 [V] | Med | S3 variant, O7 |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Structure mapping (SME) | [`subfields/01_structure_mapping_sme/DEEP.md`](subfields/01_structure_mapping_sme/DEEP.md) | done, batch 5 (2026-10-27) |
+| Systematicity | | not started |
+| Candidate inferences | | not started |
+| Incremental mapping | | not started |
+| Analogical retrieval (MAC/FAC) | | not started |
+| Multiconstraint theory | | not started |
+| Working-memory-limited mapping | | not started |
+| Neural analogy and relation learning | | not started |
+| Vector-space relational similarity | | not started |
+| Analogical prompting for LLMs | | not started |
+
 ## Dig into next
 
 1. **Structure mapping and candidate inferences.** Can an LLM write both situations as typed relation lists, with code (a small SME) computing the mapping and score? Does the score predict that a transferred step helps? Evidence: tasks with known analogues; correlation of score with success. Needed reading: the SME algorithm paper (the PDF fetch failed).

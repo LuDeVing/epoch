@@ -1,0 +1,32 @@
+# Wargaming: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| E12.02-U1 | Does a separate-call adversary improve plans over plan alone or self-critique? | Adversary pass at S4 for tasks with a reacting party | S4 | K01, K26, K18; single-source, human-only and simulator-only | Arms: plan alone; plan plus self-critique; plan plus separate adversary. Items: plans with seeded flaws that need a counter-actor. Metric: flaw recall, false alarms, final success | Recall up 10+ points over self-critique, false alarms up under 5, success not lower | High |
+| E12.02-U2 | Is the adversary step worth its tokens only when a reacting party exists? | Trigger rule in S0: run adversary only if counter-actor | S0 / S4 | K02; single-source (Panalba, one case) | Arms: always on vs trigger rule. Items: mix with and without counter-actor. Metric: accuracy and tokens | No accuracy loss (within 1 point) and tokens down 15%+ | High |
+| E12.02-U3 | How many adversary runs before new flaws stop appearing; does code clustering help? | N adversary runs plus code-clustered weakness list; stop rule | G5, S4 | K03, K24, K04; single-source, synthetic | Arms: 1, 3, 5, 10 runs at equal total tokens, 3 brief paraphrases. Metric: new flaws per run, same-top-weakness share | A fixed N beats N=1 on recall by 10+ points at equal tokens, with a visible plateau | High |
+| E12.02-U4 | Does a code-enumerator or different-model adversary find more flaws than a same-model persona? | Code-search or cross-model adversary at S4 | G4, S4 | K15, K23, K05; single-source, one simulator | Arms: same-model persona; different model; code enumerator. Items: seeded-flaw plans. Metric: flaw recall | Either alternative beats persona by 10+ points recall | High |
+| E12.02-U5 | Does giving the adversary code-built goals and option list beat asking it to infer intent? | Goals and options supplied to the adversary | S4, O5 | K10, K20; single-source, older models | Arms: inferred intent vs supplied goals and options. Metric: recall, run-to-run agreement | Recall up 8+ points or agreement up 15+ points | Med |
+| E12.02-U6 | Does testing a plan as short rollout steps with code-held state beat one long imagined campaign? | Stepwise rollout with code state | S4 | K11; single-source (WGSR-Bench) | Arms: long single-call campaign vs 5-step rollout. Metric: flaw recall, illegal-state rate | Illegal state down by half and recall not lower | Med |
+| E12.02-U7 | How much does an LLM adjudicator invent or flip vs rules, and does bounding help? | Adjudication restricted to bounded adjustments, rules first | G8 | K12, K22; single-source, no accuracy baseline | Arms: code rules; bounded judge; free judge. Items: moves with known rule outcomes. Metric: agreement with rules, invented-consequence rate, flip rate on re-run | Bounded judge flips under 6% and agrees with rules 90%+; free judge worse | Med |
+| E12.02-U8 | Does one model in planner, adversary and judge roles produce role collapse? | Different model for adversary or judge | G4, G8 | K13, K05; position paper, unmeasured | Arms: one model in all roles vs different models. Metric: error correlation across calls, flaw recall | Error correlation drops 0.15+ and recall not lower | Med |
+| E12.02-U9 | Does scoring generated plans by code rollout beat model-opinion ranking? | Rollout scoring at S4 / S7 where a simulator exists | S4, G8 | K16; single-source, scripted enemy | Arms: model-opinion rank vs code-rollout rank. Metric: agreement with ground-truth ranking | Rollout rank agrees 10+ points more | Med |
+| E12.02-U10 | Does working backwards from a named bad end state (O5) find flaws a forward adversary misses? | Backward-failure operator at S6 | O5 | a07 only; no direct test | Arms: forward adversary vs backward-from-failure vs both. Metric: flaw recall | Union beats forward alone by 8+ points | Med |
+| E12.02-U11 | Do stored lessons from verified simulated runs improve later similar tasks? | Lesson memory from wargame runs | Memory | K17; single-source, small effect | Arms: no memory vs lesson memory (shown after first attempt). Metric: later-task success | Gain on 2 different problems, per schema rule | Low |
+| E12.02-U12 | Does logging overrides of adversary findings expose a planner that ignores them? | Override log; findings may not be edited by planner | G5, log | K27; single-source, secondary case | Arms: free override vs logged override with reasons. Metric: share of overridden findings later shown right | Overridden findings right 20%+ of the time (then block free override) | Low |
+| E12.02-U13 | Is wargame accuracy on historical scenarios inflated by memory? | Anonymised or post-cutoff held-out scenarios in the bench | G7 | K14; general leakage evidence only | Arms: known vs anonymised vs post-cutoff scenarios. Metric: accuracy | Accuracy drop of 10+ points on anonymised | Low |
+
+## Open questions we cannot test on our bench yet
+- Whether a wargame step finds real flaws in real military plans: no ground truth for real operations. Would need declassified red-team after-action data or expert-labelled plans.
+- Whether Green's role-play advantage holds for LLM role-players: needs Green's eight conflict descriptions and outcomes; materials not found.
+- Accuracy of LLM adjudication against human umpires: needs a human-adjudicated set. The only claimed kappa came from a withdrawn paper.
+- Expert replication of Lamparth with 2026 models: needs expert participants.
+- Brewer and Blair 1979, Perla 1985, Naval War College 1894 records, RAND and Army red-team reports: not opened. Reading them would unblock outcome-level history.
+- Whether escalation tone matters for non-military plan review: no study; needs our own items.
+
+## Order to run
+1. E12.02-U1: the core A/B. Everything else only matters if the adversary step helps at all.
+2. E12.02-U4: opponent type. Cheap to add as arms on the same seeded-flaw set, and may decide whether the adversary is a prompt or code.
+3. E12.02-U3: repetition and clustering. It sets the number of runs and the stop rule, which fix the token cost of the step.

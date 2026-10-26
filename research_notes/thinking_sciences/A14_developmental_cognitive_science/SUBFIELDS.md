@@ -21,6 +21,23 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 
 Corrections from the first draft: Cook et al. show exploration is sensitive to ambiguity, so "children explore randomly" and "children always test well" are both wrong. Wikipedia's page on cognitive development does not cover Bayesian models, so that attribution rests on the Cook paper and the theory-theory page.
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Theory theory / child as scientist | | not started |
+| Bayesian and causal learning | | not started |
+| Exploration and spontaneous experiments | [`subfields/03_exploration_and_spontaneous_experiments/DEEP.md`](subfields/03_exploration_and_spontaneous_experiments/DEEP.md) | done, batch 5 (2026-10-27) |
+| Expected information gain models | | not started |
+| Simulation vs theory accounts | | not started |
+| Piagetian and neo-Piagetian stages | | not started |
+| Vygotsky: scaffolding | | not started |
+| Core knowledge | | not started |
+| Scientific reasoning skills | | not started |
+| Executive function, exploration vs exploitation | | not started |
+
 ## Dig into next
 
 **1. Choosing informative tests.**

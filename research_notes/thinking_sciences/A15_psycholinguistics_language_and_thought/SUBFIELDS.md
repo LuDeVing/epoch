@@ -21,6 +21,23 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 
 Corrections from the first draft: the Wolff and Holmes seven-category scheme was from a search snippet and could not be opened (certificate error). Bilingual foreign-language effects are supported only by the Wikipedia framing page statement ("seems to diminish in a non-native language"), so the Keysar citation stays (M).
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Risky-choice framing | | not started |
+| Valence framing | | not started |
+| Moderators of framing | | not started |
+| Question wording and presupposition | [`subfields/04_question_wording_and_presupposition/DEEP.md`](subfields/04_question_wording_and_presupposition/DEEP.md) | done, batch 5 (2026-10-27) |
+| Thinking for speaking | | not started |
+| Whorfian psychophysics | | not started |
+| Cross-language domains | | not started |
+| Language as a tool for relations | | not started |
+| Language of thought | | not started |
+| Pragmatics and shallow comprehension | | not started |
+
 ## Dig into next
 
 **1. Framing and wording effects on a model.**

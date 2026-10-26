@@ -16,6 +16,22 @@ Cognitive systems engineering (CSE) was set up in the early 1980s by Hollnagel a
 | Resilience engineering | Four potentials: respond, monitor, learn, anticipate; Woods's failure patterns: decompensation, working at cross purposes, stuck in outdated behaviour | Hollnagel, Woods, Cook, Dekker; first symposium 2004 [V] | Med | Look back; impasse patterns |
 | Work and domain analysis | Mapping goals, constraints, decisions of a job | Rasmussen, Vicente [M] | Med | S0 problem-class gate |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Joint cognitive systems | | not started |
+| Anomaly response (dynamic fault management) | [`subfields/02_anomaly_response_dynamic_fault_management/DEEP.md`](subfields/02_anomaly_response_dynamic_fault_management/DEEP.md) | done, batch 5 (2026-10-27) |
+| Coordination and common ground | | not started |
+| Cognitive artifacts | | not started |
+| Macrocognition | | not started |
+| Naturalistic decision making | | not started |
+| Human error and recovery | | not started |
+| Resilience engineering | | not started |
+| Work and domain analysis | | not started |
+
 ## Dig into next
 
 1. **Anomaly response and failure patterns.** Questions: Do Woods's three failure patterns (decompensation, cross purposes, stuck in outdated behaviour) have counterparts in an LLM loop (budget spent without change, sub-attempts undoing each other, repeating a dead rule)? Can each be detected by code and mapped to an impasse operator? Evidence needed: Woods's papers (not opened), and a classification of our failed runs.

@@ -17,6 +17,23 @@ This field uses imaging, electrophysiology and behaviour to ask what happens whe
 | Incubation, sleep, mood | Breaks help only a little (4 minutes equals 12); sleep roughly doubled insight in one study; positive mood helps | Segal 2004; Wagner 2004; Subramaniam 2009 [V] | Low | Excluded by SCHEMA 4b for incubation; see B04 |
 | Individual differences and stimulation | IQ, openness, tDCS | Various | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Network neuroscience of creative cognition | | not started |
+| Generation versus evaluation | [`subfields/02_generation_versus_evaluation/DEEP.md`](subfields/02_generation_versus_evaluation/DEEP.md) | done, batch 5 (2026-10-27) |
+| Insight as a process | | not started |
+| Insight neural signatures | | not started |
+| Metacognition of insight | | not started |
+| Cognitive conflict and impasse | | not started |
+| Semantic memory network structure | | not started |
+| Cognitive control and creativity | | not started |
+| Incubation, sleep, mood | | not started |
+| Individual differences and stimulation | | not started |
+
 ## Dig into next
 
 **1. Generation versus evaluation.**

@@ -16,6 +16,22 @@ Legal reasoning is the study of how lawyers, judges and jurors reach decisions f
 | Judicial bias and noise | Order, fatigue, anchoring, sentence variance | Danziger et al. 2011 (disputed); Kahneman, Sibony, Sunstein 2021 [M] | Med | Guardrail; background |
 | Evidence and probability reasoning | Bayesian reading of evidence, prosecutor's fallacy | Fenton and Neil [M] | Med | Verify |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Story model of juror decisions | [`subfields/01_story_model_of_juror_decisions/DEEP.md`](subfields/01_story_model_of_juror_decisions/DEEP.md) | done, batch 5 (2026-10-27) |
+| Other acceptance principles | | not started |
+| Critiques of the story model | | not started |
+| Computational coherence models | | not started |
+| Case-based reasoning in law | | not started |
+| Argumentation and defeasible rules | | not started |
+| Analogy and precedent in legal theory | | not started |
+| Judicial bias and noise | | not started |
+| Evidence and probability reasoning | | not started |
+
 ## Dig into next
 
 1. **Story model and coverage selection.** Questions: Can candidate rules be scored in code on coverage (share of observations explained), then coherence and uniqueness? Does coverage as a tiebreaker beat a vote in S7? What do the critiques imply, namely that scoring should be on the whole story, not item by item? Evidence needed: the 1992 experiments (my attempt to read a Hastie and Pennington PDF failed), and a test in our logs.

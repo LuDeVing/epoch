@@ -17,6 +17,23 @@ Formal logic studies valid inference in precise languages. It is divided by what
 | Inductive logic and ILP | Learning rules from examples | Muggleton | Med | Represent and generate rule candidates (S2, S3) |
 | Computability and complexity | What is decidable, how costly | Turing; Church | Low | Background (budget awareness) |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Classical propositional and first-order logic | | not started |
+| Satisfiability and SMT solving | | not started |
+| Automated theorem proving | | not started |
+| Non-monotonic and default logic | [`subfields/04_non_monotonic_and_default_logic/DEEP.md`](subfields/04_non_monotonic_and_default_logic/DEEP.md) | done, batch 5 (2026-10-27) |
+| Modal and epistemic logic | | not started |
+| Paraconsistent logic | | not started |
+| Intuitionistic and constructive logic | | not started |
+| Logic programming and knowledge representation | | not started |
+| Inductive logic and ILP | | not started |
+| Computability and complexity | | not started |
+
 ## Dig into next
 
 **1. SAT/SMT consistency and counterexample search.** Questions: (a) Can the rule candidates from S2 be encoded so a solver finds an input where two candidates disagree (the discriminating test in S7)? (b) What share of our task classes can be encoded at acceptable cost? (c) Does the solver check beat sampled tests? Evidence: encodability counts and agreement with ground truth.

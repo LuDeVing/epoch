@@ -21,6 +21,23 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 
 Correction from the first draft: Vessey's depth-first versus breadth-first claim is a proposition, not a settled finding, and Ko and Uttl note that expert-novice results may not hold in unfamiliar systems.
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Debugging strategies | | not started |
+| Expertise as chunking | | not started |
+| Program comprehension models | | not started |
+| Strategy vs success | | not started |
+| Gugerty and Olson findings | | not started |
+| Plans and schemas | [`subfields/06_plans_and_schemas/DEEP.md`](subfields/06_plans_and_schemas/DEEP.md) | done, batch 5 (2026-10-27) |
+| Notional machine, mental models | | not started |
+| Cognitive biases in software work | | not started |
+| Language design, tools, education | | not started |
+| Research methods | | not started |
+
 ## Dig into next
 
 **1. Debugging strategy.**

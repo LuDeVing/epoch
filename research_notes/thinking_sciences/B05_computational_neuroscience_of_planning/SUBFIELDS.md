@@ -17,6 +17,23 @@ This field builds mathematical models of how brains plan and tests them on recor
 | Hippocampal sweeps and vicarious trial and error | Lookahead at choice points | van der Meer 2010 (cited in Doll [V]); Redish | Low | Background; lookahead at hard points only (G1) |
 | Pathology of replay | Rumination and craving as dysfunction of prioritised access | Mattar and Daw 2018 [V] | Low | Not relevant |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Cognitive maps | | not started |
+| Model-free, model-based and successor representation | | not started |
+| Replay as offline simulation (Dyna family) | | not started |
+| Prioritised memory access | | not started |
+| Map versus value replay | | not started |
+| Preplay and replay recordings | | not started |
+| Planning by tree search with pruning | [`subfields/07_planning_by_tree_search_with_pruning/DEEP.md`](subfields/07_planning_by_tree_search_with_pruning/DEEP.md) | done, batch 5 (2026-10-27) |
+| Hierarchical planning, options, subgoal discovery | | not started |
+| Hippocampal sweeps and vicarious trial and error | | not started |
+| Pathology of replay | | not started |
+
 ## Dig into next
 
 **1. Prioritised access for the subgoal library.**

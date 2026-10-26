@@ -16,6 +16,22 @@ This field asks what critical thinking is, how to measure it and how to teach it
 | Argument mapping training | Diagram arguments to improve reasoning | van Gelder; Harrell | Med | Represent (S2), scoped to a task class |
 | Informal reasoning research | How people reason with everyday arguments | Kuhn (Deanna); Stanovich | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Definitions and ideals | | not started |
+| Process models | | not started |
+| Skills versus dispositions | | not started |
+| Assessment and tests | | not started |
+| Instruction effectiveness | | not started |
+| Generalisability and transfer | | not started |
+| Bias and debiasing | [`subfields/07_bias_and_debiasing/DEEP.md`](subfields/07_bias_and_debiasing/DEEP.md) | done, batch 5 (2026-10-27) |
+| Argument mapping training | | not started |
+| Informal reasoning research | | not started |
+
 ## Dig into next
 
 **1. Generalisability and transfer.** Questions: (a) What does the evidence say about which skills transfer and which are domain-bound? (b) Does it support keying lessons and operator records by problem class? Evidence: transfer studies, effect sizes with follow-up.

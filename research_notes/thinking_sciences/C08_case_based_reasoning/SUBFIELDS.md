@@ -17,6 +17,23 @@ Case-based reasoning (CBR) solves a new problem by finding similar past problems
 | Retrieval as a bandit | Choose cases by learned value | CASCADE [V] | High | selection |
 | Failure-driven CBR | Keep failures with explanations | Schank; Kolodner [M] | Med | lessons with traps |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| The 4R cycle | [`subfields/01_the_4r_cycle/DEEP.md`](subfields/01_the_4r_cycle/DEEP.md) | done, batch 5 (2026-10-27) |
+| Dynamic memory, early CBR | | not started |
+| Deployed CBR | | not started |
+| Case representation | | not started |
+| Retrieval and similarity | | not started |
+| Adaptation | | not started |
+| Case-base maintenance | | not started |
+| Retention policy | | not started |
+| Retrieval as a bandit | | not started |
+| Failure-driven CBR | | not started |
+
 ## Dig into next
 
 1. **Retention and maintenance.** What is the smallest case record that still lets a later problem reuse it? When does a new case duplicate an old one? Does storing only successes lose useful traps? Evidence: CASCADE-style ablation; our reuse counts and harm cases (a retrieved case that misleads).

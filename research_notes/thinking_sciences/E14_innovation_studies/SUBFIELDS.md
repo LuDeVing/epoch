@@ -15,6 +15,21 @@ Innovation studies examines how new products, methods and technologies arise. It
 | Novelty measurement | Atypical combinations in papers and patents | Uzzi et al. 2013 [M] | Med | Selection (open mode) |
 | Design thinking, stage-gate, open and user innovation | Teachable processes; outside sources | Cooper, Brown, von Hippel, Chesbrough [M] | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Recombinant search | [`subfields/01_recombinant_search/DEEP.md`](subfields/01_recombinant_search/DEEP.md) | done, batch 5 (2026-10-27) |
+| Exploration versus exploitation | | not started |
+| Organisational ambidexterity | | not started |
+| Bandit-style exploration | | not started |
+| Atypicality versus disruption | | not started |
+| Breakthrough innovation | | not started |
+| Novelty measurement | | not started |
+| Design thinking, stage-gate, open and user innovation | | not started |
+
 ## Dig into next
 
 1. **Recombinant search and distance.** Questions: Does Fleming's pattern (lower mean, higher spread for new combinations) match SCHEMA O7? Can distance between components be computed in code? What mix of familiar and new parts did best? Evidence needed: the 2001 paper itself (I read only a summary page), Kaplan and Vakili, Uzzi et al.

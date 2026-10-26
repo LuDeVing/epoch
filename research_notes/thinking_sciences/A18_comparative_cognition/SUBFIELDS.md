@@ -22,6 +22,24 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 
 Correction from the first draft: the crow trap-tube paper is Taylor et al. in Proc. R. Soc. B 276 (published online 2008). Their claim is cautious: crows were "slower and less abstract" than humans.
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Causal reasoning and transfer tasks | | not started |
+| Alternative-explanation controls | [`subfields/02_alternative_explanation_controls/DEEP.md`](subfields/02_alternative_explanation_controls/DEEP.md) | done, batch 5 (2026-10-27) |
+| Limits found | | not started |
+| Tool manufacture and use | | not started |
+| Prospection and mental time travel | | not started |
+| Social cognition in animals | | not started |
+| Insight in animals | | not started |
+| Learning theory | | not started |
+| Methods: parsimony | | not started |
+| Evolution and convergence | | not started |
+| Relational reasoning gap | | not started |
+
 ## Dig into next
 
 **1. Control logic for causal transfer.**

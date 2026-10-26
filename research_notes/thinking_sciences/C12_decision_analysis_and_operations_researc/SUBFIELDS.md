@@ -17,6 +17,23 @@ This field studies how to choose well under uncertainty and cost. It divides int
 | Learned termination | Teaching a model when it knows enough | CaRT, arXiv 2510.08517 [V] | Med | S0, S8 |
 | Search theory | Where to look when finding costs | Koopman; job and price search (named in Wikipedia) [V] | Low | background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Value of information | [`subfields/01_value_of_information/DEEP.md`](subfields/01_value_of_information/DEEP.md) | done, batch 5 (2026-10-27) |
+| Expected value of sample information | | not started |
+| Optimal stopping | | not started |
+| Sequential analysis | | not started |
+| Metareasoning, value of computation | | not started |
+| Bounded rationality, anytime | | not started |
+| MDPs and POMDPs | | not started |
+| Bandit allocation | | not started |
+| Learned termination | | not started |
+| Search theory | | not started |
+
 ## Dig into next
 
 1. **Metareasoning and value of computation.** Can S0 pick the mode by comparing expected gain (class pass-rate lift of checked over direct) with token cost? How much class history makes the estimate stable? Evidence: per-class pass-rate-against-tokens tables from our logs; the Russell and Wefald model form (not yet opened).

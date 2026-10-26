@@ -20,6 +20,22 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 
 Corrections from the first draft: "situated action" (Suchman, Lave) was listed as its own row from memory; the SEP entry has no separate situated section, so it is folded into embedded. SEP adds an explicit caveat list: replicability concerns for well-cited priming findings, interpretation disputes over mirror neurons, and doubts about scaling up.
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Conceptualization (grounded cognition) | | not started |
+| Embedded cognition | | not started |
+| Epistemic action | [`subfields/03_epistemic_action/DEEP.md`](subfields/03_epistemic_action/DEEP.md) | done, batch 5 (2026-10-27) |
+| Extended mind | | not started |
+| Distributed cognition | | not started |
+| Gesture and thinking | | not started |
+| Enactivism | | not started |
+| Replacement / dynamical approaches | | not started |
+| External representations and diagrams | | not started |
+
 ## Dig into next
 
 **1. External representations.**

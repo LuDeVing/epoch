@@ -18,6 +18,24 @@ Neuroeconomics joins economics, psychology and neuroscience to ask how brains as
 | Confidence and metacognition | Reading one's own certainty | Fleming | Med | Use sample consistency, not self-report (SCHEMA 4b) |
 | Risk, loss and social choice | Prospect theory in the brain | Tom et al. 2007 | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Valuation and common currency | | not started |
+| Reward prediction error learning | | not started |
+| Model-based versus model-free control | | not started |
+| Habits versus goal-directed action | | not started |
+| Exploration and exploitation | | not started |
+| Expected value of control | [`subfields/06_expected_value_of_control/DEEP.md`](subfields/06_expected_value_of_control/DEEP.md) | done, batch 5 (2026-10-27) |
+| Evidence accumulation | | not started |
+| Foraging and patch leaving | | not started |
+| Pruning of decision trees | | not started |
+| Confidence and metacognition | | not started |
+| Risk, loss and social choice | | not started |
+
 ## Dig into next
 
 **1. Expected value of control (S0 gate).**

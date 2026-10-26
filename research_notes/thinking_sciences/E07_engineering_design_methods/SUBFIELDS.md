@@ -20,6 +20,22 @@ TRIZ evidence, stated plainly: the encyclopedia entry I opened offers only corpo
 | Design-space exploration | Search, trade-offs | Papalambros; Deb | Med | S7 select |
 | Empirical design research | Metrics of ideation | Shah et al. 2003 | High | What to measure |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Systematic design | | not started |
+| Functional decomposition | [`subfields/02_functional_decomposition/DEEP.md`](subfields/02_functional_decomposition/DEEP.md) | done, batch 5 (2026-10-27) |
+| TRIZ | | not started |
+| Morphological analysis | | not started |
+| TRIZ with systematic design | | not started |
+| Axiomatic design | | not started |
+| Bio-inspired and analogical design | | not started |
+| Design-space exploration | | not started |
+| Empirical design research | | not started |
+
 ## Dig into next
 
 **1. Functional decomposition strategies.**

@@ -16,6 +16,22 @@ Diagnostic reasoning research asks how clinicians get from signs to a working di
 | Probabilistic and test-based reasoning | Likelihood ratios, test thresholds | Sox; Pauker and Kassirer | High | S7 discriminating test; G5 code normalises |
 | Clinical decision support and LLMs | Differential generators, LLMs vs physicians | Goh et al. 2024 | High | Direct LLM evidence |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Hypothetico-deductive model | | not started |
+| Forward and backward reasoning | | not started |
+| Knowledge organisation: illness scripts, categories | | not started |
+| Dual-process theory | | not started |
+| Cognitive bias and premature closure | | not started |
+| Debiasing and cognitive forcing | | not started |
+| Reflective reasoning and second look | [`subfields/07_reflective_reasoning_and_second_look/DEEP.md`](subfields/07_reflective_reasoning_and_second_look/DEEP.md) | done, batch 5 (2026-10-27) |
+| Probabilistic and test-based reasoning | | not started |
+| Clinical decision support and LLMs | | not started |
+
 ## Dig into next
 
 **1. Knowledge-based strategies over process instructions.**

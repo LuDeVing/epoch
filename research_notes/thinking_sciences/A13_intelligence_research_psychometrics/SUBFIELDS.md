@@ -19,6 +19,23 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 | Motivation and test performance | Low scores may reflect low interest in the task | Messick 1989 (V via Wikipedia) | Low | Background only |
 | Processing speed, executive function, prediction, genetics | Speed, inhibition; later life outcomes; heritability | Many | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Factor structure of abilities | | not started |
+| Fluid reasoning (Gf) | | not started |
+| Working memory and Gf | | not started |
+| Capacity hypothesis test | | not started |
+| Working memory training transfer | | not started |
+| Matrix tests and task analysis | | not started |
+| Item difficulty modelling | [`subfields/07_item_difficulty_modelling/DEEP.md`](subfields/07_item_difficulty_modelling/DEEP.md) | done, batch 5 (2026-10-27) |
+| Strategy on matrices | | not started |
+| Motivation and test performance | | not started |
+| Processing speed, executive function, prediction, genetics | | not started |
+
 ## Dig into next
 
 **1. Item difficulty models.**

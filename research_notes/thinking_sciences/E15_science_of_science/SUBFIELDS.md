@@ -17,6 +17,23 @@ Science of science uses large datasets of papers, patents and careers to study h
 | Scientific discovery as reasoning | Hypothesis and experiment spaces, anomalies | Klahr and Dunbar 1988; Langley's BACON [M] | High | State (generate, test) |
 | Automated discovery | Machine scientists, LLM hypothesis search | (page not found, [M]) | Med | Whole schema |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Problem selection | | not started |
+| Novelty and atypicality | [`subfields/02_novelty_and_atypicality/DEEP.md`](subfields/02_novelty_and_atypicality/DEEP.md) | done, batch 5 (2026-10-27) |
+| Knowledge networks | | not started |
+| Team science | | not started |
+| Mentorship and success | | not started |
+| Disruption trends | | not started |
+| Reproducibility and methods | | not started |
+| Funding and incentives | | not started |
+| Scientific discovery as reasoning | | not started |
+| Automated discovery | | not started |
+
 ## Dig into next
 
 1. **Scientific discovery as reasoning (Klahr and Dunbar).** Questions: Does the two-space model (hypotheses, experiments) map onto S3 and S4? What did their studies find about confirming versus disconfirming tests, and does it support S7 counterexample search? Evidence needed: the 1988 paper and Dunbar's lab studies (neither opened).

@@ -17,6 +17,23 @@ Behavioural economics tests how real choices depart from the textbook rational a
 | Resource-rational analysis | Optimal use of limited computation | Lieder and Griffiths 2020 [M] | High | S0 gate; meta-reasoning |
 | Noise and judgement | Unwanted variance across judges | Kahneman, Sibony, Sunstein 2021 [M] | High | Code selects; G4 |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Bounded rationality and satisficing | | not started |
+| Ecological rationality, adaptive toolbox | [`subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md`](subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md) | done, batch 5 (2026-10-27) |
+| Heuristics and biases | | not started |
+| Prospect theory | | not started |
+| Choice architecture and nudging | | not started |
+| Nudge evidence | | not started |
+| Behavioural finance and game theory | | not started |
+| Debiasing | | not started |
+| Resource-rational analysis | | not started |
+| Noise and judgement | | not started |
+
 ## Dig into next
 
 1. **Ecological rationality.** Questions: Which environment features (few cues, redundancy, scarce data) make simple rules win? Can S0 choose direct, short or checked mode from class features? Evidence needed: Gigerenzer's comparisons with conditions (not opened beyond a summary), and our per-mode pass rates.

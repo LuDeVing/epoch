@@ -15,6 +15,21 @@ This field covers how armed forces plan operations and test plans. It divides in
 | Automated wargaming | Simulated evaluation of plans | Cranfield and AIAA studies (search results only, [M]) | Med | Test by running |
 | Red-team failure modes | Organisations use red teaming "for optics"; findings not taken up | Data & Society 2024, cited in War on the Rocks [V] | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Course-of-action development and analysis | | not started |
+| Wargaming | [`subfields/02_wargaming/DEEP.md`](subfields/02_wargaming/DEEP.md) | done, batch 5 (2026-10-27) |
+| Red teaming as alternative analysis | | not started |
+| Technical and physical red teams | | not started |
+| Premortem and prospective hindsight | | not started |
+| Recognition-primed decision making | | not started |
+| Automated wargaming | | not started |
+| Red-team failure modes | | not started |
+
 ## Dig into next
 
 1. **Course-of-action analysis.** Questions: Does the doctrine rule "several distinct, feasible options tested against the opponent" match S3 history plus S4 testing? What criteria and weights are used, and does a coded scorecard beat a vote? Evidence needed: the doctrine manuals (not opened), and any study comparing single-option with multi-option planning (RPD suggests one workable option often suffices).

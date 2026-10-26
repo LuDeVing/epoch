@@ -17,6 +17,23 @@ This field treats learning and understanding as compression: the best explanatio
 | Compression at inference time | Learn per puzzle by minimising code length | CompressARC [M] | Med | alternative solver |
 | Prediction as compression, critique | LLM training seen as coding; contested | arXiv 2501.06802; Zenil et al. 2025 [M] | Low | background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Shannon information, entropy | | not started |
+| Kolmogorov complexity | | not started |
+| Statistical MDL | | not started |
+| Minimum message length | | not started |
+| MDL and Bayes | | not started |
+| Model selection links | | not started |
+| Algorithmic MDL | | not started |
+| MDL program synthesis on ARC | [`subfields/08_mdl_program_synthesis_on_arc/DEEP.md`](subfields/08_mdl_program_synthesis_on_arc/DEEP.md) | done, batch 5 (2026-10-27) |
+| Compression at inference time | | not started |
+| Prediction as compression, critique | | not started |
+
 ## Dig into next
 
 1. **MDL as the S7 tie-break.** How is "length" defined for a rule in words or code, and does the shortest candidate that passes held-out checks beat the vote? Our data: 34 of 36 for the selector against 33 of 36 for the vote, a small margin. Evidence: more items with several length measures (tokens, tree nodes, number of primitives).

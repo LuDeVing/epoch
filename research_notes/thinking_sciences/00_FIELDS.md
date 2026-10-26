@@ -32,6 +32,7 @@ Subfields are researched in batches. Each gets a folder `<field>/subfields/NN_sl
 | 2 | 2026-10-21 | A01: single- versus two-process induction and deduction; dual-strategy model; syllogistic and conditional reasoning; inductive and probabilistic reasoning. A02: problem-space theory | [`A01_.../SUBFIELDS.md`](A01_cognitive_psychology_of_thinking_and_rea/SUBFIELDS.md#deep-research), [`A02_.../SUBFIELDS.md`](A02_problem_solving_research/SUBFIELDS.md#deep-research) |
 | 3 | 2026-10-26 | Top 2 subfields of A02, A04, A12, C01, C02, C09, E06, E08, E09, E10 (20 subfields), plus a `SYNTHESIS.md` for each of these fields | each field's `SUBFIELDS.md`, section "Deep research" |
 | 4 | 2026-10-26 | Top 2 subfields of A09, A11, C03, C04, C05, C06, C07, D01, E04, E16 (20 subfields), plus a `SYNTHESIS.md` for each field | each field's `SUBFIELDS.md`, section "Deep research" |
+| 5 | 2026-10-27 | Top High subfield of 37 more fields: A03, A05, A06, A07, A08, A10, A13, A14, A15, A16, A17, A18, A20, B01, B02, B04, B05, C08, C10, C11, C12, D02, D03, D04, D05, D07, E01, E02, E03, E05, E07, E11, E12, E13, E14, E15, E18 (37 subfields). No field syntheses: everything is merged once after the full research | each field's `SUBFIELDS.md`, section "Deep research" |
 
 ---
 

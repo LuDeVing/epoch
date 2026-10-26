@@ -23,6 +23,25 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 
 Correction from the first draft: the Wikipedia collective intelligence page carries a notice that parts may be machine-written, so those figures need checking in the original papers before use.
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Wisdom of crowds: conditions | | not started |
+| Crowd within | [`subfields/02_crowd_within/DEEP.md`](subfields/02_crowd_within/DEEP.md) | done, batch 5 (2026-10-27) |
+| Surprisingly popular method | | not started |
+| Social influence on crowds | | not started |
+| Consensus and premature agreement | | not started |
+| Conformity | | not started |
+| Collective intelligence factor c | | not started |
+| Disputes over c | | not started |
+| Group ability and task type | | not started |
+| Transactive memory and reasoning | | not started |
+| Mass collaboration, deliberation | | not started |
+| Theory of mind | | not started |
+
 ## Dig into next
 
 **1. Conditions for aggregation to work.**

@@ -17,6 +17,23 @@ This field studies how memories are strengthened, moved, abstracted and pruned o
 | Gist extraction by overlapping replay | Replay of overlapping memories extracts shared structure | Lewis and Durrant 2011 | High | Subgoal library: merge overlapping rules |
 | Replay and wake-sleep learning in AI | Wake: solve tasks. Abstraction sleep: grow the library from solutions. Dreaming: train the search net on replays and fantasies | Ellis et al., DreamCoder [V abstract]; PLDI 2021 refactoring (search snippet) | High | Memory: a wake and sleep cycle for the subgoal library |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Active systems consolidation | | not started |
+| Synaptic homeostasis / downselection | | not started |
+| Relevance-based fate of memories | | not started |
+| Targeted memory reactivation | | not started |
+| Slow-wave and REM roles | | not started |
+| Sleep and insight | | not started |
+| Neurochemistry of sleep and memory | | not started |
+| Complementary learning systems | | not started |
+| Gist extraction by overlapping replay | [`subfields/09_gist_extraction_by_overlapping_replay/DEEP.md`](subfields/09_gist_extraction_by_overlapping_replay/DEEP.md) | done, batch 5 (2026-10-27) |
+| Replay and wake-sleep learning in AI | | not started |
+
 ## Dig into next
 
 **1. Wake and abstraction cycle for the subgoal library.**

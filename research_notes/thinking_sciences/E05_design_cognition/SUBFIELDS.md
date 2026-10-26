@@ -17,6 +17,23 @@ Design cognition studies how designers think: how they frame ill-defined problem
 | Expert-novice designers | Solution-first conjecture | Lawson; Cross | Med | Memory |
 | Computational design | Function-behaviour-structure models | Gero; Maher | Med | State model ideas |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Design as problem solving | | not started |
+| Reflection-in-action | | not started |
+| Problem-solution co-evolution | [`subfields/03_problem_solution_co_evolution/DEEP.md`](subfields/03_problem_solution_co_evolution/DEEP.md) | done, batch 5 (2026-10-27) |
+| Framing and reframing | | not started |
+| Designerly ways of knowing | | not started |
+| Protocol analysis | | not started |
+| Fixation and ideation | | not started |
+| Analogy in design | | not started |
+| Expert-novice designers | | not started |
+| Computational design | | not started |
+
 ## Dig into next
 
 **1. Framing and reframing.**

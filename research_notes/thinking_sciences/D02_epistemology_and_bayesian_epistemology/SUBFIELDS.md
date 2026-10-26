@@ -16,6 +16,22 @@ Epistemology asks what knowledge and justified belief are and how evidence shoul
 | Justification theories | Foundationalism, coherentism, reliabilism, evidentialism | Goldman; Conee and Feldman | Low | Background only (reliabilism hints: weight sources by track record) |
 | Social epistemology | Testimony, peer disagreement | Goldman; Christensen | Med | Guardrail G4: samples are not independent peers |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Bayesian conditionalization | | not started |
+| Coherence norms and Dutch book arguments | | not started |
+| The problem of the priors | | not started |
+| Uncertain evidence | | not started |
+| Imprecise credences | | not started |
+| Belief revision (AGM) | [`subfields/06_belief_revision_agm/DEEP.md`](subfields/06_belief_revision_agm/DEEP.md) | done, batch 5 (2026-10-27) |
+| Formal learning theory | | not started |
+| Justification theories | | not started |
+| Social epistemology | | not started |
+
 ## Dig into next
 
 **1. Belief revision.** Questions: (a) Can a candidate set be held as a belief base with an entrenchment order given by test results, so that a failed check drops the least entrenched member? (b) How does iterated revision (Darwiche and Pearl) constrain repeated S5 rounds? (c) Does it beat "rewrite from scratch"? Evidence: logged revision rounds with outcome flips.

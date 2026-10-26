@@ -16,6 +16,22 @@ Attention research studies how limited processing is directed to some informatio
 | Divided and sustained attention | Dual-task costs; vigilance decrement [V2] | Kahneman (1973); Pashler [M] | Low | one task per call |
 | Developmental and cultural attention | Neuroconstructivist accounts [V3] | Karmiloff-Smith; Scerif | Low | does not transfer |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Early, attenuation and late selection | | not started |
+| Perceptual load theory | | not started |
+| Working memory guidance and biased competition | | not started |
+| Attentional capture, bottom-up versus top-down | [`subfields/04_attentional_capture_bottom_up_versus_top_dow/DEEP.md`](subfields/04_attentional_capture_bottom_up_versus_top_dow/DEEP.md) | done, batch 5 (2026-10-27) |
+| Three attention networks | | not started |
+| Attentional control theory and executive functions | | not started |
+| Feature integration and visual search | | not started |
+| Divided and sustained attention | | not started |
+| Developmental and cultural attention | | not started |
+
 ## Dig into next
 
 1. **Attentional capture by salient cues.** Questions: (a) Which kinds of salient but irrelevant material (a stated guess, a number, an authority statement, a long distractor paragraph) most reduce accuracy, by model size? (b) Does position in the prompt matter? (c) Does a marked block reduce it? Evidence: matched distractor ablations at equal tokens.

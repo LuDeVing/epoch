@@ -16,6 +16,22 @@ History of science studies how scientific knowledge was actually made. For us th
 | Integrated HPS and the method of case studies | Using cases as evidence for theories of method | Sauer and Scholl (eds.), *The Philosophy of Historical Case Studies* | Med | Rules for how we treat cases as evidence |
 | Mathematics history | Conjecture and proof development | Lakatos; Polya | Med | Conjecture refinement (links to D01) |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Discovery case studies | | not started |
+| Laboratory notebook studies | | not started |
+| Cognitive-historical analysis | | not started |
+| Experimental practice | | not started |
+| Conceptual change and revolutions | | not started |
+| Computational reconstruction of discoveries | [`subfields/06_computational_reconstruction_of_discoveries/DEEP.md`](subfields/06_computational_reconstruction_of_discoveries/DEEP.md) | done, batch 5 (2026-10-27) |
+| Instruments, institutions, social history | | not started |
+| Integrated HPS and the method of case studies | | not started |
+| Mathematics history | | not started |
+
 ## Dig into next
 
 **1. Cognitive-historical case studies.** Questions: (a) For three to five well-documented discoveries, which operator (analogy, specialise, change representation) came before the breakthrough? (b) Were they applied at an impasse or at the start? Evidence: notebooks, with counts across many cases, not three anecdotes. This tests our placement of operators at S6.

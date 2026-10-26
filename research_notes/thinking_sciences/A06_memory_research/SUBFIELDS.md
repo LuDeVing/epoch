@@ -18,6 +18,24 @@ Memory research studies how information is encoded, stored and retrieved. It div
 | Retrieval-induced forgetting; memory errors | Recalling some items suppresses related ones; misinformation [M] | Anderson, Bjork and Bjork (1994); Loftus | Med | warning: one lesson may suppress siblings |
 | Case-based reasoning | Retrieve, reuse, revise, retain [M] | Kolodner; Schank | High | subgoal library by similarity |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Encoding specificity and cue-dependent retrieval | | not started |
+| Critiques of encoding specificity | | not started |
+| Interference | | not started |
+| Cue overload and fan effect | [`subfields/04_cue_overload_and_fan_effect/DEEP.md`](subfields/04_cue_overload_and_fan_effect/DEEP.md) | done, batch 5 (2026-10-27) |
+| Schemas | | not started |
+| Semantic networks and spreading activation | | not started |
+| Retrieval as consolidation | | not started |
+| Retrieval failure view of amnesia | | not started |
+| Working memory | | not started |
+| Retrieval-induced forgetting; memory errors | | not started |
+| Case-based reasoning | | not started |
+
 ## Dig into next
 
 1. **Encoding specificity and cue design.** Questions: (a) What key should a lesson carry (class, surface words, structure) for the right item to be retrieved? (b) Does a distinctive key beat a matching one, as Nairne would predict? (c) How often does a retrieved lesson mislead? Evidence: retrieval precision and downstream accuracy from our logs; cue manipulations on lesson keys.

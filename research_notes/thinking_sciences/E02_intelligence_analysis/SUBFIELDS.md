@@ -16,6 +16,22 @@ Intelligence analysis is judgment from partial, conflicting evidence. Research s
 | Probability language | Words of estimative probability | Kent 1964; Mandel | Low | Output format |
 | Forecast accuracy of analysts | Measured accuracy and aggregation | Mandel and Barnes 2014 | High | Link to E03 |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Analysis of competing hypotheses (ACH) | | not started |
+| Diagnosticity of evidence | [`subfields/02_diagnosticity_of_evidence/DEEP.md`](subfields/02_diagnosticity_of_evidence/DEEP.md) | done, batch 5 (2026-10-27) |
+| Structured analytic techniques (SATs) | | not started |
+| Systematic review of SAT evidence | | not started |
+| Layout and presentation | | not started |
+| Red teaming | | not started |
+| Cognitive bias in analysis | | not started |
+| Probability language | | not started |
+| Forecast accuracy of analysts | | not started |
+
 ## Dig into next
 
 **1. Diagnosticity.**

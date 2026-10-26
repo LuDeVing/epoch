@@ -17,6 +17,23 @@ Forecasting research studies how well people and now models predict uncertain ev
 | Retrieval and ensembles for LLM forecasts | Search tools, averaging 8 runs, crowd adjustment | xAI, Cassi entries (FRI post) | Med | S3: averaging independent runs; crowd adjustment gained nearly 0.01 |
 | Verbal confidence | Stated against actual confidence | Kadavath et al. 2022 | Med | Guardrail on confidence |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Scoring rules and calibration | | not started |
+| Good Judgment Project | | not started |
+| Training | | not started |
+| Outside view and base rates | [`subfields/04_outside_view_and_base_rates/DEEP.md`](subfields/04_outside_view_and_base_rates/DEEP.md) | done, batch 5 (2026-10-27) |
+| Decomposition (Fermi-ize) | | not started |
+| Aggregation and extremizing | | not started |
+| Belief updating | | not started |
+| LLM forecasting benchmarks | | not started |
+| Retrieval and ensembles for LLM forecasts | | not started |
+| Verbal confidence | | not started |
+
 ## Dig into next
 
 **1. Base rates and comparison classes as the S0 gate.**

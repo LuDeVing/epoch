@@ -17,6 +17,23 @@ Cognitive load theory (CLT) is an instructional theory developed by John Sweller
 | Collective working memory and evolutionary educational psychology | [M] | Kirschner, Paas; Geary | Low | does not apply to one agent |
 | Task-type limits | Worked examples suit well-structured tasks; less effective for creative or less-structured tasks [V2] | Nievelstein et al. (2013) | Med | open mode needs other support |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Intrinsic load and element interactivity | [`subfields/01_intrinsic_load_and_element_interactivity/DEEP.md`](subfields/01_intrinsic_load_and_element_interactivity/DEEP.md) | done, batch 5 (2026-10-27) |
+| Extraneous load and split attention | | not started |
+| Worked-example effect | | not started |
+| Expertise reversal | | not started |
+| Germane load | | not started |
+| Measurement of load | | not started |
+| Critiques of the three-load model | | not started |
+| Working-memory limits and chunking | | not started |
+| Collective working memory and evolutionary educational psychology | | not started |
+| Task-type limits | | not started |
+
 ## Dig into next
 
 1. **Element interactivity.** Questions: (a) Can code compute a proxy (number of interacting constraints or objects) that predicts the plain model's failure better than text length? (b) Is there a threshold above which O3 decomposition pays? (c) Is the primary definition in Sweller's papers consistent with this? (not opened; Wikipedia's page does not define it). Evidence: graded item set with plain pass rates.

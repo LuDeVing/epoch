@@ -16,6 +16,22 @@ This field studies how real arguments are built, read and judged. It began with 
 | Rhetoric and multimodal argument | Persuasion, emotion, images | Gilbert; Tindale | Low | Background only |
 | Dialogue types | Persuasion, inquiry, negotiation | Walton | Low | Background; conflicts with G9 (no debate) |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Argument standardisation and diagramming | | not started |
+| Argument schemes and critical questions | [`subfields/02_argument_schemes_and_critical_questions/DEEP.md`](subfields/02_argument_schemes_and_critical_questions/DEEP.md) | done, batch 5 (2026-10-27) |
+| Fallacy theory | | not started |
+| Pragma-dialectics | | not started |
+| Argument evaluation criteria | | not started |
+| Formal argumentation frameworks (AI) | | not started |
+| Informal logic of natural-language deduction | | not started |
+| Rhetoric and multimodal argument | | not started |
+| Dialogue types | | not started |
+
 ## Dig into next
 
 **1. Schemes and critical questions.** Questions: (a) Which five or six schemes (authority, analogy, cause to effect, example, sign) appear in our tasks, and what are their questions? (b) Can a failed critical question be located by code and fed to S5 as the failing output? (c) Does this beat an unstructured "check your reasoning" prompt (SCHEMA 4b says that fails)? Evidence: a scheme catalogue, per-scheme error rates.
