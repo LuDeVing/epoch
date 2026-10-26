@@ -37,6 +37,7 @@ Not yet researched (numbering follows SUBFIELDS.md order; folder numbers 03 and 
 | F14 | Forced extra thinking ("Wait" budget forcing) has diminishing returns and is not uncertainty-gated. Gains flatten near 6x. | A04.08-K20 | G11, S6 | partly (G11 think briefly) |
 | F15 | Models have no stable act-or-escalate stance when errors have costs. Implicit thresholds vary from 53% to 91% accuracy within one family and are not predicted by scale. | A04.08-K28 | G6, S8 | partly (G6 never abstain on first pass; thresholds must be set in code) |
 | F16 | The Dunning-Kruger quartile pattern is largely a statistical artefact. | A04.03-K04 | none | no (human only; see section 6) |
+| F17 | A judgment made later, or from a fresh retrieval attempt, sorts right from wrong much better than one made right away (g = 0.93 on resolution, 4,554 people), with almost no effect on memory itself (g = 0.08). Human data only. | A04.03-K02 | G10, S7 | no (nearest: a fresh-context check; untested for models) |
 
 ## 3. Contradictions between subfields
 
