@@ -2,7 +2,7 @@
 
 *One view across the field's researched subfields. Built from each subfield's DEEP.md, claims.jsonl and UNKNOWNS.md.*
 
-Notes on use. "Established" is the claim's status in claims.jsonl, set before the stricter independence re-check. Treat each row as a candidate until that check is done. Schema column checked against `research_notes/single_agent/SCHEMA.md` v0.2. Most agent evidence here comes from older or small models and from SWE-bench-style repo tasks. Our bench is puzzle-sized, so every row is a design hint until tested (section 5).
+Notes on use. "Established" is the claim's status in claims.jsonl after the source audit of 2026-10-26 (see the last paragraph). Schema column checked against `research_notes/single_agent/SCHEMA.md` v0.2. Most agent evidence here comes from older or small models and from SWE-bench-style repo tasks. Our bench is puzzle-sized, so every row is a design hint until tested (section 5).
 
 ## 1. Coverage
 
@@ -35,17 +35,17 @@ Only claims with status established. Many rest on older or small models.
 | F3 | When the model alone decides whether to keep correcting, it breaks more correct answers than it fixes, under every gating rule tried. | E09.09-K31 | G2, S6, S8 | partly (G2, G5; no rule on who gates a revision) |
 | F4 | Self-written tests are unreliable as the only judge. Reflexion MBPP had 16.3% false positives. SWE-bench passes: 7.8% fail the full tests, 29.6% behave differently from the real fix. | E09.09-K11 | G3, S8 | partly (G3 unfitted check; no ban on own-test-only stop) |
 | F5 | Finding the cause (first wrong step, right fault) is harder than fixing it once shown. Best model finds the wrong step in 52.87% on BIG-Bench Mistake. Failed agent runs often reach the right file and fail at fine-grained reasoning. | E09.02-K15, E09.09-K06 | S5, S6, O (localise) | partly (S5 "model names what is wrong"; no localise operator) |
-| F6 | Giving only a fault location, or a ranked suspiciousness list, does not help people. Seeing the faulty line did not mean recognising it. | E09.02-K02, E09.02-K17 | S3 | no |
+| F6 | In a small study (25 participants) offering fault locations (where, not why) gave no significant gain in correct hypotheses (p=0.41, 0.13) or fix rate (p=0.67), a null result and not proof of no effect; a ranked suspicious-statement list helped only on the easy task and only high performers (Parnin and Orso). Seeing the faulty line did not mean recognising it. | E09.02-K02, E09.02-K17 | S3 | no |
 | F7 | Humans in real work rarely state formal testable hypotheses. They hold vague speculations and test by edit-and-run. | E09.02-K05 | S3 | no (design caution only) |
 | F8 | Confirmation bias is common in LLMs. More disconfirming tests go with success. Prompts raise rule discovery from 42% to 56%. Boundary: disconfirming tests are required only when the hypothesis is narrower than the truth. Untested on code. | E09.02-K12 | S7, S4 | yes (S7 counterexample search, marked E) |
 | F9 | A real debugger or execution trace helps strong models and can hurt weak ones. Handing it over after repeated failed rewrites beat both extremes (Claude 3.7: 52.1 vs 48.4 vs 37.2). | E09.02-K13 | S6, O (probe) | no |
-| F10 | Debug loops repair small slips (wrong JOIN, missing clause). Unresolved agent runs are dominated by wrong or over-narrow designs (52%) and flawed reasoning. Loops fix near-misses, not wrong designs. | E09.09-K10 | S6, O | partly (S6 operators exist; no slip vs design test) |
+| F10 | Debug loops repair small slips (wrong JOIN, missing clause). Unresolved agent runs are dominated by wrong or over-narrow designs (52%) and flawed reasoning. Loops fix near-misses, not wrong designs. (TRAJEVAL: 56.9% of SWE-agent failures over all 7 models, 64-69% for the five stronger ones, reach and edit the right function and still fail; overwriting a correct edit is 39.7% of those, 22.6% of all failures; wrong branch point 18.6%.) | E09.09-K10 | S6, O | partly (S6 operators exist; no slip vs design test) |
 | F11 | Failed edits compound. Edit success is 90.5% after no failure and 57.2% after one. Failed runs are longer. Returns drop after about 25 rounds. | E09.09-K15 | S6 trigger, G1 | partly (S6 fires on same error twice; no failed-edit count) |
 | F12 | Most serial-feedback gain arrives in the first 1 to 3 rounds. | E09.09-K28 | S5 | yes (S5 at most 2 rounds) |
-| F13 | For strong models, most failures are not localisation (56.9% edit the right function). The largest bucket is overwriting or thrashing a correct edit (22.6% of failures). An edit-commit checkpoint recovered all 5 exact-gold cases. | E09.09-K34 | S7, S8, G6 | partly (G6 keeps best attempt; no best-checkpoint rule across edits) |
+| F13 | For strong models, most failures are not localisation. On SWE-bench Verified, 56.9% of SWE-agent failures (weighted over 7 models; 64.7-69.1% for the five capable ones, GPT-5 68.1%) reach and edit the right locations yet give a wrong patch; failed runs hit the gold file in 72-81% of cases on SWE-Bench Lite only (59-67% on Verified). The largest sub-type is coherence collapse (overwriting or thrashing a correct edit, 22.6% of failures). An edit-commit checkpoint recovered all 5 bit-identical-to-gold cases (existence proof only). | E09.09-K34 | S7, S8, G6 | partly (G6 keeps best attempt; no best-checkpoint rule across edits) |
 | F14 | Specific feedback beats generic feedback, which beats none. | E09.09-K25 | S5, G2 | partly (S5 cites failing output) |
 | F15 | A committee picking among diverse agents' candidate patches beats the best single agent (27.3% vs 34.3%; union about 53%). | E09.09-K22 | S3, S7 | yes (S3 isolated diverse attempts, S7 code selects) |
-| F16 | Tool and interface design changes results at a fixed model (SWE-agent 18.0 vs shell-only 11.0; viewer size; linting-guarded edits). | E09.09-K13 | harness | no |
+| F16 | Tool and interface design changes results at a fixed model (SWE-agent 18.0 vs shell-only 11.0; viewer size; linting-guarded edits). CodeAct (up to 20% higher success per its abstract) points the same way; AutoCodeRover does not isolate an interface effect. | E09.09-K13 | harness | no |
 | F17 | Non-reasoning models fail to fix an error in their own output but fix it in the user turn (blind spot 64.5% over 14 models; appended "Wait" cut it 89.3%). | E09.09-K19 | S1, S5 | no (see contradiction C5) |
 | F18 | Public SWE-bench scores are inflated by leakage, weak tests and flawed items. Held-out and private sets give half or less. | E09.09-K18, E09.09-K36 | G3, G7, harness | partly (G3, G7; no private-split rule) |
 
@@ -103,7 +103,7 @@ All tests: equal total tokens per arm, setup counted, at least 2 seeds, results 
 | Model-decided "keep correcting" loops with no outside signal | Break more correct answers than they fix under every gating rule tried. Already barred by 4b. | E09.09-K31, E09.09-K02, E09.02-K11 |
 | Imagined debugger output in place of a real run | Plausible-patch rate fell 73% to 63%. | E09.02-K09 |
 | Self-written tests as the only final judge | 16.3% false positives, pass@1 fell on MBPP. | E09.09-K11 |
-| Location-only or ranked-suspect hints as a hypothesis aid | No gain for people. | E09.02-K02, E09.02-K17 |
+| Location-only or ranked-suspect hints as a hypothesis aid | No significant gain in a small human study (25 participants). | E09.02-K02, E09.02-K17 |
 | Many serial repair rounds on one draft | Gain arrives in rounds 1 to 3; failed edits compound. | E09.09-K28, E09.09-K15 |
 | Public SWE-bench numbers as proof an element works | Leakage and weak tests inflate them. | E09.09-K18, E09.09-K36 |
 
@@ -119,4 +119,6 @@ Single-source, so not established, but do not add before the test: multi-agent d
 - No second, stronger model for the monitor test (E09.09-K32 gain needs one at about 9x cost).
 - Wrong-design vs slip labels are LLM-assigned (87% agreement with authors).
 - Whether a model recognises the true cause when shown it among candidates is untested.
-- Independence re-check pending: several claims share one source (Olausson, Chen, debug-gym). It may lower established counts.
+- Several claims share one source (Olausson, Chen, debug-gym); the 2026-10-26 audit found no further established claim in E09 to downgrade.
+
+**Source audit, 2026-10-26:** 24 established claims in E09 were re-opened against their papers: 20 confirmed, 4 reworded (E09.02-K02, E09.09-K10, E09.09-K13, E09.09-K34, in F6, F10, F16, F13), 0 downgraded. Established claims stay at 24 (8 in 02, 16 in 09). Downgraded ids: none.

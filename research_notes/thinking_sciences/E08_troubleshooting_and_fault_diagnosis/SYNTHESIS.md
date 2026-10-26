@@ -2,15 +2,15 @@
 
 *One view across the field's researched subfields. Built from each subfield's DEEP.md, claims.jsonl and UNKNOWNS.md.*
 
-Notes on use. "Established" is the status in claims.jsonl, set before any stricter independence re-check. Treat each row as a candidate until that check is done. Schema column checked against `research_notes/single_agent/SCHEMA.md` v0.2. Claim ids are global and cited exactly. Two of the field's subfields are researched, so this is a partial view.
+Notes on use. "Established" is the status in claims.jsonl after the source audit of 2026-10-26 (see the last paragraph). Schema column checked against `research_notes/single_agent/SCHEMA.md` v0.2. Claim ids are global and cited exactly. Two of the field's subfields are researched, so this is a partial view.
 
 ## 1. Coverage
 
 | Subfield | DEEP.md | Claims | Established |
 |---|---|---|---|
-| 03 Hypothesis limits | [DEEP](subfields/03_hypothesis_limits/DEEP.md) | 29 | 10 (6 contested, 13 single-source) |
+| 03 Hypothesis limits | [DEEP](subfields/03_hypothesis_limits/DEEP.md) | 29 | 7 (6 contested, 16 single-source) |
 | 04 Troubleshooting search strategies | [DEEP](subfields/04_troubleshooting_search_strategies/DEEP.md) | 34 | 13 (4 contested, 17 single-source) |
-| **Total** | | **63** | **23** |
+| **Total** | | **63** | **20** |
 
 Each researched subfield has a UNKNOWNS.md: 14 test rows (E08.03-U1 to U14) and 15 (E08.04-U1 to U15), 29 in all.
 
@@ -31,38 +31,38 @@ Status established only. Many are human results; for the agent they are design h
 
 | # | Finding | Claim ids | Schema part | In SCHEMA.md? |
 |---|---|---|---|---|
-| F1 | People hold only 3 to 5 hypotheses at once. Skill does not raise the count. Load lowers the count, and a lower count raises the probability sum over exclusive causes. The list should be an outside object, not a head or context. | E08.03-K01, E08.03-K05 | S1, memory | partly (S2 writes 1 to 4 candidate rules; no ledger object) |
+| F1 | People hold only 3 to 5 hypotheses at once. Skill does not raise the count. The list should be an outside object, not a head or context. (The load-lowers-count effect is now single-source; see section 7.) | E08.03-K01 | S1, memory | partly (S2 writes 1 to 4 candidate rules; no ledger object) |
 | F2 | Lists feel complete. Stated chance that the true cause is listed is about 68%. People move little weight to "all other" when branches are hidden. | E08.03-K03 | G, S1 | no |
-| F3 | LLMs under-use "none of the listed." False action on no-correct-option items is about 70% at baseline. Replacing the right option with "none" cut accuracy for all six models. Healthy systems get a false fault in 11 to 24% of runs (that last figure is single-source; see E08.04-K30). | E08.03-K10, E08.03-K23, E08.04-K13 | G, S9 | no (G6 pulls the other way; see C1) |
+| F3 | (Row removed by the source audit: its established support was only single-lab LLM claims, moved to section 7. E08.04-K13 stays cited in F17.) | none | none | n/a |
 | F4 | LLM agents anchor on their first diagnosis. 65.6% of wrong round-1 diagnoses stayed wrong. 50.8% of correct ones fell by round 3. Information requests fall each round. Generic reasoning prompts do not lift the plateau. | E08.03-K11 | G1, S5, memory | partly (S5 caps rounds; no re-open rule) |
 | F5 | LLMs accept a wrong supplied option, and an authority frame raises acceptance. Pressure over turns makes them drop right answers. The prompt defence works on strong models and barely on small ones. | E08.03-K24 | S1, G | partly (S1 input hygiene is [S]) |
 | F6 | A differential list often holds the answer when top-1 is wrong (78.3% vs 52%). Models are better at the final answer than at differential reasoning. | E08.03-K12 | S3, S7 | partly (S4 harvest keeps dropped candidates) |
 | F7 | Reminders and bias warnings do not reliably cut error and can over-correct. Prompt rules were echoed but not obeyed. Structural changes help more than text. Guardrails belong in code. | E08.03-K15, E08.04-K10 | G (code guardrails) | yes (4b bias checklists; section 1) |
 | F8 | Independent LLM samples are mostly repeats. Distinct hypotheses grow well below linearly in K (7.89 unique at K=32; recall +0.131 from 1 to 5 draws). | E08.03-K20 | S3, G12 | partly (S3 many draws; no yield curve) |
-| F9 | Skilled people rarely use textbook half-split. They open by function, run many cheap good/bad checks and anchor on a hunch. Half-split is a trained rule. | E08.04-K01 | O (test selection) | no |
+| F9 | Skilled people often did not use textbook half-split. In two small electronics studies (Rasmussen and Jensen 1974, 30 protocols; Burroughs 1979, two technicians, 40 trials) skilled troubleshooters usually opened with a functional search, ran many cheap good/bad checks and localised by anchoring on a hunch. Strict half-split was occasional (about 20% of check measurements) or absent (0 of 40 trials); instructors report teaching it. "Trained rule, not natural" is an inference, not a finding. | E08.04-K01 | O (test selection) | no |
 | F10 | Half-split needs log2 N tests only for a single fault, linear chain, equal cost, reliable tests. Greedy information gain is exactly optimal at unit cost and equal priors, near optimal in practice, but can be arbitrarily bad in built cases. | E08.04-K04 | O (test selection) | no |
 | F11 | Under cost, rank tests by probability per cost or information per cost. Exact optimum is NP-hard. Greedy is the standard design. | E08.04-K05 | O, G5 | no |
-| F12 | Unaided LLMs choose poor tests. Many carry zero information, they keep asking after one candidate remains, and they pick the best split in a minority of turns. | E08.04-K06 | G5, O | partly (G5 says code selects; no test-selection module) |
+| F12 | Unaided LLMs choose poor tests in some settings. ChatGPT in 8-candidate 20 Questions needed 7.24 questions vs 3.5 optimal, kept asking after one candidate remained in 56.67% of games, and 39.44% of second-turn questions had zero information gain. Two Qwen3 models picked the highest-information question among their own considered candidates in only 19-36% of turns; ChatGPT used halving questions more often than optimal (73.77% vs 57.14%). | E08.04-K06 | G5, O | partly (G5 says code selects; no test-selection module) |
 | F13 | With candidate tracking and gain scoring in code and the model only proposing tests, success rises in closed-candidate games (FloDial 43.7 to 67.3; 20 Questions +37.4 points). Evidence uses simulated answerers. Asking the model to restate the live set helps but fails; the ledger belongs in code. | E08.04-K07, E08.04-K09 | G5, O, memory | partly (G5; no ledger, no gain scorer) |
 | F14 | After a search routine fails, people and agents repeat it with a small change instead of switching method. | E08.04-K03 | G1, S6 | partly (S6 fires on "same error twice") |
 | F15 | Greedy selection can lose to random when its probability or reliability model is wrong. | E08.04-K15 | G5 | no |
 | F16 | Agents often answer correctly without a closed evidence path. Main run failures are misread data and incomplete exploration, not search order. Outcome accuracy overstates grounding (JRA 0.68, closure 0.21 and 0.15). | E08.04-K12 | G, S8 | partly (G3, G10) |
 | F17 | Stopping is weak. People and agents keep probing after decisive evidence, commit after one abnormal signal, or over-diagnose healthy systems. | E08.04-K13 | S9, stop rule | partly (S8, S9; no diagnosis stop rule) |
-| F18 | More steps are not better. Weak models use 3x steps for a fraction of accuracy. Step limits past about 5 added only tokens. Rounds show sharp diminishing returns. | E08.04-K14 | G11, G12 | yes (G11, G12) |
+| F18 | More steps are not better for weak models. In Cloud-OpsBench the weakest used 14-16 steps (about 3x strong models) with low accuracy; GPT-3.5 in AIOpsLab gained only token cost past 5 steps; AR-Bench shows diminishing returns (+7.7% in rounds 5-10, +2.5% in rounds 20-25). Stronger agents (FLASH, ReAct) did improve with larger step limits. | E08.04-K14 | G11, G12 | yes (G11, G12) |
 | F19 | Terms "topographic" and "symptomatic" drift between sources. Name tests by the reference they need. | E08.04-K02 | none (naming) | no (labels only) |
 
 ## 3. Contradictions between subfields
 
 | # | Where they disagree | How to resolve |
 |---|---|---|
-| C1 | **Stop and commit vs missing cause.** E08.04-K13 and E08.04-K07 stop when the candidate set is a singleton. E08.03-K10, E08.03-K23 and E08.03-K02 say the true cause is often not on the list, and models never say "none." SCHEMA G6 forbids abstaining on the first pass. | A singleton stop is safe only if the list is known complete. Add a missing-cause check before the singleton stop. G6 needs an exception: abstain or say "no fault" only when named checks pass. Tests: E08.03-U1, E08.04-U3, E08.04-U4. |
+| C1 | **Stop and commit vs missing cause.** E08.04-K13 and E08.04-K07 stop when the candidate set is a singleton. E08.03-K02 (single-source) and the single-lab LLM claims E08.03-K10, E08.03-K23 (section 7) say the true cause is often not on the list and models rarely say "none"; the human evidence is E08.03-K03. SCHEMA G6 forbids abstaining on the first pass. | A singleton stop is safe only if the list is known complete. Add a missing-cause check before the singleton stop. G6 needs an exception: abstain or say "no fault" only when named checks pass. Tests: E08.03-U1, E08.04-U3, E08.04-U4. |
 | C2 | **Closed list vs open space.** E08.04-K07 shows gain from code scoring on closed sets. E08.04-K08 (contested) and E08.04-K28 show no gain on open sets. E08.03-K02 and E08.03-K20 say real cause spaces are larger than any list. | The scaffold needs an enumerable set. Find the size where it stops helping: E08.04-U6. Until then use it only on closed lists. |
 | C3 | **Breadth.** E08.03-K20 says independent draws repeat and grow sublinearly. SCHEMA S3 and A01 F10 say many independent draws then select. E08.03-K21 (contested) says a bare "something different" step did not help, yet SCHEMA S3 has code assign untried directions. | S3 gains need diversity forced by structure, not by request. Concept-first is the open candidate: E08.03-U2, E08.03-U4. |
 | C4 | **Ledger: keep or cost.** E08.03-K18 says a removal-reason ledger stops silent loss of a found diagnosis but cut top-1 from 60 to 40 (10 cases, one model). E08.03-K11 says free-form updates anchor. E08.04-K09 says the ledger helps and belongs in code. | Contested between retention and top-1. Run the three-arm test: E08.03-U5, E08.03-U13. |
 | C5 | **Challenger roles.** E08.03-K13 (contested) reports big gains from devil's advocate and facilitator roles. E08.03-K26 and SCHEMA G9 say debate gives 1.3 to 2.7 points at equal compute. No diagnosis task has a same-token control. | Keep G9 for now. Test tracker and challenger against self-consistency: E08.03-U8. |
 | C6 | **Counterexample prompting.** E08.03-K25 (single-source) says counterexample prompting raised discovery from 42% to 56%. A01 section 3 (C4) and A01 F12 say LLMs rarely find falsifying cases and prompting a search barely helps. E08.03-K25 also says thinking mode raised success without raising the disconfirming ratio. | Both fit if code runs the refuting test. Test: E08.03-U7. Do not add a bare "find a counterexample" instruction. |
 | C7 | **Extra reasoning.** E08.04-K11 (contested): reasoning lifted questioning in 20-Questions (0.08 to 0.94) but did nothing for HAProxy fault isolation at 10x tokens. A01 C2 and C3 show the same split. | Cap by class and step. Test reasoning at test selection only: E08.04-U11, E08.03-U11. |
-| C8 | **Is half-split worth teaching?** E08.04-K01 says experts do not use it. E08.04-K04 and E08.04-K05 say it is optimal under named conditions. E08.04-K16 says the label did not speed repair. E08.04-K17 and E08.04-K33 say a fixed method plus functional breakdown doubled solved faults. | Not a real conflict. Humans do not need it; the agent can get it free in code. The structured-method gain cannot be assigned to half-split. Test: E08.04-U1, E08.04-U12. |
+| C8 | **Is half-split worth teaching?** E08.04-K01 says skilled people in two small studies often did not use it. E08.04-K04 and E08.04-K05 say it is optimal under named conditions. E08.04-K16 says the label did not speed repair. E08.04-K17 and E08.04-K33 say a fixed method plus functional breakdown doubled solved faults. | Not a real conflict. Humans in two small studies rarely used it; the agent can get it free in code. The structured-method gain cannot be assigned to half-split. Test: E08.04-U1, E08.04-U12. |
 | C9 | **Coarse first vs symptom first.** E08.04-K22 (contested) recommends normal-reference narrowing first. E08.04-K29 shows symptom matching fixating on a look-alike part. | Grain is open: E08.04-U13, E08.04-U8. |
 | C10 | **Confidence as a signal.** E08.03-K19 (confidence and accuracy R2 = 0.03) agrees with SCHEMA 4b and A01 C6. No conflict, but E08.04-K27 uses expected belief change as a stop signal, which relies on the model's own probabilities. | Check that belief estimates are calibrated before trusting a belief-change stop: E08.04-U5, E08.03-U9. |
 
@@ -70,9 +70,9 @@ Status established only. Many are human results; for the agent they are design h
 
 | Mechanism | Where it shows | Agent consequence |
 |---|---|---|
-| **Completeness illusion.** The visible list is taken as the whole space. | E08.03-K03, E08.03-K10, E08.03-K23, E08.04-K13 | Code owns an "other / missing" slot and a forced check on it. |
+| **Completeness illusion.** The visible list is taken as the whole space. | E08.03-K03, E08.04-K13 (LLM side, E08.03-K10 and E08.03-K23, is single-lab) | Code owns an "other / missing" slot and a forced check on it. |
 | **Fixation and anchoring.** First hypothesis or first routine persists after failure. | E08.03-K11, E08.03-K15, E08.04-K03, E08.04-K29 | Repeat detector and forced switch in code (G1 signal). |
-| **Working memory is the limit, so move the list outside.** | E08.03-K01, E08.03-K05, E08.04-K09 | Candidate ledger in code, model fills slots only. |
+| **Working memory is the limit, so move the list outside.** | E08.03-K01, E08.04-K09 (load effect E08.03-K05 is single-source) | Candidate ledger in code, model fills slots only. |
 | **Models propose, code scores.** | E08.04-K06, E08.04-K07, E08.04-K12 | Test-selection module: model writes k tests, code picks by gain. |
 | **Instructions fail, structure works.** | E08.03-K15, E08.04-K10 | Every guardrail enforced by code, never by a text rule. |
 | **Diminishing returns on steps and draws.** | E08.03-K20, E08.04-K14 | Cap steps and draws per class. |
@@ -85,7 +85,7 @@ All rows at equal tokens, selector tokens charged (E08.04-K34).
 
 | Merged test | Unknown ids covered | One-line design | Priority |
 |---|---|---|---|
-| MT1 Missing-cause check and no-fault exit | E08.03-U1, E08.04-U4 | Seeded faults with the true cause absent in half and healthy systems in half; free list vs forced "is the cause missing" step vs re-sampling; score false-commit, false-fault and missed-fault rates. | High |
+| MT1 Missing-cause check and no-fault exit | E08.03-U1, E08.04-U4 | Seeded faults with the true cause absent in half and healthy systems in half; free list vs forced "is the cause missing" step vs re-sampling; score false-commit, false-fault and missed-fault rates. Motivation weakened: the LLM evidence for missing-cause blindness (E08.03-K10, E08.03-K23) is now single-lab; only the human list-completeness result (E08.03-K03) is established. | High |
 | MT2 Code-chosen vs model-chosen tests (core) | E08.04-U1, E08.04-U2, E08.04-U7 | Seeded single-fault chains and a priced 12-fault matrix; arms free, half-split, filter only, scoring only, filter + scoring, gain-per-cost; score tests to isolation, wasted tests, total cost. | High |
 | MT3 Stop rule | E08.04-U3 | Fixed cap vs singleton vs belief-change vs singleton + one verifying test; run on lists with and without the true cause (links MT1). | High |
 | MT4 Estimate quality | E08.04-U5, E08.03-U9 | Greedy with true, model-made and corrupted tables vs random; code floor on "other" mass; score tests and Brier. | High |
@@ -108,13 +108,13 @@ Run order, following both UNKNOWNS files: MT2 first (no study has measured it), 
 | Differential-first instruction | No gain for GPT-4 (+2.2, not significant); cost GPT-3.5 8 points (2023 models; recheck is MT12) | E08.03-K22 |
 | Confidence as a stop or doubt signal | R2 = 0.03 in humans; SCHEMA 4b | E08.03-K19 |
 | Imitating the human 3 to 5 hypothesis cap | It is a memory limit, not a goal | E08.03-K01 |
-| Teaching the agent "half-split" as a prompt rule | Humans do not use it; the label alone did not speed repair; do it in code if MT2 passes | E08.04-K01, E08.04-K16 |
+| Teaching the agent "half-split" as a prompt rule | Humans in two small studies seldom used it; the label alone did not speed repair; do it in code if MT2 passes | E08.04-K01, E08.04-K16 |
 | Handing the model a supplied list as a premise | Wrong options are accepted | E08.03-K24 |
 | Role personas and debate | Small or no gain at equal compute (G9); only the tracker and falsifier are tested in MT9 | E08.03-K13, E08.03-K26 |
 | A bare "give something different" step | No coverage gain; precision fell | E08.03-K21 |
 | Citing Rasmussen or Morris and Rouse for a hypothesis count | Primary texts unread | E08.03-K28 |
 | Topographic and symptomatic as module names | Terms drift; name tests by the reference they need | E08.04-K02 |
-| More steps or rounds past the knee | Only tokens | E08.04-K14 |
+| More steps or rounds past the knee for weak or plateaued agents | Only tokens (stronger agents did gain from larger limits) | E08.04-K14 |
 | Outcome-only scoring | Hides missing evidence paths | E08.04-K12 |
 
 ## 7. Gaps
@@ -126,5 +126,9 @@ Run order, following both UNKNOWNS files: MT2 first (no study has measured it), 
 - Most LLM results are 2026 preprints, often with LLM judges and medical tasks. Few are non-medical fault tasks.
 - All tests assume a single fault. Multiple simultaneous faults are not covered.
 - Dollar-priced test results (SDBench) may not transfer to token-priced tests (E08.04-K31).
+- Single lab only: LLMs under-use "none of the listed" (false action about 70% at baseline, about 48% with a safety prompt; replacing the correct MedQA option with "none" cut accuracy for all six models, 8.8 to 38.2 points) (E08.03-K10, E08.03-K23; both from the Bedi/Shah group; no study tests a forced "what is not on this list" step).
+- Single lab only: cognitive load lowers the number of hypotheses and raises the probability sum over exclusive causes (sums 261.8 to 271.5, about +3.7%, not +10%) (E08.03-K05).
 - Cause-key deduplication needs a validated "same cause?" judge (E08.03 open questions).
 - Only one synthesis exists besides this one (A01), so cross-field checks are limited to A01. The E09 subfields (hypotheses in debugging, LLM debugging) should be compared once they have syntheses.
+
+**Source audit, 2026-10-26:** 23 established claims in E08 were re-opened against their papers: 17 confirmed, 3 reworded (E08.04-K01, E08.04-K06, E08.04-K14, narrowed in F9, F12, F18), 3 downgraded to single-source because the second source was not independent (E08.03-K05, E08.03-K10, E08.03-K23). Established claims now number 20 (7 in 03, 13 in 04). Downgraded ids: E08.03-K05, E08.03-K10, E08.03-K23.

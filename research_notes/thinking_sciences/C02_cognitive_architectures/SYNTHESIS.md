@@ -2,15 +2,15 @@
 
 *One view across the field's researched subfields. Built from each subfield's DEEP.md, claims.jsonl and UNKNOWNS.md.*
 
-Notes on use. "Established" means the claim's status in claims.jsonl, set before the stricter independence re-check. Treat each row as a candidate until that check is done. Many "established" claims here are about LLM agent systems or Soar design facts, not about humans. A Soar design fact (K01, K02, K05) tells us how a mechanism is built. It does not show the mechanism helps an LLM agent. Schema column checked against `research_notes/single_agent/SCHEMA.md` (S6, SUBGOAL, section 5 Memory, S9, G1 to G12).
+Notes on use. "Established" means the claim's status in claims.jsonl, set before the stricter independence re-check. Treat each row as a candidate until that check is done. Many "established" claims here are about LLM agent systems or Soar design facts, not about humans. A Soar design fact (K02; K01 and K05 are now single-source) tells us how a mechanism is built. It does not show the mechanism helps an LLM agent. Schema column checked against `research_notes/single_agent/SCHEMA.md` (S6, SUBGOAL, section 5 Memory, S9, G1 to G12).
 
 ## 1. Coverage
 
 | Subfield | DEEP.md | Claims | Established |
 |---|---|---|---|
-| 01 Soar: operator selection and impasses | [DEEP](subfields/01_soar_operator_selection_and_impasses/DEEP.md) | 31 | 8 (2 contested, 21 single-source) |
+| 01 Soar: operator selection and impasses | [DEEP](subfields/01_soar_operator_selection_and_impasses/DEEP.md) | 31 | 6 (2 contested, 23 single-source) |
 | 03 Soar: chunking and learning from impasses | [DEEP](subfields/03_soar_chunking/DEEP.md) | 30 | 9 (5 contested, 16 single-source) |
-| **Total** | | **61** | **17** |
+| **Total** | | **61** | **15** |
 
 Each has a UNKNOWNS.md (13 and 14 test rows, 27 in all).
 
@@ -33,13 +33,13 @@ Only status established. Most gain evidence is from one benchmark per system; re
 
 | # | Finding | Claim ids | Schema part | In SCHEMA.md? |
 |---|---|---|---|---|
-| F1 | A Soar impasse is raised by a fixed rule on the preference outcome, not by the system judging its own progress. | C02.01-K01 | S6 | yes (S6 "fired by code") |
+| F1 | Moved to section 7: the Soar impasse-by-fixed-rule claim is single-source. The "fired by code" part of S6 now rests on F2 (K27). | none | S6 | yes (S6 "fired by code") |
 | F2 | Model-side signals of being stuck are unreliable. Reasoning models spend 2x to 4x tokens on unsolvable questions and rarely abstain. Code-visible triggers plus a budget cap are favoured. | C02.01-K27 | S6 trigger | yes (S6 notes the unreliable "stuck" signal) |
-| F3 | The number of impasse types is not canonical (3, 4 or 5 by source). Type impasses by what our checks can detect. | C02.01-K02 | S6 | partly (S6 has trigger types, no typing rule) |
-| F4 | A Soar substate is isolated. It reads the superstate, runs its own cycle and returns only results, with the superstate facts that justify them. | C02.01-K05 | SUBGOAL, G3 | partly (SUBGOAL re-enters S1; S3 fresh context per attempt; no "return one typed line" rule) |
-| F5 | LLM agents rarely have a typed impasse, an isolated substate and a compiled resolution as one package. | C02.01-K18, C02.03-K21 (single-source) | S6 | yes (S6 is that bundle; marked planned) |
+| F3 | The number of impasse types is not canonical. Laird 2022 main text says 3, its glossary says 4 (state no-change, operator no-change, tie, conflict), the Soar manual list says 4 (tie, conflict, constraint-failure, no-change) and 5 if no-change is split. Constraint-failure appears only in the manual. Type impasses by what our checks can detect. | C02.01-K02 | S6 | partly (S6 has trigger types, no typing rule) |
+| F4 | Moved to section 7: the isolated-substate claim is single-source. SUBGOAL and G3 isolation have no established support in this field. | none | SUBGOAL, G3 | partly (SUBGOAL re-enters S1; S3 fresh context per attempt; no "return one typed line" rule) |
+| F5 | In the ALFWorld setup Reflexion fires reflection from a hand-written counter (same action and response for more than 3 cycles, or over 30 actions); other tasks use LLM or test-based evaluation. The wider claim that no LLM agent has typed impasse, isolated substate and compiled resolution together is single-source and is in section 7. | C02.01-K18 | S6 | yes (S6 is that bundle; marked planned), but the "no LLM agent has it" premise is not established |
 | F6 | Self-correction without external feedback does not help (GSM8K 75.9 to 74.7, CommonSenseQA 75.8 to 41.8). Checks grounded in an executor or in the agent's own knowledge do. | C02.01-K13 | S5, G2, G1 | yes (G2, 4b) |
-| F7 | The quality of the diagnosis is the bottleneck of generate-critique-repair loops. Stronger or human feedback beats own-feedback repair. | C02.01-K22 | S6 operator choice | partly (G2 needs real failing output; no diagnosis-accuracy check) |
+| F7 | A critical survey finds no clear success with prompted-LLM feedback outside tasks exceptionally suited to it; self-correction works where reliable external feedback exists (two separate conditions in the survey). | C02.01-K22 | S6 operator choice | partly (G2 needs real failing output; no diagnosis-accuracy check) |
 | F8 | Impasse-time LLM calls compiled into reusable rules cut later LLM use. | C02.01-K09 | memory, S0 | partly (subgoal library "planned") |
 | F9 | Chunking compiles a subgoal result into a rule whose conditions are only the pre-goal facts accessed. Same-task speed-up is large (R1-Soar 1731 to 485 decisions, 7 on rerun). Both sources are from the Soar group. | C02.03-K01 | memory | partly (library planned; no accessed-facts key) |
 | F10 | One stored rule can cost more to match than it saves (3.1x slower in one case; over 8 million partial matches in another). Stores need a net-value rule. | C02.03-K04 | memory, G7 | partly (G7 general; no entry-level net-value rule) |
@@ -47,7 +47,7 @@ Only status established. Most gain evidence is from one benchmark per system; re
 | F12 | Wrong application of a stored entry is measurable. Looser keys raise hit rate and cut accuracy on hits (85.5 to 77.0). | C02.03-K25 | memory, S4 | no |
 | F13 | Verifying a candidate by execution before storing it helps (Voyager -73% items without self-verification; verified beats unverified in ASI). | C02.03-K10 | memory, G3 | partly (G3 pass on unfitted data; no admission rule) |
 | F14 | Adding every experience makes agents worse than a small fixed store; agents copy the outputs of similar stored items. | C02.03-K11 | memory | partly (lessons are one line; no size cap) |
-| F15 | Short, compact skills beat comprehensive documentation (+17 to +19 vs -2.9). One to three skills beat four or more. | C02.03-K14 | memory | partly (one-line lessons) |
+| F15 | In SkillsBench v1, compact or detailed skills gained +17.1 to +18.8 and comprehensive documentation lost 2.9 (v4: comprehensive roughly flat, +0.7 to -2.9); 1 to 3 skills gained +17.8 to +18.6 and 4+ skills +5.9 (v1; in v4 4+ skills lose most of the gain). The Soar link is an analogy about the cost of matching learned rules, not about rule size. | C02.03-K14 | memory | partly (one-line lessons) |
 | F16 | A learned library can be handed to another agent. Gains are partial. | C02.03-K16 | memory | no |
 | F17 | The maker of reusable entries must be strong. The user can be weak. | C02.03-K29 | memory | no |
 
@@ -71,8 +71,8 @@ With other fields. A01 F10 (refinement patches and plateaus after about 2 rounds
 
 | Mechanism | Where it shows up | Reading |
 |---|---|---|
-| Code decides, not the model | K01, K27 (trigger); C02.03-K10 (admission); K22 (diagnosis) | Same as G1, G2, G5. |
-| Isolate, then return one short result | C02.01-K05, K24, K25 | Stated as Soar design; LLM evidence is single-source. |
+| Code decides, not the model | K27 (trigger; K01 single-source); C02.03-K10 (admission); K22 (reliable external feedback) | Same as G1, G2, G5. |
+| Isolate, then return one short result | C02.01-K05, K24, K25 (all single-source) | Stated as Soar design; LLM evidence is single-source. |
 | Verify before you store or trust | C02.01-K13, K14; C02.03-K10, K25 | The one rule behind both subfields. |
 | Small, selective stores beat big ones | C02.03-K11, K14, K04; C02.01-K21 | Cost of use grows with size. |
 | Gain is gated by the base model and by repeated structure | C02.03-K08, K28, K29; C02.01-K10 | A store or loop is worth it only on recurring classes. |
@@ -100,7 +100,7 @@ With other fields. A01 F10 (refinement patches and plateaus after about 2 rounds
 | Model-stated "I am stuck" as a trigger | Unreliable; code triggers are favoured. | C02.01-K27 |
 | Revision from the model's opinion with no real output | No gain without external feedback. | C02.01-K13 |
 | Store every experience | Below a small fixed store on four agents. | C02.03-K11 |
-| Long comprehensive skill documents | Net loss in SkillsBench. | C02.03-K14 |
+| Long comprehensive skill documents | No gain to a small loss in SkillsBench (v1 -2.9; v4 +0.7). | C02.03-K14 |
 | Unverified self-written skills | About no gain on average (contested). | C02.03-K12 |
 | Typing impasses by Soar's count | Count is not canonical; type by what checks detect. | C02.01-K02 |
 | Wider candidate trees without a repair step | No gain in STARS data (single-source). | C02.01-K11 |
@@ -109,6 +109,7 @@ Most of these repeat 4b. Only the store rules and the Soar-count point are new.
 
 ## 7. Gaps
 
+- Single lab only (downgraded, not established): Soar impasse raised by a fixed rule on the preference outcome (C02.01-K01); Soar substate isolation with justified returns (C02.01-K05); no current LLM system has typed impasse, isolated substate and compiled resolution as one package (C02.03-K21).
 - Most findings come from one lab per system (CogRec, NL2GenSym, STARS). None was replicated (C02.01-K31).
 - No study compares an impasse-driven LLM agent with a plain one at equal tokens.
 - Typing the impasse has no LLM test (C02.01-K19).
@@ -117,4 +118,4 @@ Most of these repeat 4b. Only the store rules and the Soar-count point are new.
 - Human data on impasses and learning curves read as abstracts only.
 - Our bench lacks long-horizon tasks, tool failures and a store large enough to see retrieval cost.
 
-**Audit (code check, 2026-10-26):** C02.01-K01, C02.01-K05 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+**Source audit, 2026-10-26:** 15 established claims in this field were re-checked against the papers. 11 confirmed, 4 reworded (C02.01-K02, C02.01-K18, C02.01-K22, C02.03-K14: narrowed scope), none downgraded in this audit. Downgraded ids: none. C02.01-K01 and C02.01-K05 were already single-source from the earlier code check; their rows are moved to section 7.

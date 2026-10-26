@@ -13,9 +13,9 @@ Schema column checked against `research_notes/single_agent/SCHEMA.md` v0.2. Clai
 
 | Subfield | DEEP.md | Claims | Established |
 |---|---|---|---|
-| 01 Data-frame theory and frame activities (frame activities were folded in here) | [DEEP](subfields/01_data_frame_theory_and_frame_activities/DEEP.md) | 32 | 12 (+2 contested) |
-| 03 Anomaly handling and fixation | [DEEP](subfields/03_anomaly_handling_and_fixation/DEEP.md) | 30 | 12 (+1 refuted, 4 contested) |
-| **Total** | | **62** | **24** |
+| 01 Data-frame theory and frame activities (frame activities were folded in here) | [DEEP](subfields/01_data_frame_theory_and_frame_activities/DEEP.md) | 32 | 11 (+2 contested) |
+| 03 Anomaly handling and fixation | [DEEP](subfields/03_anomaly_handling_and_fixation/DEEP.md) | 30 | 11 (+1 refuted, 4 contested) |
+| **Total** | | **62** | **22** |
 
 Each subfield has a UNKNOWNS.md: 16 test rows (E10.01-U1 to U16) and 20 test rows (E10.03-U1 to U20), 36 in all.
 
@@ -37,24 +37,23 @@ Many rows are human results. For the agent they are design hints until tested on
 |---|---|---|---|---|
 | F1 | Reframing is rare and driven by a trigger (surprise, conflict, failed explanation). People mostly grow one frame by adding anchors. Revising without a trigger is costly: wrong LLM answers show far more thought switches, and one model changed 98.7% of answers when asked to revise. No trigger-versus-always arm exists. | E10.01-K02 | G1, O8 | partly (G1 doubt only on a signal; no measured trigger) |
 | F2 | People notice anomalies and give them extra attention. The failure comes after: explaining away, blaming the method, local patching. Theory change is the rare response. | E10.03-K01 | G3, S2 | partly (G3 held-out check; no explain-away guard) |
-| F3 | Without an outside signal, model-only checking is weak. Tool or run-based critique beats no-tool critique in every row tested. For 2026 models the gain from a no-tool revision follows checkability (rho 0.65), not difficulty (rho 0.05), and still breaks some right answers. | E10.01-K07, E10.01-K26 | G2, S5 | yes (G2 revise only from real output; 4b unstructured self-reflection) |
+| F3 | Without an outside signal, model-only checking is weak. Tool or run-based critique beat or matched no-tool critique in every CRITIC QA and math row tested (one exact tie, SVAMP with text-davinci-003). A model-only check on graph coloring accepted only 2 of 100 optimal colorings. For 2026 models the gain from a no-tool revision correlates with verifiability (rho 0.65), not with baseline accuracy (rho 0.05), and still breaks some right answers. | E10.01-K07, E10.01-K26 | G2, S5 | yes (G2 revise only from real output; 4b unstructured self-reflection) |
 | F4 | Prompt-only debiasing of anchoring fails. Chain of thought, "ignore the anchor" and reflection gave no significant gain; more thinking tokens did not help. Showing anchors from both sides helped partly. | E10.01-K12, E10.03-K18 | G1, 4b | yes (4b bias checklists and debiasing instructions) |
-| F5 | Models commit early on staged or multi-turn information and do not recover. Average drop 39%; over 55% of answers are committed in the first two turns; restating facts recovers only 15 to 20%; lower temperature and "wait" instructions do not fix it. Wrong early diagnoses stay wrong (65.6% persist) while the reasoning looks good. | E10.01-K14, E10.03-K12, E10.03-K13 | S1, S3, memory | no |
-| F6 | Early salient distractors cut diagnostic accuracy more than late ones (premature closure by order). | E10.03-K05 | S1 | partly (S1 input hygiene moves suggestive material; order effect not named) |
+| F5 | Models commit early on staged or multi-turn information and do not recover. Average drop 39%; over 55% of answers are committed in the first two turns; restating facts recovers only 15 to 20%; lower temperature and "wait" instructions do not fix it. Wrong early diagnoses stay wrong (65.6% persist); 91% of reasoning traces scored above threshold, yet reasoning score tracked accuracy only moderately (R=0.56, against 0.69 for information utilization). | E10.01-K14, E10.03-K12, E10.03-K13 | S1, S3, memory | no |
+| F6 | Salient distractors placed at the start or the end of a case both cut medical students' diagnostic accuracy (0.269 to 0.110 and 0.168). The early-versus-late accuracy difference was not significant; only early distractors shortened reading time per word, which the authors read as premature closure. One study, 58 students. | E10.03-K05 | S1 | partly (S1 input hygiene moves suggestive material; order effect not named and not shown in accuracy) |
 | F7 | Frontier models rarely abstain or ask when the correct option is missing or the case is underspecified (false action about 70%; a short safety prompt cuts it to about 48%). Premature closure is the default on ambiguous cases. | E10.01-K13, E10.03-K14 | G6, new exit | no (G6 pushes the other way; see section 3 C1) |
 | F8 | Clarify and abstain operators have a time window. Goal clarification loses nearly all value after the first 10% of a run; input clarification lasts to about 50%. Late clarification is worse than never asking. | E10.03-K29 | S0, new operator | no |
 | F9 | Models accept a correction better when it carries an alternative explanation. Bare retraction leaves most of the influence. In humans a full cure is rare; the backfire effect is refuted (section 6). | E10.03-K06 | S5, O8 | no |
 | F10 | LLMs confirm more than they falsify on rule discovery. Success tracks the disconfirming-test ratio. A counterexample prompt raised discovery from 42% to 56%; Think-in-Opposites helped in 11 of 11 settings. Outside rule games the evidence is correlational only. | E10.01-K10 | S7, S4 | partly (S7 counterexample search is marked E; test choice at S4 is not) |
-| F11 | Counter-evidence that is coherent is accepted; if prior-consistent evidence is also present, models favour it, and order matters. Models adopt wrong retrieved context over a correct prior more than 60% of the time; adoption falls as the context strays further from truth and as prior confidence rises. | E10.03-K10, E10.03-K11 | G4, S1 | partly (G4 samples not independent; no source-versus-prior rule) |
-| F12 | Source credibility, not truth, drives LLM updating. Anti-sycophancy prompts cut useful updating as much as harmful updating. An authority-limiting frame cut misleading-clue flips (49.8% to 19.1%). Corrupted tool returns are adopted 35 to 68% of the time; verify-by-call helps with little cost; "compare with prior" lowers accuracy on correct returns. | E10.03-K16 | G4, G6, S1 | partly (S1 input hygiene covers material in the task, not tool returns) |
+| F11 | Models adopt wrong retrieved context over a correct prior more than 60% of the time; adoption falls as the context strays further from truth and as prior confidence rises. | E10.03-K11 | G4, S1 | partly (G4 samples not independent; no source-versus-prior rule). The coherent-counter-evidence and order result is single-source and sits in section 7. |
+| F12 | Models weigh in-context claims by how credible the source looks, not by whether the claim is true. Anti-sycophancy prompts and steering lowered adoption of a credible source's claim together with adoption of the user's (drops correlated, Pearson 0.87), so useful updating falls with harmful. An authority-limiting frame cut misleading-clue flips from 49.8% to 19.1% (cross-model mean, high-prior cases, no tool executed). Corrupted tool returns are adopted 35 to 68% of the time; verify-by-call helps modestly with little cost; "compare with prior" cut adoption more for search and sub-agent returns but lowered accuracy on correct returns there. | E10.03-K16 | G4, G6, S1 | partly (S1 input hygiene covers material in the task, not tool returns) |
 | F13 | Experts differ from novices by questioning source quality, discarding data points and elaborating longer before naming the frame. The process is shared; the knowledge differs. This is behaviour only. No accuracy test exists (E10.01-K32). | E10.01-K03 | G (first frame) | no (kept as a test, not a rule) |
 | F14 | Frame activities (elaborate, question, compare, preserve, reframe, seek) are not clean or ordered. They overlap, coders disagree, and extra ones appear (abandon the search, rapid switching). Do not build a fixed pipeline of activities. | E10.01-K04 | S6 design | no |
-| F15 | A prompted step to question the first diagnosis raised human accuracy on easier cases (76.8% vs 60.1%). The effect on hard cases was small and not significant, and calibration did not improve. | E10.01-K06 | O8, S5 | partly (conflicts with 4b for LLMs; see C2) |
+| F15 | A prompted step to question the first diagnosis raised accuracy in dermatology students on easier cases (76.8% vs 60.1%, p=.004). The effect on harder cases was smaller and not significant (22.7% vs 16.7%, p=.080). Overall confidence and calibration did not change (p=.19); on easier cases calibration was better in the reflection group (p=.016). In internal-medicine residents, structured reflection tended to counter an availability-bias deficit. | E10.01-K06 | O8, S5 | partly (conflicts with 4b for LLMs; see C2) |
 | F16 | The comparison technique ACH did not improve coherence or reduce bias in three studies. How the evidence is laid out did matter (hypotheses in rows: 39% vs 62 to 67% picked the confirming hypothesis). Trained analysts were mostly not biased. | E10.01-K16 | O (compare) | yes (4b full competing-hypotheses matrix); the layout finding is new |
-| F17 | No source gives numeric trigger rules for reframing. Klein 2023 gives no tau, strain count, anomaly tolerance or frame limit. Every threshold must be tuned on our logs and marked [O] or [D]. | E10.01-K25 | S6 | partly (S6 triggers are code-set; no tuning rule recorded) |
-| F18 | Fixation rates in simulated anaesthesia depend on the denominator: 63% of subjects made at least one fixation error (n=30), but 20.5% of unplanned incidents (27 of 132). Compare rates only on the same unit. | E10.03-K22 | section 6 logging | no |
+| F17 | Fixation rates in simulated anaesthesia depend on the denominator: 63% of subjects made at least one fixation error (n=30), but 20.5% of unplanned incidents (27 of 132). Compare rates only on the same unit. | E10.03-K22 | section 6 logging | no |
 
-Counts: 24 established claims, all placed (F1 to F18). F17 (E10.01-K25) has one independent source; its "established" label is a design rule and not a measured effect.
+Counts: 22 established claims, all placed (F1 to F17). Two single-source claims (no numeric trigger rules; coherent counter-evidence and order) were moved to section 7.
 
 ## 3. Contradictions between subfields
 
@@ -69,7 +68,7 @@ Counts: 24 established claims, all placed (F1 to F18). F17 (E10.01-K25) has one 
 | C7 | **Trigger rule vs trigger evidence.** E10.01-K02 is established (reframe only on a trigger). E10.03-K25 (contested) says no trigger is validated; E10.01-K25 says no numbers exist. | The rule (G1) is supported. The trigger is not. Test five triggers together (E10.03-U4, E10.01-U3). |
 | C8 | **Role-split debate.** E10.03-K19 recovered 71.3% of wrong first answers but had no control. SCHEMA G9 says no debate. | Keep G9. Allow only a matched-token test at an impasse (E10.03-U19). |
 | C9 | **Structure beats prose?** Single-source E10.01-K28 (state held by controller 8.6 to 86.1; same procedure written in the prompt stayed near zero) fits G5 and G10. Single-source E10.01-K20 (staged states help) comes from trained or golden-reasoning setups. | Only the code-held part is a strong lead. Keep the two tests separate (E10.01-U2, U15). |
-| C10 | **Cross-field: confidence as a signal.** A01 synthesis C6 bars stated confidence. E10.01-K06 shows prompted questioning gave no calibration gain, which agrees. E10.03-K25 lists "graded confidence loss" as a candidate trigger (human data). | Agent confidence stays barred. Use code counts such as failed checks and mismatches instead. |
+| C10 | **Cross-field: confidence as a signal.** A01 synthesis C6 bars stated confidence. E10.01-K06 shows prompted questioning gave no overall calibration gain (better only on easier cases), which broadly agrees. E10.03-K25 lists "graded confidence loss" as a candidate trigger (human data). | Agent confidence stays barred. Use code counts such as failed checks and mismatches instead. |
 | C11 | **Cross-field: counterexample search.** A01 C4 says LLMs find falsifying cases poorly. E10.01-K10 shows a prompt raising discovery. | Consistent only if code runs the test and the model reads the result. |
 
 No other field has a SYNTHESIS.md yet, so cross-field checks cover A01 only. Check against A12 (insight), C09 (diagnosis), E08 and E09 when they land.
@@ -82,10 +81,10 @@ No other field has a SYNTHESIS.md yet, so cross-field checks cover A01 only. Che
 | M2 | **Noticed, then explained away.** The anomaly is seen, then blamed on the method or patched. | E10.03-K01, E10.01-K13 (single-source companions E10.03-K27, E10.01-K29) | Make each excuse cost a check. Keep an open-anomaly list in code. |
 | M3 | **Own text pulls.** A model rereads its own earlier output with more trust than a user's. | E10.01-K07, E10.01-K12, E10.03-K18 (single-source: E10.03-K09, E10.03-K23) | Re-derive in a fresh context. Do not annotate "this is wrong". |
 | M4 | **An outside signal beats a model check.** | E10.01-K07, E10.01-K26 | Revision and doubt steps need a run, a lookup or a held-out test (G2, G3). |
-| M5 | **Source credibility beats truth.** | E10.03-K10, E10.03-K11, E10.03-K16 | Control how tool returns and retrieved text are framed. Measure valid updates too. |
+| M5 | **Source credibility beats truth.** | E10.03-K11, E10.03-K16 | Control how tool returns and retrieved text are framed. Measure valid updates too. |
 | M6 | **Every guard has a price.** Stand-firm prompts and doubt prompts both cause errors on the other side. | E10.03-K16, E10.03-K14; single-source E10.01-K29 | Report both error types in each test. |
 | M7 | **No trigger has a validated number.** | E10.01-K25, E10.03-K25 | Tune thresholds on our logs. |
-| M8 | **Timing matters.** Early commit, early clarification and early distractors are worse than late ones. | E10.03-K05, E10.03-K12, E10.03-K29 | Put the gates early in the run and keep them in code. |
+| M8 | **Timing matters.** Early commit and early clarification are worse than late ones; early distractors shortened reading time, but their accuracy cost over late ones was not significant. | E10.03-K05, E10.03-K12, E10.03-K29 | Put the gates early in the run and keep them in code. |
 
 ## 5. Merged tests
 
@@ -120,7 +119,7 @@ All 36 unknown ids are covered. Cross-cutting: every test above also needs the S
 | Backfire-effect handling | Refuted; a large replication found none | E10.03-K07 | new |
 | Bare retraction of a bad hypothesis | Leaves most of the influence; an alternative explanation works far better | E10.03-K06 | new |
 | "Wait" or "do not commit yet" instructions to stop early commitment | Did not stop it in MINT; withholding the slot is the untested remedy | E10.03-K12 | new |
-| Anti-sycophancy prompts as a general fix | Cut useful updating about as much as harmful updating | E10.03-K16 | new |
+| Anti-sycophancy prompts as a general fix | Lowered adoption of credible-source claims together with user claims (r 0.87), so useful updating fell too | E10.03-K16 | new |
 | Self-agreement across runs as a stop signal | Runs can agree and be wrong | E10.01-K27 (single-source), G4 | already in G4 |
 | Numbers copied from Klein's second-hand sources (up to 3 frames, 3 to 4 anchors, any tau) | Never verified; the sources give no thresholds | E10.01-K25 | new |
 | Evaluative AI (show evidence for and against) as a feature | No gain in the first behavioural test; rival result unopened | E10.01-K17 (contested) | new |
@@ -134,7 +133,9 @@ All 36 unknown ids are covered. Cross-cutting: every test above also needs the S
 - **Coverage.** Five of seven listed subfields are unresearched. The Pirolli and Card loops (analyst sensemaking) and manipulated sensemaking (S1 hygiene) are the two worth doing next.
 - **Founding papers unread.** Klein, Moon and Hoffman 2006 and Klein et al. 2007 were never opened. Chinn and Brewer 1993 and 1998 were blocked (403). Dunbar 1993 and Trickett 2009 not opened. Every statement about what the theory claims is second hand.
 - **No tested prediction.** The data-frame theory has only been coded onto transcripts. The Plausibility Transition Model made no tested prediction (E10.01-K18).
-- **Independence.** The same LLM papers support claims in both subfields. The independence re-check is pending.
+- **Independence.** The source audit is done (see the last paragraph).
+- **Single lab only: reframing trigger numbers** (E10.01-K25). No source gives numeric trigger rules for reframing; Klein 2023 gives no tau, strain count, anomaly tolerance or frame limit. Every threshold must be tuned on our logs and marked [O] or [D]. Schema part S6 stays a design rule, not a measured effect.
+- **Single lab only: coherent counter-evidence is accepted, prior-consistent evidence favoured, order changes answers** (E10.03-K10; GPT-4 about 80% on popular questions). All support is one paper (Xie et al. 2024); numbers match it. The G4/S1 part of F11 now rests on E10.03-K11 alone.
 - **Human samples are tiny.** Several effects (noticing high, patching high) rest on 3, 6 or 11 people. A small human panel on our items would show whether the LLM pattern differs.
 - **What an anomaly is for an LLM.** Failed check, violated prediction or odd tool output: not defined. Label our logs first (E10.01 open questions).
 - **No independent fixation benchmark.** Only mARC, from one group.
@@ -142,4 +143,4 @@ All 36 unknown ids are covered. Cross-cutting: every test above also needs the S
 - **Frontier models.** Several 2026 results name models we cannot cross-check; rerun key arms on the models we deploy.
 - **Cross-field.** Compare with A12 (insight), C09 (model-based diagnosis), E08 and E09 when their syntheses exist.
 
-**Audit (code check, 2026-10-26):** E10.01-K25 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+**Source audit, 2026-10-26:** of the 23 claims audited as established for this field, 17 were confirmed, 5 were reworded (E10.01-K06, E10.01-K26, E10.03-K05, E10.03-K13, E10.03-K16) and 1 was downgraded to single-source (E10.03-K10, not independent: all support is one paper). Earlier, E10.01-K25 was downgraded for having one opened source. Downgraded ids: E10.01-K25, E10.03-K10. Their rows were removed from section 2 and moved to section 7. 22 claims remain established.
