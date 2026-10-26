@@ -9,8 +9,8 @@ Notes on use. "Established" means status "established" in claims.jsonl. Only 2 o
 | Subfield | DEEP.md | Claims | Established |
 |---|---|---|---|
 | 01 Abduction and inference to the best explanation | [DEEP](subfields/01_abduction_and_ibe/DEEP.md) | 33 (17 single-source, 3 contested, 2 open) | 11 |
-| 02 Proofs and refutations (conjecture refinement) | [DEEP](subfields/02_proofs_and_refutations/DEEP.md) | 34 (29 single-source) | 5 |
-| **Total** | | **67** | **16** |
+| 02 Proofs and refutations (conjecture refinement) | [DEEP](subfields/02_proofs_and_refutations/DEEP.md) | 34 (30 single-source) | 4 |
+| **Total** | | **67** | **15** |
 
 Each researched subfield has a UNKNOWNS.md: 14 test rows for 01 and 16 for 02 (30 in all).
 
@@ -22,7 +22,7 @@ Where two claims describe one source, they are merged and counted once. D01.02-K
 
 | # | Finding | Claim ids | Schema part | Already in SCHEMA.md? |
 |---|---|---|---|---|
-| E1 | Abduction only proposes. A hypothesis counts as accepted only after code has run it. Generate-then-test is the classic frame; no mechanical rule yields good hypotheses. | D01.01-K01 | S3, S4, G3, G5 | yes (G3, G5, S4). The logged rate of S3 candidates rejected at S4 is not there. |
+| E1 | SEP presents Peirce's cycle as abduction forming explanatory hypotheses, deduction drawing testable consequences and induction judging the hypothesis by how many consequences hold; Frankfurt reads abduction as picking hypotheses worth investigating (SEP questions that reading for Peirce), and Hanson's retroductive schema yields a type of hypothesis worth elaborating. Generate-then-test is the classic frame; the discovery-machine objection says no rule mechanically outputs good hypotheses. Secondhand via SEP only. Our rule that a hypothesis counts as accepted only after code has run it is a design choice (G3, G5), not part of the source claim. | D01.01-K01 | S3, S4, G3, G5 | yes (G3, G5, S4). The logged rate of S3 candidates rejected at S4 is not there. |
 | E2 | A generate-then-test loop whose test is run by code beats direct prompting (ARC 17% to 30%; ACRE task accuracy 28 to 59, GPT-4). It is not universal: MiniARC raw accuracy fell from 33.1 to 18.7. | D01.01-K02 | S3, S4, S5 | partly (S3/S4 loop yes; per-class evidence of when it loses is not stated) |
 | E3 | The loop helps when the true rule is short and symbolic, and fails on perceptual or wide-context rules. Read across three papers; no head-on test. Route in S0 by a cheap check: does some short program fit the examples? | D01.01-K28, D01.01-K02 | S0 | partly (S0 gate exists as [S]; this criterion is new) |
 | E4 | Fit to the shown examples is a weak gate. CodeARC: 67.6% pass the examples, 38.9% pass the oracle. BARC: about 9% of fitting programs are false. Test suites also err (11.3% of SWE-bench Lite problems have flaky tests). Use held-out or differential checks and measure each gate's own precision. | D01.01-K25 | G3, S4, S7 | yes (G3, S7 discriminating test). Gate-precision logging is not there. |
@@ -34,10 +34,9 @@ Where two claims describe one source, they are merged and counted once. D01.02-K
 | E10 | Standard IBE has two stages; Dellsen adds a consolidation stage and replaces "best" with "good enough". The bad lot is unresolved. Accept only a candidate that passes an unfitted check; otherwise return to S3. Philosophical, no measured result. | D01.01-K18 | S7, S8 | no |
 | E11 | Few-shot demonstrations help abduction only when matched to the test and are unstable across models (GPT-4 41.7 to 28.7; Llama-3-70B to 75.5). | D01.01-K09 | S3 | no |
 | E12 | Without an external check, model self-correction does not help reasoning and can hurt (GPT-3.5 CommonSenseQA 75.8 to 38.1; GPT-4 GSM8K 95.5 to 89.0). Earlier gains came from oracle labels. | D01.02-K07 | G2 | yes (G2, 4b) |
-| E13 | Executable or tool feedback gives repair gains that model-only feedback does not (CRITIC 42.0 to 50.0; Self-Debug MBPP 72.8 to 80.4 with unit tests vs +3.6 without; Reflexion HumanEval 91.0 vs 80.1). | D01.02-K09 | G2, S5 | yes (G2, S5 locates failure by code). The "specific, located feedback" detail is only partly stated. |
+| E13 | Executable or tool feedback gives repair gains that model-only feedback does not (CRITIC 42.0 to 50.0; Self-Debug MBPP 72.8 to 80.4 with unit tests vs +3.6 without; Reflexion HumanEval 91.0 vs 80.1, which is against a no-reflection baseline, not a model-only-feedback contrast). | D01.02-K09 | G2, S5 | yes (G2, S5 locates failure by code). The "specific, located feedback" detail is only partly stated. |
 | E14 | Repair loops silently change the claim. An Isabelle audit found 16 of 100 original declarations changed; statute repair left 15-45% meaning drift; a protected-statement diff rejected a weakened theorem the prover accepted. No seeded-set rate exists. | D01.02-K26 | new guardrail (G13) or S8 | no |
-| E15 | Dropping a hypothesis from a proved theorem gives false conjectures with known counterexamples (575K Lean problems; SymCE 4,707 items, 97.7% accurate verifier). A test-bed source, not an agent part. | D01.02-K17 | evaluation | no (evaluation only) |
-| E16 | No study runs a Lakatos-labelled LLM loop (monster-barring, lemma-incorporation, concept refinement) with a matched resampling control. Only pieces are measured; Pease's evaluation had no baseline. | D01.02-K22 | whole schema | partly (SCHEMA section 7 lists conjecture refinement as an open slot) |
+| E15 | Dropping a hypothesis from a proved theorem is a cheap source of candidate false conjectures. Li et al. made about 575K candidate counterexample problems in Lean from 212,463 seed theorems (candidates, not all confirmed false); Zouak et al.'s SymCE has 4,707 false statements with verified witnesses and a 97.7% accurate verifier. A test-bed source, not an agent part. | D01.02-K17 | evaluation | no (evaluation only) |
 
 ## 3. Contradictions between subfields
 
@@ -63,7 +62,7 @@ Where two claims describe one source, they are merged and counted once. D01.02-K
 | **Nothing-fits is invisible to the model** | 01 (K08, K18), A01 "nothing follows" (A01.01-K06, A01.03-K34) | Two fields show the same failure: models answer from what they have and do not offer "none". Fix once, with a code flag. |
 | **Interacting causes break the model** | 01 (K06), A01.01-K05 (single-source, models held) | Difficulty tracks how many things must hold at once. A code-built table of what changed is the candidate fix (D01.01-U4). |
 | **Silent change of the question** | 02 (K26), A01 surface brittleness (A01.01-K27) | The statement the loop works on must be fixed and diffed (E14). |
-| **No matched resampling control** | 02 (K22), 01 (K02 vs MiniARC) | Every loop in this field must be tested against best-of-N and restart at equal tokens, counting input tokens (G7). |
+| **No matched resampling control** | 02 (K22, single-source), 01 (K02 vs MiniARC) | Every loop in this field must be tested against best-of-N and restart at equal tokens, counting input tokens (G7). |
 
 ## 5. Merged tests
 
@@ -106,15 +105,15 @@ Order to run: T1 first (it says where the loop belongs), then T2 with T3 on the 
 
 ## 7. Gaps
 
-- **Thin evidence base.** 16 established claims from 67. Subfield 02 is 29 of 34 single-source, and many rest on 2026 preprints from single groups.
+- **Thin evidence base.** 15 established claims from 67. Subfield 02 is 30 of 34 single-source, and many rest on 2026 preprints from single groups.
 - **Eight subfields not researched:** research programmes, falsificationism, anomalies and paradigm change, heuristic programming and machine discovery (rated High, "Dig into next" number 3), methodologies of discovery, cognitive approaches, social epistemology, pragmatic logics. The "stop patching" signal (degenerating programme) and the anomaly trigger for S6 have no evidence here yet.
 - **Old models.** Most numbers come from GPT-4 and 2023-24 setups. Direction is robust (code test helps); size is not. Rerun a small subset on the deployed model before trusting sizes.
 - **No bad-lot benchmark.** U3 pools are built by deleting the true rule. A natural source of pools with no true answer is missing (D01.01-K29, open).
-- **No Lakatos-labelled LLM loop with a matched control** exists (D01.02-K22). Our T7 is that design.
+- Single lab only: no Lakatos-labelled LLM loop (monster-barring, lemma-incorporation, concept refinement) with a matched resampling control was found; LLM work measures pieces only and Pease's own evaluation had no baseline (D01.02-K22, one opened source, not established). Our T7 is that design; its motivation rests on this single-source claim alone.
 - **Formal tools absent from the bench.** Lean, model finders and a numbered-step proof corpus are missing, so the restart-beats-repair result (D01.02-K24, Lean, 11 sequential problems per model) cannot be checked here.
 - **Philosophy is secondhand.** Peirce, Hanson, Harman and Lipton are read through SEP only. The 2017 dialogue-game paper was read as an abstract only (D01.02-K34).
 - **Human results are single-lab.** The simplicity preference and the explanation-and-credence data rest on one lab; outside work finds no general preference (D01.01-K13, K33).
 - **Real-world abduction.** Diagnosis and debugging evidence is one paper plus synthetic sets.
 - **Cross-field links not yet merged.** Conjecture refinement shares S6 and S7 questions with lemma discovery, conflict-driven clause learning, analogical access and bandits for operator choice; their UNKNOWNS files should be merged with T2, T6 and T7. The A01 gap line on abduction (C9) needs updating.
 
-**Audit (code check, 2026-10-26):** D01.02-K22 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+**Source audit, 2026-10-26:** the papers behind all 15 established claims of this field were re-opened. 13 confirmed, 2 reworded (D01.01-K01, D01.02-K17), 1 downgraded to single-source (D01.02-K22). E16, which cited K22, was removed from section 2 and moved to Gaps as single lab only. The T7 motivation and the mechanism row "No matched resampling control" rested on K22 alone and are now flagged single-source.
