@@ -16,6 +16,22 @@ Naturalistic decision making (NDM) studies expert choices in real settings: fire
 | NDM in sport | RPD applied to athletes | Bossard et al. 2022 | Low | Gives usage rates above |
 | Heuristics and biases | Systematic errors of intuition | Kahneman and Tversky | Med | Contrast; 4b |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Recognition-primed decision (RPD) | [`subfields/01_rpd_and_mental_simulation/DEEP.md`](subfields/01_rpd_and_mental_simulation/DEEP.md) | done, batch 4 (2026-10-26) |
+| Mental simulation | covered in [`subfields/01_rpd_and_mental_simulation/DEEP.md`](subfields/01_rpd_and_mental_simulation/DEEP.md) | done, batch 4 (2026-10-26) |
+| Sensemaking, data-frame model | | not started |
+| Pre-mortem | | not started |
+| Conditions for valid intuition | [`subfields/05_conditions_for_valid_intuition/DEEP.md`](subfields/05_conditions_for_valid_intuition/DEEP.md) | done, batch 4 (2026-10-26) |
+| Cognitive task analysis | | not started |
+| Expert-novice differences | | not started |
+| NDM in sport | | not started |
+| Heuristics and biases | | not started |
+
 ## Dig into next
 
 **1. Valid-intuition conditions as the S0 gate.**

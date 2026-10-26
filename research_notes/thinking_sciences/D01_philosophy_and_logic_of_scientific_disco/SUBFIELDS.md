@@ -17,6 +17,23 @@ This field asks how new hypotheses are found, refined and kept or dropped. For m
 | Social epistemology of discovery | Cognitive diversity, standpoint | Longino; Weisberg and Muldoon | Low | Background only (single agent) |
 | Pragmatic logics (early) | Analysis from effects to causes; the "happy thought", colligation, verification | Newton, Whewell, Dewey | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Abduction and inference to the best explanation | [`subfields/01_abduction_and_ibe/DEEP.md`](subfields/01_abduction_and_ibe/DEEP.md) | done, batch 4 (2026-10-26) |
+| Proofs and refutations (conjecture refinement) | [`subfields/02_proofs_and_refutations/DEEP.md`](subfields/02_proofs_and_refutations/DEEP.md) | done, batch 4 (2026-10-26) |
+| Research programmes | | not started |
+| Falsificationism | | not started |
+| Anomalies and paradigm change | | not started |
+| Heuristic programming and machine discovery | | not started |
+| Methodologies of discovery | | not started |
+| Cognitive approaches | | not started |
+| Social epistemology of discovery | | not started |
+| Pragmatic logics (early) | | not started |
+
 ## Dig into next
 
 **1. Proofs and refutations.** Questions: (a) Can the three counterexample types (hits the conclusion only, a premise only, both) be classified by code from a failing test? (b) Which repair follows each type: add a hidden lemma, replace the premise, or add a condition to the claim? (c) Does a counterexample-driven repair loop beat plain resampling on rule-induction items? Evidence needed: a set of rules with known counterexamples, repair logs, and an equal-token comparison.

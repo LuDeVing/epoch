@@ -17,6 +17,23 @@ Chess has been the main laboratory of expertise research since de Groot. The fie
 | Computer chess and game AI | Alpha-beta, Monte Carlo tree search, self-play | Deep Blue, AlphaZero [M] | High | Tree search at S6 |
 | Deliberate practice | Practice type and skill | Ericsson [M] | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Thought-process studies | [`subfields/01_thought_process_and_progressive_deepening/DEEP.md`](subfields/01_thought_process_and_progressive_deepening/DEEP.md) | done, batch 4 (2026-10-26) |
+| Progressive deepening and search depth | covered in [`subfields/01_thought_process_and_progressive_deepening/DEEP.md`](subfields/01_thought_process_and_progressive_deepening/DEEP.md) | done, batch 4 (2026-10-26) |
+| Chunking | covered in [`subfields/05_chunks_and_templates/DEEP.md`](subfields/05_chunks_and_templates/DEEP.md) | done, batch 4 (2026-10-26) |
+| Computational chunk models | | not started |
+| Template theory | [`subfields/05_chunks_and_templates/DEEP.md`](subfields/05_chunks_and_templates/DEEP.md) | done, batch 4 (2026-10-26) |
+| Pattern-recognition theory of search | | not started |
+| Recognition-primed decisions | | not started |
+| Einstellung effect | | not started |
+| Computer chess and game AI | | not started |
+| Deliberate practice | | not started |
+
 ## Dig into next
 
 1. **Staged thought process and deepening.** Questions: Do de Groot's four phases map onto S1 to S8, with "proof" as an extra check on the chosen line before submitting? What is the exact pattern of returning to a line, and how does it compare with our tree limits (3 children, depth 2)? Evidence needed: de Groot's protocols and Gobet's reviews (the PDFs I tried were unreadable).

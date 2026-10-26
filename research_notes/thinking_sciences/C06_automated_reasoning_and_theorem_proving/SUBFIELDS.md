@@ -17,6 +17,23 @@ Automated reasoning builds programs that derive conclusions by rule. It divides 
 | Autoformalisation | Text to formal statement | Wu et al. 2022 [M] | Low | S2 |
 | Counterexample finding | Models that refute a claim | Mace4 (named in Wikipedia) [V]; Nitpick [M] | High | S7 discriminating test |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Resolution and saturation | | not started |
+| SAT solving, DPLL | | not started |
+| CDCL | [`subfields/03_cdcl_conflict_learning/DEEP.md`](subfields/03_cdcl_conflict_learning/DEEP.md) | done, batch 4 (2026-10-26) |
+| Interactive theorem proving | | not started |
+| Neural and LLM proof search | | not started |
+| Premise selection | | not started |
+| Lemma discovery, conjecturing | [`subfields/07_lemma_discovery_and_conjecturing/DEEP.md`](subfields/07_lemma_discovery_and_conjecturing/DEEP.md) | done, batch 4 (2026-10-26) |
+| Proof planning and repair | | not started |
+| Autoformalisation | | not started |
+| Counterexample finding | | not started |
+
 ## Dig into next
 
 1. **Lemma discovery and the proof library.** What makes a conjectured lemma worth keeping (used twice, shortens later proofs)? How is it retrieved without flooding the context? Evidence: the two LLM lemma papers below; our reuse counts.

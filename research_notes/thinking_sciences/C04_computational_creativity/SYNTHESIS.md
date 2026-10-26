@@ -1,0 +1,117 @@
+# Computational creativity: synthesis
+
+*One view across the field's researched subfields. Built from each subfield's DEEP.md, claims.jsonl and UNKNOWNS.md.*
+
+Notes on use. "Established" means the claim's status in claims.jsonl. Only 2 of the field's 10 subfields are researched, so this is a partial view: it covers how to judge creative output and how to keep a set of different attempts. Contested and single-source claims are named only where they matter for a contradiction or a gap. Schema column checked against `research_notes/single_agent/SCHEMA.md` v0.2. Most evidence comes from LLM-ideation, code-evolution and robot-control papers, not from ARC or puzzle items, so every finding is a design hint until tested on our bench.
+
+## 1. Coverage
+
+| Subfield | DEEP.md | Claims | Established |
+|---|---|---|---|
+| 05 Evaluation of creativity | [DEEP](subfields/05_evaluation_of_creativity/DEEP.md) | 27 | 17 (5 contested, 5 single-source) |
+| 06 Quality-diversity and novelty search | [DEEP](subfields/06_quality_diversity_and_novelty_search/DEEP.md) | 23 | 12 (1 supported, 10 single-source) |
+| **Total** | | **50** | **29** |
+
+Each researched subfield has a UNKNOWNS.md (13 rows for 05, 15 rows for 06; 28 in all).
+
+Not yet researched (from SUBFIELDS.md): Boden's creativity types; creativity as search; combinational creativity; transformational creativity; story, music, art and humour systems; conceptual blending; creative problem solving; scientific discovery systems. SUBFIELDS.md ranked combinational creativity (retrieved distant concepts) third in its "dig into next" list; it is still open.
+
+## 2. Established findings, merged
+
+Status established only. Schema column: yes (where) / partly / no.
+
+| # | Finding | Claim ids | Schema part | In SCHEMA.md? |
+|---|---|---|---|---|
+| F1 | Judging novelty by a model is weak. Experts agree only weakly on novelty (single-item agreement near chance to moderate). LLM judges without retrieval sit at or near chance, below human-human agreement (50-53% vs 56%), flip verdicts under small prompt edits (deleting one sentence changed 52.6% of pairs), and compress scores to the middle. A cheap prompted judge beat costly dedicated novelty pipelines. A setup validated on one judge or data type does not transfer. | C04.05-K01, C04.05-K05, C04.05-K16, C04.05-K21 | G8, G5 | yes (G8) |
+| F2 | Judges approve too much. Twelve frontier LLMs approved 74% of research proposals that reviewers rated unsound; prompt changes only traded false approvals for false rejections. Judges and scorers also overrate machine text and are confounded by length and elaboration. | C04.05-K25, C04.05-K06, C04.05-K10 | G5, G8 | partly (G5 length-normalised and blind; no rule on approval inflation) |
+| F3 | A model cannot pick its own best creative candidate (match with the diversity pick 29% vs 35.3% random). Model-judged quality and diversity look better than they are: QDAIF won on AI judgement but only tied a fixed prompt under humans, and AI-human agreement broke at the top of the scale (0.995-1, a sign of judge hacking). | C04.05-K14, C04.06-K07 | G8, G5 | yes (G8: generator never final selector) |
+| F4 | Without a programmatic verifier, selection among many diverse attempts hits a ceiling, and pushing a model judge past an optimum lowers true quality. MATH, Llama-3-8B: coverage 82.9% to 98.44% over 100 to 10,000 samples while majority vote or reward-model selection moved 40.50% to 41.41%. | C04.06-K17 | G5, S8 | partly (G5 code selects; no cap on judge-guided selection; same finding as C01 F1) |
+| F5 | Pooling many raters makes judgment reliable: expert pools reach alpha .8-.96; aggregated pass counts r .69 vs kappa .41 per test. The Consensual Assessment Technique works with domain experts, not novices (nonexpert ratings correlated .21 with experts). | C04.05-K02, C04.05-K03 | S7, G5 | partly (S7 selects in code; no rule that an ungrounded judge counts as a novice) |
+| F6 | Counting functionally distinct answers (classifier or semantic entropy) is a validated novelty-as-diversity measure: 79% agreement with human pairs, kappa .56 to human labels. N-gram metrics diverge from humans. | C04.05-K11 | S3, S7 | partly (S7 mentions distinctness for open mode; no distinct-count measure named) |
+| F7 | One model's sample pool collapses to near-duplicates (about 5% of 4,000 ideas survive dedup at cosine 0.8). Different frontier models agree with each other (cross-model similarity 71-82%). Temperature, paraphrase and a creativity system prompt help little. Showing the model its previous answers and asking for a different one lifts diversity to about human level. | C04.05-K12, C04.06-K10, C04.06-K09 | S3, G4 | partly (S3 open mode has code-kept history of directions; G4 same-model samples not independent; but S3 also says each attempt sees no other attempt, see C1) |
+| F8 | An embedding duplicate filter before spending tokens improves sample efficiency in LLM code evolution (reject above cosine 0.95); an extra LLM novelty judge added only marginally. | C04.06-K09 | G5, S3 | no |
+| F9 | Novelty and usefulness are decoupled: reviewer scores track novelty, but novelty is uncorrelated with feasibility, and in agent runs more novelty gave no better impact. | C04.05-K13 | S7 | no |
+| F10 | Novelty depends on the reference set and the date. Verdicts move with which prior work is retrieved and with a date cutoff. | C04.05-K19 | memory, S4 | no |
+| F11 | A judge that must check each claim against named evidence fixes source-bounded novelty. Telling judges to test narrowness moved them to experts. Claim-by-claim attribution repaired 72.2% of unsupported novelty claims vs 39.1% for retrieve-and-revise and 11.7% for self-revision. Handing over the prior alone did not fix it. Both fixes were designed after seeing the failure. | C04.05-K26 | G5, S4 | no |
+| F12 | Task-specific trained scorers beat zero-shot LLM judges (poly-encoder r .74 vs GPT-4 zero-shot .2-.67). Judge explanation text is often close to expert rationale even when its score is poor. | C04.05-K15, C04.05-K17 | G5, G10 | partly (G10 reasoning text is not evidence; no use of explanations as evidence) |
+| F13 | On a deceptive task a plain objective can match random selection, while novelty search over a coarse behaviour space solves it almost every time (hard maze: fitness 3/40, random 4/40, novelty 39/40). | C04.06-K01 | G12, S6 | partly (G12 says search only with a foothold; no rule for deceptive items) |
+| F14 | Novelty has limits. With an unbounded behaviour space it lost its edge (5/100 vs 2/100, not significant). Pure novelty lost to plain ES on a non-deceptive task (p<0.05), and lexicase selection over sub-checks beat MAP-Elites on deceptive domains without any diversity measure. Novelty does not polish solutions. Only 5 of 12 Atari games were truly deceptive. | C04.06-K02, C04.06-K21 | G12, S7 | partly (G12; per-case selection not in schema) |
+| F15 | The behaviour descriptor must be aligned with success and not over-fine. Aligned beat fitness (p<0.001); unaligned was worse than fitness (p<0.05). Over-fine or irrelevant dimensions slowed search (63,440 to 27,427 evals). Shown in robot mazes. | C04.06-K03 | memory, O | no |
+| F16 | An LLM can replace the mutation operator in a QD loop: it makes several coupled code edits at once (GP mutation falls to zero at five bugs; the diff model degrades only at five). Validity depends on model size and parent order (over 50% swing). | C04.06-K06 | O, G (shuffle parents) | partly (G3 mutated input; no order-shuffle rule) |
+| F17 | Reusing earlier archive entries as parents (stepping stones) and mutating across cells beat regenerating from scratch (Rainbow Teaming fitness 0.91 vs 0.79, coverage 0.97 vs 0.90). Direction agrees in code-evolution ablations, but they are authors' own systems with few seeds. | C04.06-K08 | memory, O | no |
+| F18 | Island-structured search over whole solutions with an evaluator beats Best-of-N and sequential revision (Mind Evolution: 95.6% vs 55.6% and 82.8%). Islands gave about 10 points at equal conversations on a hard subset; most gain came from the critic and evaluator feedback. | C04.06-K11 | S3 | no |
+| F19 | Quality and diversity trade off in a controllable way: a similarity filter cost some success (ASR 0.92 vs 0.99) but roughly halved repetition (self-BLEU 0.42 vs 0.79); quality-only optimisation gave no diversity. | C04.06-K12 | G, S3 | no |
+
+## 3. Contradictions between subfields
+
+| # | Where the claims disagree | How to resolve |
+|---|---|---|
+| C1 | **Fresh context per attempt vs show earlier answers.** SCHEMA S3 says each attempt sits in a fresh context that shows no other attempt, and lessons are shown only after the first attempt. C04.06-K10 and C04.05-K12 (established) say showing the model its previous answers restores diversity to human level. C04.06-K08 says parents from earlier attempts beat restarting; C04.06-K14 (single-source) says the whole archive in the prompt matches MAP-Elites on coverage. | Likely both hold for different goals: independence for single-answer problems (G4), history for open mode. Open mode already lets code keep a history of directions. Decide the form with C04.06-U5, C04.06-U4, C04.06-U11. Do not change S3 before then. |
+| C2 | **Model or persona mix: independent or not.** G4 bans persona and strategy voters on single-answer problems. C04.06-K10 (established) says models agree 71-82% and creativity prompts help little. Its gap search found that in Core War a 4-model ensemble gave more coverage than one model (80.6% vs 59.0%). | Different tasks (open answers vs code search with an archive). Keep G4 for single-answer items. Test: C04.06-U14. |
+| C3 | **When novelty search helps.** C04.06-K01 says novelty beats fitness 39/40 vs 3/40 on a deceptive task. C04.06-K02 and C04.06-K21 say it loses on non-deceptive tasks and unbounded spaces, and lexicase selection matches it without diversity. G12 says search only where there is a foothold; K01 says a plain objective can fail with no foothold. | Not a real conflict if diversity is switched on by a stagnation signal, not by default. This fits G1 (doubt only on a signal). Test: C04.06-U3. |
+| C4 | **Retrieval helps the novelty judge, or not.** C04.05-K08 (contested) says retrieval or rubric plus run history lifts agreement to about human-human level. Its gap search found gains of at most 16 points, and judges called ideas novel because five retrieved papers did not cover them. C04.05-K21 says cheap prompted judges beat costly novelty pipelines and verdicts flip on one deleted sentence. | Retrieval alone is not a fix. Use retrieval only with the claim-attribution step (C04.05-K26) and a stability check. Test: C04.05-U2, C04.05-U3. |
+| C5 | **Pooling judge calls.** Pooling expert humans works (C04.05-K02). Pooling LLM calls gives only a few points (C04.05-K23, contested) and G4 says same-model samples are not independent. C04.06-K10 says other models are not independent either. | Human pooling relies on independent raters, which same-family calls lack. Measure the k curve at equal tokens: C04.05-U4. |
+| C6 | **Self-preference.** C04.05-K06 (established) says judges overrate machine text; C04.05-K22 (contested) says self-preference is small to absent under blind, style-neutral conditions, but present for objective rubrics (over 50% more likely to wrongly pass own output). C01 F6 lists self-preference as a standing bias with hide-authorship as the fix. | Machine-text preference is established; own-output preference depends on visible style or label. Keep G5 (no authorship shown) and test with C04.05-U8. |
+| C7 | **Is diversity a quality signal?** C04.05-K11 and C04.06-K12 treat distinct-answer count as a measure that needs a quality control. C04.05-K13 says novelty is uncorrelated with feasibility; C04.05-K27 (single-source) found no per-idea link from distance to usefulness. C04.06-K08 reports coverage and fitness rising together with stepping stones. | Diversity is a coverage signal until a per-idea link is shown. Rank by running, not by distance. Test: C04.05-U10. |
+| C8 | **LLM as labeller vs "code selects".** C04.06-K13 (single-source) and the QD loops use a model to assign descriptors or judge interestingness. G5 says ranking, grouping and voting are done in code. | A descriptor label is grouping. It can be model-assigned only after labeller agreement is measured (78-83% in jailbreak work). Test: C04.06-U6. |
+| C9 | **Cross-field: best-of-N and selection.** Consistent with C01 F1 (best-of-N against a learned verifier peaks and then falls) and A02 C8 (move scoring to code): C04.06-K17 and C04.05-K14 say the same for creative selection. No conflict. Note A12's bench limit that NoveltyBench has no single-answer check, which affects C04.06-U4. | None needed. |
+
+## 4. Recurring mechanisms
+
+| Mechanism | Subfields and claims | What it means for the agent |
+|---|---|---|
+| **Model judge is weak and unstable** | 05 (K01, K05, K14, K16, K21, K25), 06 (K07, K17) | Same finding from two directions: raters on ideas and judges inside QD loops. Select by running a check. Log judge rank vs outcome every run. |
+| **Same-model samples collapse** | 05 (K12), 06 (K09, K10) | A pool from one model is mostly duplicates. Filter duplicates in code before spending tokens on judging; condition on prior outputs when diversity is the goal. |
+| **Code-side archive of attempts** | 06 (K03, K06, K08, K11), 05 (K11, K19) | Keep cells keyed by an aligned descriptor and send the next attempt to an empty one. Needs a labeller whose agreement is measured. Not shown to help on reasoning items (see section 7). |
+| **Reference dependence of novelty** | 05 (K19, K26), 06 (K09) | "Novel" means "not close to X". Store which prior set and which date a verdict used. |
+| **Explicit step beats extra pooling** | 05 (K26 attribution, K23 small pooling), 06 (K17 verifier) | A named, code-checkable step (attribute the claim, run the test) moves results more than more judge calls. |
+| **Diversity needs a switch** | 06 (K01, K02, K21, K12) | Explore only on a stagnation signal; keep a quality cutoff and a similarity dial; do not diversify by default. |
+| **Length and style confounds** | 05 (K06, K10) | Normalise length and hide authorship before any judged comparison. Already in G5. |
+
+## 5. Merged tests
+
+Each row merges UNKNOWNS rows that share one design.
+
+| # | Merged test | Unknown ids covered | One-line design | Priority |
+|---|---|---|---|---|
+| T1 | **Run outcome vs judge pick** | C04.05-U1, C04.05-U7, C04.05-U10, C04.06-U12 | Same pool of open-mode candidates on checked items; pick by own judge, random, pass-on-check, retrieval judge and distinct-first at equal tokens; metric: pass rate of the pick and Spearman of judge rank with outcome; also the AI-vs-true gap for a diversity selector. Decides whether G8 and G5 need a hard cap. | High |
+| T2 | **Grounded novelty check** | C04.05-U2, C04.05-U3, C04.05-U12, C04.05-U9 | 40-60 rated ideas plus seeded copies: bare judge vs top-10 retrieval vs retrieval plus claim attribution (code checks non-empty remainder); also corpus dated at 3 cuts, and raw vs length-residualised vs core-idea scoring; metric: Spearman with expert mean, share of seeded copies rejected, false rejects. | High |
+| T3 | **Judge format and pooling at equal tokens** | C04.05-U4, C04.05-U5, C04.05-U6, C04.05-U11 | k=1 long vs k=3 vs k=5 short; direct vs pairwise vs batch-15 rank vs extract-then-score; calibration set sizes 10 to 80; metric: Spearman and top/bottom-quartile accuracy per 1,000 tokens. | High |
+| T4 | **Self-preference and label hygiene** | C04.05-U8 | Same-family judge hidden, labelled, and other-family hidden on the same ideas; metric: score delta own vs other. | Med |
+| T5 | **Duplicate filter and token log** | C04.06-U2 | Best-of-N vs best-of-N with cosine filter (0.8, 0.95), saved tokens respent; log tokens per role (labelling, judging, embedding); metric: solve rate, unique approaches. Run first because it builds the token log. | High |
+| T6 | **Archive vs best-of-N, with descriptor check** | C04.06-U1, C04.06-U6, C04.06-U11, C04.06-U13, C04.06-U15 | Label 100 attempts by method class (two prompts plus a human sample); then best-of-N, best-of-N plus dedup, archive loop, stepping-stone parents, stored-strategy fallback, two-slot cell; ARC and BrainTeaser at equal tokens. Run after T5. | High |
+| T7 | **History prompt and name-the-empty-cell** | C04.06-U4, C04.06-U5, C04.06-U14 | Independent samples vs show prior answers vs code names an unused class vs full archive vs persona/strategy prompts; NoveltyBench plus ARC; metric: distinct count and solve rate. Resolves C1 and C2. | High |
+| T8 | **Stagnation switch and similarity dial** | C04.06-U3, C04.06-U10 | Never switch vs fixed schedule vs stagnation k=2,4,8; sweep similarity threshold 0.6, 0.8, 0.95; ARC items with plain pass rate under 50%; metric: solve rate, tokens to first pass, distinct approaches. | High |
+| T9 | **Islands, per-case selection and trace judge** | C04.06-U7, C04.06-U8, C04.06-U9 | 4 lines x 5 vs 1 line x 20; per-case profile selection vs archive; blinded trace-reading judge vs majority vote on split votes; metric: solve rate, minority recoveries, wrong flips. | Med |
+| T10 | **Multi-criterion audit** | C04.05-U13 | Pass/fail alone vs plus 3-criterion score for predicting later reuse. | Low |
+
+Order to run: T5 first (cheap, builds the token log), then T8 and T1, then T6 after T5. T2 and T3 on one rated set. Unblock first for T1 to T3: a rated set of 40-60 ideas with at least 3 raters and a split-half number (human baseline 56.1%).
+
+## 6. Not to add
+
+| Idea | Why not | Claim ids |
+|---|---|---|
+| The generating model as final selector of its own creative candidates | Pick matched the diversity pick 29% vs 35.3% random; already G8 | C04.05-K14 |
+| A single model-judge novelty score as the gate | Near chance, flips under prompt edits, rates rewrites as novel, approves 74% of unsound proposals | C04.05-K05, C04.05-K21, C04.05-K25 |
+| Optimising against a model judge or reward model past a finite point | True quality falls; coverage rose 82.9% to 98.44% while selection stayed near 41% | C04.06-K17, C04.06-K07 |
+| Crowd or ungrounded raters as ground truth | Nonexpert ratings correlated .21 with experts; crowd inverted poem quality | C04.05-K03 |
+| Temperature, paraphrase or a "be creative" system prompt as the diversity lever | Helped little; models agree with each other | C04.06-K10, C04.05-K12 |
+| A mix of models as a source of independent diversity (for open answers) | Cross-model similarity 71-82% | C04.06-K10 |
+| Novelty search by default | Lost to plain ES on non-deceptive tasks; unbounded spaces lose the edge | C04.06-K02, C04.06-K21 |
+| Retrieval alone as the novelty fix | Gains at most 16 points and sometimes negative; handing over the prior did not fix it | C04.05-K08 (contested), C04.05-K26 |
+| Embedding distance as a per-idea originality score | Weak at item level and across tasks (S-DAT r .13-.24) | C04.05-K09 (contested) |
+| An extra LLM novelty judge on top of an embedding filter | Marginal gain, extra tokens; judge was 57% of calls in Rainbow Teaming | C04.06-K09, C04.06-K19 (single-source) |
+| Ritchie or SPECS multi-criterion scoring as a gate | Never tested against downstream success | C04.05-K18 (single-source) |
+| Pairwise judging as a blanket improvement | Worsened novelty bias in RQ-Bench; one forced-ranking result is the opposite | C04.05-K07 (contested) |
+
+## 7. Gaps
+
+- **Eight of ten subfields are not researched.** The biggest missing one for the schema is combinational creativity and conceptual blending (O7 analogue), plus creative problem solving and transformational creativity (O4, O6, O8).
+- **No QD or archive result on reasoning items.** All ablations are code, maths constructions, red-teaming or creative writing (C04.06-K16, zero sources). The nearest ARC result (C04.06-K22, single-source) has no archive and no equal-token best-of-N control.
+- **Single-source and not yet usable:** pre-execution novelty ratings do not predict post-execution outcomes (C04.05-K04, 43 experts, one trial); LLM novelty score negatively related to later materialisation (C04.05-K20); two-stage extract-then-score judge QWK 0.64 (C04.05-K24); MAP-Elites over controls (C04.06-K04); CMA-ME emitters (C04.06-K05); LLM as descriptor labeller (C04.06-K13); whole archive in prompt (C04.06-K14); precomputed gait map (C04.06-K15); corrected Rainbow Teaming vs PAIR (C04.06-K18); judge cost (C04.06-K19); ARC multi-channel judge (C04.06-K22); descriptor smoothness (C04.06-K23).
+- **Contested, not decided:** retrieval-grounded judges (C04.05-K08), pairwise vs direct (C04.05-K07), small pooling (C04.05-K23), self-preference (C04.05-K22), embedding distance (C04.05-K09). Explore-then-exploit rules (C04.06-K20) are only "supported", in control tasks.
+- **No equal-token comparison anywhere.** No k curve for judge pooling, no share of tokens spent on labelling, judging or embedding, no archive-vs-no-archive control with more than 3 seeds for AlphaEvolve or FunSearch.
+- **No expert-rated idea set, no outcome-labelled idea set on our bench.** Without them T1 to T3 cannot run. The only outcome study used 43 experts for over 100 hours.
+- **Source numbers not re-opened:** RQ-Bench win rates, RINoBench F1 17.2, Bhushan rho .732, Tutone tau values, Pugh et al. 2016 (download failed).
+- **Model drift.** Most judge numbers use 2023-2025 models; rerun on the model we ship.
+- **No source audit yet** for this field (no audit paragraph like A01's). Independence counts are as stored in claims.jsonl.

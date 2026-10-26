@@ -17,6 +17,23 @@ This field builds mathematical or program models of human thinking and tests the
 | Metacognition models | Confidence and monitoring | Fleming [M] | Med | guardrail on stated confidence |
 | LLMs as cognitive subjects | Testing models with experiments | Binz and Schulz [M] | Low | background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Bayesian models of cognition | | not started |
+| Program induction, language of thought | | not started |
+| Library learning, wake-sleep | [`subfields/03_library_learning/DEEP.md`](subfields/03_library_learning/DEEP.md) | done, batch 4 (2026-10-26) |
+| Language-guided library learning | covered in [`subfields/03_library_learning/DEEP.md`](subfields/03_library_learning/DEEP.md) | done, batch 4 (2026-10-26) |
+| Resource-rational analysis | covered in [`subfields/06_resource_rational_strategy_selection/DEEP.md`](subfields/06_resource_rational_strategy_selection/DEEP.md) | done, batch 4 (2026-10-26) |
+| Rational strategy selection | [`subfields/06_resource_rational_strategy_selection/DEEP.md`](subfields/06_resource_rational_strategy_selection/DEEP.md) | done, batch 4 (2026-10-26) |
+| Probabilistic programming | | not started |
+| Intuitive theories and simulation | | not started |
+| Metacognition models | | not started |
+| LLMs as cognitive subjects | | not started |
+
 ## Dig into next
 
 1. **Library learning.** How does the abstraction step decide a fragment is worth keeping (compression gain over solved tasks, using the STITCH compressor in LILO)? Can the same step run on our solved subgoals as helper programs? Does a library raise later solve rates at equal tokens? Evidence: LILO ablations (below); our before/after pass rate on held-out problems of one class.

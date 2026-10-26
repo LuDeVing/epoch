@@ -20,6 +20,22 @@ Marks in the table: (V) = confirmed in a source opened this session; (M) = from 
 
 Correction from the first draft: Barsalou's ad hoc categories and relational categories were listed from memory and are dropped as low value.
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Structure mapping | | not started |
+| Analogical inference | | not started |
+| Analogical access (retrieval) | [`subfields/03_analogical_access/DEEP.md`](subfields/03_analogical_access/DEEP.md) | done, batch 4 (2026-10-26) |
+| Schema induction | [`subfields/04_schema_induction/DEEP.md`](subfields/04_schema_induction/DEEP.md) | done, batch 4 (2026-10-26) |
+| Connectionist and hybrid mapping models | | not started |
+| Logic and philosophy of analogical arguments | | not started |
+| Category learning: rule, prototype, exemplar | | not started |
+| Category learning: clustering, explanation-based, Bayesian | | not started |
+| Comparison and relational language | | not started |
+
 ## Dig into next
 
 **1. Analogical access (retrieval).**

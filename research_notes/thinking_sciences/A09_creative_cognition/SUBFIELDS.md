@@ -17,6 +17,23 @@ Creative cognition applies the methods of cognitive psychology to the making of 
 | Ordinary-cognition and implicit-explicit theories | Ordinary processes produce extraordinary results; honing theory [V5] | Weisberg; Helie and Sun; Gabora | Med | supports engineering variation |
 | Analogy and distant sources | See A02 [M] | Gentner; Dunbar | Med | O7 |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Geneplore model | [`subfields/01_geneplore/DEEP.md`](subfields/01_geneplore/DEEP.md) | done, batch 4 (2026-10-26) |
+| Dual-process view of creativity | | not started |
+| Conceptual blending and integration | | not started |
+| Conceptual combination (noun-noun) | | not started |
+| Structured imagination | covered in [`subfields/06_fixation_and_structured_imagination/DEEP.md`](subfields/06_fixation_and_structured_imagination/DEEP.md) | done, batch 4 (2026-10-26) |
+| Fixation and functional fixedness | [`subfields/06_fixation_and_structured_imagination/DEEP.md`](subfields/06_fixation_and_structured_imagination/DEEP.md) | done, batch 4 (2026-10-26) |
+| Process stage models and incubation | | not started |
+| Divergent thinking | | not started |
+| Ordinary-cognition and implicit-explicit theories | | not started |
+| Analogy and distant sources | | not started |
+
 ## Dig into next
 
 1. **Fixation and structured imagination.** Questions: (a) How strongly do shown examples copy into model outputs, by distance of the example? (b) Do "what to avoid" instructions reduce copying, as Chrysikou and Weisberg found in people? (c) Does code-forced diversity beat prompting? Evidence: Smith, Ward and Schumacher design with example and no-example arms; our NoveltyBench data (3.18 to 9.63).

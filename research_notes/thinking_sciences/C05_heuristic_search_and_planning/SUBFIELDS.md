@@ -18,6 +18,24 @@ This field studies how to find a path or plan in a large space with limited effo
 | Constraint satisfaction | Variables, domains, propagation | Dechter; Mackworth [M] | Med | O4, S4 |
 | Anytime search, restarts | Best answer at any stop; escape bad early choices | Zilberstein; Gomes and Selman [M] | High | G6, S6 trigger |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Heuristic search (A*, best-first) | | not started |
+| Heuristic design by relaxation | [`subfields/02_heuristics_by_relaxation/DEEP.md`](subfields/02_heuristics_by_relaxation/DEEP.md) | done, batch 4 (2026-10-26) |
+| Monte Carlo tree search | | not started |
+| MCTS limits | | not started |
+| Tree of Thoughts | | not started |
+| Language Agent Tree Search | | not started |
+| Automated planning (STRIPS, PDDL) | | not started |
+| Hierarchical task networks | | not started |
+| Means-ends analysis | | not started |
+| Constraint satisfaction | | not started |
+| Anytime search, restarts | [`subfields/11_anytime_search_and_restarts/DEEP.md`](subfields/11_anytime_search_and_restarts/DEEP.md) | done, batch 4 (2026-10-26) |
+
 ## Dig into next
 
 1. **Search with restarts under known cost.** When do independent restarts beat going deeper on one branch? What schedule suits an LLM call budget? Evidence: our attempt logs; Gomes and Selman heavy-tail results (not yet opened).

@@ -17,6 +17,23 @@ Exploration is the part of reinforcement learning that asks how an agent should 
 | Language-guided exploration | LLM suggests plausible useful behaviours | iLLM, Bougie and Watanabe [V] | Med | S3 priors |
 | Curiosity in RL training of LLMs | Exploration bonus in RLVR | CDE, arXiv 2509.09675 [V] | Low | background only (training) |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Multi-armed bandits | [`subfields/01_bandits_for_operator_selection/DEEP.md`](subfields/01_bandits_for_operator_selection/DEEP.md) | done, batch 4 (2026-10-26) |
+| Thompson sampling | covered in [`subfields/01_bandits_for_operator_selection/DEEP.md`](subfields/01_bandits_for_operator_selection/DEEP.md) | done, batch 4 (2026-10-26) |
+| Count-based exploration, unified with intrinsic motivation | | not started |
+| Knowledge-based intrinsic motivation | | not started |
+| Information-theoretic motivation | | not started |
+| Competence-based motivation | | not started |
+| Novelty search, open-endedness | | not started |
+| Go-Explore, archives | [`subfields/08_go_explore_and_archives/DEEP.md`](subfields/08_go_explore_and_archives/DEEP.md) | done, batch 4 (2026-10-26) |
+| Language-guided exploration | | not started |
+| Curiosity in RL training of LLMs | | not started |
+
 ## Dig into next
 
 1. **Bandit selection of operators.** With 8 operators and few trials per class, does UCB or Thompson sampling over operator success beat a fixed order? How should a prior come from other classes? Evidence: operator success logs; a simulation of regret at our sample sizes.

@@ -17,6 +17,23 @@ Computational creativity builds systems that make novel and valuable artefacts a
 | Creative problem solving | Insight, incubation in architectures | Wikipedia article [V] | Med | impasse and restructuring |
 | Scientific discovery systems | Automated hypothesis generation | BACON, Langley [V as name only] | Med | open mode with a running check |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding. The field synthesis is [`SYNTHESIS.md`](SYNTHESIS.md).
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Boden's creativity types | | not started |
+| Creativity as search | | not started |
+| Combinational creativity | | not started |
+| Transformational creativity | | not started |
+| Evaluation of creativity | [`subfields/05_evaluation_of_creativity/DEEP.md`](subfields/05_evaluation_of_creativity/DEEP.md) | done, batch 4 (2026-10-26) |
+| Quality-diversity, novelty search | [`subfields/06_quality_diversity_and_novelty_search/DEEP.md`](subfields/06_quality_diversity_and_novelty_search/DEEP.md) | done, batch 4 (2026-10-26) |
+| Story, music, art, humour systems | | not started |
+| Conceptual blending | | not started |
+| Creative problem solving | | not started |
+| Scientific discovery systems | | not started |
+
 ## Dig into next
 
 1. **Quality-diversity and novelty search.** How can code keep an archive of idea "cells" (direction, method) and send the next attempt to an empty cell? What cheap descriptor of an idea can code compute? Evidence: diversity against quality at equal samples, with our NoveltyBench result (3.18 to 9.63) as baseline. I could not search for LLM quality-diversity papers (quota used).
