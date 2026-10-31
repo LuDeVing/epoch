@@ -306,3 +306,13 @@ All tests: both arms at equal total tokens (generation plus scoring), at least 3
 - [V] Li et al. 2024, ESC / Adaptive-Consistency. https://arxiv.org/abs/2401.10480
 - [V] Brown et al. 2024, Large language monkeys. https://arxiv.org/abs/2407.21787
 - [M] van Opheusden et al. 2023 (abstract only). https://doi.org/10.1038/s41586-023-06124-2
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 12 established claims: 9 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C05.01-K07** (number corrected). Table cells match (GSM8K 74.5 vs 78.8/80.8, MATH 46.8 vs 49.1 and 54.3 vs 55.4, MBPP 75.0 vs 77.0; RAP random-reward 24.34 vs 22.90/22.67), but those numbers give Q* gains of 1.1 to 6.3 points (GSM8K PRM+QVM +6.3), not 'only 1 to 4'. Corrected claim: A learned scorer beats prompting the model to score itself (TS-LLM; Q* real table cells: GSM8K best-of-N(QVM) 74.5 vs Q* 78.8 and 80.8, MATH 46.8 vs 49.1 and 54.3 vs 55.4, MBPP 75.0 vs 77.0). Small models' self-reward is near random (RAP with random reward on LLaMA2-7B GSM8K: 24.34 vs 22.67 to 22.90). Q* gains over best-of-N are about 1 to 6 points.
+- **C05.01-K08** (reworded: the sources support less). Numbers match (RAP LLaMA-33B 6-step CoT 0.00 vs RAP(20) 0.42, GPT-4 CoT 0.40; LATS no-LM-heuristic 0.37 vs 0.63), but neither paper compares search gains across base-model strength, so 'gain shrinks for strong base models' is an inference from comparing RAP on a 33B model with GPT-4 CoT. Corrected claim: Model value plus search helps: RAP lifts LLaMA-33B on 6-step Blocksworld from 0.00 (CoT) to 0.42, matching GPT-4 CoT at 0.40; removing the LM heuristic from LATS drops HotPotQA EM from 0.63 to 0.37. Whether the gain shrinks for stronger base models was not tested in these papers.
+- **C05.01-K24** (number corrected). Lightman (78.2/72.4/69.6) and the 0.4-1.7 step-scorer gap match, but in ReST-MCTS Table 3 Math-Shepherd beats SC by only 3.2 (GSM8K) and 2.2 (MATH500); the ReST-MCTS value model beats SC by 3.6 and 3.9. Corrected claim: Step-level (process) scorers beat outcome scorers and majority voting: MATH best-of-1860 PRM 78.2, ORM 72.4, majority 69.6; at 256 outputs (Mistral-7B MetaMATH) the ReST-MCTS value model beats self-consistency by 3.6 (GSM8K) and 3.9 (MATH500) points and Math-Shepherd by 3.2 and 2.2. Gaps among step scorers are small (0.4 to 1.7).
+- **C05.01-K03** (now single-source: only one opened source, code check).
+- **C05.01-K09** (now single-source: only one opened source, code check).

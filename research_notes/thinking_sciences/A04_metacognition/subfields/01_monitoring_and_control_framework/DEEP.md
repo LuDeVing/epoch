@@ -442,3 +442,12 @@ All tests use the same items for both arms and equal total tokens per item, incl
 - [V] Steyvers et al. (2025) What large language models know and what people think they know. https://arxiv.org/abs/2401.13835 (d23; abstract level)
 
 Links to parallel subfields (not covered here): Metacognition and control; Metacognition of insight; Expected value of sample information; Sampling and voting (self-consistency); Scoring rules and calibration; Exploration versus exploitation; Impasse-driven subgoaling and chunking; Language agents as architectures.
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A04.01-K18** (reworded: the sources support less). Numbers verified (Nelson & Narens Table I: recall .28 vs .10, FOK 5.4 vs 5.2), but the source says FOK misses small amounts of new information from a brief flash, not that it is blind to new information, and Koriat 1997 finds JOLs rely on intrinsic cues like ease while discounting extrinsic ones like repetition (repetition lifted recall more than JOL). Corrected claim: Monitoring cues are inferential, not direct reads: FOK uses acquisition history and partial information (No-Magic Hypothesis), is insensitive to small amounts of new information (a brief answer flash raised recall .28 vs .10 but FOK only 5.4 vs 5.2), and JOLs are built from cues such as item ease (intrinsic cues) and study conditions, with repetition under-weighted relative to its effect on recall.
+- **A04.01-K12** (now single-source: only one opened source, code check).
+- **A04.01-K14** (now single-source: only one opened source, code check).
+- **A04.01-K15** (now single-source: only one opened source, code check).

@@ -386,3 +386,11 @@ All arms get equal total tokens (setup, prior estimation and extra calls counted
 | Qian et al. (2025) SMART tool overuse | [V] | https://arxiv.org/pdf/2502.11435 |
 | Wang et al. (2026) Agents should invoke tools only when epistemically necessary | [V] first pages only | https://arxiv.org/pdf/2506.00886 |
 | Own calculation: exact binary EVSI table (not a source) | n/a | D:/research_scratch/C12.02/tmp/C12.02_evsi_calc.py |
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 9 established claims: 6 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C12.02-K04** (reworded: the sources support less). Sadatsafavi shows EVSI/EVPI zero only at thresholds 0.05 and 0.10; at 0.01 EVPI was 0.00037 (EVSI nonzero, not given), so 'at others 0' is wrong. 81% is computed (0.00101/0.00125), not stated. Pei 2023 supports threshold dependence (EVSI 0 at WTP 3000, nonzero near 780). Corrected claim: EVSI is zero when current evidence already settles the decision, and its value depends on the decision threshold. In the Sadatsafavi 2024 validation case study, at the 0.02 threshold EVSI was 0.00101 at N=1000 (about 81% of EVPI 0.00125), while EVPI, and so EVSI, was 0 at thresholds 0.05 and 0.10 (EVPI was 0.00037 at 0.01). In Pei 2023, EVSI was 0 at WTP 3000/YLS and nonzero near 780/YLS.
+- **C12.02-K05** (reworded: the sources support less). Only Sadatsafavi (one case study) shows the steep rise and plateau toward EVPI; Fleischhacker 2023 does not report a plateau (it gives closed forms and an optimal sample size). Corrected claim: In one external-validation case study (Sadatsafavi 2024), EVSI rose steeply for small samples and plateaued toward EVPI, with little gain beyond N=4,000; generality is not shown by the other listed source.
+- **C12.02-K31** (now contested: a source does not say this). Neither the Wikipedia EVSI page nor Fleischhacker 2023 contains the binary sensitivity/specificity formula or the example; I checked the algebra myself and the formula and the four example values (0, 0.100, 0.200, 0.400) are correct, so it is the agent's own derivation, not a sourced claim.

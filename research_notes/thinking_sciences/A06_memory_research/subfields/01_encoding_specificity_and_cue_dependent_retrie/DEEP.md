@@ -348,3 +348,11 @@ All arms get equal total tokens (lesson text plus prompt plus attempts). Setup c
 - [V] Anthropic (2024), Contextual Retrieval (vendor post, read via a summarising fetch tool). https://www.anthropic.com/news/contextual-retrieval [d12]
 - [V] Yoon et al. (2025). https://arxiv.org/abs/2504.14175 [d13]
 - [M] Hutter et al. and related position-effect snippets. https://arxiv.org/abs/2512.14313 [d16]
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 10 established claims: 9 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A06.01-K20** (number corrected). Cuconasu (0.5642 to 0.4068/0.3815/0.3626, +0.08 / +36% from random docs) and Amiraz (6 to 11 points, persists for Llama-3.3-70B, range is across LLMs not 70B alone) match, but Yoran et al. say retrieval caused the error in 73% of 240 manually annotated failures, and separately that in 77% of NQ errors with low-ranked context the wrong entity appeared in the retrieved text; the claim merges these into '73% of retrieval-caused errors copied an entity ... (77%)'. Corrected claim: Retrieved passages that are semantically close to the question but lack the answer cost an LLM reader more than unrelated ones: Llama2-7b 0.5642 gold-only to 0.4068/0.3815/0.3626 with 1/2/4 ADORE distractors, while random passages placed next to the query raised accuracy by up to 0.08 (+36%); hard distractors cost 6 to 11 accuracy points depending on the LLM, and the cost persists for Llama-3.3-70B; in Llama-2-13B, manual review of 240 failures found retrieval caused the error in 73% (65-85% by setting), and with low-ranked context the wrong answer entity appeared in the retrieved text in 77% of NQ errors (37% with random context).
+- **A06.01-K01** (now single-source: only one opened source, code check).
+- **A06.01-K06** (now single-source: only one opened source, code check).

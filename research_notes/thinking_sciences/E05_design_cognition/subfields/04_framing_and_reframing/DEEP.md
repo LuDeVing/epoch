@@ -327,3 +327,9 @@ All arms at equal tokens (count every call, including setup and the reframe step
 - [V] Gema et al. (2025), Inverse Scaling in Test-Time Compute. https://arxiv.org/abs/2507.14417 (d16)
 - [V] Kou et al. (2026), Entertain, then Cancel. https://arxiv.org/abs/2610.21204 (d17)
 - [V] This agent's equivalence-bound calculation on Shin 2025 (d19). Method note only.
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E05.04-K21** (reworded: the sources support less). Liao et al.: average final accuracy falls 40% (43% on hard questions) when the first step is wrong; Table 1 shows DS-R1-Qwen-7B 94.8 vs 28.5. Kang et al.: reflections after first answer use 16.8% to 47.8% of tokens for only +1.4% to +3.5% accuracy. All on math/science reasoning benchmarks; neither paper tests 'frame choice', so 'frame choice early matters more than review late' is an extrapolation. Minor: tokens range is 16.8-47.8%, not 17-48 exactly (rounding). Corrected claim: In long-CoT reasoning models on math and science benchmarks, the first answer or first step dominates the result: final accuracy falls about 40% on average when the first reasoning step is wrong (DS-R1-Qwen-7B 94.8 vs 28.5 in a perturbation test), and reflection after the first answer adds only 1.4-3.5% accuracy while using 16.8-47.8% of tokens (Liao et al.; Kang et al.).

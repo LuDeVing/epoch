@@ -301,3 +301,9 @@ All arms at equal tokens (setup cost counted, G7), 3 or more seeds, same model, 
 - [V] Laban et al. 2025, LLMs Get Lost In Multi-Turn Conversation. https://arxiv.org/abs/2505.06120
 - [V] Hu et al. 2024, Uncertainty of Thoughts. https://arxiv.org/abs/2402.03271
 - [V] Cheng et al. 2025, MeCo adaptive tool use. https://arxiv.org/abs/2502.12961
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A16.02-K02** (reworded: the sources support less). Nye et al. numbers match (8.8 to 20.1 few-shot; 31.8 to 50.7 fine-tuned), but Wei et al. report 46% of 50 incorrect chains (LaMDA 137B, GSM8K) were 'almost correct' with minor mistakes of three kinds (calculator error, symbol mapping error, one missing step); only the calculator errors are fixable by code, so 'slips that code could fix' overreaches. Corrected claim: A written scratchpad of intermediate steps lets models do multi-step computation they fail at in one pass (polynomial evaluation 8.8 to 20.1 few-shot, 31.8 to 50.7 fine-tuned). In a manual check of 50 wrong chains of thought (LaMDA 137B on GSM8K), 46% were almost correct with minor mistakes (calculator error, symbol-mapping error or one missing step), of which only the calculator errors are the kind code execution would fix.

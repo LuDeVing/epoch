@@ -313,3 +313,10 @@ Limits of this pass: the web search budget ran out early. arXiv, Semantic Schola
 - [M] Laird, Rosenbloom, Newell (1986) Chunking in Soar. No URL.
 - [M] Anderson et al. (2004) An integrated theory of the mind (ACT-R). No URL.
 - [M] Assanie (2022), cited by Laird 2022; not opened.
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C02.10-K05** (now single-source: the sources are not independent). Numbers match Kirk et al. Table 2 (STARS 77.5/94.4/92.9 vs TBP 52.5/66.7/35.7; over 70% unviable in one task), but both supporting papers are the same Soar group (Kirk, Wray, Laird) and the evidence is one simulation study, one run per condition; Zhu and Simmons does not test this.
+- **C02.10-K06** (reworded: the sources support less). Numbers check out (ExpeL 40.0 to 59.0; task-similarity 59.0 vs random 42.5; Voyager; AWM +12.0 pts), but no source tests the 'only where a cheap executable check exists' condition, and ExpeL stores text insights and trajectories, not compiled rules or code. Corrected claim: Reusing experience from earlier episodes helps in Voyager (verified code skills), AWM (workflows from successful trajectories), ExpeL (text insights plus retrieved successes; ALFWorld 40.0 to 59.0, task-similarity retrieval 59.0 vs random 42.5) and bootstrapped agents; Voyager's ablations show self-verification matters most, which suggests (not shown) that a cheap executable check is needed. Payback at equal total tokens is unmeasured; Laird 1986 chunking data unread.

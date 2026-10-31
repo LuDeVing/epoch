@@ -255,3 +255,9 @@ All arms get equal tokens. Report setup cost (G7). Two backbones where possible.
 | M | Wiggins (2006) A preliminary framework for description, analysis and comparison of creative systems | https://doi.org/10.1016/j.knosys.2006.04.009 |
 | M | Ritchie (2007) Some empirical criteria for attributing creativity to a computer program | https://doi.org/10.1007/s11023-007-9066-2 |
 | M | Lehman and Stanley (2011) Abandoning objectives: novelty search | https://doi.org/10.1162/EVCO_a_00025 |
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C04.01-K18** (number corrected). The 10-16 points is LLMs' advantage on association and analogy over blending (59.0, 53.4 vs 43.4), not over humans; against 75 humans LLMs lead by about 37, 20 and 31 points (59.0 vs 22.1, 53.4 vs 32.9, 43.4 vs 12.8). Corrected claim: KOMBINE: LLMs are 10-16 points better at association and analogy than at blending, and score well above 75 humans on every task (valid association 59.0% vs 22.1%, analogy 53.4% vs 32.9%, blend 43.4% vs 12.8%), yet 19.9% (412/2,070) of invented concepts reuse a property another model invented; adding an explanation step improved text-to-image mashups (mean rank 1.98 vs 2.40, Peng et al.).

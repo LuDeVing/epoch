@@ -297,3 +297,14 @@ All arms get the same token budget (G7). Counted steps in code; the model fills 
 - [V] Yu et al. (2025) Dyna-Think https://arxiv.org/pdf/2506.00320 (d14)
 - [V] Wang, Ward, Zhang (2026) Rigidity in LLM bandits https://arxiv.org/pdf/2603.07717 (d15)
 - [V] Search log 2026-10-31 https://export.arxiv.org/api/query (d16)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B05.02-K05** (now single-source: the sources are not independent). Both the human result (Momennejad et al. 2017, N=88, policy resembles transition revaluation and differs from reward revaluation, p=.0043 / .5771) and the simulation (Russek et al. 2017) come from the same research group (Momennejad, Russek, Botvinick, Daw, Gershman are on both); the Dyna repair is simulation-only, and b03's cited 'Carvalho 2024 review' URL is actually the Momennejad paper.
+- **B05.02-K07** (reworded: the sources support less). Akam et al. 2015 show model-free strategies can look model-based (the opposite artefact: false MB signatures), so they do not support 'apparent model-free influence is an artefact'; only Feher da Silva & Hare 2020 supports the false-hybrid / mostly-MB claim, and it is one lab's single study (spaceship N=21, magic carpet N=24). Corrected claim: Two-step task signatures are ambiguous in both directions: model-free strategies can mimic model-based behaviour (Akam et al. 2015, simulations), and pure model-based agents with a wrong task model are labelled hybrid (median w 0.36 or 0.80 vs 0.94 for a correct model); with a detailed story and comprehension checks, humans in one study (Feher da Silva & Hare 2020, N=21 and N=24) were mostly model-based (median w 0.78-0.79).
+- **B05.02-K02** (now single-source: only one opened source, code check).
+- **B05.02-K03** (now single-source: only one opened source, code check).
+- **B05.02-K06** (now single-source: only one opened source, code check).
+- **B05.02-K13** (now single-source: only one opened source, code check).

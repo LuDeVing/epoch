@@ -298,3 +298,14 @@ All arms get the same token cap. Report accuracy per token. Use disguised or fre
 - [V] Sparkes et al. (2010) Towards robot scientists. https://pmc.ncbi.nlm.nih.gov/articles/PMC2813846/ (d16)
 - [V] Williams et al. (2015) Eve drug repositioning. https://pmc.ncbi.nlm.nih.gov/articles/PMC4345494/ (a22, a23, d15); [M] b19
 - [V] Bjurstrom et al. (2026) YGR067C with robot scientist. https://europepmc.org/article/PMC/PMC13043775 (a24, b17)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 10 established claims: 7 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D01.06-K02** (reworded: the sources support less). Sources show BACON laws were rediscoveries with programmer-specified attributes and (BACON.1) no noise handling, with only a tolerance parameter later; none discusses AM, hand-prepared data, or the absence of success rates (absence claim not verifiable from these), and BACON.5 explicitly states it deals with noise. Corrected claim: BACON demonstrations were rediscoveries of known laws: BACON.1 used programmer-specified attributes and laws and could not handle noise, and later versions handled noise only via a tolerance parameter. The listed sources do not discuss AM's evaluation or whether success rates were reported.
+- **D01.06-K08** (now single-source: the sources are not independent). All usable evidence lines are the one LLM-SRBench paper (a15, c05, c06 share the same URL; b25 is an internal reading note with no source). Numbers match Table 1/Table 3 (LaSR Acc0.1 45.94-50.45 vs SA 5.41-12.61 on LSR-Transform; PySR SA 0 on chemistry/biology/material science), but this is one benchmark by one group.
+- **D01.06-K12** (now single-source: the sources are not independent). Every usable evidence line is the one DiscoveryBench paper (c28 is an internal reading note); its text supports the findings (ReAct and DataVoyager do not improve CodeGen, Reflexion with oracle score helps, best 25%, biology 0%), but 'in LLM data-driven discovery benchmarks' (plural) generalises from one benchmark.
+- **D01.06-K06** (now single-source: only one opened source, code check).
+- **D01.06-K09** (now single-source: only one opened source, code check).
+- **D01.06-K18** (now single-source: only one opened source, code check).

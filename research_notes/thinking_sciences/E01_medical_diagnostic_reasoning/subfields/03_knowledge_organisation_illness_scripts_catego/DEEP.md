@@ -488,3 +488,14 @@ Run these checks on every test: a leak check (is the item text in the library), 
 - [V] Fang et al. (2026) MINT. https://arxiv.org/abs/2604.04325
 - [V] Noever (2024) Pocket professional. https://arxiv.org/abs/2410.20636
 - [V] Yang et al. (2026) Auditing leakage in rare disease diagnosis. https://arxiv.org/abs/2610.33592
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E01.03-K07** (reworded: the sources support less). Keemink et al. 2018 (32 students) found a case-based clinical reasoning course raised overall illness-script richness by almost 20%, with relatively more Enabling Conditions and less Fault content; it did not teach enabling conditions specifically. Schmidt and Rikers 2007 abstract says nothing on enabling conditions or first hypotheses; the expert-first-hypothesis point appears only as background citation. Corrected claim: Illness scripts are thought to shift with expertise from Fault (pathophysiology) toward Enabling Conditions (patient features, setting) and Consequences, which are available early and help activate scripts (background in Keemink et al. 2018). A case-based clinical reasoning course raised pre-clinical students' overall script richness by almost 20% (14.47 vs 12.14, n=32) while shifting content toward Enabling Conditions; experts' use of them for first hypotheses was not tested there.
+- **E01.03-K19** (reworded: the sources support less). LLM part is supported by one paper only (Schmidgall et al., npj Digit Med/arXiv, listed as b23/b24/c04/d21; the other sources are different multi-agent studies). 'Physician automation bias persists after AI training (-14 points)' appears in none of the opened sources; the only 14.0 is GPT-4's worst false-consensus drop. GPT-4 few-shot mitigation (75.2%) actually exceeded the 72.7% unbiased average, though the authors call gains modest. Corrected claim: In BiasMedQA (1,273 USMLE questions, 7 injected biases, 6 LLMs; Schmidgall et al. 2024), GPT-4 scored 72.7% unbiased and lost about 5% on average with a bias cue (worst case -14.0% for false consensus); prompt-level mitigation (education, one-shot, few-shot) gave only modest, uneven gains per bias and generally did not match unbiased accuracy. (Single-paper evidence; the physician automation-bias claim is unsupported and should be dropped.)
+- **E01.03-K01** (now single-source: only one opened source, code check).
+- **E01.03-K03** (now single-source: only one opened source, code check).
+- **E01.03-K12** (now single-source: only one opened source, code check).
+- **E01.03-K13** (now single-source: only one opened source, code check).

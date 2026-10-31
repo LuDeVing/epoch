@@ -305,3 +305,9 @@ All arms use the same model and the same total token budget, setup cost counted 
 - [M] Gentner and Forbus (2025) SME review. https://groups.psych.northwestern.edu/gentner/papers/GentnerForbus-2025-SME.pdf (c18; snippet)
 - [M] Blass and Forbus (2016) Analogical chaining in Companions. https://www.qrg.northwestern.edu/papers/Files/AQR_Companions_final_v3.pdf (c19; snippet)
 - Second-hand only (not opened): Gick and Holyoak radiation problem (via b21); Wolff and Gentner 2011 (via a21); Gentner et al. 1993 Karla the Hawk (via a17, b21); Chalmers, French, Hofstadter 1992 (via a26).
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A11.01-K06** (unverifiable). The UCLA host carrying Holyoak and Thagard 1989 and Hummel and Holyoak 1997 was unreachable (timeouts, connection refused), so the ACME 'failed to settle without parameter changes' detail and the LISA simulations could not be checked; Forbus et al. 2017 (opened) only says rival models differ on enforcing systematicity and ACME has drawbacks, and a26 does not bear on the claim.

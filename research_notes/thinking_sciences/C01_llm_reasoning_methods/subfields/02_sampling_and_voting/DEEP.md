@@ -317,3 +317,12 @@ All arms get the same total token budget (prompt + all samples + selector calls)
 - [V] Huang et al. 2025, m1 medical test-time scaling. https://arxiv.org/abs/2504.00869 [d17]
 
 Links to other subfields (not covered here): adaptive stopping and metareasoning (08), verification design (04), wisdom of crowds: conditions, expected value of sample information, scoring rules and calibration, heuristic search.
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 9 established claims: 7 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C01.02-K01** (number corrected). R1 Table 15: distilled models gain 10.3 to 29.6 points at cons@64 on AIME 2024 (Distill-Llama-8B 50.4 to 80.0 is +29.6), not 10-28; other numbers (56.5 to 74.4; 60.1 to 78.0; More Agents GSM8K 12-24 points) match. Corrected claim: Majority vote over 5-40 sampled CoT paths raises accuracy on math and reasoning for capable models; e.g. PaLM-540B GSM8K 56.5 -> 74.4, code-davinci-002 60.1 -> 78.0, More Agents GSM8K +12 to +24 points, and R1-distilled models gain 10 to 30 points on AIME 2024 at cons@64 (Distill-Qwen-14B +10.3 to Distill-Llama-8B +29.6).
+- **C01.02-K07** (reworded: the sources support less). Numbers match Brown et al. 2024, but 'only closed by an automatic verifier' is stronger than the paper (it says coverage turns into accuracy where verifiers exist and warns that even unit-test verifiers are imperfect, Sec 4.2); five of six evidence lines are the same paper, with Cobbe 2021 not bearing on the voting result. Corrected claim: In Large Language Monkeys (Brown et al. 2024), coverage keeps rising with sampling while voting and reward-model selection plateau near 100 samples (Llama-3-8B-Instruct MATH: coverage 82.9 to 98.44% from 100 to 10,000 samples; majority vote or reward model 40.50 to 41.41%); in domains with automatic verifiers (tests, proof checkers) coverage translates into accuracy (SWE-bench Lite with DeepSeek-Coder-V2 15.9% to 56% at 250 samples), though the authors note even such verifiers are imperfect. Single-paper evidence.
+- **C01.02-K02** (now single-source: only one opened source, code check).
+- **C01.02-K08** (now single-source: only one opened source, code check).

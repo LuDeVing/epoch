@@ -295,3 +295,10 @@ All arms get equal total tokens, including setup, critique, monitors and consist
 - [V] Mirzaei (2026) Sample more, reflect less. https://arxiv.org/abs/2607.28576
 - [V] Leins et al. (2026) When does LLM orchestration pay off? https://arxiv.org/abs/2608.00685
 - [V] arXiv search listings, 31 Oct 2026 (negative results for gaps 5 and 9). https://arxiv.org/search/?query=blicket&searchtype=all
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A14.01-K05** (now single-source: the sources are not independent). All numbers (0.92, 0.56, 0.60, 0.28, 0.25) match Gopnik et al. 2017, but the three human-evidence entries are the same paper, the 4-year-old and adult cells are Lucas et al. 2014 data from the same lab, and the GX-Chen paper only supplies the LLM paradigm; effectively one source.
+- **A14.01-K01** (now single-source: only one opened source, code check).

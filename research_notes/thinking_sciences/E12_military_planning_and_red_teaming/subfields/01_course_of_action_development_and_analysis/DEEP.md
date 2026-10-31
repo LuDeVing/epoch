@@ -317,3 +317,10 @@ Marks: [V] opened by an evidence agent; [M] snippet or memory only. Numbers from
 - [V] Yao et al. (2025) SPIN-Bench. https://arxiv.org/abs/2503.12349 (d18)
 - [V] Echterhoff et al. (2024) BiasBuster. https://arxiv.org/abs/2403.00811 (d19)
 - [V] arXiv 2511.10651 (report generation; no COA replication). https://arxiv.org/abs/2511.10651 (d20)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 3 established claims: 1 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E12.01-K08** (now single-source: the sources are not independent). Only IFPV (listed twice) supports it, on 7 plans from one simulator; Vidra et al. is a synthetic best-response benchmark that does not test static LLM ranking or rule-based checks, and 0.72 to 0.86 is single-step LLM vs the multi-agent planner (MPHA).
+- **E12.01-K17** (now single-source: the sources are not independent). All numbers come from the Kambhampati/Valmeekam group (the 82%/70% figures are VAL back-prompting results from their earlier paper, cited in the position paper; obfuscated Blocksworld only about 10%); the only outside source (IFPV) does not give these numbers.

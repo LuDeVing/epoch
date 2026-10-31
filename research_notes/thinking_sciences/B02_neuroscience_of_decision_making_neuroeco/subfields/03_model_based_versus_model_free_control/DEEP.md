@@ -420,3 +420,10 @@ All arms get the same total tokens, including the gate's own tokens and setup (G
 - Wu et al. (2024) Reasoning or reciting? [V] https://arxiv.org/pdf/2307.02477
 - Mirzadeh et al. (2025) GSM-Symbolic. [V] https://arxiv.org/pdf/2410.05229
 - Ullman (2023) LLMs fail on trivial alterations to theory-of-mind tasks. [V] https://arxiv.org/pdf/2302.08399
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 12 established claims: 11 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B02.03-K15** (reworded: the sources support less). All numbers match He & Feng Table 1, but the +1.02 is the learned IDPR gate, not a confidence-only gate (low avg log-prob +0.32, low logit gap -0.06); the He & Feng figures come from one preprint listed four times. Corrected claim: Gates give small gains: a learned fast-answer controller (IDPR, using confidence, logit margin and cost features) that sends 8.20% of items to slow reasoning lifts accuracy from 47.90 to 48.92 (+1.02) vs 46.76 for random routing at the same slow-call rate, while simple confidence-only selection gives +0.32 (avg log-prob) and -0.06 (logit gap); cost-aware utility of every routed method stays below always-fast (IDPR 0.4731 vs 0.4789). A separate router LLM misjudges the target model's difficulty (Thinkless, AIME). Single-paper preprint evidence for the gate numbers.
+- **B02.03-K09** (now single-source: only one opened source, code check).

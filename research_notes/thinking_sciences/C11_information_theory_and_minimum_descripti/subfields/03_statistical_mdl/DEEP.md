@@ -384,3 +384,12 @@ Log for each run (SCHEMA section 6): the selector's pick vs the best candidate a
 | Chollet et al. (2025) ARC Prize 2024 technical report | [V] | https://arxiv.org/pdf/2412.04604 |
 | Rissanen (1978) Modeling by shortest data description | [M] | https://doi.org/10.1016/0005-1098(78)90005-5 |
 | Schwarz (1978) Estimating the dimension of a model | [M] | https://doi.org/10.1214/aos/1176344136 |
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C11.03-K02** (now single-source: the sources are not independent). Content is accurate (suboptimal for all large n, not all n; SafeBayes eta about 0.4 repairs the regression case), but all listed sources are Grunwald's own group (Grunwald-Langford, Grunwald-van Ommen, Grunwald-Roos review) and the review merely summarises the other two; there is no independent replication in the evidence.
+- **C11.03-K16** (reworded: the sources support less). Numbers check out (MADIL 69 fit, 57 correct, 82%, 59 vs Icecuber 117 under the all-test criterion that also counts two tasks with a non-fitting model; CompressARC 20.0/18.5%, 76K, 138 h, about 20.7 min), but MADIL is described as efficient (80% of solutions within 20 s, 'greater efficiency'), so 'slow' applies only to CompressARC; 'stricter' count is a mislabel. Corrected claim: Pure MDL learners on ARC are verified but weak: MADIL fits 69 of 400 evaluation tasks and 57 are correct (82% generalisation, 180 s budget per task but 80% of solutions within 20 s; 59 correct under the all-test criterion vs Icecuber 117), while CompressARC gets 20.0% pass@2 on the 400 evaluation tasks (18.5% pass@1) with 76K parameters and no pretraining, at about 20.7 GPU-minutes per puzzle on an RTX 4070 (138 h total). Both generate their own candidates; neither was tested as a ranker of LLM-proposed programs in these papers.
+- **C11.03-K01** (now single-source: only one opened source, code check).
+- **C11.03-K22** (now single-source: only one opened source, code check).

@@ -361,3 +361,17 @@ Marks: [V] opened (as recorded in the evidence files; critique.md re-checked sev
 Not in our files: Diekelmann and Born 2010 (the named founding review; Klinzing 2019 and Rasch and Born 2013 stand in for it).
 
 **Links to other subfields run in parallel** (not covered here): Encoding specificity and cue-dependent retrieval (cue use in TMR); Expertise reversal and fading; Model-based versus model-free control; Sampling and voting (self-consistency); Language agents as architectures; Case representation; Knowledge organisation: illness scripts, categories; Bayesian conditionalization; Cognitive breakdowns; Human error and recovery. Earlier documents: see 00_FIELDS.md section "Deep research by subfield".
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 5 established claims: 2 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B04.01-K11** (reworded: the sources support less). Newbury & Monaghan 2019 found no overall sleep effect but moderated effects (list length, recall>recognition); Lutz et al. (J Sleep Res 2026) is an adapted, not direct, replication of their 2017 protocol (N=16, 12 at one year, 2 excluded from sleep analyses) and tests visual gist, not word-list DRM. Corrected claim: The DRM meta-analysis (Newbury & Monaghan 2019) found no overall effect of sleep on accurate or false memory, with sleep effects only emerging with moderators such as shorter lists and recall rather than recognition tests; an adapted follow-up of the authors' own 2017 visual-gist protocol (Lutz et al. 2026, N=16) found no gist difference between sleep and wake, so these two sources do not show a reliable sleep effect on DRM gist.
+- **B04.01-K22** (now single-source: the sources are not independent). Numbers match Tadros 2022 (CIFAR-10 19.01 to 44.55; CUB-200 new-task 95.41 to 45.4), but the 2026 follow-up (A. Bazhenov, Delanois, Krishnan) shares Krishnan with Tadros et al. and builds directly on that SRC method, so all evidence is one group's work; a22 a19 a20 c17 are the same paper.
+- **B04.01-K34** (number corrected). Retraction notice of Stanyer et al. 2022 was first published online 16 June 2025 (it sits in the Feb 2026 issue, vol 35 no 1), not 'in 2026'; all other numbers (g=0.25 p=0.07 10 studies 177; g=0.68; N=27; N=34; N=20) match. Corrected claim: Acoustic slow-wave stimulation evidence is weaker than the original papers suggested: the 2021 meta-analysis found g = 0.25 (p = 0.07, 10 studies, 177 people); the 2022 meta-analysis that reported g = 0.68 in under-35s was retracted (notice online June 2025, in the February 2026 issue) for using SE as SD and wrong sample sizes; closed-loop stimulation was null for memory in chronic insomnia (N 27) and at home (N 34, authors flag low power); and a tDCS plus CLAS study (N 20) was null overall, with a memory decrement only in an exploratory high-fluid-intelligence subgroup.
+- **B04.01-K01** (now single-source: only one opened source, code check).
+- **B04.01-K02** (now single-source: only one opened source, code check).
+- **B04.01-K03** (now single-source: only one opened source, code check).
+- **B04.01-K07** (now single-source: only one opened source, code check).
+- **B04.01-K24** (now single-source: only one opened source, code check).
+- **B04.01-K29** (now single-source: only one opened source, code check).

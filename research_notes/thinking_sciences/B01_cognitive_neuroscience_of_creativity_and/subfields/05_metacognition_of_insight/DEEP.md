@@ -462,3 +462,9 @@ All arms use equal tokens (G7). Report AUROC with bootstrap CI and accuracy per 
 | Chen et al. (2025) Neuron agreement decoding | [V] abstract and introduction | https://arxiv.org/pdf/2510.26277 |
 | Token-level verification mirage (2026, ICML listing) | [M] snippet only | https://icml.cc/virtual/2026/82428 |
 | Entropy and loop detectors (2025-2026), arXiv 2509.26522, 2510.08146, 2603.14251, Sotis | [M] | https://arxiv.org/abs/2509.26522 |
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B01.05-K15** (now single-source: the sources are not independent). Every figure (+8.41 pp, 50,574 vs 23,500, +0.45, +0.01) is from one paper (d'Aliberti and Horta Ribeiro 2026; a29 and c06 are the same paper) on Qwen2.5-1.5B; the other listed papers (entropy-based stopping etc.) test different interventions and do not replicate it. Numbers themselves match.
