@@ -122,3 +122,5 @@ Single-source, so not established, but do not add before the test: multi-agent d
 - Several claims share one source (Olausson, Chen, debug-gym); the 2026-10-26 audit found no further established claim in E09 to downgrade.
 
 **Source audit, 2026-10-26:** 24 established claims in E09 were re-opened against their papers: 20 confirmed, 4 reworded (E09.02-K02, E09.09-K10, E09.09-K13, E09.09-K34, in F6, F10, F16, F13), 0 downgraded. Established claims stay at 24 (8 in 02, 16 in 09). Downgraded ids: none.
+
+**Audit (code check, 2026-10-31):** E09.01-K26 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

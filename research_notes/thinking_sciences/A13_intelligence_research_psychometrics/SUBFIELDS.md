@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Factor structure of abilities | | not started |
 | Fluid reasoning (Gf) | | not started |
 | Working memory and Gf | | not started |
-| Capacity hypothesis test | | not started |
+| Capacity hypothesis test | [`subfields/04_capacity_hypothesis_test/DEEP.md`](subfields/04_capacity_hypothesis_test/DEEP.md) | done, batch 6 (2026-10-31) |
 | Working memory training transfer | | not started |
 | Matrix tests and task analysis | | not started |
 | Item difficulty modelling | [`subfields/07_item_difficulty_modelling/DEEP.md`](subfields/07_item_difficulty_modelling/DEEP.md) | done, batch 5 (2026-10-27) |

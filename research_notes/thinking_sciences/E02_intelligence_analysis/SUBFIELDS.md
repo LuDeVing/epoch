@@ -30,7 +30,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Red teaming | | not started |
 | Cognitive bias in analysis | | not started |
 | Probability language | | not started |
-| Forecast accuracy of analysts | | not started |
+| Forecast accuracy of analysts | [`subfields/09_forecast_accuracy_of_analysts/DEEP.md`](subfields/09_forecast_accuracy_of_analysts/DEEP.md) | done, batch 6 (2026-10-31) |
 
 ## Dig into next
 

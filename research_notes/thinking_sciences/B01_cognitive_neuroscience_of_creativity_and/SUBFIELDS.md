@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Generation versus evaluation | [`subfields/02_generation_versus_evaluation/DEEP.md`](subfields/02_generation_versus_evaluation/DEEP.md) | done, batch 5 (2026-10-27) |
 | Insight as a process | | not started |
 | Insight neural signatures | | not started |
-| Metacognition of insight | | not started |
+| Metacognition of insight | [`subfields/05_metacognition_of_insight/DEEP.md`](subfields/05_metacognition_of_insight/DEEP.md) | done, batch 6 (2026-10-31) |
 | Cognitive conflict and impasse | | not started |
 | Semantic memory network structure | | not started |
 | Cognitive control and creativity | | not started |

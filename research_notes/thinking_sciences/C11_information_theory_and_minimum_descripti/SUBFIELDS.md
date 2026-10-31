@@ -25,7 +25,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Shannon information, entropy | | not started |
 | Kolmogorov complexity | | not started |
-| Statistical MDL | | not started |
+| Statistical MDL | [`subfields/03_statistical_mdl/DEEP.md`](subfields/03_statistical_mdl/DEEP.md) | done, batch 6 (2026-10-31) |
 | Minimum message length | | not started |
 | MDL and Bayes | | not started |
 | Model selection links | | not started |

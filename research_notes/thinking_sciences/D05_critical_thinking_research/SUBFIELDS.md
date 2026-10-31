@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Skills versus dispositions | | not started |
 | Assessment and tests | | not started |
 | Instruction effectiveness | | not started |
-| Generalisability and transfer | | not started |
+| Generalisability and transfer | [`subfields/06_generalisability_and_transfer/DEEP.md`](subfields/06_generalisability_and_transfer/DEEP.md) | done, batch 6 (2026-10-31) |
 | Bias and debiasing | [`subfields/07_bias_and_debiasing/DEEP.md`](subfields/07_bias_and_debiasing/DEEP.md) | done, batch 5 (2026-10-27) |
 | Argument mapping training | | not started |
 | Informal reasoning research | | not started |

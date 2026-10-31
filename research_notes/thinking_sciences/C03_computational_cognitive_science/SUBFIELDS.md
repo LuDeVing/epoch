@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Bayesian models of cognition | | not started |
-| Program induction, language of thought | | not started |
+| Program induction, language of thought | [`subfields/02_program_induction_language_of_thought/DEEP.md`](subfields/02_program_induction_language_of_thought/DEEP.md) | done, batch 6 (2026-10-31) |
 | Library learning, wake-sleep | [`subfields/03_library_learning/DEEP.md`](subfields/03_library_learning/DEEP.md) | done, batch 4 (2026-10-26) |
 | Language-guided library learning | covered in [`subfields/03_library_learning/DEEP.md`](subfields/03_library_learning/DEEP.md) | done, batch 4 (2026-10-26) |
 | Resource-rational analysis | covered in [`subfields/06_resource_rational_strategy_selection/DEEP.md`](subfields/06_resource_rational_strategy_selection/DEEP.md) | done, batch 4 (2026-10-26) |

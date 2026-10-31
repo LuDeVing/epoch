@@ -139,3 +139,5 @@ Order to run: T1 first (it sets the unit and cutoff for T2 to T4 and supplies di
 - **Single-source items worth watching:** landmarks added to an FF-style estimate (C05.02-K06), example heuristics in the prompt essential (C05.02-K11), best-of-N selection by training score is lossy (C05.02-K12), visible budget helps a web agent (C05.11-K16) but is not monotone safe (C05.11-K31), restart plus a recorded failure set (C05.11-K26).
 
 **Source audit, 2026-10-26:** the papers behind all 20 claims that were established were re-opened. 14 confirmed, 4 reworded (C05.02-K01, C05.02-K02, C05.11-K01, C05.11-K15) and 2 downgraded to single-source (C05.02-K25, C05.11-K02). Established now: 18 (9 per subfield). The downgraded ids are removed from section 2 and listed in section 7.
+
+**Audit (code check, 2026-10-31):** C05.01-K03, C05.01-K09 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Research programmes | | not started |
 | Falsificationism | | not started |
 | Anomalies and paradigm change | | not started |
-| Heuristic programming and machine discovery | | not started |
+| Heuristic programming and machine discovery | [`subfields/06_heuristic_programming_and_machine_discovery/DEEP.md`](subfields/06_heuristic_programming_and_machine_discovery/DEEP.md) | done, batch 6 (2026-10-31) |
 | Methodologies of discovery | | not started |
 | Cognitive approaches | | not started |
 | Social epistemology of discovery | | not started |

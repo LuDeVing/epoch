@@ -30,7 +30,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Efficient diagnosis algorithms | | not started |
 | Probing and measurement selection | [`subfields/06_probing_and_measurement_selection/DEEP.md`](subfields/06_probing_and_measurement_selection/DEEP.md) | done, batch 3 (2026-10-26) |
 | Diagnosability | | not started |
-| Spectrum-based fault localisation | | not started |
+| Spectrum-based fault localisation | [`subfields/08_spectrum_based_fault_localisation/DEEP.md`](subfields/08_spectrum_based_fault_localisation/DEEP.md) | done, batch 6 (2026-10-31) |
 | Readings in model-based diagnosis | | not started |
 | Software, spreadsheet, KB debugging | | not started |
 

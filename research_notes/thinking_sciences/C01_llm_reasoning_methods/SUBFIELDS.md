@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Chain-of-thought prompting | | not started |
-| Sampling and voting (self-consistency) | | not started |
+| Sampling and voting (self-consistency) | [`subfields/02_sampling_and_voting/DEEP.md`](subfields/02_sampling_and_voting/DEEP.md) | done, batch 6 (2026-10-31) |
 | Test-time compute scaling | | not started |
 | Verification design | [`subfields/04_verification_design/DEEP.md`](subfields/04_verification_design/DEEP.md) | done, batch 3 (2026-10-26) |
 | Self-correction | | not started |

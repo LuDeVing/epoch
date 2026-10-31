@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Debugging strategies | | not started |
+| Debugging strategies | [`subfields/01_debugging_strategies/DEEP.md`](subfields/01_debugging_strategies/DEEP.md) | done, batch 6 (2026-10-31) |
 | Expertise as chunking | | not started |
 | Program comprehension models | | not started |
 | Strategy vs success | | not started |

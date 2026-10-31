@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Valuation and common currency | | not started |
 | Reward prediction error learning | | not started |
-| Model-based versus model-free control | | not started |
+| Model-based versus model-free control | [`subfields/03_model_based_versus_model_free_control/DEEP.md`](subfields/03_model_based_versus_model_free_control/DEEP.md) | done, batch 6 (2026-10-31) |
 | Habits versus goal-directed action | | not started |
 | Exploration and exploitation | | not started |
 | Expected value of control | [`subfields/06_expected_value_of_control/DEEP.md`](subfields/06_expected_value_of_control/DEEP.md) | done, batch 5 (2026-10-27) |

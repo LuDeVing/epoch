@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Cognitive maps | | not started |
-| Model-free, model-based and successor representation | | not started |
+| Model-free, model-based and successor representation | [`subfields/02_model_free_model_based_and_successor_represen/DEEP.md`](subfields/02_model_free_model_based_and_successor_represen/DEEP.md) | done, batch 6 (2026-10-31) |
 | Replay as offline simulation (Dyna family) | | not started |
 | Prioritised memory access | | not started |
 | Map versus value replay | | not started |

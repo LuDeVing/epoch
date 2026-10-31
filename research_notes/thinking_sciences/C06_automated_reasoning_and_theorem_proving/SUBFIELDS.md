@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | CDCL | [`subfields/03_cdcl_conflict_learning/DEEP.md`](subfields/03_cdcl_conflict_learning/DEEP.md) | done, batch 4 (2026-10-26) |
 | Interactive theorem proving | | not started |
 | Neural and LLM proof search | | not started |
-| Premise selection | | not started |
+| Premise selection | [`subfields/06_premise_selection/DEEP.md`](subfields/06_premise_selection/DEEP.md) | done, batch 6 (2026-10-31) |
 | Lemma discovery, conjecturing | [`subfields/07_lemma_discovery_and_conjecturing/DEEP.md`](subfields/07_lemma_discovery_and_conjecturing/DEEP.md) | done, batch 4 (2026-10-26) |
 | Proof planning and repair | | not started |
 | Autoformalisation | | not started |

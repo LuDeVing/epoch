@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Worked-example research | [`subfields/01_worked_example_research/DEEP.md`](subfields/01_worked_example_research/DEEP.md) | done, batch 5 (2026-10-27) |
-| Expertise reversal and fading | | not started |
+| Expertise reversal and fading | [`subfields/02_expertise_reversal_and_fading/DEEP.md`](subfields/02_expertise_reversal_and_fading/DEEP.md) | done, batch 6 (2026-10-31) |
 | Testing effect (retrieval practice) | | not started |
 | Desirable difficulties | | not started |
 | Transfer of learning | | not started |

@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Polya's heuristics | [`subfields/01_polya_heuristics/DEEP.md`](subfields/01_polya_heuristics/DEEP.md) | done, batch 3 (2026-10-26) |
 | Schoenfeld framework | covered in [`subfields/04_episode_analysis_of_reasoning_models/DEEP.md`](subfields/04_episode_analysis_of_reasoning_models/DEEP.md) | done, batch 3 (2026-10-26) |
-| Metacognition and control | | not started |
+| Metacognition and control | [`subfields/03_metacognition_and_control/DEEP.md`](subfields/03_metacognition_and_control/DEEP.md) | done, batch 6 (2026-10-31) |
 | Episode analysis of reasoning models | [`subfields/04_episode_analysis_of_reasoning_models/DEEP.md`](subfields/04_episode_analysis_of_reasoning_models/DEEP.md) | done, batch 3 (2026-10-26) |
 | Expert-novice schemas | | not started |
 | Worked examples | | not started |

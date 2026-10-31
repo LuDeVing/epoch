@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Structure mapping (SME) | [`subfields/01_structure_mapping_sme/DEEP.md`](subfields/01_structure_mapping_sme/DEEP.md) | done, batch 5 (2026-10-27) |
-| Systematicity | | not started |
+| Systematicity | [`subfields/02_systematicity/DEEP.md`](subfields/02_systematicity/DEEP.md) | done, batch 6 (2026-10-31) |
 | Candidate inferences | | not started |
 | Incremental mapping | | not started |
 | Analogical retrieval (MAC/FAC) | | not started |

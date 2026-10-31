@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Thompson sampling | covered in [`subfields/01_bandits_for_operator_selection/DEEP.md`](subfields/01_bandits_for_operator_selection/DEEP.md) | done, batch 4 (2026-10-26) |
 | Count-based exploration, unified with intrinsic motivation | | not started |
 | Knowledge-based intrinsic motivation | | not started |
-| Information-theoretic motivation | | not started |
+| Information-theoretic motivation | [`subfields/05_information_theoretic_motivation/DEEP.md`](subfields/05_information_theoretic_motivation/DEEP.md) | done, batch 6 (2026-10-31) |
 | Competence-based motivation | | not started |
 | Novelty search, open-endedness | | not started |
 | Go-Explore, archives | [`subfields/08_go_explore_and_archives/DEEP.md`](subfields/08_go_explore_and_archives/DEEP.md) | done, batch 4 (2026-10-26) |

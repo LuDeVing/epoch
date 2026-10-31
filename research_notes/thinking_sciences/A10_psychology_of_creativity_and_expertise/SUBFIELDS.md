@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Einstellung (set) effect | | not started |
+| Einstellung (set) effect | [`subfields/01_einstellung_effect/DEEP.md`](subfields/01_einstellung_effect/DEEP.md) | done, batch 6 (2026-10-31) |
 | Expert flexibility and adaptive expertise | | not started |
 | Chunking and templates | | not started |
 | Deliberate practice | | not started |

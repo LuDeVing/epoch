@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Hypothetico-deductive model | | not started |
 | Forward and backward reasoning | | not started |
-| Knowledge organisation: illness scripts, categories | | not started |
+| Knowledge organisation: illness scripts, categories | [`subfields/03_knowledge_organisation_illness_scripts_catego/DEEP.md`](subfields/03_knowledge_organisation_illness_scripts_catego/DEEP.md) | done, batch 6 (2026-10-31) |
 | Dual-process theory | | not started |
 | Cognitive bias and premature closure | | not started |
 | Debiasing and cognitive forcing | | not started |

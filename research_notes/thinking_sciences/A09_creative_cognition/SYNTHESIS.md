@@ -116,3 +116,5 @@ Items already in SCHEMA 4b and confirmed here: creativity training as prompts, s
 - **Judge noise differs by probe** (A09.06-K36, single-source): agreement was 0.86 for jokes, 0.87 for stories and 0.54 for poems. Diversity scores must name the probe.
 
 **Source audit, 2026-10-26:** the papers behind all 24 established claims of this field were re-opened: 20 confirmed, 4 reworded (A09.01-K14, A09.06-K19, A09.06-K22, A09.06-K26), 0 downgraded. Rewording narrowed four rows: judges are barely above chance rather than at chance (M16); the IDEAFix result contradicts the claim that short plain divergence prompts do not match method prompts (M10, section 4 item 6, section 6); CreativityBench has no human baseline (M6); and the random-fact and associative-prompting gains come from different context types and an offline ablation (M13). No downgraded ids.
+
+**Audit (code check, 2026-10-31):** A09.03-K07 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

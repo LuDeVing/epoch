@@ -21,7 +21,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Course-of-action development and analysis | | not started |
+| Course-of-action development and analysis | [`subfields/01_course_of_action_development_and_analysis/DEEP.md`](subfields/01_course_of_action_development_and_analysis/DEEP.md) | done, batch 6 (2026-10-31) |
 | Wargaming | [`subfields/02_wargaming/DEEP.md`](subfields/02_wargaming/DEEP.md) | done, batch 5 (2026-10-27) |
 | Red teaming as alternative analysis | | not started |
 | Technical and physical red teams | | not started |

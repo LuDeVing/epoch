@@ -121,3 +121,5 @@ Run order: T1, then T2 with T4, then T3, then T7, T6, T8.
 - Single lab only: with one fault and independent checks, order probes by probability over cost; with equal values this is halving; the general policy is NP-complete (C09.06-K12).
 
 **Source audit, 2026-10-26:** 22 established claims of this field were re-opened against their papers: 13 confirmed, 6 reworded (C09.01-K04, K05, K14, K16; C09.06-K06, K19), 3 downgraded to single-source (C09.06-K03, C09.06-K04, C09.06-K13). Earlier one-source checks also left C09.01-K26 and C09.06-K12 single-source. All five are out of section 2 and listed in section 7; their other uses are marked single-source.
+
+**Audit (code check, 2026-10-31):** C09.08-K14 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

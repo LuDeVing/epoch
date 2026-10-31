@@ -32,7 +32,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Morphological analysis | | not started |
 | TRIZ with systematic design | | not started |
 | Axiomatic design | | not started |
-| Bio-inspired and analogical design | | not started |
+| Bio-inspired and analogical design | [`subfields/07_bio_inspired_and_analogical_design/DEEP.md`](subfields/07_bio_inspired_and_analogical_design/DEEP.md) | done, batch 6 (2026-10-31) |
 | Design-space exploration | | not started |
 | Empirical design research | | not started |
 

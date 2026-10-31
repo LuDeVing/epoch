@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Design as problem solving | | not started |
 | Reflection-in-action | | not started |
 | Problem-solution co-evolution | [`subfields/03_problem_solution_co_evolution/DEEP.md`](subfields/03_problem_solution_co_evolution/DEEP.md) | done, batch 5 (2026-10-27) |
-| Framing and reframing | | not started |
+| Framing and reframing | [`subfields/04_framing_and_reframing/DEEP.md`](subfields/04_framing_and_reframing/DEEP.md) | done, batch 6 (2026-10-31) |
 | Designerly ways of knowing | | not started |
 | Protocol analysis | | not started |
 | Fixation and ideation | | not started |

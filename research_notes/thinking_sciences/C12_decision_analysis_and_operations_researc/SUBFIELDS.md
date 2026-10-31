@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Value of information | [`subfields/01_value_of_information/DEEP.md`](subfields/01_value_of_information/DEEP.md) | done, batch 5 (2026-10-27) |
-| Expected value of sample information | | not started |
+| Expected value of sample information | [`subfields/02_expected_value_of_sample_information/DEEP.md`](subfields/02_expected_value_of_sample_information/DEEP.md) | done, batch 6 (2026-10-31) |
 | Optimal stopping | | not started |
 | Sequential analysis | | not started |
 | Metareasoning, value of computation | | not started |

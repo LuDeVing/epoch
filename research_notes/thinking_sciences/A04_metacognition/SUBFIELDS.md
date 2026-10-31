@@ -22,7 +22,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Monitoring and control framework | | not started |
+| Monitoring and control framework | [`subfields/01_monitoring_and_control_framework/DEEP.md`](subfields/01_monitoring_and_control_framework/DEEP.md) | done, batch 6 (2026-10-31) |
 | Metamemory judgments | | not started |
 | Accuracy and dissociation of monitoring | [`subfields/03_accuracy_and_dissociation_of_monitoring/DEEP.md`](subfields/03_accuracy_and_dissociation_of_monitoring/DEEP.md) | done, batch 3 (2026-10-26) |
 | Metacognitive knowledge: declarative, procedural, conditional | | not started |

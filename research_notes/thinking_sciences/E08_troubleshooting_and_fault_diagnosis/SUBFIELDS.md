@@ -25,7 +25,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Cognitive models of troubleshooting | | not started |
+| Cognitive models of troubleshooting | [`subfields/01_cognitive_models_of_troubleshooting/DEEP.md`](subfields/01_cognitive_models_of_troubleshooting/DEEP.md) | done, batch 6 (2026-10-31) |
 | Expert-novice differences | | not started |
 | Hypothesis limits | [`subfields/03_hypothesis_limits/DEEP.md`](subfields/03_hypothesis_limits/DEEP.md) | done, batch 3 (2026-10-26) |
 | Search strategies | [`subfields/04_troubleshooting_search_strategies/DEEP.md`](subfields/04_troubleshooting_search_strategies/DEEP.md) | done, batch 3 (2026-10-26) |

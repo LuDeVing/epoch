@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Encoding specificity and cue-dependent retrieval | | not started |
+| Encoding specificity and cue-dependent retrieval | [`subfields/01_encoding_specificity_and_cue_dependent_retrie/DEEP.md`](subfields/01_encoding_specificity_and_cue_dependent_retrie/DEEP.md) | done, batch 6 (2026-10-31) |
 | Critiques of encoding specificity | | not started |
 | Interference | | not started |
 | Cue overload and fan effect | [`subfields/04_cue_overload_and_fan_effect/DEEP.md`](subfields/04_cue_overload_and_fan_effect/DEEP.md) | done, batch 5 (2026-10-27) |

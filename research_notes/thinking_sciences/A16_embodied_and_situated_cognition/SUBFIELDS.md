@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Conceptualization (grounded cognition) | | not started |
-| Embedded cognition | | not started |
+| Embedded cognition | [`subfields/02_embedded_cognition/DEEP.md`](subfields/02_embedded_cognition/DEEP.md) | done, batch 6 (2026-10-31) |
 | Epistemic action | [`subfields/03_epistemic_action/DEEP.md`](subfields/03_epistemic_action/DEEP.md) | done, batch 5 (2026-10-27) |
 | Extended mind | | not started |
 | Distributed cognition | | not started |

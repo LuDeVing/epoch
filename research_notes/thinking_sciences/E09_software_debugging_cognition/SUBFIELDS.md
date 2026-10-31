@@ -31,7 +31,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Cognitive breakdowns | | not started |
+| Cognitive breakdowns | [`subfields/01_cognitive_breakdowns/DEEP.md`](subfields/01_cognitive_breakdowns/DEEP.md) | done, batch 6 (2026-10-31) |
 | Hypotheses in debugging | [`subfields/02_hypotheses_in_debugging/DEEP.md`](subfields/02_hypotheses_in_debugging/DEEP.md) | done, batch 3 (2026-10-26) |
 | Mental model of the system | | not started |
 | Debugging as scientific method | | not started |

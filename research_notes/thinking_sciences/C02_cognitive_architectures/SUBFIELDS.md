@@ -32,7 +32,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | ACT-R: production compilation | | not started |
 | Hybrid and connectionist (CLARION, Sigma) | | not started |
 | Global workspace, LIDA | | not started |
-| Language agents as architectures | | not started |
+| Language agents as architectures | [`subfields/10_language_agents_as_architectures/DEEP.md`](subfields/10_language_agents_as_architectures/DEEP.md) | done, batch 6 (2026-10-31) |
 
 ## Dig into next
 

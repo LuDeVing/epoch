@@ -31,7 +31,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Disruption trends | | not started |
 | Reproducibility and methods | | not started |
 | Funding and incentives | | not started |
-| Scientific discovery as reasoning | | not started |
+| Scientific discovery as reasoning | [`subfields/09_scientific_discovery_as_reasoning/DEEP.md`](subfields/09_scientific_discovery_as_reasoning/DEEP.md) | done, batch 6 (2026-10-31) |
 | Automated discovery | | not started |
 
 ## Dig into next

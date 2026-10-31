@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Heuristic search (A*, best-first) | | not started |
+| Heuristic search (A*, best-first) | [`subfields/01_heuristic_search/DEEP.md`](subfields/01_heuristic_search/DEEP.md) | done, batch 6 (2026-10-31) |
 | Heuristic design by relaxation | [`subfields/02_heuristics_by_relaxation/DEEP.md`](subfields/02_heuristics_by_relaxation/DEEP.md) | done, batch 4 (2026-10-26) |
 | Monte Carlo tree search | | not started |
 | MCTS limits | | not started |

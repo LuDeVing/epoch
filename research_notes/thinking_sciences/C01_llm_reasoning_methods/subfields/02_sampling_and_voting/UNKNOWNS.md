@@ -1,0 +1,34 @@
+# Sampling and voting (self-consistency): what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| C01.02-U1 | Do k short samples + code vote beat one long thinking pass on our current model? | Rule: default to k short samples for closed-answer items (backs G11) | S3/S7, G11 | K22 single-source; K19 contested; d01 cap artefact, d02 small models only, d03 30 items | A: one long pass. B: k=5 short + mode. C: k=10 short + mode. Same total tokens. 100+ closed-answer items. Accuracy, paired CI | B or C beats A by 3+ pts with CI excluding 0 | High |
+| C01.02-U2 | Is vote share a calibrated trust/escalate signal on our model and tasks? | Per-task share threshold that routes to S4/S5 | S7, G1 | K16, K23 established in direction; no transferable threshold; older models (a06); gpt-4.1 48% wrong at C>=0.8 (d05) | k=5 samples, log share, bin accuracy by share on 200 labelled items per task. Metric: precision above threshold | Accuracy rises monotonically and a threshold gives 95%+ precision on 50%+ of items | High |
+| C01.02-U3 | Does adaptive stopping save tokens on our items with no accuracy loss? | Beta or window stop rule in code | S3, G12 | K04 established (a12, b18, d11); weak on hard items; older models | Fixed k=10 vs Beta 0.95 vs window w=5. Same items. Tokens and accuracy | 30%+ tokens saved, accuracy drop 0.5 pt or less | High |
+| C01.02-U4 | Can a cheap detector (low share, answer entropy, many singletons) catch a wrong plurality? | Failed-vote detector before release | S7 | K08 (a17) theory plus one example; d05, d06 partial; unanimous-but-wrong uncovered | Collect wrong-plurality cases from U1. Test share, entropy, singleton count. AUC and recall at 20% false alarms | AUC 0.75+ and recall 60%+ of wrong pluralities at 20% false alarms or less | High |
+| C01.02-U5 | Does escalating on low share beat a bigger vote on hard items? | Escalate-not-resample rule | S7, S4/S5 | K08, K26 (a17, d13, d09); no direct test of the escalation arm | Hard bin (pass rate under 40%): k=5 then S4/S5 on low share vs k=20 vote. Equal tokens. Accuracy | Escalation beats k=20 by 3+ pts | High |
+| C01.02-U6 | Does confidence-weighted vote (CISC style) beat plain vote at few samples on our model? | Weighted vote with within-question confidence | S7 | K06 contested: author tests help (b19, b20, d12); reverses on over-confident models (d12, d08) | Plain vs CISC at k=3, 5, 8. Same items. Accuracy | Weighted beats plain by 2+ pts at k=5 and does not lose in any bin | Med |
+| C01.02-U7 | Does a verifier or judge on the top 2-3 answers beat plain vote? | Top-N check after vote when share is low | S7 | K11 contested: trained verifiers win at larger N (b16, d13, d14); off-the-shelf judges lose at N=5 (d08) | Vote vs judge on top-3 vs step check on top-3. N=5 and N=16. Accuracy | Beats vote by 3+ pts at same tokens | Med |
+| C01.02-U8 | For free-form items, is USC or a list-wise judge better than a vote on matchable fields? | Selector rule by answer type | S7 | K13 single-source (a13); K28 single-source (d16); context limit (c25) | Plain field vote vs USC (order shuffled 5x) vs list-wise judge. Free-form set. Accuracy and selector stability | Judge beats vote by 3+ pts and picks the same answer on 4 of 5 shuffles | Med |
+| C01.02-U9 | Does prompt, rewrite or persona diversity lower error correlation beyond temperature 1.0? | Rewrite mix in S3 (would need to revise G4 on personas) | S3, G4 | K10 contested (a09 yes; a05, d09 no); K25 single-source (d10) | Same-prompt T=1.0 vs rewrite mix, equal k. Accuracy and pairwise agreement on wrong items | Mix beats same-prompt by 2+ pts, or lowers wrong-item agreement by 20%+ relative | Low |
+| C01.02-U10 | Do shuffled options and per-sample seeds remove fake agreement on multiple choice? | Shuffle and seed rule | S3 | K25 single-source (d10), small open models | Fixed vs shuffled options, shared vs separate seeds. Accuracy and agreement on wrong items | Shuffled arm raises accuracy or cuts wrong-item agreement; no loss | Med |
+| C01.02-U11 | Is the best default k different by difficulty bin? | Difficulty-tied k schedule | S3, G12 | K03 contested (a21, c25 vs d08, d11, d12) | Accuracy vs k (1 to 32) at equal tokens, per single-sample pass-rate bin | A bin shows 2+ pts gain from k beyond the default, or none beyond a smaller k | Med |
+| C01.02-U12 | Does many small-model samples beat one large-model sample at equal cost? | Model-size routing | S3 | K14 single-source (b07, c23, b10) | k small samples + vote vs one large sample, equal FLOPs or cost | Small ensemble wins by 3+ pts on a bin | Low |
+| C01.02-U13 | Does sequential revision beat parallel vote on some difficulty bins? | Revise operator for hard bins | S3/S8 | K19 contested (d01 yes, d02 no, b25 hurt 38%) | Parallel k vs one pass + revise vs mixed, equal tokens, per bin | Mixed or revise beats vote by 3+ pts in a bin, with no harm on correct answers above 5% | Low |
+| C01.02-U14 | Does the vote gain hold on non-math held-out tasks? | Class gate for when to vote | S0, S3 | K27 single-source (d11, d17, d18); smaller gain than math | Greedy vs k=5 vote on 100+ held-out non-math items | Gain 2+ pts with CI excluding 0; else gate voting off for that class | Med |
+
+## Open questions we cannot test on our bench yet
+- Frontier long-thinking models: we need the token logs and an affordable way to run 100+ items at k up to 64. Needs budget and a fixed benchmark list.
+- Open-ended and agent tasks: we have no scoring that does not itself need a model judge. A task set with executable checks would unblock it.
+- Trained verifiers, PRMs and RL^V: outside the scaffold-only rule. Would need a training run.
+- Unanimous but wrong votes: needs a set of items with known confident wrong answers, collected over time from U1 and U4.
+- Correlation of errors in the failure region (items under 50%): needs many samples per item and an estimator that does not condition on each item's hit rate.
+- Law, biology and causal tasks: no vote study exists; needs our own labelled held-out sets.
+- Cross-model diversity (different model families as voters): not retested in the sources; needs access to a second model.
+
+## Order to run
+1. U1 (k short samples vs one long pass at equal tokens): G11 depends on it and no study tests it; the result shapes every other test.
+2. U2 with U4 (share calibration and wrong-plurality detector): one data collection serves both and yields the escalate rule.
+3. U3 (adaptive stopping): cheap, well supported in the literature, and saves tokens for every later test.

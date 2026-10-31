@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Heuristics and biases | [`subfields/01_heuristics_and_biases/DEEP.md`](subfields/01_heuristics_and_biases/DEEP.md) | done, batch 5 (2026-10-27) |
 | Fast and frugal heuristics, ecological rationality | | not started |
 | Prospect theory and risky choice | | not started |
-| Framing and preference construction | | not started |
+| Framing and preference construction | [`subfields/04_framing_and_preference_construction/DEEP.md`](subfields/04_framing_and_preference_construction/DEEP.md) | done, batch 6 (2026-10-31) |
 | Debiasing by training | | not started |
 | Debiasing by structure: incentives, nudges, reference class forecasting | | not started |
 | Calibration and overconfidence | | not started |

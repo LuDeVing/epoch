@@ -22,7 +22,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Recombinant search | [`subfields/01_recombinant_search/DEEP.md`](subfields/01_recombinant_search/DEEP.md) | done, batch 5 (2026-10-27) |
-| Exploration versus exploitation | | not started |
+| Exploration versus exploitation | [`subfields/02_exploration_versus_exploitation/DEEP.md`](subfields/02_exploration_versus_exploitation/DEEP.md) | done, batch 6 (2026-10-31) |
 | Organisational ambidexterity | | not started |
 | Bandit-style exploration | | not started |
 | Atypicality versus disruption | | not started |

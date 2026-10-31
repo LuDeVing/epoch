@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Cognitive artifacts | | not started |
 | Macrocognition | | not started |
 | Naturalistic decision making | | not started |
-| Human error and recovery | | not started |
+| Human error and recovery | [`subfields/07_human_error_and_recovery/DEEP.md`](subfields/07_human_error_and_recovery/DEEP.md) | done, batch 6 (2026-10-31) |
 | Resilience engineering | | not started |
 | Work and domain analysis | | not started |
 

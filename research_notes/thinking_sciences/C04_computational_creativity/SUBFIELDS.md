@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Boden's creativity types | | not started |
+| Boden's creativity types | [`subfields/01_boden_s_creativity_types/DEEP.md`](subfields/01_boden_s_creativity_types/DEEP.md) | done, batch 6 (2026-10-31) |
 | Creativity as search | | not started |
 | Combinational creativity | | not started |
 | Transformational creativity | | not started |

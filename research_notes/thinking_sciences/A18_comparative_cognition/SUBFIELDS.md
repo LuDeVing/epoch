@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Causal reasoning and transfer tasks | | not started |
+| Causal reasoning and transfer tasks | [`subfields/01_causal_reasoning_and_transfer_tasks/DEEP.md`](subfields/01_causal_reasoning_and_transfer_tasks/DEEP.md) | done, batch 6 (2026-10-31) |
 | Alternative-explanation controls | [`subfields/02_alternative_explanation_controls/DEEP.md`](subfields/02_alternative_explanation_controls/DEEP.md) | done, batch 5 (2026-10-27) |
 | Limits found | | not started |
 | Tool manufacture and use | | not started |

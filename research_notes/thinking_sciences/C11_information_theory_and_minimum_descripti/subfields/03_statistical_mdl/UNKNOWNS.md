@@ -1,0 +1,37 @@
+# Statistical MDL: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| C11.03-U1 | Does shortest-fit beat first-fit, vote and confidence when several programs fit all examples but disagree? | Keep "shortest" in S7 after vote; else drop it | S7 | K25, K17, K27; single-source; room small (about 9% false positives, vote clears half) | Fit-but-disagree items from ARC and rule induction (at least 60 items); arms first-fit, vote, mean log-prob, shortest by tokens; accuracy on that subset | Shortest beats vote by 3 or more points with a 95% interval above 0 on 60 or more items; else remove length from S7 | High |
+| C11.03-U2 | Which length best predicts correctness: token count, LM log-prob of the rule, prequential log-prob of examples? | One named length function for S7 | S7 | K21, K26, d03, d13; nothing compares them | Same items as U1; score each candidate three ways; AUC for correctness | One measure has AUC 0.05 or more above the others, and above 0.6 | High |
+| C11.03-U3 | Does a damped data weight (eta below 1) help with 2 to 5 examples or when the true rule is not proposed? | Complexity weight rule by example count in S7 | S7 | K02 (E in constructed cases), K05, K26; no LLM test | Rule items with 2, 3, 5 examples and some with the true rule removed; eta 0.25, 0.5, 1 vs raw fit; held-out accuracy | Best eta beats eta=1 by 3 or more points at 2-3 examples and loses nothing at 5 | Med |
+| C11.03-U4 | Does a scrambled-label control expose lookup-table fits among candidate rules? | S7 check: discount a fit that also fits scrambled outputs | S7 / G3 | K29, K04 (E for incompressibility), d07; probes only, human-free | Rule items; selector with vs without a scrambled-output fit test; false-positive pick rate, plus tokens | False picks fall by 25% relative or more at under 10% extra tokens | Med |
+| C11.03-U5 | Is holding out one example before any length rule better than fitting all examples? | S4 hold-out step before S7 length rule | S4 / S7 | K27, d06 (MiniSCAN T=3 N=1 beat N=5); single-source | ARC-like items with 3 or more examples; fit on k vs k-1 plus hold-out check; accuracy | Hold-out arm wins by 2 or more points, or ties at lower tokens | High |
+| C11.03-U6 | Does prequential (sequential) scoring of soft or natural-language rules beat summed fit? | Prequential score as the fit term for soft rules | S7 | K03, K13, K14; small meta-trained models only; GPT-4 failed on Mastermind | Natural-language rule items with 3 to 8 examples; arms summed log-prob vs prequential log-prob; AUC | Prequential AUC at least 0.05 above summed, at equal calls | Med |
+| C11.03-U7 | Does MDL-chosen example selection for few-shot prompts replicate on a current model, and does it beat plain confidence? | Example-selection step in S3 for classification | S3 / O | K11, c12, d10; GPT2-XL only; no replication; reduces to confidence | Small-label classification items; arms random, TopK, TopK+MDL, TopK+confidence; accuracy | TopK+MDL beats TopK+confidence by 1.5 or more points on a current model | Low |
+| C11.03-U8 | Does pruning stored lessons by a length criterion beat recency and usage pruning? | Length-based pruning rule for lesson memory | Memory | K19, b23, d14; no recency or usage baseline; unseen gains below SD | Long runs over many classes; prune to a fixed prompt-token cap by recency, usage, or min L(lessons)+L(errors); accuracy on unseen classes | Length pruning beats usage by more than 1 SD on unseen classes | Low |
+| C11.03-U9 | Can online code length of gold labels serve as a less noisy ablation metric for scaffold steps? | Evaluation metric in the bench (section 6 log) | Evaluation | K12, K06; single-source; probes and NLP datasets | Ablate S2, S4, S5 on a labelled set; compare bits saved vs accuracy change and their run-to-run variance | Bits saved rank the steps the same as accuracy, with at least 30% lower variance across seeds | Med |
+| C11.03-U10 | Is mean per-token log-prob of a candidate a usable cheap quality signal inside one run? | Cheap pre-filter before S4 tests | S3 / S4 | K10 (E across base models, in-domain), K28; no within-run test | Candidate pools with known correctness; rank by mean log-prob vs by vote; rank correlation and top-1 accuracy | Spearman 0.3 or more with correctness within item, and adds to vote when combined | Med |
+| C11.03-U11 | Can a compression score rank LLM-proposed programs (MADIL-style) better than vote? | Compression ranker in S7 for ARC-like items | S7 | K16 (E: generators only), K17; no ranker test | ARC public eval; LLM proposes N programs; rank fitting ones by vote vs compression of the training pairs; accuracy | Beats vote by 3 or more points or matches it at 30% fewer tokens | Low |
+| C11.03-U12 | Is rule size a usable difficulty gauge for the S0 gate? | A size feature in the class record | S0 | K20, b24; single-source, recurrences not LLM items | S0 data: size of the gold rule vs plain pass rate across item classes | Pearson 0.5 or more with plain failure rate on our items | Low |
+| C11.03-U13 | Does the tie-break ranking flip as the number of examples changes? | Warn or skip length when ranking is unstable | S7 | K22 (E in representation ranking), a26, c22; not tested on rules | Recompute U1 ranking with all examples vs k-1 vs k-2; rank agreement | If top choice changes in over 20% of items, use length only when stable | Med |
+
+## Open questions we cannot test on our bench yet
+
+- Why GPT-4 and gpt-4o failed prequential Occam on Mastermind (prompt format, no meta-training, or task difficulty). Unblock: run the same task with a few worked demos and a smaller code length; needs a prompt-format ablation and a meta-trained small model for comparison.
+- Whether compression results hold across tokenizers and families (Yuan et al. 2025 reports linguistic bias). Unblock: access to several base models with logprobs; our agent model may expose none.
+- Whether Wu et al. replicates on 2024-2026 models. Unblock: search tools were blocked in the research pass, so a replication paper may exist; run a fresh search.
+- Misspecification inside real agent loops (the true rule is outside the proposals). Unblock: a bench set where gold rules are deliberately missing from the proposal pool.
+- Rissanen 1978 and the founding derivation were not opened; secondary account used. Unblock: obtain the paper.
+- Yuan et al. correlation values and Deletang tokenizer table cells were not extracted.
+- Cost per puzzle of compression methods against LLM sampling at equal compute (CompressARC about 20.7 GPU-min each; LLM dollar cost not extracted). Unblock: our own token and cost log.
+
+## Order to run
+
+1. **C11.03-U1** (with U2 on the same items): it decides whether S7 uses length at all, and costs one pass over fit-but-disagree items we already generate.
+2. **C11.03-U5**: hold-out before any length rule is cheap, and the earlier evidence (fit-only overfits exemplars) suggests the largest gain at the least cost.
+3. **C11.03-U3** (with U13): tells us whether a complexity weight is safe with few examples, the case where the theory says it matters most.

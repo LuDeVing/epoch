@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Risky-choice framing | | not started |
+| Risky-choice framing | [`subfields/01_risky_choice_framing/DEEP.md`](subfields/01_risky_choice_framing/DEEP.md) | done, batch 6 (2026-10-31) |
 | Valence framing | | not started |
 | Moderators of framing | | not started |
 | Question wording and presupposition | [`subfields/04_question_wording_and_presupposition/DEEP.md`](subfields/04_question_wording_and_presupposition/DEEP.md) | done, batch 5 (2026-10-27) |

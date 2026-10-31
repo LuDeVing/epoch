@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Other acceptance principles | | not started |
 | Critiques of the story model | | not started |
 | Computational coherence models | | not started |
-| Case-based reasoning in law | | not started |
+| Case-based reasoning in law | [`subfields/05_case_based_reasoning_in_law/DEEP.md`](subfields/05_case_based_reasoning_in_law/DEEP.md) | done, batch 6 (2026-10-31) |
 | Argumentation and defeasible rules | | not started |
 | Analogy and precedent in legal theory | | not started |
 | Judicial bias and noise | | not started |

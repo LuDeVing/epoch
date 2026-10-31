@@ -22,7 +22,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Bayesian conditionalization | | not started |
+| Bayesian conditionalization | [`subfields/01_bayesian_conditionalization/DEEP.md`](subfields/01_bayesian_conditionalization/DEEP.md) | done, batch 6 (2026-10-31) |
 | Coherence norms and Dutch book arguments | | not started |
 | The problem of the priors | | not started |
 | Uncertain evidence | | not started |
