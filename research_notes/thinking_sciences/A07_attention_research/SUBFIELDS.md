@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Early, attenuation and late selection | | not started |
-| Perceptual load theory | | not started |
+| Perceptual load theory | [`subfields/02_perceptual_load_theory/DEEP.md`](subfields/02_perceptual_load_theory/DEEP.md) | done, batch 7 (2026-11-01) |
 | Working memory guidance and biased competition | | not started |
 | Attentional capture, bottom-up versus top-down | [`subfields/04_attentional_capture_bottom_up_versus_top_dow/DEEP.md`](subfields/04_attentional_capture_bottom_up_versus_top_dow/DEEP.md) | done, batch 5 (2026-10-27) |
 | Three attention networks | | not started |

@@ -134,3 +134,5 @@ Run order, following both UNKNOWNS files: MT2 first (no study has measured it), 
 **Source audit, 2026-10-26:** 23 established claims in E08 were re-opened against their papers: 17 confirmed, 3 reworded (E08.04-K01, E08.04-K06, E08.04-K14, narrowed in F9, F12, F18), 3 downgraded to single-source because the second source was not independent (E08.03-K05, E08.03-K10, E08.03-K23). Established claims now number 20 (7 in 03, 13 in 04). Downgraded ids: E08.03-K05, E08.03-K10, E08.03-K23.
 
 **Audit (code check, 2026-10-31):** E08.01-K01, E08.01-K03 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-01):** E08.06-K03, E08.06-K18 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

@@ -34,7 +34,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Axiomatic design | | not started |
 | Bio-inspired and analogical design | [`subfields/07_bio_inspired_and_analogical_design/DEEP.md`](subfields/07_bio_inspired_and_analogical_design/DEEP.md) | done, batch 6 (2026-10-31) |
 | Design-space exploration | | not started |
-| Empirical design research | | not started |
+| Empirical design research | [`subfields/09_empirical_design_research/DEEP.md`](subfields/09_empirical_design_research/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next
 

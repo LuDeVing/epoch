@@ -26,8 +26,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Worked-example research | [`subfields/01_worked_example_research/DEEP.md`](subfields/01_worked_example_research/DEEP.md) | done, batch 5 (2026-10-27) |
 | Expertise reversal and fading | [`subfields/02_expertise_reversal_and_fading/DEEP.md`](subfields/02_expertise_reversal_and_fading/DEEP.md) | done, batch 6 (2026-10-31) |
 | Testing effect (retrieval practice) | | not started |
-| Desirable difficulties | | not started |
-| Transfer of learning | | not started |
+| Desirable difficulties | [`subfields/04_desirable_difficulties/DEEP.md`](subfields/04_desirable_difficulties/DEEP.md) | done, batch 7 (2026-11-01) |
+| Transfer of learning | [`subfields/05_transfer_of_learning/DEEP.md`](subfields/05_transfer_of_learning/DEEP.md) | done, batch 7 (2026-11-01) |
 | Productive failure | | not started |
 | Self-explanation | | not started |
 | Intelligent tutoring and knowledge tracing | | not started |

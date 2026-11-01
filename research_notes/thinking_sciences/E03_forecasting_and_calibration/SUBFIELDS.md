@@ -27,10 +27,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Good Judgment Project | | not started |
 | Training | | not started |
 | Outside view and base rates | [`subfields/04_outside_view_and_base_rates/DEEP.md`](subfields/04_outside_view_and_base_rates/DEEP.md) | done, batch 5 (2026-10-27) |
-| Decomposition (Fermi-ize) | | not started |
+| Decomposition (Fermi-ize) | [`subfields/05_decomposition/DEEP.md`](subfields/05_decomposition/DEEP.md) | done, batch 7 (2026-11-01) |
 | Aggregation and extremizing | | not started |
 | Belief updating | | not started |
-| LLM forecasting benchmarks | | not started |
+| LLM forecasting benchmarks | [`subfields/08_llm_forecasting_benchmarks/DEEP.md`](subfields/08_llm_forecasting_benchmarks/DEEP.md) | done, batch 7 (2026-11-01) |
 | Retrieval and ensembles for LLM forecasts | | not started |
 | Verbal confidence | | not started |
 

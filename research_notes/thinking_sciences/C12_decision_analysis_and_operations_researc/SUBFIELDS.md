@@ -25,12 +25,12 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Value of information | [`subfields/01_value_of_information/DEEP.md`](subfields/01_value_of_information/DEEP.md) | done, batch 5 (2026-10-27) |
 | Expected value of sample information | [`subfields/02_expected_value_of_sample_information/DEEP.md`](subfields/02_expected_value_of_sample_information/DEEP.md) | done, batch 6 (2026-10-31) |
-| Optimal stopping | | not started |
-| Sequential analysis | | not started |
-| Metareasoning, value of computation | | not started |
-| Bounded rationality, anytime | | not started |
+| Optimal stopping | [`subfields/03_optimal_stopping/DEEP.md`](subfields/03_optimal_stopping/DEEP.md) | done, batch 7 (2026-11-01) |
+| Sequential analysis | [`subfields/04_sequential_analysis/DEEP.md`](subfields/04_sequential_analysis/DEEP.md) | done, batch 7 (2026-11-01) |
+| Metareasoning, value of computation | [`subfields/05_metareasoning_value_of_computation/DEEP.md`](subfields/05_metareasoning_value_of_computation/DEEP.md) | done, batch 7 (2026-11-01) |
+| Bounded rationality, anytime | [`subfields/06_bounded_rationality_anytime/DEEP.md`](subfields/06_bounded_rationality_anytime/DEEP.md) | done, batch 7 (2026-11-01) |
 | MDPs and POMDPs | | not started |
-| Bandit allocation | | not started |
+| Bandit allocation | [`subfields/08_bandit_allocation/DEEP.md`](subfields/08_bandit_allocation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Learned termination | | not started |
 | Search theory | | not started |
 

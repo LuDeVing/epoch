@@ -27,11 +27,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Dynamic memory, early CBR | | not started |
 | Deployed CBR | | not started |
 | Case representation | [`subfields/04_case_representation/DEEP.md`](subfields/04_case_representation/DEEP.md) | done, batch 6 (2026-10-31) |
-| Retrieval and similarity | | not started |
-| Adaptation | | not started |
-| Case-base maintenance | | not started |
-| Retention policy | | not started |
-| Retrieval as a bandit | | not started |
+| Retrieval and similarity | [`subfields/05_retrieval_and_similarity/DEEP.md`](subfields/05_retrieval_and_similarity/DEEP.md) | done, batch 7 (2026-11-01) |
+| Adaptation | [`subfields/06_adaptation/DEEP.md`](subfields/06_adaptation/DEEP.md) | done, batch 7 (2026-11-01) |
+| Case-base maintenance | [`subfields/07_case_base_maintenance/DEEP.md`](subfields/07_case_base_maintenance/DEEP.md) | done, batch 7 (2026-11-01) |
+| Retention policy | [`subfields/08_retention_policy/DEEP.md`](subfields/08_retention_policy/DEEP.md) | done, batch 7 (2026-11-01) |
+| Retrieval as a bandit | [`subfields/09_retrieval_as_a_bandit/DEEP.md`](subfields/09_retrieval_as_a_bandit/DEEP.md) | done, batch 7 (2026-11-01) |
 | Failure-driven CBR | | not started |
 
 ## Dig into next

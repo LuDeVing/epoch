@@ -18,6 +18,24 @@ This family studies thinking as it happens in real settings, across people, tool
 | Activity theory and situated action | Tool-mediated activity; plans as resources | Vygotsky, Leontiev, Engeström; Suchman 1987 | Low | Background; Suchman is a caution against rigid plans |
 | Transactive memory | Who knows what in a group | Wegner 1985 | Low | Not relevant |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Distributed cognition theory | | not started |
+| Cognitive ethnography | | not started |
+| Cognitive offloading | [`subfields/03_cognitive_offloading/DEEP.md`](subfields/03_cognitive_offloading/DEEP.md) | done, batch 7 (2026-11-01) |
+| Shared cognition | | not started |
+| Cognitive artefacts and cockpit studies | [`subfields/05_cognitive_artefacts_and_cockpit_studies/DEEP.md`](subfields/05_cognitive_artefacts_and_cockpit_studies/DEEP.md) | done, batch 7 (2026-11-01) |
+| External representations | [`subfields/06_external_representations/DEEP.md`](subfields/06_external_representations/DEEP.md) | done, batch 7 (2026-11-01) |
+| Epistemic (complementary) actions | [`subfields/07_epistemic_actions/DEEP.md`](subfields/07_epistemic_actions/DEEP.md) | done, batch 7 (2026-11-01) |
+| Five domains of study | | not started |
+| Extended cognition | | not started |
+| Activity theory and situated action | | not started |
+| Transactive memory | | not started |
+
 ## Dig into next
 
 **1. Epistemic actions.**

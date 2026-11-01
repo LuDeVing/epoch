@@ -25,14 +25,14 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Chain-of-thought prompting | | not started |
 | Sampling and voting (self-consistency) | [`subfields/02_sampling_and_voting/DEEP.md`](subfields/02_sampling_and_voting/DEEP.md) | done, batch 6 (2026-10-31) |
-| Test-time compute scaling | | not started |
+| Test-time compute scaling | [`subfields/03_test_time_compute_scaling/DEEP.md`](subfields/03_test_time_compute_scaling/DEEP.md) | done, batch 7 (2026-11-01) |
 | Verification design | [`subfields/04_verification_design/DEEP.md`](subfields/04_verification_design/DEEP.md) | done, batch 3 (2026-10-26) |
-| Self-correction | | not started |
+| Self-correction | [`subfields/05_self_correction/DEEP.md`](subfields/05_self_correction/DEEP.md) | done, batch 7 (2026-11-01) |
 | Learned refinement and self-verification | | not started |
 | Search over thoughts | | not started |
 | Adaptive stopping, metareasoning | [`subfields/08_adaptive_stopping_and_metareasoning/DEEP.md`](subfields/08_adaptive_stopping_and_metareasoning/DEEP.md) | done, batch 3 (2026-10-26) |
 | RL on verifiable rewards | | not started |
-| Overthinking | | not started |
+| Overthinking | [`subfields/10_overthinking/DEEP.md`](subfields/10_overthinking/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next
 

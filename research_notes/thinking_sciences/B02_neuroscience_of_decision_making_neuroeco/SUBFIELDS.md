@@ -28,10 +28,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Reward prediction error learning | | not started |
 | Model-based versus model-free control | [`subfields/03_model_based_versus_model_free_control/DEEP.md`](subfields/03_model_based_versus_model_free_control/DEEP.md) | done, batch 6 (2026-10-31) |
 | Habits versus goal-directed action | | not started |
-| Exploration and exploitation | | not started |
+| Exploration and exploitation | [`subfields/05_exploration_and_exploitation/DEEP.md`](subfields/05_exploration_and_exploitation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Expected value of control | [`subfields/06_expected_value_of_control/DEEP.md`](subfields/06_expected_value_of_control/DEEP.md) | done, batch 5 (2026-10-27) |
-| Evidence accumulation | | not started |
-| Foraging and patch leaving | | not started |
+| Evidence accumulation | [`subfields/07_evidence_accumulation/DEEP.md`](subfields/07_evidence_accumulation/DEEP.md) | done, batch 7 (2026-11-01) |
+| Foraging and patch leaving | [`subfields/08_foraging_and_patch_leaving/DEEP.md`](subfields/08_foraging_and_patch_leaving/DEEP.md) | done, batch 7 (2026-11-01) |
 | Pruning of decision trees | | not started |
 | Confidence and metacognition | | not started |
 | Risk, loss and social choice | | not started |

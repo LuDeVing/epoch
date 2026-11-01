@@ -25,14 +25,14 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Active systems consolidation | [`subfields/01_active_systems_consolidation/DEEP.md`](subfields/01_active_systems_consolidation/DEEP.md) | done, batch 6 (2026-10-31) |
 | Synaptic homeostasis / downselection | | not started |
-| Relevance-based fate of memories | | not started |
+| Relevance-based fate of memories | [`subfields/03_relevance_based_fate_of_memories/DEEP.md`](subfields/03_relevance_based_fate_of_memories/DEEP.md) | done, batch 7 (2026-11-01) |
 | Targeted memory reactivation | | not started |
 | Slow-wave and REM roles | | not started |
 | Sleep and insight | | not started |
 | Neurochemistry of sleep and memory | | not started |
-| Complementary learning systems | | not started |
+| Complementary learning systems | [`subfields/08_complementary_learning_systems/DEEP.md`](subfields/08_complementary_learning_systems/DEEP.md) | done, batch 7 (2026-11-01) |
 | Gist extraction by overlapping replay | [`subfields/09_gist_extraction_by_overlapping_replay/DEEP.md`](subfields/09_gist_extraction_by_overlapping_replay/DEEP.md) | done, batch 5 (2026-10-27) |
-| Replay and wake-sleep learning in AI | | not started |
+| Replay and wake-sleep learning in AI | [`subfields/10_replay_and_wake_sleep_learning_in_ai/DEEP.md`](subfields/10_replay_and_wake_sleep_learning_in_ai/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next
 

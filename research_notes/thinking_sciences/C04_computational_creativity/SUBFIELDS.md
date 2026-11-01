@@ -24,8 +24,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Boden's creativity types | [`subfields/01_boden_s_creativity_types/DEEP.md`](subfields/01_boden_s_creativity_types/DEEP.md) | done, batch 6 (2026-10-31) |
-| Creativity as search | | not started |
-| Combinational creativity | | not started |
+| Creativity as search | [`subfields/02_creativity_as_search/DEEP.md`](subfields/02_creativity_as_search/DEEP.md) | done, batch 7 (2026-11-01) |
+| Combinational creativity | [`subfields/03_combinational_creativity/DEEP.md`](subfields/03_combinational_creativity/DEEP.md) | done, batch 7 (2026-11-01) |
 | Transformational creativity | | not started |
 | Evaluation of creativity | [`subfields/05_evaluation_of_creativity/DEEP.md`](subfields/05_evaluation_of_creativity/DEEP.md) | done, batch 4 (2026-10-26) |
 | Quality-diversity, novelty search | [`subfields/06_quality_diversity_and_novelty_search/DEEP.md`](subfields/06_quality_diversity_and_novelty_search/DEEP.md) | done, batch 4 (2026-10-26) |

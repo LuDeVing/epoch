@@ -1,0 +1,40 @@
+# Mental model of the system: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+All tests: both arms get the same total tokens (input plus output, note tokens included), same model, 3 seeds, paired test. Item pools: (a) debug-gym Mini-nightmare style bugs, (b) post-cutoff SWE-bench-Live or SWE-Bench Pro public tasks with differential tests, (c) private synthetic bugs with hidden tests. "pp" = percentage points of resolved rate.
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| E09.03-U1 | Does a written running note (known / unknown / guesses) beat unstructured reading? | S2 as an enforced three-list note, rewritten each cycle | S2, memory | K01, K21; human-derived (a02); no LLM test (d22); single-source | A: free reading and patching. B: same plus code-enforced note. Pools b, c. Metric: resolved rate, wasted file opens | B beats A by 3 pp or more, 95% interval above 0, on 2 of 3 seeds; note tokens counted | High |
+| E09.03-U2 | Is the forced-probe gain from the probe content or from the enforced delay? | Mandatory probe-before-edit rule for strong models | O (probe), G2 | K05; Debug2Fix d03 (vendor, 2 benchmarks); AutoSD d16; strong models only | A: probe optional. B: probe forced. C: forced no-op of same token cost. Pools a, c. Metric: resolved rate, probe-call rate | B beats A by 5 pp and beats C by 3 pp | High |
+| E09.03-U3 | Do ranked hypotheses with one discriminating test each help an LLM agent? | Hypothesis list with required executed check in S2 | S2, O | K04, K18; human 5-6x odds (b05, b06) human-only; AutoSD repair equal to baseline (d16) | A: free. B: list plus executed tests. C: list without execution. Pools a, b. Metric: resolved rate, calibration of the DONE-like flag | B beats A by 3 pp, or B equals A and calibration gap 5 pp or more; C below B | High |
+| E09.03-U4 | What is a good exit rule for the model step? | Code-checked exit (fixed budget share or signal) | S2/S6 | K20, K21; Agentless fixed schedule d21; no validated signal; reproduction tests weak (94 of 213) | A: fixed 40% budget to model step. B: free. C: signal-based (no blocking unknown, probe split top two guesses). Pools a, b. Metric: resolved rate, tokens to first correct cause | A or C beats B by 3 pp at low budgets, no loss at high budgets | High |
+| E09.03-U5 | Does a compact note beat full context at long context? | Drop raw reads once recorded in S2; cap context | S2, memory | K17, K19; LongCodeBench d14 (older models); Pro failures d17 (context overflow 35.6%) | A: full files and history. B: note plus bounded windows (100 lines), last-5 observations. Pool b with 50K-200K contexts. Metric: resolved rate, overflow count | B beats A by 3 pp or cuts overflow by half with no loss | High |
+| E09.03-U6 | Is a failed fix better handled by a forced model revision than by a new patch? | Revision step: contradicted guess marked, next patch must name the unknown it addresses | S5/S6, S2 | K01 (humans 9 of 17); K10; oscillation d01; no agent study (K21) | A: free retry. B: forced revise-note step after each failed check. Pools a, b. Metric: resolved rate, repeated-edit count | B beats A by 3 pp or cuts repeated edits 30% with no loss | Med |
+| E09.03-U7 | Does a graph or skeleton map still help at the 2026 frontier? | Repo map query tool in S2 | S2 | K11; LocAgent a21, a22 (Claude 3.5); framework gap shrinks to 0.9 pp (b17); older models | A: raw search and read. B: graph or skeleton query. Pool b. Metric: Acc@5 localisation, resolved rate | Localisation +8 pp and resolved +1.5 pp, or equal resolved at 30% fewer tokens | Med |
+| E09.03-U8 | Does a second diagnosis from a fresh context reduce anchoring on a wrong first cause? | Independent second diagnosis before patching, compared in code | S3, G4 | d07 case study (sympy-12236); LLM anchoring d08 (general QA); rate unmeasured; indirect | A: single chain. B: second fresh-context diagnosis, no view of the first. Pool c with planted misleading symptom. Metric: resolved rate on trap items | B beats A by 5 pp on trap items and costs no more than 15% extra tokens | Med |
+| E09.03-U9 | Does a why-did-not question answered by one run help LLMs? | Why-not probe before patching | O (probe) | K03; Whyline a12 (N=9), a13; human-only, single-source | A: free. B: must write "why did X not happen" and answer by one run. Pool c. Metric: resolved rate, first-cause correctness | B beats A by 3 pp | Med |
+| E09.03-U10 | Does a checkpoint of the best verified state prevent lost fixes? | Snapshot on pass, stated reason to overwrite | G (keep best state), G6 | K09; Kim d05 (5 of 5 recovered, consensus p=0.08) single-source | A: none. B: snapshot on test pass. Pool b. Metric: lost-fix count, resolved rate | B recovers 80% of lost fixes and resolved rate not lower | Med |
+| E09.03-U11 | Do static / dynamic tags and a minimum dynamic share help? | Tag note entries; require 2 dynamic facts before edit | S2 | K14; Burkhardt a20 (questionnaire, humans); LLM runtime tracing weak (b19, d13) | A: free. B: at least 2 dynamic facts before edit. Pool c. Metric: resolved rate, dynamic share | B beats A by 2 pp | Low |
+| E09.03-U12 | Does a loop detector help on random (not selected) instances? | RepeatedView / oscillation rule with phase hint | G (stall rule) | K10; Liu d01, d02 (selected, +6.9 to +23.5 pp, regression to mean) | A: none. B: rule with hint. Random instances of pool b. Metric: resolved rate, steps | B beats A by 2 pp or cuts steps 15% with no loss | Low |
+| E09.03-U13 | Should tracing mode depend on familiarity? | Forward or backward mode chosen by a repo-familiarity proxy | O (search mode) | K15; Li and Coblenz a05, c04 (about 5 people); proxy for familiarity does not exist and may reflect memorisation (d20) | A: forward only. B: backward only. C: by proxy. Pool b split by repo size. Metric: resolved rate by band | C beats best fixed arm by 3 pp in the unfamiliar band | Low |
+
+## Open questions we cannot test on our bench yet
+
+- **No debugging item pool exists.** The bench holds ARC and BRAINTEASER only. Unblock: build pools a, b, c above with a hidden-test runner and a sandbox; check pool b for contamination (d18-d20).
+- **Token share of the model-update phase in agent traces.** Needs phase labels by tokens, not action counts (d04). Unblock: log per-phase tokens in the harness and hand-label 50 runs to check the heuristic labels.
+- **Which part of the model matters (static, dynamic, causal).** No study splits them (d23). Unblock: need a rubric to score S2 notes; start with blind scoring of 100 notes against outcomes.
+- **Does the 57% human share replicate?** One group, N=12, five streamers (a01). Unblock: only a new human study; we cannot run it.
+- **Gugerty and Olson 1986, Parnin and Orso 2011, Beller 2018** were not opened (b22-b24). Unblock: read the full texts; a one-hour task.
+- **Frontier-model effect.** Framework gaps shrink with model strength (b17). Unblock: run all arms on the strongest model we can afford and on one weaker model to see the slope.
+- **Retrieval of outside evidence (expert, web) for debugging.** Humans use it often (a06); no LLM test. Unblock: a retrieval tool and pool b tasks with public discussion removed.
+- **Hypothesis anchoring rate.** Case study only (d07). Unblock: planted-trap items in pool c.
+
+## Order to run
+
+1. **U1 (running note vs unstructured reading).** It is the central gap, nothing in the literature tests it directly, and one harness change gives the answer.
+2. **U2 (forced probe vs delay-matched no-op).** Best existing evidence (+12.9 pp GPT-5), cheap to implement, and it tells us whether the gain is information or delay.
+3. **U4 (exit rule for the model step).** We have no validated stop signal, and a fixed schedule is the cheapest baseline to beat.

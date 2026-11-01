@@ -28,10 +28,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Chunking | covered in [`subfields/05_chunks_and_templates/DEEP.md`](subfields/05_chunks_and_templates/DEEP.md) | done, batch 4 (2026-10-26) |
 | Computational chunk models | | not started |
 | Template theory | [`subfields/05_chunks_and_templates/DEEP.md`](subfields/05_chunks_and_templates/DEEP.md) | done, batch 4 (2026-10-26) |
-| Pattern-recognition theory of search | | not started |
-| Recognition-primed decisions | | not started |
-| Einstellung effect | | not started |
-| Computer chess and game AI | | not started |
+| Pattern-recognition theory of search | [`subfields/06_pattern_recognition_theory_of_search/DEEP.md`](subfields/06_pattern_recognition_theory_of_search/DEEP.md) | done, batch 7 (2026-11-01) |
+| Recognition-primed decisions | [`subfields/07_recognition_primed_decisions/DEEP.md`](subfields/07_recognition_primed_decisions/DEEP.md) | done, batch 7 (2026-11-01) |
+| Einstellung effect | [`subfields/08_einstellung_effect/DEEP.md`](subfields/08_einstellung_effect/DEEP.md) | done, batch 7 (2026-11-01) |
+| Computer chess and game AI | [`subfields/09_computer_chess_and_game_ai/DEEP.md`](subfields/09_computer_chess_and_game_ai/DEEP.md) | done, batch 7 (2026-11-01) |
 | Deliberate practice | | not started |
 
 ## Dig into next

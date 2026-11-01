@@ -1,0 +1,34 @@
+# Meta-reasoning: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| A04.07-U1 | Does rethinking only on low sample agreement beat always-rethink and never-rethink? | Agreement gate before any S5/S6 rethink | G1, S6 | K01, K15; ESC/Adaptive-Consistency stop sampling only (d07, d08); no three-way study (contested) | 3 arms: vote only / rethink always / rethink if agreement under 100%; verifiable puzzles, mixed difficulty; accuracy and right-to-wrong flips | Gated beats both by 1.5+ points, or ties at 25%+ fewer tokens, on 2 item sets | High |
+| A04.07-U2 | Which cheap black-box signal best predicts a wrong answer? | A named default trigger signal | G1 | K29, K30, K11; d05 partial, no single table (single-source) | Score agreement, relative length, P(True), verbalised 0-100 on the same items; within-question and overall AUROC | Best signal AUROC 0.70+ and 0.05 above the next | High |
+| A04.07-U3 | Does stop-on-agreement save tokens without accuracy loss on our current model and tasks? | Agreement stop in S3 | S3, G11, G12 | K15, K30; 2023-24 models, math (older models) | Fixed k vs stop when first 3 agree, saved tokens re-spent on disagreeing items; mixed items; accuracy at equal mean tokens | Accuracy within 0.5 points at 30%+ fewer tokens on agreeing items | High |
+| A04.07-U4 | Is a sound check or tool a better accept test than model review, and at what false-positive rate does a check stop helping? | Rule: a check with FP above a set limit may not gate S5 | G2, S4, S5 | K25, K26; d13, d14, d15 (two papers, same lab; Reflexion single) | Items with code checks; arms: no loop / sound check / model-written check with injected FP rates of 2%, 10%, 20%; accuracy | Find FP level where the loop falls below no-loop; add rule with that cap | High |
+| A04.07-U5 | Does framing our answer as someone else's make S5 review find more errors? | Third-party framing for any review call | O-review | K10; c16 (non-reasoning models, single-source) | Injected-error items; arms: plain re-read vs third-party framing; fix rate and damage rate on right items | Fix rate +10 points with damage rate up under 2 points | Med |
+| A04.07-U6 | Does a stopping bar that drops with spend beat a fixed bar? | Decaying criterion in S6 stop rule | S6 | K07; humans only (a04); no LLM test | Fixed agreement threshold vs linear decay with floor; mixed items; accuracy at equal tokens | Decay wins by 1+ point on 2 sets | Med |
+| A04.07-U7 | Can a cheap first pass judge solvability to allocate budget, with its cost charged? | Solvability probe in S0 | S0, G12 | K31; d21 (cost not charged), d19 (single-source) | Uniform spend vs 1-sample probe then allocate by agreement tier; probe tokens charged | Accuracy +2 points at equal total tokens, probe under 10% of budget | Med |
+| A04.07-U8 | Does trial-answer confidence (DEER style) work through a prompt for API-only models? | Trial-answer exit at reasoning transitions | S6 | K15; c05 (needs logprobs; older models) | Arms: full run / trial answer at pauses with self-rated P(True) gate / fixed cap; math and puzzles | 20%+ fewer tokens at equal accuracy | Med |
+| A04.07-U9 | Does blind or gated "Wait" beat k-sample voting at equal tokens on our model? | Gated Wait in O-rethink (only if it wins) | O-rethink | K28; d16, d17, d18 (contested; small models; 30-item test) | Arms: k samples vote / one chain plus Wait when agreement low / blind Wait; equal tokens | Gated Wait beats vote by 1+ point; blind Wait is not added | Med |
+| A04.07-U10 | Does a progress-report controller (continue / backtrack / switch / restart) beat the fixed S6 policy? | Controller at S6 | S6 | K19; c15 (numbers unverified), c19 needs RL (single-source) | Fixed S6 vs bandit or rule over a one-line progress report; stuck-prone multi-step items; accuracy and switches | +2 points at equal tokens on 2 sets | Low |
+| A04.07-U11 | Do shorter-than-siblings chains win as a selection rule on our tasks? | Shortest-of-k tie-break in S7 | S7, G5 | K30; d20 (open reasoning models, math) | Selection by majority / shortest / majority with shortest tie-break; equal k | Shortest tie-break +1 point and no loss elsewhere | Low |
+| A04.07-U12 | Does a location-given review beat blind review? | Code-located review lines at S5 (already in G2); mistake-locating step for open items | G2, O-review | K09; a18 (single-source) | Items with a known error step: blind review vs located review | Located review fix rate 20+ points above blind | Low |
+| A04.07-U13 | Do agent loops overthink, and does act-on-feedback prompting help? | Act-before-think rule in agent loops | G1 | K32; d22 (post hoc judge, one benchmark) | Tool tasks: reasoning-first vs act-on-feedback; resolved rate and cost | 10%+ lower cost at equal resolved rate | Low |
+| A04.07-U14 | Does skill-labelled exemplar retrieval lift scores? | Skill labels in memory retrieval | memory | K22; a25, c22 (gain size not extracted, single-source) | Retrieval by skill label vs by similarity vs none; equal tokens | +2 points on 2 sets | Low |
+
+## Open questions we cannot test on our bench yet
+- Hidden-state probes and token-level confidence (c01, c07): we lack logits and hidden states. Unblock with an open-weight model on local hardware, or a provider that returns logprobs.
+- The founding FOR effect sizes (Thompson 2011, Thompson and Johnson 2014) and an independent replication: need full-text access or a new human study. Not needed for the agent; informs only how much to trust the human framework.
+- The cause of overthinking (low confidence vs reward shaping): needs training-side access to models.
+- Whether findings from 2023 models hold now (intrinsic correction, verbalised confidence): our bench can retest this, but it is not a schema candidate; it sets how much weight old evidence gets.
+- Open-ended and agent tasks (K32): missing a live stop signal and a ground-truth outcome per step. Unblock with a scored agentic bench.
+- Actively open-minded thinking prompts on LLM myside bias: no LLM study; needs a myside-bias item set.
+- Learned when-to-think (AdaptThink): needs RL training; outside this project's no-training rule.
+
+## Order to run
+1. U1 (gated vs always vs never rethink at equal tokens): it tests the core of G1 directly and no study has done it.
+2. U2 (one-table signal comparison): cheap; it picks the trigger signal that U1, U3 and U8 depend on.
+3. U3 (stop on agreement and re-spend): cheap, with the best prior evidence of savings, and it frees tokens for the other tests.

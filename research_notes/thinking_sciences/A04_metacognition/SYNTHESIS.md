@@ -115,3 +115,5 @@ Run order: T1 first (precondition, and its logs seed T3), then T2 and T4 on the 
 **Source audit, 2026-10-26:** 26 A04 claims were re-opened against their papers (the 25 now established plus A04.03-K09). 16 were confirmed, 9 reworded (7 overstated, 2 with a wrong number: A04.03-K16, A04.08-K16) and 1 downgraded to single-source: A04.03-K09. A04.03-K01 and A04.03-K20 were downgraded in the earlier code check and stay out of section 2. Downgraded ids: A04.03-K01, A04.03-K09, A04.03-K20.
 
 **Audit (code check, 2026-10-31):** A04.01-K12, A04.01-K14, A04.01-K15 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-01):** A04.02-K27, A04.05-K03, A04.06-K22, A04.07-K07 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

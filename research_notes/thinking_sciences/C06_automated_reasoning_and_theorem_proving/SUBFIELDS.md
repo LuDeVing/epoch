@@ -32,7 +32,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Lemma discovery, conjecturing | [`subfields/07_lemma_discovery_and_conjecturing/DEEP.md`](subfields/07_lemma_discovery_and_conjecturing/DEEP.md) | done, batch 4 (2026-10-26) |
 | Proof planning and repair | | not started |
 | Autoformalisation | | not started |
-| Counterexample finding | | not started |
+| Counterexample finding | [`subfields/10_counterexample_finding/DEEP.md`](subfields/10_counterexample_finding/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next
 

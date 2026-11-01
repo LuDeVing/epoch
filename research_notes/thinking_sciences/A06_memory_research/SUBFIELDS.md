@@ -25,16 +25,16 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Encoding specificity and cue-dependent retrieval | [`subfields/01_encoding_specificity_and_cue_dependent_retrie/DEEP.md`](subfields/01_encoding_specificity_and_cue_dependent_retrie/DEEP.md) | done, batch 6 (2026-10-31) |
-| Critiques of encoding specificity | | not started |
-| Interference | | not started |
+| Critiques of encoding specificity | [`subfields/02_critiques_of_encoding_specificity/DEEP.md`](subfields/02_critiques_of_encoding_specificity/DEEP.md) | done, batch 7 (2026-11-01) |
+| Interference | [`subfields/03_interference/DEEP.md`](subfields/03_interference/DEEP.md) | done, batch 7 (2026-11-01) |
 | Cue overload and fan effect | [`subfields/04_cue_overload_and_fan_effect/DEEP.md`](subfields/04_cue_overload_and_fan_effect/DEEP.md) | done, batch 5 (2026-10-27) |
-| Schemas | | not started |
+| Schemas | [`subfields/05_schemas/DEEP.md`](subfields/05_schemas/DEEP.md) | done, batch 7 (2026-11-01) |
 | Semantic networks and spreading activation | | not started |
 | Retrieval as consolidation | | not started |
 | Retrieval failure view of amnesia | | not started |
 | Working memory | | not started |
 | Retrieval-induced forgetting; memory errors | | not started |
-| Case-based reasoning | | not started |
+| Case-based reasoning | [`subfields/11_case_based_reasoning/DEEP.md`](subfields/11_case_based_reasoning/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next
 

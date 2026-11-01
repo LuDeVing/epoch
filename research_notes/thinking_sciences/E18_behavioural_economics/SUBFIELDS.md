@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Bounded rationality and satisficing | | not started |
+| Bounded rationality and satisficing | [`subfields/01_bounded_rationality_and_satisficing/DEEP.md`](subfields/01_bounded_rationality_and_satisficing/DEEP.md) | done, batch 7 (2026-11-01) |
 | Ecological rationality, adaptive toolbox | [`subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md`](subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md) | done, batch 5 (2026-10-27) |
 | Heuristics and biases | | not started |
 | Prospect theory | | not started |
@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Nudge evidence | | not started |
 | Behavioural finance and game theory | | not started |
 | Debiasing | | not started |
-| Resource-rational analysis | | not started |
-| Noise and judgement | | not started |
+| Resource-rational analysis | [`subfields/09_resource_rational_analysis/DEEP.md`](subfields/09_resource_rational_analysis/DEEP.md) | done, batch 7 (2026-11-01) |
+| Noise and judgement | [`subfields/10_noise_and_judgement/DEEP.md`](subfields/10_noise_and_judgement/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next
 

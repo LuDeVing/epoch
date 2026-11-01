@@ -26,11 +26,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Cognitive models of troubleshooting | [`subfields/01_cognitive_models_of_troubleshooting/DEEP.md`](subfields/01_cognitive_models_of_troubleshooting/DEEP.md) | done, batch 6 (2026-10-31) |
-| Expert-novice differences | | not started |
+| Expert-novice differences | [`subfields/02_expert_novice_differences/DEEP.md`](subfields/02_expert_novice_differences/DEEP.md) | done, batch 7 (2026-11-01) |
 | Hypothesis limits | [`subfields/03_hypothesis_limits/DEEP.md`](subfields/03_hypothesis_limits/DEEP.md) | done, batch 3 (2026-10-26) |
 | Search strategies | [`subfields/04_troubleshooting_search_strategies/DEEP.md`](subfields/04_troubleshooting_search_strategies/DEEP.md) | done, batch 3 (2026-10-26) |
 | Surface-cue heuristics | | not started |
-| Model-based diagnosis | | not started |
+| Model-based diagnosis | [`subfields/06_model_based_diagnosis/DEEP.md`](subfields/06_model_based_diagnosis/DEEP.md) | done, batch 7 (2026-11-01) |
 | Training and tutors | | not started |
 | Complexity of expert troubleshooting | | not started |
 | LLM help in hardware debugging | | not started |

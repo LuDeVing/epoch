@@ -33,11 +33,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Cognitive breakdowns | [`subfields/01_cognitive_breakdowns/DEEP.md`](subfields/01_cognitive_breakdowns/DEEP.md) | done, batch 6 (2026-10-31) |
 | Hypotheses in debugging | [`subfields/02_hypotheses_in_debugging/DEEP.md`](subfields/02_hypotheses_in_debugging/DEEP.md) | done, batch 3 (2026-10-26) |
-| Mental model of the system | | not started |
-| Debugging as scientific method | | not started |
+| Mental model of the system | [`subfields/03_mental_model_of_the_system/DEEP.md`](subfields/03_mental_model_of_the_system/DEEP.md) | done, batch 7 (2026-11-01) |
+| Debugging as scientific method | [`subfields/04_debugging_as_scientific_method/DEEP.md`](subfields/04_debugging_as_scientific_method/DEEP.md) | done, batch 7 (2026-11-01) |
 | Program comprehension | | not started |
 | Tools and questions | | not started |
-| Fault localisation and repair | | not started |
+| Fault localisation and repair | [`subfields/07_fault_localisation_and_repair/DEEP.md`](subfields/07_fault_localisation_and_repair/DEEP.md) | done, batch 7 (2026-11-01) |
 | Novices and education | | not started |
 | LLM debugging | [`subfields/09_llm_debugging/DEEP.md`](subfields/09_llm_debugging/DEEP.md) | done, batch 3 (2026-10-26) |
 | Verbalisation (rubber duck) | | not started |

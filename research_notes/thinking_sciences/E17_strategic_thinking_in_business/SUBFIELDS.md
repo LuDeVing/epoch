@@ -16,6 +16,22 @@ This field studies how organisations and leaders decide where to compete and how
 | Managerial cognition and decision processes | Mental models of managers; rational versus political decisions | Walsh, Eisenhardt [M] | Low | Background only |
 | Assumption testing | Surface and test key assumptions cheaply | McGrath and MacMillan [M] | Med | S7 discriminating test |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Scenario planning (Shell method) | | not started |
+| Other scenario traditions | | not started |
+| Scenario evidence | | not started |
+| Planning-performance research | [`subfields/04_planning_performance_research/DEEP.md`](subfields/04_planning_performance_research/DEEP.md) | done, batch 7 (2026-11-01) |
+| Planned versus emergent strategy | | not started |
+| Ten schools of strategy formation | | not started |
+| Analysis tools | | not started |
+| Managerial cognition and decision processes | | not started |
+| Assumption testing | | not started |
+
 ## Dig into next
 
 1. **Planning-performance research.** Questions: Which of the moderators (formal analysis, comprehensive option generation, stakeholder management) have a single-agent analogue, probably option generation? Does the effect hold for comprehensive option generation specifically? Evidence needed: the meta-analysis itself (authors and effect size not on the opened page), then S3 tests of more versus fewer options.

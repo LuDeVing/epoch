@@ -26,11 +26,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Means-ends analysis | [`subfields/02_means_ends_analysis/DEEP.md`](subfields/02_means_ends_analysis/DEEP.md) | done, batch 3 (2026-10-26) |
 | Impasse-driven subgoaling and chunking | [`subfields/03_impasse_driven_subgoaling_and_chunking/DEEP.md`](subfields/03_impasse_driven_subgoaling_and_chunking/DEEP.md) | done, batch 6 (2026-10-31) |
 | Problem solving strategies and the problem-solving cycle | [`subfields/04_problem_solving_strategies_and_cycle/DEEP.md`](subfields/04_problem_solving_strategies_and_cycle/DEEP.md) | done, batch 3 (2026-10-26) |
-| Representational change theory | | not started |
-| Gestalt insight and the "sudden insight" debate | | not started |
-| Progress monitoring | | not started |
+| Representational change theory | [`subfields/05_representational_change_theory/DEEP.md`](subfields/05_representational_change_theory/DEEP.md) | done, batch 7 (2026-11-01) |
+| Gestalt insight and the "sudden insight" debate | [`subfields/06_gestalt_insight_and_the_sudden_insight_debate/DEEP.md`](subfields/06_gestalt_insight_and_the_sudden_insight_debate/DEEP.md) | done, batch 7 (2026-11-01) |
+| Progress monitoring | [`subfields/07_progress_monitoring/DEEP.md`](subfields/07_progress_monitoring/DEEP.md) | done, batch 7 (2026-11-01) |
 | Analogical problem solving | | not started |
-| Mathematical problem solving and heuristic method | | not started |
+| Mathematical problem solving and heuristic method | [`subfields/09_mathematical_problem_solving_and_heuristic_me/DEEP.md`](subfields/09_mathematical_problem_solving_and_heuristic_me/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next
 

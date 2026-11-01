@@ -1,0 +1,38 @@
+# Computational blending: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| F01.04-U1 | Does a generic-space step (k candidates, each checked against both inputs) beat a strong one-shot blend prompt? | Blend operator step 1 with per-input check | O7 (extended) | K01, K02; single-source (KOMBINE); text; no one-shot control | (a) plain, (b) strong one-shot, (c) k=3 to 5 generic spaces + per-input check; 100+ random entity pairs; valid-blend rate by narrow separate-family judge | (c) beats (b) by 5+ points with CI excluding 0, same tokens | High |
+| F01.04-U2 | Does the blend operator raise accuracy on a reasoning benchmark, not only blend ratings? | Blend as an impasse-time operator | O7, S6 (operator choice) | K17; no study; CresOWLve is a test bed; UoT C-UoT about equal to CoT (19.5 vs 18.8) | CresOWLve creative subset, factual subset as control; (a) plain, (b) blend operator after a failed attempt, (c) analogy-then-solve; accuracy | (b) beats (a) by 3+ points on creative, no loss on factual, and not worse than (c) | High |
+| F01.04-U3 | Does a per-property consistency check ("still holds in the merged concept?") catch coherent-but-wrong blends? | Verifier step in the blend operator | G (verify), O7 | K16, K18; single-source (Song, KOMBINE); rate unmeasured | Seed 50 known coherent-wrong blends among 150 blends; (a) no check, (b) per-property check, (c) whole-blend model judge; catch rate and false-reject rate | Catch rate 60%+ with false rejects under 20%, and (b) beats (c) | High |
+| F01.04-U4 | Does a blend operator beat analogy-then-solve with grounding checks, which is already better tested? | Choose one operator, drop the other | O7 vs blend | K20; d15 (sibling files, breadth only) | Same items as U2, arms (a) analogy-then-solve + grounding, (b) generic-space blend; accuracy and novelty rate | (b) beats (a) by 3+ points; otherwise keep analogy only | High |
+| F01.04-U5 | Does propose-k plus a filter beat a single draw on a current model? | k=5 draw plus check as the default for blend slots | G (verify), O7 | K08; GPT-3 era (56.7% to 93.3%); older model only | Same items as U1; (a) 1 draw, (b) 5 short draws + checker at equal total tokens; valid rate | (b) beats (a) by 8+ points | High |
+| F01.04-U6 | Does an exclusion list of used property sets fix blend sameness at equal tokens? | Used-blend memory with exclusion list shown after first attempt | G (diversity), memory | K03, K23; d07 (small models, open prompts), d08 (extra calls) | 10 blends per item; (a) none, (b) exclusion list, (c) high temperature; distinct property sets (cosine threshold 0.674) and validity | (b) gives 20%+ more distinct sets than (a) with validity within 3 points | Med |
+| F01.04-U7 | Is a separate-family judge on property-level questions accurate enough to select blends? | Judge protocol fixed in the harness | G (independent self-check) | K14, K19; established for narrow checks; not tested for blend validity on current models | 200 blends; separate-family vs same-family judge vs human spot check; Pearson / agreement on property questions | Separate-family agreement 0.7+ with humans, and same-family bias shown | Med |
+| F01.04-U8 | Does a stored view or analogue library seed better hypotheses than a blank slate (Shrager)? | Library of views in memory, offered after first attempt | memory, O7 retrieval | K06; one 1987 study, N=7, circular fit | Hidden-device tasks with 8 to 20 views; (a) blank slate, (b) view-seeded + grounding check; steps to correct theory, coherent-wrong rate | (b) needs 20%+ fewer steps and coherent-wrong rate not higher | Med |
+| F01.04-U9 | Is the Xu-style staged gain (strong prompt to loop) real in text, and at what cost per extra call? | Cap on retry loop (2 calls) | S (check), G12 | K22; Xu own benchmark, images, PRISM partial support | Retry caps 0, 1, 2, 3 around U1 arm (c); gain per extra call | Marginal gain over one-shot at least 2 points per 1,000 tokens up to cap 2 | Med |
+| F01.04-U10 | Does an explicit avoid-common-pairings rule beat temperature for novel blends? | Anti-fixation rule in blend slot | G (anti-fixation) | K10; c21; GPT-4 and embedding judge only | (a) T=1, (b) T=1.5, (c) avoid-common rule with plain T; blind panel on novelty and validity | (c) beats (a) and (b) on novelty with validity not lower | Low |
+| F01.04-U11 | Does ranking LLM blends by "relations preserved from each input" agree with a blind panel? | Code-side fitness to pre-rank blends | O7 selection, G5 | K07; Cunha 2017, 9 drawers, authors set good/bad | 100 blends; fitness score vs blind panel rank | Spearman 0.5+ with panel and better than model self-rank | Low |
+| F01.04-U12 | Does head-over-modifier typicality code beat free-text combination? | Code-side combination helper | O7 / combination | K05; hand-set weights, worked examples only | Pet-fish style items; (a) LLM free text, (b) code blend, (c) LLM + consistency check; consistency and non-triviality | (c) beats (a) by 10+ points on consistency; (b) not required | Low |
+| F01.04-U13 | Does KOMBINE-style blend validity depend on reasoning level, temperature or pair distance? | Choose pair distance and effort in S0 gate | S0, G12 | b17, d10 defaults only; single-source | Same items at 3 reasoning levels and 3 pair-distance bins; valid rate per token | A setting gives 5+ points per equal tokens | Low |
+
+## Open questions we cannot test on our bench yet
+
+- **Founding programs.** Divago, Eppe 2018 and Guhe 2011 full texts were not reachable (403/404). Unblock: get the PDFs through a library route, then check for numbers and for any independent re-run.
+- **Independent replication of Xu 2026.** Needs their code and prompts or a re-implementation; the schema pipeline is image based. Unblock: a text-only port, which is U1/U9.
+- **Human blending baselines on our items.** KOMBINE humans could skip (zero score) and had 5 items. Unblock: a paid human panel with no skip option.
+- **Whether blend validity predicts task accuracy.** No dataset links the two. Unblock: log blend validity and final answer correctness together in U2.
+- **Within-model homogeneity for large current models on blends.** The evidence is small models on open prompts. Unblock: sample 10 blends per item from our own model (U6).
+- **Cost of the staged loop in tokens on text.** Xu reports about 8.3k tokens per image sample only. Unblock: token logging in all U-tests.
+- **Overlap with parallel subfields.** Conceptual combination, analogical inference, candidate inferences, combinational creativity may supply a better operator. Unblock: read those DEEP files when written, then run U4.
+- **Judge validity for blend validity on current models.** Only narrow property checks have human agreement numbers. Unblock: U7.
+
+## Order to run
+
+1. **U1 (generic-space step vs strong one-shot).** Cheapest, text only, decides if the blend operator exists at all. If one-shot equals the staged step, stop all blend work.
+2. **U3 (per-property consistency check).** Same items as U1, adds the verifier. It tests the only failure mode with real evidence (coherent but wrong), and the check is reusable for O7 analogies.
+3. **U2 (reasoning benchmark with factual control), with U4 arm (analogy-then-solve).** The only test that shows blending helps answers rather than ratings, and it settles blend vs the better-tested analogy operator.

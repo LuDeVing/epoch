@@ -25,11 +25,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Einstellung (set) effect | [`subfields/01_einstellung_effect/DEEP.md`](subfields/01_einstellung_effect/DEEP.md) | done, batch 6 (2026-10-31) |
 | Expert flexibility and adaptive expertise | | not started |
-| Chunking and templates | | not started |
+| Chunking and templates | [`subfields/03_chunking_and_templates/DEEP.md`](subfields/03_chunking_and_templates/DEEP.md) | done, batch 7 (2026-11-01) |
 | Deliberate practice | | not started |
 | Limits of deliberate practice | | not started |
 | Expertise research programmes | | not started |
-| Expert versus novice problem representation | | not started |
+| Expert versus novice problem representation | [`subfields/07_expert_versus_novice_problem_representation/DEEP.md`](subfields/07_expert_versus_novice_problem_representation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Problem finding | [`subfields/08_problem_finding/DEEP.md`](subfields/08_problem_finding/DEEP.md) | done, batch 5 (2026-10-27) |
 | Creative process models | | not started |
 | Naturalistic decision making | | not started |

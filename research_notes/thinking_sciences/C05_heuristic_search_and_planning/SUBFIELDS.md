@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Tree of Thoughts | | not started |
 | Language Agent Tree Search | | not started |
 | Automated planning (STRIPS, PDDL) | | not started |
-| Hierarchical task networks | | not started |
-| Means-ends analysis | | not started |
+| Hierarchical task networks | [`subfields/08_hierarchical_task_networks/DEEP.md`](subfields/08_hierarchical_task_networks/DEEP.md) | done, batch 7 (2026-11-01) |
+| Means-ends analysis | [`subfields/09_means_ends_analysis/DEEP.md`](subfields/09_means_ends_analysis/DEEP.md) | done, batch 7 (2026-11-01) |
 | Constraint satisfaction | | not started |
 | Anytime search, restarts | [`subfields/11_anytime_search_and_restarts/DEEP.md`](subfields/11_anytime_search_and_restarts/DEEP.md) | done, batch 4 (2026-10-26) |
 

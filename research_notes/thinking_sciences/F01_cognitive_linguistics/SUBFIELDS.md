@@ -18,6 +18,24 @@ Cognitive linguistics holds that language reflects how people structure concepts
 | Usage-based and connectionist models | Language learned from use | Elman, MacWhinney; Tomasello [V partly] | Low | Background |
 | Embodiment and image schemas | Meaning grounded in bodily patterns | Lakoff and Johnson; Johnson 1987 | Low | Background; image schemas only named, not explained, on the opened page |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Conceptual metaphor theory | | not started |
+| Conceptual blending | [`subfields/02_conceptual_blending/DEEP.md`](subfields/02_conceptual_blending/DEEP.md) | done, batch 7 (2026-11-01) |
+| Blend network types | | not started |
+| Computational blending | [`subfields/04_computational_blending/DEEP.md`](subfields/04_computational_blending/DEEP.md) | done, batch 7 (2026-11-01) |
+| Mental spaces | | not started |
+| Frame semantics | | not started |
+| Force dynamics | | not started |
+| Prototype theory and categorisation | | not started |
+| Cognitive grammar and construction grammar | | not started |
+| Usage-based and connectionist models | | not started |
+| Embodiment and image schemas | | not started |
+
 ## Dig into next
 
 **1. Conceptual blending as an operator.**

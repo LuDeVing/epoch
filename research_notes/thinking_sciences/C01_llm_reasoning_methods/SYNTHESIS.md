@@ -113,3 +113,5 @@ Order to run: T1 first (it gates T3 to T8), then T2 and T7 (cheapest; reuse exis
 **Source audit, 2026-10-26:** 21 established claims in this field were re-checked against the papers. 15 confirmed, 3 reworded (C01.04-K29, C01.08-K19, C01.08-K21: narrowed scope or corrected numbers), 3 downgraded to single-source (C01.04-K11, C01.04-K16, C01.08-K15). Downgraded ids are removed from section 2; F11 has no established claim left and is in section 7.
 
 **Audit (code check, 2026-10-31):** C01.02-K02, C01.02-K08 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-01):** C01.05-K10, C01.05-K12 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

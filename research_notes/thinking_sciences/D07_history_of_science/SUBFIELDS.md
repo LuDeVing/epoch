@@ -23,8 +23,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Discovery case studies | [`subfields/01_discovery_case_studies/DEEP.md`](subfields/01_discovery_case_studies/DEEP.md) | done, batch 6 (2026-10-31) |
-| Laboratory notebook studies | | not started |
-| Cognitive-historical analysis | | not started |
+| Laboratory notebook studies | [`subfields/02_laboratory_notebook_studies/DEEP.md`](subfields/02_laboratory_notebook_studies/DEEP.md) | done, batch 7 (2026-11-01) |
+| Cognitive-historical analysis | [`subfields/03_cognitive_historical_analysis/DEEP.md`](subfields/03_cognitive_historical_analysis/DEEP.md) | done, batch 7 (2026-11-01) |
 | Experimental practice | | not started |
 | Conceptual change and revolutions | | not started |
 | Computational reconstruction of discoveries | [`subfields/06_computational_reconstruction_of_discoveries/DEEP.md`](subfields/06_computational_reconstruction_of_discoveries/DEEP.md) | done, batch 5 (2026-10-27) |

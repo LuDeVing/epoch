@@ -32,7 +32,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Wisdom of crowds: conditions | [`subfields/01_wisdom_of_crowds_conditions/DEEP.md`](subfields/01_wisdom_of_crowds_conditions/DEEP.md) | done, batch 6 (2026-10-31) |
 | Crowd within | [`subfields/02_crowd_within/DEEP.md`](subfields/02_crowd_within/DEEP.md) | done, batch 5 (2026-10-27) |
 | Surprisingly popular method | | not started |
-| Social influence on crowds | | not started |
+| Social influence on crowds | [`subfields/04_social_influence_on_crowds/DEEP.md`](subfields/04_social_influence_on_crowds/DEEP.md) | done, batch 7 (2026-11-01) |
 | Consensus and premature agreement | | not started |
 | Conformity | | not started |
 | Collective intelligence factor c | | not started |

@@ -29,8 +29,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Cognitive bias and premature closure | | not started |
 | Debiasing and cognitive forcing | | not started |
 | Reflective reasoning and second look | [`subfields/07_reflective_reasoning_and_second_look/DEEP.md`](subfields/07_reflective_reasoning_and_second_look/DEEP.md) | done, batch 5 (2026-10-27) |
-| Probabilistic and test-based reasoning | | not started |
-| Clinical decision support and LLMs | | not started |
+| Probabilistic and test-based reasoning | [`subfields/08_probabilistic_and_test_based_reasoning/DEEP.md`](subfields/08_probabilistic_and_test_based_reasoning/DEEP.md) | done, batch 7 (2026-11-01) |
+| Clinical decision support and LLMs | [`subfields/09_clinical_decision_support_and_llms/DEEP.md`](subfields/09_clinical_decision_support_and_llms/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next
 

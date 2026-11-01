@@ -29,8 +29,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Framing and reframing | [`subfields/04_framing_and_reframing/DEEP.md`](subfields/04_framing_and_reframing/DEEP.md) | done, batch 6 (2026-10-31) |
 | Designerly ways of knowing | | not started |
 | Protocol analysis | | not started |
-| Fixation and ideation | | not started |
-| Analogy in design | | not started |
+| Fixation and ideation | [`subfields/07_fixation_and_ideation/DEEP.md`](subfields/07_fixation_and_ideation/DEEP.md) | done, batch 7 (2026-11-01) |
+| Analogy in design | [`subfields/08_analogy_in_design/DEEP.md`](subfields/08_analogy_in_design/DEEP.md) | done, batch 7 (2026-11-01) |
 | Expert-novice designers | | not started |
 | Computational design | | not started |
 

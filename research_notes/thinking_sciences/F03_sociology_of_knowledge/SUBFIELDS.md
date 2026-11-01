@@ -20,6 +20,26 @@ This field asks how communities come to treat some claims as knowledge: who is t
 | Epistemic injustice and misinformation | Credibility deficits, echo chambers | Fricker; Nguyen [V] | Low | Not relevant |
 | Kuhn and paradigm crisis | Anomalies accumulate until a framework is replaced | Kuhn 1962 (from memory; Wikipedia SSK page names him an influence) | Med | S6 trigger idea: switch frame after several independent failures |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Sociology of science and Merton's norms | | not started |
+| Strong Programme and SSK | | not started |
+| Laboratory studies and ANT | | not started |
+| Network epistemology | [`subfields/04_network_epistemology/DEEP.md`](subfields/04_network_epistemology/DEEP.md) | done, batch 7 (2026-11-01) |
+| Division of cognitive labour | [`subfields/05_division_of_cognitive_labour/DEEP.md`](subfields/05_division_of_cognitive_labour/DEEP.md) | done, batch 7 (2026-11-01) |
+| Epistemic diversity | | not started |
+| Judgment and credence aggregation | [`subfields/07_judgment_and_credence_aggregation/DEEP.md`](subfields/07_judgment_and_credence_aggregation/DEEP.md) | done, batch 7 (2026-11-01) |
+| Testimony, trust and peer disagreement | | not started |
+| Peer review and replication | | not started |
+| Values and inductive risk | | not started |
+| Group belief and justification | | not started |
+| Epistemic injustice and misinformation | | not started |
+| Kuhn and paradigm crisis | | not started |
+
 ## Dig into next
 
 **1. Network epistemology and division of labour.**

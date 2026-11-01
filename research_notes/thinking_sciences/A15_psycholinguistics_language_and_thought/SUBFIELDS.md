@@ -29,7 +29,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Risky-choice framing | [`subfields/01_risky_choice_framing/DEEP.md`](subfields/01_risky_choice_framing/DEEP.md) | done, batch 6 (2026-10-31) |
 | Valence framing | | not started |
-| Moderators of framing | | not started |
+| Moderators of framing | [`subfields/03_moderators_of_framing/DEEP.md`](subfields/03_moderators_of_framing/DEEP.md) | done, batch 7 (2026-11-01) |
 | Question wording and presupposition | [`subfields/04_question_wording_and_presupposition/DEEP.md`](subfields/04_question_wording_and_presupposition/DEEP.md) | done, batch 5 (2026-10-27) |
 | Thinking for speaking | | not started |
 | Whorfian psychophysics | | not started |

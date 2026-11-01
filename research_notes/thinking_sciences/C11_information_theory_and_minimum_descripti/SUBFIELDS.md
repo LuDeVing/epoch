@@ -29,7 +29,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Minimum message length | | not started |
 | MDL and Bayes | | not started |
 | Model selection links | | not started |
-| Algorithmic MDL | | not started |
+| Algorithmic MDL | [`subfields/07_algorithmic_mdl/DEEP.md`](subfields/07_algorithmic_mdl/DEEP.md) | done, batch 7 (2026-11-01) |
 | MDL program synthesis on ARC | [`subfields/08_mdl_program_synthesis_on_arc/DEEP.md`](subfields/08_mdl_program_synthesis_on_arc/DEEP.md) | done, batch 5 (2026-10-27) |
 | Compression at inference time | | not started |
 | Prediction as compression, critique | | not started |

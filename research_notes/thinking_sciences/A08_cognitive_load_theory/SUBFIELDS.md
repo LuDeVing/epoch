@@ -25,8 +25,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Intrinsic load and element interactivity | [`subfields/01_intrinsic_load_and_element_interactivity/DEEP.md`](subfields/01_intrinsic_load_and_element_interactivity/DEEP.md) | done, batch 5 (2026-10-27) |
 | Extraneous load and split attention | [`subfields/02_extraneous_load_and_split_attention/DEEP.md`](subfields/02_extraneous_load_and_split_attention/DEEP.md) | done, batch 6 (2026-10-31) |
-| Worked-example effect | | not started |
-| Expertise reversal | | not started |
+| Worked-example effect | [`subfields/03_worked_example_effect/DEEP.md`](subfields/03_worked_example_effect/DEEP.md) | done, batch 7 (2026-11-01) |
+| Expertise reversal | [`subfields/04_expertise_reversal/DEEP.md`](subfields/04_expertise_reversal/DEEP.md) | done, batch 7 (2026-11-01) |
 | Germane load | | not started |
 | Measurement of load | | not started |
 | Critiques of the three-load model | | not started |

@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Structure mapping | [`subfields/01_structure_mapping/DEEP.md`](subfields/01_structure_mapping/DEEP.md) | done, batch 6 (2026-10-31) |
-| Analogical inference | | not started |
+| Analogical inference | [`subfields/02_analogical_inference/DEEP.md`](subfields/02_analogical_inference/DEEP.md) | done, batch 7 (2026-11-01) |
 | Analogical access (retrieval) | [`subfields/03_analogical_access/DEEP.md`](subfields/03_analogical_access/DEEP.md) | done, batch 4 (2026-10-26) |
 | Schema induction | [`subfields/04_schema_induction/DEEP.md`](subfields/04_schema_induction/DEEP.md) | done, batch 4 (2026-10-26) |
 | Connectionist and hybrid mapping models | | not started |

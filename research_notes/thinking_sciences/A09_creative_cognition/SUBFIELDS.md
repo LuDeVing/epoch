@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Geneplore model | [`subfields/01_geneplore/DEEP.md`](subfields/01_geneplore/DEEP.md) | done, batch 4 (2026-10-26) |
 | Dual-process view of creativity | | not started |
 | Conceptual blending and integration | [`subfields/03_conceptual_blending_and_integration/DEEP.md`](subfields/03_conceptual_blending_and_integration/DEEP.md) | done, batch 6 (2026-10-31) |
-| Conceptual combination (noun-noun) | | not started |
+| Conceptual combination (noun-noun) | [`subfields/04_conceptual_combination/DEEP.md`](subfields/04_conceptual_combination/DEEP.md) | done, batch 7 (2026-11-01) |
 | Structured imagination | covered in [`subfields/06_fixation_and_structured_imagination/DEEP.md`](subfields/06_fixation_and_structured_imagination/DEEP.md) | done, batch 4 (2026-10-26) |
 | Fixation and functional fixedness | [`subfields/06_fixation_and_structured_imagination/DEEP.md`](subfields/06_fixation_and_structured_imagination/DEEP.md) | done, batch 4 (2026-10-26) |
 | Process stage models and incubation | | not started |

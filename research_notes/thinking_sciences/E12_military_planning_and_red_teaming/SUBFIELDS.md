@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Red teaming as alternative analysis | | not started |
 | Technical and physical red teams | | not started |
 | Premortem and prospective hindsight | | not started |
-| Recognition-primed decision making | | not started |
+| Recognition-primed decision making | [`subfields/06_recognition_primed_decision_making/DEEP.md`](subfields/06_recognition_primed_decision_making/DEEP.md) | done, batch 7 (2026-11-01) |
 | Automated wargaming | | not started |
 | Red-team failure modes | | not started |
 
