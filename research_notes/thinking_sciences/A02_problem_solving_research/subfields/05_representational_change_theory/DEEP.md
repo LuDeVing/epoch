@@ -307,3 +307,11 @@ Marks: [V] opened this session (text read), [M] snippet or abstract only.
 - [V] Voboril & Szeider (2026). Improving constraint models with LLM agents. https://arxiv.org/pdf/2608.08127 (c21)
 - [V] Liu et al. (2026). Learn to Relax with LLMs: AutoCO. https://arxiv.org/pdf/2509.12643 (c22)
 - [M] Cited second-hand only, never opened: Knoblich & Haider (1996); Knoblich & Wartenberg (1998); Ohlsson & Rees (1991); MacGregor, Ormerod & Chronicle (2001); Ormerod, MacGregor & Chronicle (2002); Burnham & Davis (1969); Weisberg & Alba (1981); Lung & Dominowski (1985); DeCaro (2016).
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A02.05-K13** (reworded: the sources support less). Naeini: in-context examples did not help only on Task 1 (grouping); on Task 2 (connections) GPT-4 improved monotonically with more examples. Also 6/239 are solved walls/correct groups on OCW, 471/1926 on OCW-WordNet (no red herrings, different content). Corrected claim: Red herrings cause fixation-like failure in LLMs: on Only Connect grouping, GPT-4 0-shot solved 6 walls (239 correct groups) on OCW vs 471 walls (1926 groups) on OCW-WordNet, a synthetic set without red herrings (knowledge content also differs); 1 to 10 in-context examples did not improve grouping (Task 1); the best model fully solves 18% of NYT Connections games (Claude 3.5 Sonnet, Samadarshi et al.).
+- **A02.05-K20** (now single-source: only one opened source, code check).
+- **A02.05-K21** (now single-source: only one opened source, code check).

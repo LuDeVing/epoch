@@ -416,3 +416,13 @@ Logging for all: whether each check was executed (tool call or read-back) vs cla
 - [M] LeRAAT / Virtual Co-Pilot. https://arxiv.org/html/2503.16477v1
 - [M] Auto-Eval Judge. https://arxiv.org/pdf/2508.05508
 - [M] GitAuto blog (anecdote). https://dev.to/gitautoai/our-agent-had-the-checklist-and-ignored-it-478g
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F02.05-K21** (reworded: the sources support less). The counts (24 of 26 and 20 of 20 on-turn re-executions with the step already marked DONE) and SOPBench's procedure-completeness rule are accurate, but they show agents ignoring their own marks and a benchmark rule requiring verification calls, not marks written without action; the ledger arm actually beat the accurate checklist (0.70/0.79 vs 0.55/0.59), so 'compliance without doing' is not shown. Corrected claim: In an LLM-agent study with a self-written ledger, 24 of 26 and 20 of 20 on-turn re-executions fired with the step already marked DONE in the agent's own ledger, so re-reading its own record did not prevent redoing steps (though the ledger still beat an accurate checklist); and SOPBench requires the check calls to precede each service call, so a trajectory that skips them fails even if the final database state is correct.
+- **F02.05-K22** (reworded: the sources support less). Numbers match for text-davinci-003, but the generalisation fails: for ChatGPT, CRITIC w/o Tool beats CoT by about 3 F1 on HotpotQA (46.1 vs 42.8) and AmbigNQ (67.3 vs 64.3), and on TabMWP (davinci) w/o Tool still adds +20.3 over PoT, so 'flat or negative' is not general; Kamoi's finding is about feedback from prompted LLMs and has an exception clause. Corrected claim: Checks with an outside signal (interpreter, retrieval, tests) carry most of the gain in CRITIC: on text-davinci-003, CRITIC without the search tool equals plain CoT on QA F1 (HotpotQA 46.1 vs 46.1, AmbigNQ 58.3 vs 58.6, TriviaQA 74.7 vs 74.5) and loses 1.8 points on GSM8K program-of-thought (68.3 vs 70.1), though on ChatGPT and on TabMWP the tool-free variant still gains; Kamoi et al. find no prior work showing successful self-correction with feedback from prompted LLMs, except in tasks exceptionally suited to it.
+- **F02.05-K06** (now single-source: only one opened source, code check).
+- **F02.05-K07** (now single-source: only one opened source, code check).
+- **F02.05-K27** (now single-source: only one opened source, code check).

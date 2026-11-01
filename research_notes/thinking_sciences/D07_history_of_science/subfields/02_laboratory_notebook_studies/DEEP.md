@@ -359,3 +359,8 @@ LLM and AI studies
 - [M] Agents of Discovery (2025) LHC Olympics. https://arxiv.org/abs/2509.08535 (c29)
 - [M] Practitioner notebook essays (osteele; SciLog). https://notes.osteele.com/essays/research-lab-notebook/ (c28)
 - [M] arXiv search for LLM notebook reconstruction, zero hits. https://arxiv.org/search/?query=laboratory+notebook+reconstruction+scientific+discovery+language+model&searchtype=all (b27)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 6 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

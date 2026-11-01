@@ -351,3 +351,9 @@ All arms at equal total tokens (reasoning plus output). Report the range across 
 - [V] Lian et al. (2025), SpatiaLite. https://arxiv.org/abs/2511.13782
 - [V] Xu et al. (2026), Visual Planning. https://arxiv.org/abs/2505.11409
 - [V] Guo et al. (2025), VisualToolBench. https://arxiv.org/abs/2510.12712
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A16.09-K01** (number corrected). Stechly et al. Table 1 gives sound external critique over self-critique gains of about 32-36 points (Game of 24 3 to 36/38, Graph Colouring 2 to 34-38, Blocksworld 55 to 87 with all-error feedback, only +5 with binary feedback), not 30 to 50; VisGym tested four models (GPT-5, Gemini 2.5 Pro, Qwen3-VL, GLM-4.5V), not every frontier VLM. Zhang and Norman (no errors on external rules) and Fansher (more success, more moves with display) are confirmed. Corrected claim: For humans, the same formal puzzle (Tower of Hanoi isomorph) is much harder when its rules must be held in memory than when the display enforces them, and external rules produced no rule errors. For LLMs the isolated test is still missing: in GPT-4, sound external critique beat self-critique by about 32 to 36 points in Game of 24, Graph Colouring and Blocksworld (best feedback type), and removing environment text feedback about invalid actions lowered all four VLMs tested in VisGym, but rules-in-prompt vs rules-in-checker on one puzzle was not found. A 2022 human study qualifies it: the external display raised success but cost more moves.

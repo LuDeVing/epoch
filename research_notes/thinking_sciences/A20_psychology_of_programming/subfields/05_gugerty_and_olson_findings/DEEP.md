@@ -271,3 +271,10 @@ Marked [V] opened (full text or page read) or [M] snippet or metadata only.
 - [V] Wang et al. (2025) Thoughts Are All Over the Place (underthinking). https://arxiv.org/abs/2501.18585 (abstract only in detail)
 - [V] Yu et al. (2025) UTBoost. https://arxiv.org/abs/2506.09289
 - [M] Eye-tracking and modern cohort titles (Crossref, 2015-2026), none opened. https://api.crossref.org/works?query.bibliographic=eye+track
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A20.05-K14** (reworded: the sources support less). Chen et al. show self-debug also helps without execution when the model explains its code (Spider +2-3%, MBPP Codex 61.4 -> 64.4 with explanation, 66.2 with trace); only simple yes/no feedback hurt (Codex MBPP 57.6), so execution feedback is not the sole driver. Corrected claim: Self-debug gains are largest with unit-test execution feedback (up to +12 on TransCoder and MBPP), while without execution plain pass/fail feedback can hurt (Codex MBPP 61.4 -> 57.6) but code explanation or trace feedback still helps (Codex MBPP 64.4 and 66.2; Spider +2-3%).
+- **A20.05-K09** (now single-source: only one opened source, code check).

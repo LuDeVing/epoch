@@ -332,3 +332,11 @@ Run T1, T2, T3 first (see UNKNOWNS.md).
 - [V] Lin (2026) Generative AI as a cognitive support tool in early-stage design ideation, PLOS One. https://doi.org/10.1371/journal.pone.0358542
 - [M] SSRN preprint (2026) Does memory credit travel? Paired factorial audits of LLM-agent memory. https://doi.org/10.2139/ssrn.7160321 (abstract only)
 - [M] Biomimetics (2024) Comparing analogy-based methods: bio-inspiration and engineering-domain inspiration. https://doi.org/10.3390/biomimetics9060344 (abstract only)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E05.08-K10** (reworded: the sources support less). SBERT 77.9% is a good score on near analogies (not a failure); TF-IDF same-domain is one figure caption on a single seed; the human claim rests on Hope et al. citing earlier work; Lewis and Mitchell show GPT-4 accuracy drops with paraphrase, suggesting rather than proving a sentence-overlap shortcut. Corrected claim: Surface similarity pulls both humans and tools: SBERT alone scores 77.9% on near analogies in ARN but far analogies defeat models; in Hope et al.'s example the TF-IDF baseline returned same-domain items; GPT generators retrieved birds as the analogy in over 50% of cases for a flying-car task; and GPT-4 accuracy on story analogies fell when the correct story was paraphrased to remove sentence-level overlap with the source, suggesting it partly relies on that overlap.
+- **E05.08-K22** (reworded: the sources support less). The '169 credited vs 10 real marginal helps' agent-memory audit is not supported by either listed source, and Si et al. measure human-reviewer ratings, not the model's own rating. Corrected claim: LLM-generated ideas lose 1.0 to 1.9 points of reviewer rating after expert execution while human ideas stay flat (Si et al.), and intrinsic self-correction lowers GPT-4 GSM8K from 95.5 to 89.0 (Huang et al.); these are indirect evidence, and no direct test of LLM self-rating of analogue usefulness was found.
+- **E05.08-K06** (now single-source: only one opened source, code check).

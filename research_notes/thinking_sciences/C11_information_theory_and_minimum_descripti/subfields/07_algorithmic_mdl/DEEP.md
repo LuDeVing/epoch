@@ -370,3 +370,13 @@ Marking: [V] = opened (full text or the relevant page read by an agent in this r
 - [M] Rissanen (1978) Modeling by shortest data description. https://doi.org/10.1016/0005-1098(78)90005-5
 - [M] Gruenwald (2007) The Minimum Description Length Principle (book). https://mitpress.mit.edu/9780262072816/
 - [M] Solomonoff (1964), Kolmogorov (1965), Chaitin (1969): original papers not opened; facts via Grunwald (2004).
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 10 established claims: 7 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C11.07-K12** (now single-source: the sources are not independent). Numbers and p<.004 verified, but every supporting source is the same paper (Li et al. 2024/2025); the ARC Prize report adds nothing on induction vs transduction.
+- **C11.07-K17** (reworded: the sources support less). Voita and Titov say variational and online codes agree and are both more stable than accuracy; 'more stable than variational codes' is not supported (Blier and Ollivier show variational codes compress poorly, not that they are unstable). Corrected claim: Description length is a more stable probe of model complexity than accuracy: Voita and Titov find code lengths separate real from control tasks and ignore seed noise, with variational and online codes agreeing; Blier and Ollivier show prequential coding gives far shorter codes than variational or two-part codes for deep nets; Elmoznino et al. show prequential ICL prefers simpler functions.
+- **C11.07-K19** (now single-source: the sources are not independent). Both papers come from Ard Louis's Oxford group (Valle-Perez is a coauthor of the 2025 paper), so they are one lab's line of work; content matches.
+- **C11.07-K16** (now single-source: only one opened source, code check).
+- **C11.07-K23** (now single-source: only one opened source, code check).

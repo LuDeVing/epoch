@@ -309,3 +309,10 @@ All arms use equal total tokens (setup, retrieval and iteration counted, G7). At
 - [M] Koivisto and Grassini (2023) (via Koch et al. 2025).
 - [M] Gentner et al. story-analogy materials (via Webb et al.).
 - [M] Boden (2004); Mednick (1962); Koestler (1964); Hadamard (1954); Gentner (1983); Fauconnier and Turner (2002); Gibbs (2000); Ritchie (2004) (secondary pages and citations only).
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C04.03-K01** (reworded: the sources support less). KOMBINE does report an abstraction bottleneck (blends coherent 97.1% given a valid generic space), but its tasks give the model both inputs, so it does not test retrieval of distant-domain sources; AnaloBench shows retrieval from a bank is hard but does not isolate abstraction from retrieval. Corrected claim: In KOMBINE, finding the shared abstraction (generic space) is the bottleneck for LLM blending, not building the blend (coherent blend 97.1% given a valid generic space); separately, AnaloBench finds retrieving an analogous story from a large bank is near random for long stories. Whether the retrieval or the abstraction step is the harder one for distant-domain sources was not tested directly.
+- **C04.03-K13** (reworded: the sources support less). 71.4% is zero-shot accuracy on picking the accepted ICLR paper of an accepted/rejected pair, not idea-quality judging; the 56.1% is human inter-reviewer consistency on ideas, where the best LLM judge (Claude-3.5 pairwise ranker) got only 53.3%, so the pair of numbers is not comparable. Corrected claim: LLM judges are unreliable for idea quality: the best LLM evaluator reached 53.3% agreement on idea ranking, below expert inter-reviewer consistency of 56.1% (Si et al. 2024; the 71.4% figure is for accepted-vs-rejected ICLR paper prediction), and LLM-human Pearson r on research-ideation contribution is only 0.159 (best 0.234) (arXiv 2508.05470).

@@ -409,3 +409,14 @@ All arms get equal total tokens; setup and code-call cost counts (G7). Run 3 see
 - [V] Xiong et al. (2024) Can LLMs express their uncertainty? https://arxiv.org/abs/2306.13063 (d10)
 - [V, partly read] Kadavath et al. (2022) Language models (mostly) know what they know. https://arxiv.org/abs/2207.05221 (d11)
 - [M] d16 status note (Bylander, de Kleer 1992 second copy, Davis/Genesereth not opened).
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 16 established claims: 12 confirmed as written, 4 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E08.06-K08** (now single-source: the sources are not independent). The 33.30% vs 52.60% figures are correct (Olausson et al. Table 1), but the second source (Kang et al. AutoFL) does not address repair-feedback quality, so the claim rests on one paper.
+- **E08.06-K09** (now single-source: the sources are not independent). AutoSD 73% vs 63% plausible-patch runs is correct (Kang et al. 2023), but the only other listed source (AIOpsLab) concerns a different point, so the claim rests on one paper.
+- **E08.06-K12** (now single-source: the sources are not independent). Two of the three listed sources are the same paper (AIOpsLab), and all numbers (61.54%, 45.45%, saturation) come from it; the third (Roy et al.) does not report them.
+- **E08.06-K17** (reworded: the sources support less). The 450-candidate maximum is from Grastien et al.'s power-network automata benchmark, not shown to be a weak-fault effect; 'wrong or empty diagnosis' is the researcher's inference, not stated by Reiter; Oswald et al.'s 25% is of all domains (94% were valid), not of valid domains. Corrected claim: The consistency-based theory needs a correct behavioural model and offers no likelihood ranking (parsimony picks subset-minimal sets); in Grastien et al.'s power-network benchmark the solved instances reached up to 450 minimal candidates. LLM-built models are error-prone: GPT-4 PDDL models had 2 to 53 errors per domain, and the best model in Oswald et al. produced valid PDDL in 94% of domains but only 25% of domains were heuristically equivalent to the reference.
+- **E08.06-K03** (now single-source: only one opened source, code check).
+- **E08.06-K18** (now single-source: only one opened source, code check).

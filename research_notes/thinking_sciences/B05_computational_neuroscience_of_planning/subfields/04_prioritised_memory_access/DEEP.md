@@ -359,3 +359,10 @@ All tests: both arms at equal total tokens, including setup and scoring cost (G7
 - [V] Matam and Kim (2026) MemDecay. https://arxiv.org/pdf/2607.10582
 - [M] FOCUS, TTEL listings. https://arxiv.org/search/?query=%22credit+assignment%22+%22language+model%22+reasoning+step
 - [M] Imagine-then-Plan and GILP listings. https://arxiv.org/abs/2601.08955
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 4 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B05.04-K02** (reworded: the sources support less). Stats verified (Ambrose z values; Liu 0.79 vs 0.37 p=0.020, 0.61 vs 0.54 p=0.16) but 'gain, not need' treats a non-significant need effect in one N=29 human study as evidence need does not matter; Liu's replay result is for combined utility (need x gain) and the theory predicts both. Corrected claim: Reverse replay rose with reward size and fell with reward removal in rats (Ambrose 2016; forward replay did not change reliably); in humans (N=29) learning from non-local paths was faster for high-gain paths (alpha 0.79 vs 0.37, p=0.020) but the high-need difference was not significant (0.61 vs 0.54, p=0.16), so the data favour gain but do not show need is irrelevant.
+- **B05.04-K07** (reworded: the sources support less). Remote (Karlsson and Frank) and unvisited-arm preplay (Olafsdottir) are supported, but none of the opened sources shows replay of 'rare' paths (Karlsson says nothing on rarity), and Olafsdottir preplay was weak in some animals. Corrected claim: Replay is not limited to the animal's current location: awake rats replay a remote, previously run environment, and place-cell sequences preplayed a seen but not yet visited rewarded arm (cued arm only; Olafsdottir 2015, 4 rats).

@@ -336,3 +336,9 @@ All arms get the same total token budget (case text counts). Report mean and an 
 - [V] Yang et al. (2024) Buffer of Thoughts. https://arxiv.org/abs/2406.04271 (d14)
 - [V] Lu et al. (2022) Fantastically ordered prompts. https://arxiv.org/abs/2104.08786 (d16)
 - [V] Peng et al. (2024) Revisiting demonstration selection. https://arxiv.org/abs/2401.12087 (d17)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 14 established claims: 13 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C08.05-K10** (reworded: the sources support less). SST-2 94.13 vs 92.75 and SQuAD 73.28 to 77.71 match Xiao et al.; Kapuriya et al. report MMR outperforms or matches the similarity baseline in 17 of 24 settings, so 'helps in about 70%' counts ties as help, and 'mostly by small amounts' is not stated (COLA gains reach +9.7%). On GSM8K TopK-Div (82.98) is slightly above TopK (81.74). Corrected claim: Diversity is not free: on easy or high-zero-shot tasks pure similarity wins or ties (Llama-3.1-8B SST-2 TopK 94.13 vs TopK-Div 92.75; GSM8K TopK 81.74 vs TopK-Div 82.98, a gap of about 1 point); it helps harder tasks (SQuAD 73.28 to 77.71). MMR reranking matches or beats the similarity baseline in 17 of 24 settings (about 70%), with gains from 0 to over 9 percent depending on dataset.

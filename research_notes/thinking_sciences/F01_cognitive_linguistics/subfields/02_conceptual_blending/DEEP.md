@@ -372,3 +372,8 @@ LLM and AI studies
 - [M] Judge-reliability snippets (2406.12624, 2411.15560, 2502.03253). https://arxiv.org/abs/2406.12624
 - [V] Coverage listing, arXiv "conceptual blending". https://arxiv.org/search/?query=%22conceptual+blending%22
 - [M] Song et al. 2025 (noun-phrase emergent properties; relayed by KOMBINE, not opened).
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 8 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

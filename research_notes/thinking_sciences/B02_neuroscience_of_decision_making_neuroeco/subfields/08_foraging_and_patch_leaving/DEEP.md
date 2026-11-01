@@ -304,3 +304,10 @@ RL and LLM studies
 - [V] Barkett, Long, Kroger (2025) Big-Muddy escalation. https://arxiv.org/abs/2508.01545
 - [V] Cognitive biases in LLMs incl. sunk cost (2024). https://arxiv.org/abs/2410.02820
 - [V] arXiv listing search for "patch foraging" and "marginal value theorem", 1 Nov 2026 (gap note). https://arxiv.org/search/?query=patch+foraging&searchtype=abstract
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B02.08-K01** (reworded: the sources support less). Under MVT a richer environment lowers stay time (higher leaving threshold); sources show thresholds fall in poorer environments (longer travel, steeper depletion), so 'stay longer when the environment is richer' is reversed; richness only raises stays at the patch level. Corrected claim: Humans, monkeys, rats and mice all follow the marginal value theorem qualitatively: they stay longer (leave at a lower reward threshold) when travel is longer or the environment is poorer, and leave at a higher threshold in richer environments; they also stay longer in richer patches.
+- **B02.08-K03** (reworded: the sources support less). Harhen and Bornstein explain overharvesting with their own model in one human task; Constantino and Daw still find a significant residual overharvesting bias in the MVT learning model, and Kane's rats overharvested in every condition. Corrected claim: A learning-and-uncertainty account (rich-poor mix, uncertainty-adaptive discounting) explains much of human overharvesting in one task (Harhen and Bornstein 2023): it shrank with experience and was absent in rich environments; but a residual overharvesting bias remains in other human work (Constantino and Daw 2015) and rats overharvested in every condition (Kane 2019).

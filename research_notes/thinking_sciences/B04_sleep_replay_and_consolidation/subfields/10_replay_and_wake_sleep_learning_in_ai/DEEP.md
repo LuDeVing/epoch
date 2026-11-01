@@ -392,3 +392,10 @@ All arms at equal total tokens, including wake, sleep and practice tokens. Repor
 **Offline compute and self-improvement**
 - [V] Lin et al. (2025) Sleep-time compute. https://arxiv.org/abs/2504.13171
 - [V] Pourcel, Colas, Oudeyer (2025) SOAR. https://arxiv.org/abs/2507.14172
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B04.10-K15** (reworded: the sources support less). Dynamic Cheatsheet's own DC-empty-memory arm (same structured prompt, no memory) already gets Claude AIME 2024 to 36.7, so about half of the 23 to 50 gain is not attributable to stored experience. Corrected claim: Experience-memory systems without weight updates (Dynamic Cheatsheet, ExpeL, ReasoningBank) raise accuracy at test time, strongly where reusable code or strategy exists (GPT-4o Game of 24 10% to 99%; Claude 3.5 Sonnet AIME 2024 23% to 50%, though an empty-cheatsheet prompt arm alone reaches 36.7%) and little elsewhere (Claude Game of 24 12% to 14%).
+- **B04.10-K18** (reworded: the sources support less). Generative replay reduces but does not prevent forgetting: Class-IL 90.79 vs 97.94 joint upper bound and 94.57 for exemplar-based iCaRL; the 98.5-98.8 figures in Shin et al. come from a chain of solvers trained from generated data on MNIST, not from learning new tasks. Corrected claim: Generative replay greatly reduces forgetting in continual learning (split MNIST Class-IL 90.79 vs 19.90 with no replay and 20.01 for EWC, but below the 97.94 joint-training upper bound and the 94.57 of exemplar-based iCaRL; Shin et al. chain of five solvers on MNIST stays at 98.5-98.8%); regularisation fails when task identity is unknown.

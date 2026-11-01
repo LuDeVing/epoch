@@ -428,3 +428,8 @@ Marks: [V] opened (text enough to extract numbers) this session; [M] snippet, me
 - Chen et al. (2025) Reasoning models don't always say what they think. https://arxiv.org/abs/2505.05410 [V]
 
 **Related subfields run in parallel (links only, not covered here):** Expert-novice schemas; Expert-novice differences; Chunking and templates; Schemas; Analogical retrieval (MAC/FAC); Analogical inference; Candidate inferences; Retrieval and similarity; Einstellung effect; Fixation and ideation; Representational change theory; Worked-example effect; Expertise reversal; Transfer of learning; Decomposition (Fermi-ize); Hierarchical task networks; Overthinking; Test-time compute scaling; External representations and diagrams.
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 9 established claims: 9 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

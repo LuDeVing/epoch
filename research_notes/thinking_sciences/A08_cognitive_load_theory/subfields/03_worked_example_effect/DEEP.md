@@ -431,3 +431,11 @@ LLM and AI studies
 - [V] Kestin et al. (2025) https://www.nature.com/articles/s41598-025-97652-6 (d18)
 - [M] Substack toy test https://tnn1t1s.substack.com/p/few-shot-prompting-does-it-really (c23; not used for any claim)
 - [V] Wikipedia, Worked-example effect https://en.wikipedia.org/wiki/Worked-example_effect (b09, b10; tertiary, pointer list only)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A08.03-K04** (now single-source: the sources are not independent). All listed sources are Sweller's own reviews (Sweller 2023 appears twice under two URLs, Sweller 2011 chapter twice); the underlying primary studies (Kalyuga et al. 2001, Chen et al. 2015-2017) were not opened, and Sweller 2023 states the reversal as a cognitive load effect without pooled sizes.
+- **A08.03-K13** (reworded: the sources support less). In Yasunaga et al. the GSM8K 75.0 for GPT-3.5-turbo is fixed hand-written 5-shot CoT (no retrieved baseline on that model), self-generated is 75.8-77.8 across variants; retrieved vs self-generated appears only on the text-davinci models (001: 11 vs 9; 002: 47 vs 48; 003: 54 vs 61), and curie scores 2-3% for all methods, a floor, not evidence about exemplar source; Sarukkai (agents) does not test this. Corrected claim: On GSM8K (Yasunaga et al. 2024) GPT-3.5-turbo reaches 75.0% with fixed 5-shot CoT versus 75.8-77.8% with self-generated exemplars; against retrieved exemplars, self-generated ones roughly tie on text-davinci-002 (48 vs 47) and win on text-davinci-003 (61 vs 54) but lose on the weaker text-davinci-001 (9 vs 11), while text-curie-001 is at the floor (2-3%) for every method.
+- **A08.03-K03** (now single-source: only one opened source, code check).

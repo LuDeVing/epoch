@@ -404,3 +404,11 @@ All tests: both arms at equal total tokens (setup cost counted, G7). Report conf
 - [V, exact precision values not extracted] Mundler et al. (2024) SWT-Bench. https://arxiv.org/abs/2406.12952 (d15)
 - [V, citing-paper titles only] Semantic Scholar citation graph of Ko and Uttl (2003). https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/WPC.2003.1199201 (d16)
 - [M] Absence check for a strategy x information 2x2. https://arxiv.org/abs/2509.09853 (d17, b21, c28; absence of evidence, searches limited by quota)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A20.04-K16** (reworded: the sources support less). Beller et al. found no correlation between experience and use of an IDE debugger or tests, but Ko and Uttl found comprehension strategies WERE related to programming experience (and not to success), so the two do not agree on experience; the b28 synthesis is the same Beller PDF listed twice. Corrected claim: Beller et al. (176 developers surveyed, 723 IDE sessions) found no correlation between developer experience and use of an IDE debugger or unit tests for debugging, with printf debugging common; Ko and Uttl (2003, lab study) found that three comprehension strategies were related to programming experience but no strategy gave better debugging performance (domain knowledge of the bug and computer attitudes predicted success). Both suggest strategy choice is not the main driver of debugging success, but they differ on whether strategy tracks experience. Neither manipulated strategy experimentally.
+- **A20.04-K06** (now single-source: only one opened source, code check).
+- **A20.04-K07** (now single-source: only one opened source, code check).

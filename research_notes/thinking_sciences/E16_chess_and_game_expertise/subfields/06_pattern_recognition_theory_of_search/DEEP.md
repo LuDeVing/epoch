@@ -258,3 +258,17 @@ URLs as recorded in the evidence files.
 - [V] Yao et al. (2023) Tree of Thoughts. https://arxiv.org/abs/2305.10601
 - [V] Yang et al. (2024) Buffer of Thoughts. https://arxiv.org/abs/2406.04271
 - [V] Wang et al. (2023) SwiftSage. https://arxiv.org/abs/2305.17390
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E16.06-K21** (reworded: the sources support less). Snell et al. numbers are right (more than 4x compute saving; beam search over-optimizes on the easy bins 1-2 and helps on bins 3-4) but the bins are model-specific pass@1 quantiles, not MATH levels; Yao et al. Table 7 shows ToT's 74% costs about as many tokens as 100 CoT trials, whose best-of-100 reaches 49%, so setting 74% against single-sample CoT's 4% is not a matched-budget comparison. Corrected claim: In LLM reasoning, search beats best-of-N on harder items but not easier ones: on MATH, PRM-guided beam search was worse than best-of-N in the two easiest model-specific difficulty bins and better in bins 3-4, and choosing the method by estimated difficulty cut test-time compute by more than 4x; on Game of 24, Tree of Thoughts (b=5) reached 74% at about the completion tokens of 100 CoT samples, versus 49% for best-of-100 CoT (single-sample CoT: 4%).
+- **E16.06-K03** (now single-source: only one opened source, code check).
+- **E16.06-K04** (now single-source: only one opened source, code check).
+- **E16.06-K08** (now single-source: only one opened source, code check).
+- **E16.06-K09** (now single-source: only one opened source, code check).
+- **E16.06-K10** (now single-source: only one opened source, code check).
+- **E16.06-K13** (now single-source: only one opened source, code check).
+- **E16.06-K18** (now single-source: only one opened source, code check).
+- **E16.06-K26** (now single-source: only one opened source, code check).

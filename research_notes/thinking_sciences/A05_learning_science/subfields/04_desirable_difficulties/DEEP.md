@@ -507,3 +507,11 @@ Reading rules: report the immediate pass rate and the delayed held-out pass rate
 - [V] Potamitis et al. (2026) ReasonBENCH (abstract page). https://arxiv.org/abs/2512.07795 (d26)
 - [M] MLflow practitioner guide on benchmarking agents. https://mlflow.org/articles/tags/how-to-benchmark-ai-agents/ (d27)
 - [M] Winona State talk (2026), not used. https://openriver.winona.edu/rca/2026/AIsymposium2026/5 (c27)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 13 established claims: 11 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A05.04-K02** (reworded: the sources support less). In Kornell and Bjork 78% said massing was as good as OR better (not preferred massing); Karpicke's flat predictions show insensitivity to condition, not a preference for the easier condition. Corrected claim: Learners misjudge this: in Kornell and Bjork 78% said massing was as good as or better than spacing even though 78% did better with spacing, in the replication 71% said massing produced most learning, and in Karpicke and Roediger predicted recall was flat at about 50% across conditions whose actual one-week recall ranged from about 33% to 80%.
+- **A05.04-K39** (reworded: the sources support less). Noise numbers verified, but the '3 seeds floor, 5 or more for strong claims' is not in either source; Bjarnason et al. say detecting a 2 pp gain needs about 9 runs and a 1 pp gain about 36. Corrected claim: Run-to-run noise is large enough to hide small schema effects: single-run pass@1 spreads 2.2-6.0 pp (SD above 1.5 pp at temperature 0, 60,000 SWE-Bench-Verified trajectories); the best reasoning strategy wins only 77% of head-to-head runs against its nearest competitor over 30 trials. Trajectories diverge within the first few percent of tokens. Bjarnason et al. estimate about 9 runs per agent to detect a 2 pp gain and about 36 for 1 pp, so a few seeds are not enough for small effects.
+- **A05.04-K06** (now single-source: only one opened source, code check).

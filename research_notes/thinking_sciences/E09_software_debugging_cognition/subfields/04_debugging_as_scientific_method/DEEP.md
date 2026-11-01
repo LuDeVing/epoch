@@ -335,3 +335,9 @@ All tests compare arms at equal tokens (total input plus output across all calls
 - [V] Garg and Huang (2026) Debug2Fix. https://arxiv.org/abs/2602.18571 (d08, d09)
 - [V] Spiess et al. (2024) Calibration and correctness of LMs for code. https://arxiv.org/abs/2402.02047 (d13)
 - [V] Zheng et al. (2026) ForeAgent. https://arxiv.org/abs/2601.05930 (d14)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E09.04-K18** (now single-source: the sources are not independent). The 18.0% vs 11.0% and linting/summarised-search ablation numbers are correct, but both matching sources are the same SWE-agent paper; AutoCodeRover and RepairAgent do not test interface design.

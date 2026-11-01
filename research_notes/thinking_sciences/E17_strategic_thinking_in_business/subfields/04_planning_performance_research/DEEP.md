@@ -284,3 +284,13 @@ All arms at equal total tokens, setup cost counted (G7). Report paired differenc
 - [V] Shojaee et al. Illusion of Thinking (2025). https://arxiv.org/abs/2506.06941
 - [V] Costarelli et al. GameBench (2024). https://arxiv.org/abs/2406.06613
 - [V] Zhou et al. LATS (2024). https://arxiv.org/pdf/2310.04406
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 7 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E17.04-K07** (reworded: the sources support less). Numbers verified (ToT IO 7.3, CoT 4.0, CoT-SC 9.0, b=1 45, b=5 74; Large Monkeys SWE-bench Lite 15.9% to 56% at 250 samples with unit tests as verifier), but Tree of Thoughts selects with the same LM's value prompts, not an external checker, so it is not an example of external-checker selection; its 74% also uses more tokens than single-sample CoT (best-of-100 CoT is 49%). Corrected claim: Sampling many candidates and selecting with an external checker gives large gains (Large Language Monkeys: SWE-bench Lite 15.9% with one sample to 56% with 250 samples using the repository's unit tests as verifier); LM-scored tree search also helps on Game of 24 (Tree of Thoughts 74% at b=5 vs CoT 4.0% and CoT-SC 9.0%, best-of-100 CoT 49%) but selects with the model's own evaluations. Both need an answer that can be checked.
+- **E17.04-K01** (now single-source: only one opened source, code check).
+- **E17.04-K03** (now single-source: only one opened source, code check).
+- **E17.04-K10** (now single-source: only one opened source, code check).
+- **E17.04-K19** (now single-source: only one opened source, code check).

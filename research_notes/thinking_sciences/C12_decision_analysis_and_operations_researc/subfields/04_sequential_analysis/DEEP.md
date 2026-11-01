@@ -372,3 +372,11 @@ All arms get equal average tokens (count setup, probe and every re-sample). Repo
 - [V] Yao, Shinn, Razavi, Narasimhan (2024) tau-bench. https://arxiv.org/abs/2406.12045
 - [V] Hu et al. (2025) Multi-agent debate for LLM judges with adaptive stability detection. https://arxiv.org/abs/2510.12697
 - [V] Morandi (2026) Sequential consensus for multi-agent LLM debates. https://arxiv.org/abs/2605.19193
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C12.04-K04** (number corrected). Johari et al. (Section 5.6.1) report under 5% power loss and at most 10% run-length cost for misspecification of about ONE order of magnitude; at two orders the cost is up to 20% power and 40% run-length. Corrected claim: Anytime-valid methods (mixture SPRT, confidence sequences, e-values) keep error guarantees under optional stopping. Mixture variance can be misspecified by about one order of magnitude with under 5% average power loss and at most 10% run-length increase; missing by two orders can cost up to 20% power and 40% run-length (Johari et al., Section 5.6.1).
+- **C12.04-K03** (now single-source: only one opened source, code check).
+- **C12.04-K06** (now single-source: only one opened source, code check).

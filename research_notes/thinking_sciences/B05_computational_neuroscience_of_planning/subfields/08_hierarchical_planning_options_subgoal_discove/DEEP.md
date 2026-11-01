@@ -396,3 +396,11 @@ Rules for all tests. Both arms get the same total token budget (setup and librar
 | Lu et al. (2025) AgentRewardBench | [V] | https://arxiv.org/abs/2504.08942 | d15 |
 | Talk, Evaluate, Diagnose (2026); MobileJudgeBench (2026) | [M] snippet only | https://arxiv.org/abs/2608.11434 | d17 |
 | Search coverage note for gaps 7, 9, 10 | [M] no source found | https://arxiv.org/search/ | d18 |
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 5 established claims: 5 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B05.08-K04** (now single-source: only one opened source, code check).
+- **B05.08-K08** (now single-source: only one opened source, code check).
+- **B05.08-K16** (now single-source: only one opened source, code check).

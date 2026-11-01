@@ -446,3 +446,12 @@ All tests: both arms at equal total tokens (output plus reasoning), same seeds, 
 - [V] Laban et al. (2025) LLMs get lost in multi-turn conversation. https://arxiv.org/abs/2505.06120 (d11)
 - [V] Tsui (2026) Self-Correction Bench. https://arxiv.org/abs/2507.02778 (d12)
 - [V] Lam et al. (2025) CodeCrash. https://arxiv.org/abs/2504.14119 (d13)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 7 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A18.03-K11** (now single-source: the sources are not independent). The interface/floor-effect interpretation rests only on one paper (Mecattaf et al., listed three times) whose authors overlap with the Voudouris platform paper (same Animal-AI lab); the authors themselves only say control 'might' dominate.
+- **A18.03-K02** (now single-source: only one opened source, code check).
+- **A18.03-K06** (now single-source: only one opened source, code check).
+- **A18.03-K23** (now single-source: only one opened source, code check).

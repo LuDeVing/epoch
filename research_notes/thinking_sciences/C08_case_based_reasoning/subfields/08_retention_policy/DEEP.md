@@ -272,3 +272,13 @@ Common design: frozen model, fixed retrieval (top-4 by task similarity), same pr
 - [M] Smyth and Keane IJCAI version https://www.ijcai.org/Proceedings/95-1/Papers/019.pdf (b23, c25; fetch returned a different paper; do not cite)
 
 Known evidence-file errors: b16 names Memento's first authors as Wang et al.; the correct first authors are Zhou and Chen. Memento's -18.0 F1 delta (a22) is not located to a named ablation step. Xiong EHRAgent coarse C1 is 26.19 in Table 1 and 25.91 in the Table 2 block; use Table 1 for addition and Table 2 for deletion. ReasoningBank 46.5 (success-only) is not the Synapse 46.5 in the Gemini-pro table.
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 5 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C08.08-K01** (now single-source: the sources are not independent). All numbers match Table 1 of Xiong et al. (2025), but every supporting evidence line is the same paper (arXiv 2505.16067) or a synthesis of it, so the claim rests on a single study.
+- **C08.08-K11** (now contested: a source does not say this). Memento's -18.0/-2.1 DeepResearcher drop is the step from offline to online executor without planning (attributed to data contamination), not case memory; case-based reasoning actually added +6.7 F1/+8.2 PM on DeepResearcher. CASCADE 4-of-12, Evo-Memory r 0.717/0.563 and SEDM 73/32 all match.
+- **C08.08-K12** (reworded: the sources support less). Memento K sweep matches (K=4 best at 64.5/78.5, K=8+ flat), but CASCADE says performance steadily improves with more retrieved cases and only that REINFORCE+LoRA's single-case lead on 3 of 12 tasks is closed at 4 cases, not that CASCADE beats it on all 12; 'more adds nothing' does not carry to CASCADE. Corrected claim: In Memento's 7-dataset QA sweep, K=4 retrieved cases gave the best average (F1 64.5 / PM 78.5) with K=8 to 32 flat or slightly lower; in CASCADE, 4 retrieved cases closed the gap on the 3 of 12 tasks where REINFORCE+LoRA led with a single case, though CASCADE kept improving with more cases.
+- **C08.08-K09** (now single-source: only one opened source, code check).
+- **C08.08-K19** (now single-source: only one opened source, code check).

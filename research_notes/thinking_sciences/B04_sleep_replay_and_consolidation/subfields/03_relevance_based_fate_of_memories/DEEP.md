@@ -288,3 +288,10 @@ All arms get the same total token budget, including offline or between-task call
 - [V] Behrouz et al. 2026, Language Models Need Sleep. https://arxiv.org/abs/2606.03979
 - [V] Gu et al. 2026, FSFM. https://arxiv.org/abs/2604.20300
 - [V] Liu et al. 2026, DREAM. https://arxiv.org/abs/2610.13267
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 4 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B04.03-K03** (reworded: the sources support less). Main-effect numbers match (Wamsley F=7.35 p=.008; Barner F=8.78 p=.005), but 'regardless of sleep' is too strong: Barner found a sleep advantage only for relevant items on planned contrasts at 1 week, and Wilhelm and van Dongen (in the evidence list) found sleep-dependent relevance effects. Corrected claim: Telling people which items matter improves memory for those items, and in several studies (Wamsley 2016, F(1,71)=7.35 p=.008; Barner 2023 relevance effect F(1,54)=8.78 p=.005, sleep x relevance interaction p=.12; Kurdziel 2025, where a remember instruction beat emotion and sleep did not change behavioural memory) the benefit did not depend on sleep, though Wilhelm 2011 and van Dongen 2012 reported sleep-dependent effects.
+- **B04.03-K22** (reworded: the sources support less). Wamsley F(1,71)=7.35 and the null sleep x expectation interaction match, but Wamsley's authors told participants after encoding and argue the effect arises in consolidation, not encoding or attention (attention and rehearsal were not supported). Corrected claim: In human tests a test-expectancy instruction given after learning raises retention after both wake and sleep (Wamsley 2016: maze F(1,71)=7.35, p=.008; sleep x expectation p=.38), and two online replications of Wilhelm 2011 (Ashton and Cairney 2021) found no sleep x expectancy interaction, so the instruction effect is not specific to sleep; the mechanism is unresolved (Wamsley's authors suggest an early consolidation process initiated by the instruction).

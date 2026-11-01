@@ -379,3 +379,10 @@ All arms get equal total tokens: setup, decomposer, sub-answers, combine step an
 | Sprague et al. (2025) To CoT or not to CoT | [V] | https://arxiv.org/abs/2409.12183 |
 | Dhuliawala et al. (2023) Chain-of-verification | [V] | https://arxiv.org/abs/2309.11495 |
 | Wang et al. (2023) Self-consistency | [V] | https://arxiv.org/abs/2203.11171 |
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 7 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E03.05-K02** (reworded: the sources support less). The 458% rise applies to four problems the authors call 'not extreme' (true value of four digits or fewer) in their new experiment, and they note their test overstates significance; the earlier studies' non-extreme set showed about 50% worse error or little overall effect; 'familiar quantities' is not what the authors say. Corrected claim: Decomposition does not help and can hurt on problems that are not extreme and uncertain: in MacGregor and Armstrong (1994), four not-extreme problems (true value of four digits or fewer) had median error raised by 458% (p<0.05, a test the authors say overstates significance), while six such problems from earlier studies showed little overall effect (error about 50% higher in the low-disagreement subset).
+- **E03.05-K24** (now single-source: only one opened source, code check).

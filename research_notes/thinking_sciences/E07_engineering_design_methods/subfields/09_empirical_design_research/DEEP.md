@@ -321,3 +321,9 @@ For T1 and T2 add a style-neutral rewrite check (d09) on a 10% subset, so the ga
 41. [V] Edwards, Tehranchi, Miller, Ahmed (2025) AI judges in design. https://arxiv.org/abs/2504.00938
 42. [V] Hirota et al. (2026) Aggregate vs personalized judges in business idea evaluation. https://arxiv.org/abs/2604.22517
 43. [V, weak] Kokate, Kompella, Onkar (2025) ALIA, leveraging LLMs for design ideation (abstract and introduction only). https://arxiv.org/abs/2512.00010
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 11 established claims: 10 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E07.09-K09** (reworded: the sources support less). Terwiesch 0.575 vs GPT-4o 0.679, BSR duplicate rate 0.022 to 0.238, and Dong and Yakura refinement b=0.007 (ns) all check out, but the MUTATE Self-Refine datapoint is about interactive path discovery for Claude Sonnet 4.6 (25/56 vs 30/56), not pool diversity, and Self-Refine matched or beat base for the other three models (GPT-5.4 29 vs 27, Llama 13 vs 13), so it is not a clean 'one more data point'. Corrected claim: Iterative self-refinement of an LLM-made idea pool lowers diversity: in Terwiesch et al. the refine-twice (Bold Ideas) arm ran on GPT-4o and scored 0.575 vs 0.679 for GPT-4o zero-shot (a 0.104 drop); uniform refinement of a pool raised the near-duplicate rate from 0.022 to 0.238 (Budgeted Subset Refinement, preprint by one independent author); refining a person's own seed ideas did not compress diversity (Dong and Yakura). In the MUTATE agent benchmark Self-Refine lowered Claude Sonnet 4.6's path discovery (25/56 vs 30/56) but not the other models'. Frontier-2026 models at equal tokens are untested.

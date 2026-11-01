@@ -284,3 +284,10 @@ All arms get the same total token budget, counting every selection, rendering, c
 - [V] Jiang et al. 2023, BRAINTEASER. https://arxiv.org/abs/2310.05057 (d14)
 - [V] Deng et al. 2024, Rephrase and Respond. https://arxiv.org/abs/2311.04205 (d15)
 - [V] Franzen et al. 2025, Product of Experts on ARC. https://arxiv.org/abs/2505.07859 (d16)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 7 established claims: 5 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F02.06-K04** (reworded: the sources support less). Numbers verified (VoT compliance 51.14/52.01, state accuracy 26.48/24.25, decision accuracy given correct drawing 65.16/77.20; MVoT 90.80%, CoT 0.9401 to 0.3911), but neither paper tests code verification of the written state, so 'code verification is the lever' is the notes' inference; the 0.94/0.39 CoT figures are a fine-tuned Anole-7B 'CoT with env layout' row. Corrected claim: In Visualization-of-Thought the drawn state is often wrong (state accuracy 26.48% navigation / 24.25% tiling; constraint compliance 51.14% / 52.01%), while decisions given an accurate drawing were right 65.16% / 77.20% of the time, so drawing accuracy is the bottleneck; in MVoT, 90.80% of text-CoT errors on FrozenLake were wrong hole coordinates in the written state (fine-tuned Anole-7B CoT: 0.9401 at 3x3 down to 0.3911 at 6x6). Whether code verification of the written state would fix this is untested in these sources.
+- **F02.06-K10** (now contested: a source does not say this). The Gigerenzer and Hoffrage 'Bayesian algorithms 16% vs 46%/50%' figures are in none of the listed sources (the Cui et al. review gives 48% vs 22% correct for that study; I could not open the 1995 paper); the medical-student result (N=577, 36% vs 68% correct pretest, OR 11.55), visual aids, training, and the nested-sets rival account are supported.

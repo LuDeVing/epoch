@@ -460,3 +460,10 @@ All tests use both arms at equal total tokens (including setup, rewrite and extr
 - [M] Yang et al. (2025) Is long-to-short a free lunch? (abstract and method). https://arxiv.org/pdf/2506.19492 (d29)
 - [M] Zhao et al. (2025) When tools hurt LLM reasoning (abstract and intro). https://arxiv.org/pdf/2508.15754 (d30)
 - [M] Wharton Prompting Science, expert personas (summary page, snippet). https://knowledge.wharton.upenn.edu/article/why-you-shouldnt-ask-chatbots-to-act-like-an-expert/ (d32)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 7 established claims: 5 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A15.03-K11** (number corrected). CogBias Table 13 (clean text extraction) gives Framing Effect 17.7% -> 24.3% (+6.6); 35.6% -> 41.4% (+5.8) is Risk Compensation; Hyperbolic Discounting is -21.0 and -13.4 is Halo Effect (the researcher read a garbled table). Echterhoff self-help 0/1.4/2.7% and few-shot failure verified. Corrected claim: Naive debiasing instructions are unreliable: a be-careful prompt helps framing only a little (CogBias, averaged over 3 models: framing-effect accuracy 17.7% to 24.3%, +6.6 points) and backfires on other biases (hyperbolic discounting -21.0 points, disposition effect -19.6, halo effect -13.4); few-shot debiasing can push models to admit-all or reject-all; self-help rewriting leaves 0-2.7% framing-biased prompts (Echterhoff et al.).
+- **A15.03-K14** (reworded: the sources support less). Hwang numbers (5.69% GPT-5-mini, 66.29% LLaMA 3.2 1B, 14 judges) verified; but Germani and Spitale find the agreement drop for attribution to Chinese authors specifically, not 'a nationality' in general. Corrected claim: Wording and source cues shift LLM judgments beyond the content: 14 LLM judges vary from 5.69% (GPT-5-mini) to 66.29% (LLaMA 3.2 1B) inconsistency across logically equivalent framings of the same query, and attributing statements to Chinese authors lowered agreement across four LLMs (most for Deepseek Reasoner).

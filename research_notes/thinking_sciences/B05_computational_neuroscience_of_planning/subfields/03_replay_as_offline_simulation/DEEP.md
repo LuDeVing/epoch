@@ -363,3 +363,9 @@ Rule for every test: report item counts per family. A gain counts only if it cle
 - [V] Zhou et al. 2025, Memento [d12]: https://arxiv.org/abs/2508.16153
 - [V, partial] Wang et al. 2026, OEP [d18]: https://arxiv.org/abs/2605.18930
 - [M] Hazard et al. 2025, SuRe [d19]: https://arxiv.org/abs/2511.22367
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B05.03-K09** (now single-source: the sources are not independent). Numbers match, but Karlsson and Frank 2009 (3 rats) and Gillespie et al. 2021 (4 rats) are both from the Loren Frank lab, so the two rat-replay sources are one lab's work.

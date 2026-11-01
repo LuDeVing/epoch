@@ -305,3 +305,10 @@ LLM and agent studies
 - [V] Hu et al. (2026) SELM. https://arxiv.org/pdf/2610.24630
 - [M] Wang et al. (2025) ASI. https://arxiv.org/abs/2504.06821 (abstract only)
 - [M] Zheng et al. (2025) SkillWeaver. https://arxiv.org/abs/2504.07079 (abstract only)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 10 established claims: 9 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A10.03-K10** (reworded: the sources support less). Fingerprint numbers (d=1.76, 44+44) and bridge suit-grouping are verified, but bridge is itself a game and the music r=.69 is a random-material skill effect that Sala and Gobet call an empirical anomaly probably due to less random music stimuli. Corrected claim: The expert memory advantage for domain material is not limited to chess: fingerprint examiners beat matched novices on visual short-term memory for prints (d=1.76, 44 vs 44), bridge experts' hand memory depends on grouping cards by suit, and the random-material skill effect also appears in programming (r=.36) and music (r=.69, though Sala and Gobet treat the music value as an anomaly probably due to less random stimuli).
+- **A10.03-K07** (now single-source: only one opened source, code check).

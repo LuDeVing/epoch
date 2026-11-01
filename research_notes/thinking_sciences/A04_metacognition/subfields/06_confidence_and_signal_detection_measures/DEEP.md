@@ -478,3 +478,12 @@ General setup:
 - [V] Steyvers et al. (2025) What large language models know and what people think they know. https://arxiv.org/abs/2401.13835
 - [V] Sun, Li, Wang, Goette (2025) Large language models are overconfident and amplify human bias. https://arxiv.org/abs/2505.02151
 - [V] Kim et al. (2024) "I'm not sure, but...": uncertainty expression, user reliance and trust. https://arxiv.org/abs/2405.00623
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 9 established claims: 6 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A04.06-K05** (now single-source: the sources are not independent). Numbers match Guggenmos 2021 (400 trials recommended; 2.4% negative, 4% above 1.5; 4% and 10% in studies under 200 trials), but b05 and b06 are the same paper and Fleming 2017 does not test the trial-count threshold, so the claim rests on one study.
+- **A04.06-K08** (now single-source: the sources are not independent). Numbers check out (Farquhar 0.790 vs 0.691/0.698/0.687 over 30 combinations; Kuhn 0.77 vs 0.66 CoQA, 0.83 vs 0.79 TriviaQA, where the baseline is the count of semantically distinct answers), but Kuhn 2023 and Farquhar 2024 are one group's (Kuhn, Gal, Farquhar) paper and its follow-up, with no independent replication.
+- **A04.06-K18** (now single-source: the sources are not independent). Numbers are correct (Mazancieux 2020: N=181, five of six cross-task meta-d'/d' correlations, only 2 of 6 with nonhierarchical Pearson), but the claim rests on one study; the Fleming and Lau review listed second only mentions Weil 2013 on adolescence.
+- **A04.06-K22** (now single-source: only one opened source, code check).

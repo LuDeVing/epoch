@@ -394,3 +394,8 @@ Controls: a no-memory arm and a raw-episode-only arm (it stayed competitive in d
 - [V] Squire, Genzel, Wixted, Morris (2015) Memory consolidation. https://pmc.ncbi.nlm.nih.gov/articles/PMC4526749/ (d16; fetch summary)
 - [V] Wiltgen et al. (2006) Context fear learning in the absence of the hippocampus. https://pmc.ncbi.nlm.nih.gov/articles/PMC6675287/ (d17; fetch summary)
 - [M] Gap search negative result on agent-level interleaved replay (d18; limited tools, not exhaustive)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 4 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

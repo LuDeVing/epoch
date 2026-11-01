@@ -343,3 +343,14 @@ For every test report mean and median, paired-bootstrap CI, base-rate and catego
 - [V] Metaculus Q2 AI Benchmark results notebook. https://www.metaculus.com/notebooks/38928/q2-ai-benchmark-results-pros-maintain-clear-lead/ (d22; secondary summary)
 - [M] IBM Think (2026) AI forecasters: hire humans too. https://www.ibm.com/think/news/ai-forecasters-new-opportunity-business-hire-humans-too (d23; journalism; nine-months figure unverified)
 - [M] Project index row. C:/Users/User/Desktop/AGI/research_notes/thinking_sciences/E03_forecasting_and_calibration/SUBFIELDS.md (a26; the 0.017 and Nov 2026 claim, traced to d05 and d06)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 11 established claims: 9 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E03.08-K19** (reworded: the sources support less). In Schoenegger et al.'s preregistered mixed-effects model the -0.014 (frequency-based) and -0.011 (base-rate-first) effects are not significant (adjusted p=0.774); they are only significant in the simpler t-test analysis (-0.019 and -0.016, adjusted p 0.022 and 0.036). The superforecaster-written prompt made forecasts significantly worse, not just no help. Corrected claim: Prompt effects are small: in Schoenegger et al.'s preregistered mixed-effects model only Bayesian-reasoning (+0.030) and propose-evaluate-select (+0.033) prompts differed significantly from control (both worse); frequency-based reasoning (-0.014) and base-rate-first (-0.011) were in the helpful direction but not significant after correction (significant only in a simpler t-test analysis at -0.019 and -0.016); the superforecaster-written conditional odds-ratio prompt was significantly worse than control.
+- **E03.08-K26** (reworded: the sources support less). FRI describes Torchcast as a proprietary multi-agent architecture using Torchcast-trained models plus commercial LLMs; no mention of reinforcement learning. Corrected claim: Equal-token comparison of the parity-reaching systems is impossible from public data: ForecastBench imposes and records no token, tool or retrieval limits; Cassi, xAI and DeepMind methods are unpublished beyond a one-paragraph FRI description; Torchcast describes only a proprietary multi-agent pipeline using its own trained models plus commercial LLMs.
+- **E03.08-K07** (now single-source: only one opened source, code check).
+- **E03.08-K08** (now single-source: only one opened source, code check).
+- **E03.08-K10** (now single-source: only one opened source, code check).
+- **E03.08-K37** (now single-source: only one opened source, code check).

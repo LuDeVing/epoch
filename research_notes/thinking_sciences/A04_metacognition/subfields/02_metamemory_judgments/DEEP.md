@@ -413,3 +413,11 @@ Rules for all: both arms get the same total token budget, setup cost counted (G7
 - [M] Lugoloobi and Russell (2025) LLMs encode how difficult problems are. https://arxiv.org/abs/2510.18147
 - [M] Shrivastava, Kumar and Liang (2025) Language models prefer what they know. https://arxiv.org/abs/2502.01126
 - [M] Zhang et al. (2025) AdaptThink. https://arxiv.org/abs/2505.13417
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 13 established claims: 11 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A04.02-K11** (reworded: the sources support less). Undorf & Broder report that scene JOLs rest on cues most of which also predicted actual recognition (not cues that fail to help memory); in the font-size study (first author Fan, not Tian) word frequency moderates the contribution of beliefs, not the font-size effect itself; only Kornell et al. show a cue (type size) that moves predicted but not actual memory. Corrected claim: Judgments of learning are influenced by superficial cues that need not help memory: type size raises predicted but not actual memory (Kornell et al. 2011), and the role of metamemory beliefs in the font-size effect depends on word frequency (beliefs mediate it for low-frequency words, not high-frequency ones; Fan et al. 2021). For naturalistic scene pictures, JOLs use several intrinsic and extrinsic cues, most of which also predict recognition (Undorf & Broder 2021).
+- **A04.02-K37** (number corrected). In Zhang et al. Table 2 (R1-Distill-Llama-8B) math-to-math transfer AUC runs 0.69-0.83 (GSM8K to AIME is 0.69), not .76-.83; the other figures (math to logic .56-.63, logic to math .74-.77 with ECE .17-.19, AIME ECE .25-.31, early exit 88.2% vs 88.6% at 24% savings) check out. Corrected claim: Hidden-state probes trained on at most 1,000 examples predict correctness well in-distribution (AUC above .7; above .9 for one model on AIME) and give 24% token savings in early exit at 88.2% vs 88.6% accuracy, but transfer across task classes is partial: math to math AUC .69-.83, math to logic .56-.63, logic to math .74-.77 but with ECE .17-.19, and ECE degrades on AIME (.25-.31).
+- **A04.02-K27** (now single-source: only one opened source, code check).

@@ -324,3 +324,11 @@ All arms get the same total token budget, including bookkeeping, probes and setu
 
 **Search note**
 - [V] arXiv title searches for LLM Gittins/Whittle use (zero relevant hits). https://arxiv.org/search/?query=Whittle+language+models+restless&searchtype=all [d20]
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C12.08-K06** (reworded: the sources support less). Numbers match EVOLvE Table 1 (contextual RH Flash 0.0, Pro 7.1; AG 46.4, 64.3), but external statistics helped only the larger Gemini models: for Gemma-2B and Gemma-9B summarised or algorithm-guided win rates were lower than raw history (SH 10.5/5.3 and AG 4.9/4.1 vs RH 7.6/10.5; AG below RH for Gemma-9B). Metric is pairwise win rate. Corrected claim: For Gemini-1.5 Flash and Pro, giving externally computed per-arm statistics (summarised history or UCB statistics in the prompt) raises bandit performance (MAB win rate Flash 27.7 to 32.2-34.8, Pro 45.5 to 59.6-60.0); raw history is poor, and in contextual bandits raw history is near useless (Flash 0.0, Pro 7.1 vs 46.4, 64.3 with algorithm-guided support). The small Gemma models did not benefit.
+- **C12.08-K01** (now single-source: only one opened source, code check).
+- **C12.08-K17** (now single-source: only one opened source, code check).

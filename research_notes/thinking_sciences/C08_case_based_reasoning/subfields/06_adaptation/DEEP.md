@@ -324,3 +324,9 @@ All arms get the same total token budget, counting retrieval, diagnosis and chec
 - [V] Brown et al. (2024) Large language monkeys. https://arxiv.org/abs/2407.21787 (d18)
 - [V] Zhang et al. (2025) CBR-DDI. https://arxiv.org/abs/2505.23034 (d19)
 - [M] Search-status notes (c30, d22): rate limits stopped a systematic 2020-2026 sweep; absence of a source here is not evidence of absence.
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 11 established claims: 10 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C08.06-K09** (now single-source: the sources are not independent). All numbers (1.58x, 32/80 vs 7/80, never uncertain, repair vs fresh samples) come from one paper (Olausson et al. 2024) listed three times; Self-Refine and Self-Debugging do not test these results. The figures themselves match the paper.

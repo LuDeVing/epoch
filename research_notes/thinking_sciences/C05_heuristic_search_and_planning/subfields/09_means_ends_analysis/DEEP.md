@@ -316,3 +316,12 @@ Marks: [V] opened this session (full text, HTML or page text), [M] snippet or re
 - Singhi et al. (2025) When to solve, when to verify. [V] https://arxiv.org/html/2504.01005
 - Snell et al. (2024) Scaling test-time compute. [V] https://arxiv.org/abs/2408.03314
 - Wu et al. (2023) Reasoning or reciting. [V] https://arxiv.org/html/2307.02477
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C05.09-K20** (reworded: the sources support less). Donnarumma et al. 2016 report the 72% as empirical data cited from ref [74] (Solway et al. 2014), not as their own primary data, and the model reproduces it after four voting iterations; N=806 and 11,117 tasks for Correa et al. are right. Corrected claim: Human planning uses subgoals and bottlenecks: with two shortest Hanoi paths people chose the one-bottleneck path in 72% of cases (empirical figure cited by Donnarumma et al. 2016 from earlier work, ref 74; their subgoaling model also reaches 72%); people decompose tasks trading off utility and cost (Correa et al. 2023, N=806). No LLM test of a bottleneck rule was found.
+- **C05.09-K05** (now single-source: only one opened source, code check).
+- **C05.09-K06** (now single-source: only one opened source, code check).
+- **C05.09-K21** (now single-source: only one opened source, code check).

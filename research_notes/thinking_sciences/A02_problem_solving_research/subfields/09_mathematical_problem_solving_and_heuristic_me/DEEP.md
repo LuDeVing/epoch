@@ -336,3 +336,9 @@ All tests: both arms at equal total tokens (count setup and every call). At leas
 - [V] Zhao, Awasthi and Gollapudi (2025) Sample, scrutinize and scale. https://arxiv.org/abs/2502.01839 (d15)
 - [V] Muennighoff et al. (2025) s1. https://arxiv.org/abs/2501.19393 (d17)
 - [V] Zhao et al. (2025) Absolute Zero. https://arxiv.org/abs/2505.03335 (d19)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A02.09-K15** (reworded: the sources support less). Numbers check out (GSM-NoOp Fig 8a: Phi-3-mini -65.7, o1-preview -17.5, o1-mini -29.1, GPT-4o-mini -40.0 accuracy points; R-GSM 94.1 to 85.0; GSM1k up to 8%), but 'brittleness, not method' is the researcher's interpretation, and the CatAttack update describes adversarially searched triggers (found on a DeepSeek V3 proxy, then transferred) with a relative >300% rise in error likelihood, not any ordinary irrelevant sentence. Corrected claim: Models are brittle on maths: GSM-NoOp (one irrelevant clause) drops accuracy by up to 65.7 points for Phi-3-mini (o1-preview -17.5, o1-mini -29.1, GPT-4o-mini -40.0); changing names and numbers in GSM-Symbolic lowers and widens accuracy; premise reordering cuts R-GSM accuracy (GPT-4-turbo 94.1 to 85.0); GSM1k shows accuracy drops of up to 8% suggesting contamination in some families (Phi, Mistral, some Llama). Update: CatAttack triggers, searched adversarially on a proxy model, raised the likelihood of wrong answers by over 300% relative for DeepSeek R1 and R1-distill-Qwen-32B.

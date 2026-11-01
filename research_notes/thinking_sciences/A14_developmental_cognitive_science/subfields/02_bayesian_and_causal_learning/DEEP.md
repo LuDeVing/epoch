@@ -365,3 +365,10 @@ All tests use both arms at equal total tokens (prompt plus output, plus setup). 
 - [V] Semantic Scholar index check for "blicket detector language models" (d16) https://api.semanticscholar.org/graph/v1/paper/search
 
 Notes on opened status. Several pages were read through a fetch tool that summarises (d01, d02, d14); table values there should be rechecked in the PDF. Figure-derived values (Samiei per-model accuracy, b19, some CLadder rows, Qiu per-model bars) are approximate and are not used as hard numbers above.
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A14.02-K03** (number corrected). GX-Chen et al. and Samiei et al. support the adult-like disjunctive bias, AND harder than OR, and near-perfect disjunctive accuracy for gpt-5 and deepseek-reasoner, but Samiei Table 1 shows gpt-5 using 10.2 vs 7.7 tests (conj vs disj) against average adults 9.6 vs 6.4, i.e. about 6% and 20% more, not 30-45% (the 40-44 s figure is seconds per test). Corrected claim: Frozen LLMs show the adult disjunctive bias, not the child flexible prior, on conjunctive blicket tasks; AND rules are harder than OR rules across the 8+ models tested (GX-Chen et al. 2025). In 2026 active-exploration data (Samiei et al.), gpt-5 and deepseek-reasoner reach near-perfect disjunctive accuracy and gpt-5 approaches adult conjunctive accuracy, but gpt-5 uses somewhat more tests than average adults (10.2 vs 9.6 conjunctive, 7.7 vs 6.4 disjunctive) and about 40 s per test versus about 30 s for adults.
+- **A14.02-K11** (now single-source: only one opened source, code check).

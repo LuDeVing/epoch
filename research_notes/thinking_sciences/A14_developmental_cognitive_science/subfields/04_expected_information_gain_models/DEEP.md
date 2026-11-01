@@ -346,3 +346,10 @@ Links to other subfields run in parallel (not covered here): Bayesian and causal
 - [V] Deng et al. (2026), Uncertainty-aware clarification in LLM agents. https://arxiv.org/pdf/2606.03135 (d09, d10)
 - [V] Zhang, Knox and Choi (2025), Modeling future conversation turns to teach LLMs to ask clarifying questions. https://arxiv.org/pdf/2410.13788 (d12)
 - [V] Search-outcome note, negative result under rate limits (d20). https://arxiv.org/pdf/2508.21184
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 8 established claims: 8 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A14.04-K05** (now single-source: only one opened source, code check).
+- **A14.04-K06** (now single-source: only one opened source, code check).

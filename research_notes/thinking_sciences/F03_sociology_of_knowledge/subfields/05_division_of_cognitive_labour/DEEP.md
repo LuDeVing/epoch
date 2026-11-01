@@ -424,3 +424,11 @@ LLM and agent studies
 
 Our own models (not literature)
 - D:/research_scratch/F03.05/tmp/F03.05_kitcher_sim2.py [d21]; F03.05_seq_sim.py [d22, d23]
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 7 established claims: 4 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F03.05-K08** (reworded: the sources support less). Numbers match, but 'removes in-context exploration failure' generalises from one Qwen-7B two-armed setup (pA=0.6 vs 0.4, a single table) to exploration failure in general; the lock-in rate was 0.0% only for that setup. Corrected claim: Supplying the allocation from code removed inferior-peer lock-in in one Qwen-7B two-armed delegation test: 50.0% prompt-only, 23.3% with the UCB formula in the prompt, 0.0% with an external UCB calculator, 0.0% with algorithmic UCB; separately, GPT-4 with a basic prompt showed suffix failure (best arm never chosen again) in more than 60% of replicates in a multi-armed bandit test, and only one GPT-4 configuration (with hint, chain-of-thought and externally summarised statistics) explored well.
+- **F03.05-K15** (now contested: a source does not say this). NoveltyBench says in-context regeneration is the most successful approach, roughly matching human-writer diversity (3 models tested) and GPT-4o and Gemini 2.0 Pro even surpass humans in cumulative utility; so 'does not reach humans' is contradicted. Also 66.8% is the share of base-model diversity VS retains after the DPO stage in a creative-writing ablation (direct prompting retains 23.8%).
+- **F03.05-K16** (now single-source: the sources are not independent). Only ShinkaEvolve ablates novelty rejection, weighted parent sampling and bandit ensembles (on circle packing); AlphaEvolve's ablations cover evolution, prompt context, meta-prompt, model size and full-file evolution, not these three, so there is one system, not several.

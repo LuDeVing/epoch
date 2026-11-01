@@ -341,3 +341,10 @@ All arms get the same total token budget. Report accuracy per token, not per rou
 - [M] Wang et al (2024) Mixture-of-Agents. https://arxiv.org/abs/2406.04692
 - [M] Romera-Paredes et al (2024) FunSearch. https://www.nature.com/articles/s41586-023-06924-6
 - [M] Hagag et al (2026) Architecture matters for multi-agent security. https://arxiv.org/abs/2604.23459
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 10 established claims: 10 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F03.04-K01** (now single-source: only one opened source, code check).
+- **F03.04-K07** (now single-source: only one opened source, code check).

@@ -297,3 +297,11 @@ Rules for all tests: both arms at equal total tokens (count setup, evaluator cal
 - [V] Feng et al. (2023) ChessGPT. https://arxiv.org/abs/2306.09200
 - [V] Gao et al. (2024) GTBench. https://arxiv.org/abs/2402.12348
 - [M] Stockfish NNUE and Leela Chess Zero. https://stockfishchess.org
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 12 established claims: 9 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E16.09-K03** (reworded: the sources support less). Kocsis-Szepesvari proves consistency and shows B^(D/2) iteration growth only empirically on random P-game trees, and says UCT may be faster at higher failure rates; the Browne survey does not support it; "no free lunch on small trees" is the researcher inference. Corrected claim: UCT is provably consistent (failure probability goes to zero); on random P-game trees (B=2,D=20 and B=8,D=8) it reached near-zero failure in a similar number of leaf nodes as alpha-beta, with iterations growing roughly as B^(D/2) like alpha-beta, and was faster if a small failure rate was accepted.
+- **E16.09-K17** (now single-source: the sources are not independent). Numbers check out (>97%, >99% no search, 72% over 50 games at 10M visits, defences failed), but both papers are by the same FAR.AI group (Wang, Gleave, Tseng, Pelrine), so they count as one source; the 72% result also shows more search lowers the win rate from 95.7% at 4,096 visits.
+- **E16.09-K24** (number corrected). Liu et al. say DVTS wins easy and medium problems and beam search wins hard ones for 7B-32B policies; the claim wrongly says diverse tree search wins on hard items. Corrected claim: On math with process reward models, the best test-time method depends on policy size and difficulty: best-of-N wins on easy items for policies under 7B and at every difficulty for 72B, while for 7B-32B policies diverse tree search (DVTS) wins easy and medium items and beam search wins hard ones.

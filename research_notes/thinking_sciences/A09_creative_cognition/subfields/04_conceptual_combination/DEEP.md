@@ -327,3 +327,13 @@ Marks: [V] opened this session; [M] snippet or abstract only.
 - [M] Chen, Poeppel and Zuanazzi (2023). https://doi.org/10.31234/osf.io/gf2r9 (d12)
 - [M] Absence checks via Crossref title search. https://api.crossref.org/works (d13, d14)
 - [M] Wisniewski (1997) typeset mirror, unopened at first, later read in full from the Springer PDF as d09. https://typeset.io/pdf/when-concepts-combine-2uztzy42jq.pdf (a23, b22)
+
+## Source audit (2026-11-01)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A09.04-K05** (reworded: the sources support less). Wisniewski and Gentner 30% property-type and relation/hybrid/construal routes check out, but 'similarity favours property mapping' is contested: Bock and Clifton (2000) found no correlation between assessed similarity and property mapping (r=-.06) when pairs were randomly paired within category. Corrected claim: Novel noun-noun phrases are not read only as a relation: relation linking, property mapping and hybrid construals all occur (about 30% of descriptions were property-type in Wisniewski and Gentner 1991). Similarity between the nouns promoted property mapping in Wisniewski (1996; 72% vs 48%), but Bock and Clifton (2000) found no correlation between rated similarity and property mapping (r=-.06), so the similarity effect is not settled; salience and natural-kind category also matter.
+- **A09.04-K01** (now single-source: only one opened source, code check).
+- **A09.04-K02** (now single-source: only one opened source, code check).
+- **A09.04-K03** (now single-source: only one opened source, code check).
+- **A09.04-K21** (now single-source: only one opened source, code check).
