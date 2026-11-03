@@ -33,10 +33,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Expected information gain models | [`subfields/04_expected_information_gain_models/DEEP.md`](subfields/04_expected_information_gain_models/DEEP.md) | done, batch 7 (2026-11-01) |
 | Simulation vs theory accounts | | not started |
 | Piagetian and neo-Piagetian stages | | not started |
-| Vygotsky: scaffolding | | not started |
+| Vygotsky: scaffolding | [`subfields/07_vygotsky_scaffolding/DEEP.md`](subfields/07_vygotsky_scaffolding/DEEP.md) | done, batch 8 (2026-11-01) |
 | Core knowledge | | not started |
 | Scientific reasoning skills | [`subfields/09_scientific_reasoning_skills/DEEP.md`](subfields/09_scientific_reasoning_skills/DEEP.md) | done, batch 7 (2026-11-01) |
-| Executive function, exploration vs exploitation | | not started |
+| Executive function, exploration vs exploitation | [`subfields/10_executive_function_exploration_vs_exploitatio/DEEP.md`](subfields/10_executive_function_exploration_vs_exploitatio/DEEP.md) | done, batch 8 (2026-11-01) |
 
 ## Dig into next
 

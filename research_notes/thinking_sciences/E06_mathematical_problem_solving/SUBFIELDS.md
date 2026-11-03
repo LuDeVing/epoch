@@ -31,7 +31,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Metacognition and control | [`subfields/03_metacognition_and_control/DEEP.md`](subfields/03_metacognition_and_control/DEEP.md) | done, batch 6 (2026-10-31) |
 | Episode analysis of reasoning models | [`subfields/04_episode_analysis_of_reasoning_models/DEEP.md`](subfields/04_episode_analysis_of_reasoning_models/DEEP.md) | done, batch 3 (2026-10-26) |
 | Expert-novice schemas | [`subfields/05_expert_novice_schemas/DEEP.md`](subfields/05_expert_novice_schemas/DEEP.md) | done, batch 7 (2026-11-01) |
-| Worked examples | | not started |
+| Worked examples | [`subfields/06_worked_examples/DEEP.md`](subfields/06_worked_examples/DEEP.md) | done, batch 8 (2026-11-01) |
 | Teaching heuristics | | not started |
 | Problem posing, conjecture | | not started |
 | Beliefs and affect | | not started |

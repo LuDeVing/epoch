@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Story model of juror decisions | [`subfields/01_story_model_of_juror_decisions/DEEP.md`](subfields/01_story_model_of_juror_decisions/DEEP.md) | done, batch 5 (2026-10-27) |
-| Other acceptance principles | | not started |
+| Other acceptance principles | [`subfields/02_other_acceptance_principles/DEEP.md`](subfields/02_other_acceptance_principles/DEEP.md) | done, batch 8 (2026-11-01) |
 | Critiques of the story model | | not started |
 | Computational coherence models | | not started |
 | Case-based reasoning in law | [`subfields/05_case_based_reasoning_in_law/DEEP.md`](subfields/05_case_based_reasoning_in_law/DEEP.md) | done, batch 6 (2026-10-31) |

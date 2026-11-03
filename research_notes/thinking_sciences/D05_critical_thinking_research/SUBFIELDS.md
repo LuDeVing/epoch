@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Definitions and ideals | | not started |
-| Process models | | not started |
+| Process models | [`subfields/02_process_models/DEEP.md`](subfields/02_process_models/DEEP.md) | done, batch 8 (2026-11-01) |
 | Skills versus dispositions | | not started |
 | Assessment and tests | | not started |
 | Instruction effectiveness | | not started |

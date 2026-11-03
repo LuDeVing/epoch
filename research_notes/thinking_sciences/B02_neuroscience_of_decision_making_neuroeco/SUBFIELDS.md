@@ -32,8 +32,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Expected value of control | [`subfields/06_expected_value_of_control/DEEP.md`](subfields/06_expected_value_of_control/DEEP.md) | done, batch 5 (2026-10-27) |
 | Evidence accumulation | [`subfields/07_evidence_accumulation/DEEP.md`](subfields/07_evidence_accumulation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Foraging and patch leaving | [`subfields/08_foraging_and_patch_leaving/DEEP.md`](subfields/08_foraging_and_patch_leaving/DEEP.md) | done, batch 7 (2026-11-01) |
-| Pruning of decision trees | | not started |
-| Confidence and metacognition | | not started |
+| Pruning of decision trees | [`subfields/09_pruning_of_decision_trees/DEEP.md`](subfields/09_pruning_of_decision_trees/DEEP.md) | done, batch 8 (2026-11-01) |
+| Confidence and metacognition | [`subfields/10_confidence_and_metacognition/DEEP.md`](subfields/10_confidence_and_metacognition/DEEP.md) | done, batch 8 (2026-11-01) |
 | Risk, loss and social choice | | not started |
 
 ## Dig into next

@@ -128,3 +128,5 @@ Suggested order: T7 and T8 (no or cheap model calls) first, then T6, then T1 wit
 - **Evidence quality.** Several LLM routing papers are 2026 preprints on small test sets or LLM-judged rewards (C03.06 DEEP section 5.7). Treat their numbers as directions, not targets.
 
 **Source audit, 2026-10-26:** the papers behind 13 established claims were re-opened: 11 confirmed, 1 reworded (C03.03-K32, narrowed to the Dynamic Cheatsheet and ArcMemo comparisons), 1 downgraded to single-source (C03.03-K14, not independent). Two further claims, C03.03-K13 and C03.06-K03, had been downgraded earlier by the code check (one opened source). Downgraded ids: C03.03-K13, C03.03-K14, C03.06-K03. Their findings are in Gaps, not section 2.
+
+**Audit (code check, 2026-11-03):** C03.01-K13, C03.09-K02, C03.09-K03, C03.09-K07, C03.09-K23 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

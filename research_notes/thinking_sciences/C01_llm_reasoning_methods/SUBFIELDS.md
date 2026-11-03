@@ -23,12 +23,12 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Chain-of-thought prompting | | not started |
+| Chain-of-thought prompting | [`subfields/01_chain_of_thought_prompting/DEEP.md`](subfields/01_chain_of_thought_prompting/DEEP.md) | done, batch 8 (2026-11-01) |
 | Sampling and voting (self-consistency) | [`subfields/02_sampling_and_voting/DEEP.md`](subfields/02_sampling_and_voting/DEEP.md) | done, batch 6 (2026-10-31) |
 | Test-time compute scaling | [`subfields/03_test_time_compute_scaling/DEEP.md`](subfields/03_test_time_compute_scaling/DEEP.md) | done, batch 7 (2026-11-01) |
 | Verification design | [`subfields/04_verification_design/DEEP.md`](subfields/04_verification_design/DEEP.md) | done, batch 3 (2026-10-26) |
 | Self-correction | [`subfields/05_self_correction/DEEP.md`](subfields/05_self_correction/DEEP.md) | done, batch 7 (2026-11-01) |
-| Learned refinement and self-verification | | not started |
+| Learned refinement and self-verification | [`subfields/06_learned_refinement_and_self_verification/DEEP.md`](subfields/06_learned_refinement_and_self_verification/DEEP.md) | done, batch 8 (2026-11-01) |
 | Search over thoughts | | not started |
 | Adaptive stopping, metareasoning | [`subfields/08_adaptive_stopping_and_metareasoning/DEEP.md`](subfields/08_adaptive_stopping_and_metareasoning/DEEP.md) | done, batch 3 (2026-10-26) |
 | RL on verifiable rewards | | not started |

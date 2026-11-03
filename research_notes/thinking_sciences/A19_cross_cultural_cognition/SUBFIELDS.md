@@ -22,6 +22,24 @@ Marks: (V) = confirmed in a source opened this session; (M) = from memory.
 
 Correction from the first draft: the PMC article I could not name earlier is Varnum et al. 2010. Varnum et al. themselves caution that strong causal conclusions are not yet warranted.
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Analytic vs holistic thought | [`subfields/01_analytic_vs_holistic_thought/DEEP.md`](subfields/01_analytic_vs_holistic_thought/DEEP.md) | done, batch 8 (2026-11-01) |
+| Dialectical reasoning | [`subfields/02_dialectical_reasoning/DEEP.md`](subfields/02_dialectical_reasoning/DEEP.md) | done, batch 8 (2026-11-01) |
+| Causal attribution | | not started |
+| Categorisation and attention | | not started |
+| Origins: social orientation hypothesis | | not started |
+| Within-culture comparisons | | not started |
+| Priming of orientation | | not started |
+| Individual-level links | | not started |
+| Critiques and universals | | not started |
+| WEIRD samples | | not started |
+| Number, space, colour across cultures | | not started |
+
 ## Dig into next
 
 **1. Style contrasts as framing operators.**

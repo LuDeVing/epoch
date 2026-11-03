@@ -22,7 +22,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Analysis of competing hypotheses (ACH) | | not started |
+| Analysis of competing hypotheses (ACH) | [`subfields/01_analysis_of_competing_hypotheses/DEEP.md`](subfields/01_analysis_of_competing_hypotheses/DEEP.md) | done, batch 8 (2026-11-01) |
 | Diagnosticity of evidence | [`subfields/02_diagnosticity_of_evidence/DEEP.md`](subfields/02_diagnosticity_of_evidence/DEEP.md) | done, batch 5 (2026-10-27) |
 | Structured analytic techniques (SATs) | | not started |
 | Systematic review of SAT evidence | | not started |

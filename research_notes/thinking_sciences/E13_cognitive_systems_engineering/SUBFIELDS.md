@@ -22,7 +22,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Joint cognitive systems | | not started |
+| Joint cognitive systems | [`subfields/01_joint_cognitive_systems/DEEP.md`](subfields/01_joint_cognitive_systems/DEEP.md) | done, batch 8 (2026-11-01) |
 | Anomaly response (dynamic fault management) | [`subfields/02_anomaly_response_dynamic_fault_management/DEEP.md`](subfields/02_anomaly_response_dynamic_fault_management/DEEP.md) | done, batch 5 (2026-10-27) |
 | Coordination and common ground | | not started |
 | Cognitive artifacts | | not started |

@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Constraint relaxation | covered in [`subfields/01_representational_change/DEEP.md`](subfields/01_representational_change/DEEP.md) | done, batch 3 (2026-10-26) |
 | Chunk decomposition | covered in [`subfields/01_representational_change/DEEP.md`](subfields/01_representational_change/DEEP.md) | done, batch 3 (2026-10-26) |
 | Progress monitoring theory | [`subfields/04_progress_monitoring_theory/DEEP.md`](subfields/04_progress_monitoring_theory/DEEP.md) | done, batch 3 (2026-10-26) |
-| Theory comparison | | not started |
-| Gestalt roots and fixation | | not started |
+| Theory comparison | [`subfields/05_theory_comparison/DEEP.md`](subfields/05_theory_comparison/DEEP.md) | done, batch 8 (2026-11-01) |
+| Gestalt roots and fixation | [`subfields/06_gestalt_roots_and_fixation/DEEP.md`](subfields/06_gestalt_roots_and_fixation/DEEP.md) | done, batch 8 (2026-11-01) |
 | Dual-process and three-process accounts | | not started |
 | Stage model and incubation | | not started |
 | Neuroscience and individual differences | | not started |

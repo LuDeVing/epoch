@@ -121,3 +121,5 @@ Order to run: T5 first (cheap, builds the token log), then T8 and T1, then T6 af
 **Source audit, 2026-10-26:** the papers behind 29 established claims were re-opened: 22 confirmed, 5 reworded (C04.05-K10, K14, K15, K17, K19, each narrowed to what the sources show), 2 downgraded to single-source as not independent (C04.05-K21, C04.06-K01). Downgraded ids: C04.05-K21, C04.06-K01. Their findings are in Gaps, not section 2.
 
 **Audit (code check, 2026-11-01):** C04.02-K11 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-03):** C04.04-K23 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

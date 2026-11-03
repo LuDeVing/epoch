@@ -136,3 +136,5 @@ Run order, following both UNKNOWNS files: MT2 first (no study has measured it), 
 **Audit (code check, 2026-10-31):** E08.01-K01, E08.01-K03 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-01):** E08.06-K03, E08.06-K18 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-03):** E08.05-K24 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

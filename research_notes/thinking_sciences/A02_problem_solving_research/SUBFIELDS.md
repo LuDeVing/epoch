@@ -29,7 +29,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Representational change theory | [`subfields/05_representational_change_theory/DEEP.md`](subfields/05_representational_change_theory/DEEP.md) | done, batch 7 (2026-11-01) |
 | Gestalt insight and the "sudden insight" debate | [`subfields/06_gestalt_insight_and_the_sudden_insight_debate/DEEP.md`](subfields/06_gestalt_insight_and_the_sudden_insight_debate/DEEP.md) | done, batch 7 (2026-11-01) |
 | Progress monitoring | [`subfields/07_progress_monitoring/DEEP.md`](subfields/07_progress_monitoring/DEEP.md) | done, batch 7 (2026-11-01) |
-| Analogical problem solving | | not started |
+| Analogical problem solving | [`subfields/08_analogical_problem_solving/DEEP.md`](subfields/08_analogical_problem_solving/DEEP.md) | done, batch 8 (2026-11-01) |
 | Mathematical problem solving and heuristic method | [`subfields/09_mathematical_problem_solving_and_heuristic_me/DEEP.md`](subfields/09_mathematical_problem_solving_and_heuristic_me/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next

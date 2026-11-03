@@ -28,8 +28,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Debugging strategies | [`subfields/01_debugging_strategies/DEEP.md`](subfields/01_debugging_strategies/DEEP.md) | done, batch 6 (2026-10-31) |
-| Expertise as chunking | | not started |
-| Program comprehension models | | not started |
+| Expertise as chunking | [`subfields/02_expertise_as_chunking/DEEP.md`](subfields/02_expertise_as_chunking/DEEP.md) | done, batch 8 (2026-11-01) |
+| Program comprehension models | [`subfields/03_program_comprehension_models/DEEP.md`](subfields/03_program_comprehension_models/DEEP.md) | done, batch 8 (2026-11-01) |
 | Strategy vs success | [`subfields/04_strategy_vs_success/DEEP.md`](subfields/04_strategy_vs_success/DEEP.md) | done, batch 7 (2026-11-01) |
 | Gugerty and Olson findings | [`subfields/05_gugerty_and_olson_findings/DEEP.md`](subfields/05_gugerty_and_olson_findings/DEEP.md) | done, batch 7 (2026-11-01) |
 | Plans and schemas | [`subfields/06_plans_and_schemas/DEEP.md`](subfields/06_plans_and_schemas/DEEP.md) | done, batch 5 (2026-10-27) |

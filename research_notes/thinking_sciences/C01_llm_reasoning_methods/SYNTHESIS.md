@@ -115,3 +115,5 @@ Order to run: T1 first (it gates T3 to T8), then T2 and T7 (cheapest; reuse exis
 **Audit (code check, 2026-10-31):** C01.02-K02, C01.02-K08 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-01):** C01.05-K10, C01.05-K12 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-03):** C01.01-K02 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

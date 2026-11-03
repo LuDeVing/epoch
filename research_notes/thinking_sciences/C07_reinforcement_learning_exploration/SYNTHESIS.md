@@ -126,3 +126,5 @@ Order to run: T0, then T1 and T2 (cheapest, decide if any learner is worth build
 - Cross-field: restarts (anytime search), quality-diversity (C04) and library learning may replace operator choice by choice of start state. Compare once those fields' syntheses exist (C05 has none yet).
 
 **Source audit, 2026-10-26:** the papers behind all 21 established claims of this field were re-opened. 17 confirmed, 4 reworded (C07.01-K05, K14, K20, C07.08-K32), 0 downgraded. No section 2 row was removed or moved to Gaps, and no merged test or schema conclusion depended on a downgraded claim.
+
+**Audit (code check, 2026-11-03):** C07.07-K06, C07.07-K18 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

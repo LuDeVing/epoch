@@ -24,9 +24,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Consistency-based diagnosis | [`subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md`](subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md) | done, batch 3 (2026-10-26) |
-| Abductive diagnosis | | not started |
+| Abductive diagnosis | [`subfields/02_abductive_diagnosis/DEEP.md`](subfields/02_abductive_diagnosis/DEEP.md) | done, batch 8 (2026-11-01) |
 | Conflict generation, GDE | covered in [`subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md`](subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md) | done, batch 3 (2026-10-26) |
-| Hitting-set tree search | | not started |
+| Hitting-set tree search | [`subfields/04_hitting_set_tree_search/DEEP.md`](subfields/04_hitting_set_tree_search/DEEP.md) | done, batch 8 (2026-11-01) |
 | Efficient diagnosis algorithms | | not started |
 | Probing and measurement selection | [`subfields/06_probing_and_measurement_selection/DEEP.md`](subfields/06_probing_and_measurement_selection/DEEP.md) | done, batch 3 (2026-10-26) |
 | Diagnosability | | not started |

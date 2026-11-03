@@ -29,8 +29,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Desirable difficulties | [`subfields/04_desirable_difficulties/DEEP.md`](subfields/04_desirable_difficulties/DEEP.md) | done, batch 7 (2026-11-01) |
 | Transfer of learning | [`subfields/05_transfer_of_learning/DEEP.md`](subfields/05_transfer_of_learning/DEEP.md) | done, batch 7 (2026-11-01) |
 | Productive failure | | not started |
-| Self-explanation | | not started |
-| Intelligent tutoring and knowledge tracing | | not started |
+| Self-explanation | [`subfields/07_self_explanation/DEEP.md`](subfields/07_self_explanation/DEEP.md) | done, batch 8 (2026-11-01) |
+| Intelligent tutoring and knowledge tracing | [`subfields/08_intelligent_tutoring_and_knowledge_tracing/DEEP.md`](subfields/08_intelligent_tutoring_and_knowledge_tracing/DEEP.md) | done, batch 8 (2026-11-01) |
 | Scaffolding and guided discovery | | not started |
 | Motivation, mindset, classroom factors | | not started |
 

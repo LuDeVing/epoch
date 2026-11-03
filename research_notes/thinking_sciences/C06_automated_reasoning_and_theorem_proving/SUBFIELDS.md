@@ -23,8 +23,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Resolution and saturation | | not started |
-| SAT solving, DPLL | | not started |
+| Resolution and saturation | [`subfields/01_resolution_and_saturation/DEEP.md`](subfields/01_resolution_and_saturation/DEEP.md) | done, batch 8 (2026-11-01) |
+| SAT solving, DPLL | [`subfields/02_sat_solving_dpll/DEEP.md`](subfields/02_sat_solving_dpll/DEEP.md) | done, batch 8 (2026-11-01) |
 | CDCL | [`subfields/03_cdcl_conflict_learning/DEEP.md`](subfields/03_cdcl_conflict_learning/DEEP.md) | done, batch 4 (2026-10-26) |
 | Interactive theorem proving | | not started |
 | Neural and LLM proof search | | not started |

@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Scoring rules and calibration | [`subfields/01_scoring_rules_and_calibration/DEEP.md`](subfields/01_scoring_rules_and_calibration/DEEP.md) | done, batch 6 (2026-10-31) |
-| Good Judgment Project | | not started |
+| Good Judgment Project | [`subfields/02_good_judgment_project/DEEP.md`](subfields/02_good_judgment_project/DEEP.md) | done, batch 8 (2026-11-01) |
 | Training | | not started |
 | Outside view and base rates | [`subfields/04_outside_view_and_base_rates/DEEP.md`](subfields/04_outside_view_and_base_rates/DEEP.md) | done, batch 5 (2026-10-27) |
 | Decomposition (Fermi-ize) | [`subfields/05_decomposition/DEEP.md`](subfields/05_decomposition/DEEP.md) | done, batch 7 (2026-11-01) |

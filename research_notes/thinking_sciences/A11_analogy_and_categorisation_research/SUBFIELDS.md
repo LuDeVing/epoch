@@ -30,8 +30,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Analogical inference | [`subfields/02_analogical_inference/DEEP.md`](subfields/02_analogical_inference/DEEP.md) | done, batch 7 (2026-11-01) |
 | Analogical access (retrieval) | [`subfields/03_analogical_access/DEEP.md`](subfields/03_analogical_access/DEEP.md) | done, batch 4 (2026-10-26) |
 | Schema induction | [`subfields/04_schema_induction/DEEP.md`](subfields/04_schema_induction/DEEP.md) | done, batch 4 (2026-10-26) |
-| Connectionist and hybrid mapping models | | not started |
-| Logic and philosophy of analogical arguments | | not started |
+| Connectionist and hybrid mapping models | [`subfields/05_connectionist_and_hybrid_mapping_models/DEEP.md`](subfields/05_connectionist_and_hybrid_mapping_models/DEEP.md) | done, batch 8 (2026-11-01) |
+| Logic and philosophy of analogical arguments | [`subfields/06_logic_and_philosophy_of_analogical_arguments/DEEP.md`](subfields/06_logic_and_philosophy_of_analogical_arguments/DEEP.md) | done, batch 8 (2026-11-01) |
 | Category learning: rule, prototype, exemplar | | not started |
 | Category learning: clustering, explanation-based, Bayesian | | not started |
 | Comparison and relational language | | not started |

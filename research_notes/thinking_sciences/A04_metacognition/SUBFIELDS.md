@@ -25,7 +25,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Monitoring and control framework | [`subfields/01_monitoring_and_control_framework/DEEP.md`](subfields/01_monitoring_and_control_framework/DEEP.md) | done, batch 6 (2026-10-31) |
 | Metamemory judgments | [`subfields/02_metamemory_judgments/DEEP.md`](subfields/02_metamemory_judgments/DEEP.md) | done, batch 7 (2026-11-01) |
 | Accuracy and dissociation of monitoring | [`subfields/03_accuracy_and_dissociation_of_monitoring/DEEP.md`](subfields/03_accuracy_and_dissociation_of_monitoring/DEEP.md) | done, batch 3 (2026-10-26) |
-| Metacognitive knowledge: declarative, procedural, conditional | | not started |
+| Metacognitive knowledge: declarative, procedural, conditional | [`subfields/04_metacognitive_knowledge_declarative_procedura/DEEP.md`](subfields/04_metacognitive_knowledge_declarative_procedura/DEEP.md) | done, batch 8 (2026-11-01) |
 | Metacognitive regulation | [`subfields/05_metacognitive_regulation/DEEP.md`](subfields/05_metacognitive_regulation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Confidence and signal-detection measures | [`subfields/06_confidence_and_signal_detection_measures/DEEP.md`](subfields/06_confidence_and_signal_detection_measures/DEEP.md) | done, batch 7 (2026-11-01) |
 | Meta-reasoning | [`subfields/07_meta_reasoning/DEEP.md`](subfields/07_meta_reasoning/DEEP.md) | done, batch 7 (2026-11-01) |

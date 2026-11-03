@@ -1,0 +1,37 @@
+# The problem of the priors: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| D02.03-U1 | Does a shrunk class record (k,n) beat the model's own recalled prior on real logs, n below 10? | Gate prior = (k + s*m)/(n + s), never recalled | S0, memory | K29, K13; simulation only (own model), recalled-prior failure human-like in LLMs | Replay run logs. Arms: raw k/n; Beta(1,1); pooled EB; model-recalled prior. Items: all (class, next run) pairs with n<10. Metric: Brier of gate pass prediction | Shrunk beats recalled by 0.01 Brier or more, 95% bootstrap CI excludes 0 | High |
+| D02.03-U2 | Best default for a class with zero history | Pooled rate as n=0 default, logged | S0 | K30; simulation (0.240 vs 0.250), Winkler zero-event disagreement | Arms: 0.5; pooled mean; Jeffreys. Items: first run of each class. Metric: Brier | Pooled beats 0.5 by 0.005 Brier or more on 30+ first runs | High |
+| D02.03-U3 | Does an explicit (k,n) or (k,n,ESS) line make the model respect the prior better than a bare percentage? | Fixed (k,n,shrunk) line in the gate prompt | S0 | K33, K16; human-only (natural frequencies, contested), indirect LLM list-counting failures | Arms: percentage; (k,n); (k,n,ESS). Items: 100+ gate prompts with known shrunk posterior. Metric: share of final probabilities within 0.1 of posterior; Brier | (k,n) arm beats percentage by 10 points of share or 0.01 Brier | High |
+| D02.03-U4 | Is "start from the stored class rate" better than "reason Bayesian" prompting? | Base-rate-first line in gate prompt; ban "reason Bayesian" wording | S0, G3 | K15; Schoenegger -0.016 vs +0.025 Brier, small, model-dependent; older models | Arms: neutral; base-rate-first; Bayesian wording. Items: dated forecast-style questions plus our gate items. Metric: Brier | Base-rate-first beats neutral by 0.01 or more on two models | Med |
+| D02.03-U5 | Does a code-computed posterior remove similarity-over-base-rate on current reasoning models? | Mandatory code posterior for any base-rate item | G5, S0 | K12, K13, K34; older models only (prior-posterior r about -0.9), no 2025-2026 test | Jason-style items with stereotypical vs neutral text, 75/25 flip. Arms: model recall; stored record in text; code posterior. Metric: odds ratio (normative 9) and prior-posterior correlation | Code arm odds ratio at least 7 with stereotypes where model arm is below 4 | High |
+| D02.03-U6 | How many classes before estimated prior strength beats a fixed one? | Switch rule: estimate s only above N classes | S0 | K31; simulation (about 20 classes), Chen and Lei (real data, 1-5 percent gain) | Subsample logs to 5, 10, 20, 50 classes. Arms: fixed s=2; method-of-moments s. Metric: Brier on held-out runs | Estimated s beats fixed at a class count N; set switch at smallest such N | Med |
+| D02.03-U7 | Does a beta-binomial prior-data conflict flag predict failure and trigger a useful doubt step? | Conflict flag as a G1 doubt signal | S0, G1, S6 | K32; simulation only (false alarm 0.014-0.051; power 0.33-0.38 at n=5-10) | Flag when p below 0.05. Compare accuracy of flagged vs unflagged runs of same class; arm with doubt step vs none. Metric: accuracy difference, false-alarm rate | Flagged accuracy lower by 10 points and false-alarm below 10 percent | Med |
+| D02.03-U8 | Does history-anchored prior stop the agent from acting on noise? | Gate refuses to switch mode on a thin record | S0, G1 | K05; human statistics (Gelman), no agent test | Seed classes with no real signal. Arms: flat prior; history-shrunk prior. Metric: rate of mode switches on noise | Switches on noise fall by 30 percent or more | Med |
+| D02.03-U9 | Does the Jaynes step (name the generating process, report the set of answers) help on under-specified "random" items? | Invariance step in S1 for random/typical items | G3, S1 | K01, K03 established as theory; K02 contested; no LLM study | Bertrand-style, cube-factory and "random" items. Arms: plain; named-process step. Metric: share naming the process; correctness given process | 20 points more correct framing and no accuracy loss on other items | Low |
+| D02.03-U10 | Is a posterior mean better than a pessimistic bound for gate inputs? | Gate arithmetic uses means, bounds only for display | S0 | K35; single worked example (0.018 vs 0.053) | Replay gate with mean vs Rule-of-Three/upper bound as input. Metric: decision regret on logs | Mean arm lower regret on 2+ decision flips | Low |
+| D02.03-U11 | How strong is the answer-label prior for our agent, and does option shuffling remove it? | Shuffle option order in code | G3 | K25; single-source, older models (GPT-2, Mistral) | Same items, original vs shuffled order, 3 seeds. Metric: accuracy spread by correct-label position | Spread above 5 points on original order and shrinks under shuffling | Med |
+| D02.03-U12 | Does the agent's own implicit pass-rate prior (iterated learning readout) match its class records? | Warning when stated confidence diverges from records | memory, S0 | K20; single-source, assumes Bayesian-like model | 100 chains x 12 iterations per class family. Compare readout mean with measured rate | Rank correlation below 0.5 with records, showing recall is unusable | Low |
+| D02.03-U13 | Can an LLM-stated prior be used at all as a labelled alternative for a new class? | LLM prior as ESS-capped fallback when n=0 and no pool | memory, S0 | K21 (single-source), K18, K22 (contested), K19 (leakage) | Private post-cutoff tasks. Arms: pooled rate; LLM prior capped at ESS 2; none. Metric: Brier on first 3 runs | LLM prior beats pooled by 0.01 Brier on private items | Low |
+
+## Open questions we cannot test on our bench yet
+
+- **Reasoning models and base rates.** No published test on 2025-2026 reasoning models. U5 would be the first; until then all LLM base-rate numbers are older-model results.
+- **Leakage size.** We have no way to separate memorised public priors from skill without private tasks of known provenance. Need a held-out set written after the model cutoff.
+- **Real-log shrinkage size.** Needs enough run logs per class. If the logs have fewer than 20 classes or 5 runs per class, U1 and U6 will have wide intervals. Unblock by running more seeds per class.
+- **Natural-frequency effect for LLMs.** Only the human literature exists, and its size is disputed. U3 tests it directly.
+- **Arai et al. replication.** The 66-patient claim needs the trial data and a second trial. Not our domain; do not build on it.
+- **Jaynes vs Drory.** A theory dispute with no agent-level test. Unblocks only if a task family arises where the generating process is genuinely unknown.
+- **Pool validity.** Whether pooling across problem classes is a fair reference depends on how classes are defined. Needs a class-similarity measure we do not have.
+
+## Order to run
+
+1. **U1 (class record vs recalled prior).** Cheapest, uses existing logs, and decides whether the S0 gate prior design works at all.
+2. **U5 (code posterior on base-rate items, current models).** Closes the largest evidence gap (no 2025-2026 test) and checks whether a G5 rule is needed.
+3. **U3 (display of k,n vs percentage).** One prompt change, cheap, and affects every gate prompt we write.

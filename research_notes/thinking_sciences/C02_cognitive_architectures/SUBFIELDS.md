@@ -26,8 +26,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Soar: operator selection and impasses | [`subfields/01_soar_operator_selection_and_impasses/DEEP.md`](subfields/01_soar_operator_selection_and_impasses/DEEP.md) | done, batch 3 (2026-10-26) |
 | Soar: impasse types | covered in [`subfields/01_soar_operator_selection_and_impasses/DEEP.md`](subfields/01_soar_operator_selection_and_impasses/DEEP.md) | done, batch 3 (2026-10-26) |
 | Soar: chunking | [`subfields/03_soar_chunking/DEEP.md`](subfields/03_soar_chunking/DEEP.md) | done, batch 3 (2026-10-26) |
-| Soar: other memories and RL | | not started |
-| ACT-R: production selection | | not started |
+| Soar: other memories and RL | [`subfields/04_soar_other_memories_and_rl/DEEP.md`](subfields/04_soar_other_memories_and_rl/DEEP.md) | done, batch 8 (2026-11-01) |
+| ACT-R: production selection | [`subfields/05_act_r_production_selection/DEEP.md`](subfields/05_act_r_production_selection/DEEP.md) | done, batch 8 (2026-11-01) |
 | ACT-R: declarative memory | | not started |
 | ACT-R: production compilation | | not started |
 | Hybrid and connectionist (CLARION, Sigma) | | not started |

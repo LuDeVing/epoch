@@ -1,0 +1,36 @@
+# Synaptic homeostasis / downselection: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| B04.02-U1 | Does a scheduled whole-store prune pass beat add-only on a real multi-episode stream? | Prune pass every N episodes in memory (section 5) | memory | K12, K23; Xiong 2025 (d01-d03), single paper, strict evaluator; RSPM simulated | Add-only vs prune every 20 episodes vs frozen 20-lesson seed; 100-300 episode stream; held-out accuracy, store size | Prune >= add-only minus 1 point, with store at least 30% smaller, on 2 of 3 seeds | High |
+| B04.02-U2 | Which prune rule is best: outcome-linked, use-count, age decay, size protection? | Outcome-linked score as the prune rule (counter per lesson) | memory | K24 single-source (Xiong, 4 agents); K19 age decay never ablated; K04 size protection contested | 4 arms plus random control at equal store size; same stream; held-out accuracy | Winner beats random by 3 or more points and beats next rule by 2 or more points | High |
+| B04.02-U3 | How reliable must the utility signal be before pruning stops helping? | A minimum-verification rule (only prune on code-verified outcomes) | G, memory | K13, K26 contested; 300 labelled outcomes enough (d04); ACE 1 in 5 bad ok (d08) | Inject 0, 10, 20, 50% wrong outcome labels into the prune pass; accuracy vs flip rate | Find the flip rate where pruned falls below add-only; adopt a verified-only rule if it falls below at 20% or less | High |
+| B04.02-U4 | Is there an interior optimum for prune fraction per cycle, and does it depend on store size? | A prune cap per cycle (value from the sweep) | memory | K09 networks only (Robinson, Massey); K27 ACE flat on trigger size; Xiong 66-91% cuts for 0-4 points | Drop 0, 10, 30, 60, 90% per cycle on stores of 20, 100, 500 lessons | A peak below 90% with at least 2 points over 0% on one store size | High |
+| B04.02-U5 | Does failure-triggered demotion hurt on hard task classes? | Cap per cycle plus "failed where others succeeded" rule | G, memory | K25 single-source (RSPM, -19.5 points, one conversation) | Stream with a hard sub-class; no cap vs 20% cap vs cap plus rule; hard-class and overall accuracy | Rule recovers at least half of any loss seen in the no-cap arm | Med |
+| B04.02-U6 | Does prune-plus-merge beat prune-only, and what do merged rules lose? | Merge step with a keep-conditions instruction | memory | K30 contested, no isolating arm; K15 single-source (Kyrkewood dates 3% to 62%) | Delete only vs delete plus merge vs merge only; count rules with lost conditions by code check; accuracy | Merge adds at least 2 points over delete-only and loses conditions on under 10% of rules | Med |
+| B04.02-U7 | Does a supersession check (newer contradicts older) help beyond use-count? | Supersession step in the prune pass | memory | K28 single-source, toy model (SleepGate), decay-only and H2O below 18% | Stream with changing facts (version updates); use-count vs use-count plus supersession; accuracy on newest-fact items | Gain of 5 or more points on changed-fact items, no loss elsewhere | Med |
+| B04.02-U8 | Offline whole-store pass vs per-episode pruning: does recency bias exist? | Offline-only prune schedule | memory | K20, K29 conceptual; AWM indirect (d17) | Prune after each episode vs whole-store pass every 20; also track which lessons survive by age | Offline wins by 2 or more points, or keeps old lessons at a clearly higher rate with no accuracy loss | Med |
+| B04.02-U9 | Do prune plus a small raw-episode buffer beat either alone? | Keep a few raw episodes beside distilled lessons | memory | K10 networks only (Tadros: 48.47 sleep, 79.91 rehearsal, 86.47 both); K11 | Lessons only vs lessons plus 10 raw episodes vs raw only at equal prompt tokens | Combined beats best single arm by 2 or more points | Med |
+| B04.02-U10 | Does an early dip then gain appear over repeated prune cycles? | A warning in the run log: do not judge pruning after one cycle | memory | K08 model only (87 to 75 to 94%); no LLM per-cycle data | Evaluate after 1, 3, 10 cycles on the same stream | Accuracy at cycle 10 exceeds cycle 0 and cycle 1 is below cycle 0 by 1 or more points (or flat) | Low |
+| B04.02-U11 | Is benefit confined to mature, saturated stores? | Trigger pruning only after store size passes a threshold | memory | K02 contested (juvenile null vs adolescent effect); SleepGate fails past about 15 near-duplicates | Prune vs add-only on young (<20) and mature (>200) stores | Gain at mature size at least 2 points larger than at young size | Low |
+| B04.02-U12 | Does offline consolidation before the question beat the same tokens at answer time? | A pre-question consolidation state or pass | S, memory | K17 single-source (Lin 2025, about 5x less test compute; gain tracks predictability) | N tokens offline over the store vs N tokens at answer time; questions from predictable and unpredictable families | Offline wins by 2 or more points on predictable families and does not lose on others | Low |
+| B04.02-U13 | Does a rewrite-vs-delta rule matter for our store size? | Make per-item edits mandatory | memory | K14 single-source (ACE 56.9 vs 70.3; collapse 18,282 to 122 tokens) | Full rewrite of lesson file each cycle vs per-item ADD/EDIT/UPVOTE/DOWNVOTE | Delta arm wins by 3 or more points, or rewrite shows any collapse | Med |
+
+## Open questions we cannot test on our bench yet
+
+- Independent replication of RSPM, SCM, SleepGate, ZenBrain: needs their code and a public benchmark with real model calls. Until then treat their numbers as zero evidence.
+- Whether net synaptic downscaling is real in adult cortex and hippocampus: needs tagged-synapse imaging through a learning episode. Not testable by us.
+- Which synapses shrink (small or large): the two papers disagree on second-hand reading. Only affects the analogy for size-based protection; answer by running U2 with a size-protection arm.
+- ExpeL's remove-at-zero rule, Generative Agents' recency decay and Reflexion's FIFO cap were never ablated alone. A clean ablation needs a stream where the baseline agent already has a store; add arms to U2.
+- Whether a self-judging agent with no ground-truth outcome can prune safely: needs tasks without a checker. Our ARC and brainteaser sets have checkers, so we can only test the verified case and the noisy-label case (U3).
+- Real-user streams with drift: Xiong's shift was a reordered test set. Needs a long, real stream.
+- Training-time analogues (weight downscaling in an LLM): out of scope, we do not train.
+
+## Order to run
+
+1. B04.02-U1 (prune vs add-only at equal tokens). It decides whether anything else here matters; cheapest, and the claim with the largest gain.
+2. B04.02-U2 (outcome-linked vs use-count vs age vs random). Reuses the same stream and store, and fixes the rule if U1 passes.
+3. B04.02-U3 (utility-label noise sweep). Fixes the safety condition (verified outcomes only) before the pass goes near any run without a checker.

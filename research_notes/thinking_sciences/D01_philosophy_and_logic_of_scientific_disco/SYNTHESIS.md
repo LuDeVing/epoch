@@ -119,3 +119,5 @@ Order to run: T1 first (it says where the loop belongs), then T2 with T3 on the 
 **Source audit, 2026-10-26:** the papers behind all 15 established claims of this field were re-opened. 13 confirmed, 2 reworded (D01.01-K01, D01.02-K17), 1 downgraded to single-source (D01.02-K22). E16, which cited K22, was removed from section 2 and moved to Gaps as single lab only. The T7 motivation and the mechanism row "No matched resampling control" rested on K22 alone and are now flagged single-source.
 
 **Audit (code check, 2026-10-31):** D01.06-K06, D01.06-K09, D01.06-K18 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-03):** D01.03-K01 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

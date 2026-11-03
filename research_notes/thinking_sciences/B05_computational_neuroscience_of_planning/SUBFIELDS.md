@@ -23,11 +23,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Cognitive maps | | not started |
+| Cognitive maps | [`subfields/01_cognitive_maps/DEEP.md`](subfields/01_cognitive_maps/DEEP.md) | done, batch 8 (2026-11-01) |
 | Model-free, model-based and successor representation | [`subfields/02_model_free_model_based_and_successor_represen/DEEP.md`](subfields/02_model_free_model_based_and_successor_represen/DEEP.md) | done, batch 6 (2026-10-31) |
 | Replay as offline simulation (Dyna family) | [`subfields/03_replay_as_offline_simulation/DEEP.md`](subfields/03_replay_as_offline_simulation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Prioritised memory access | [`subfields/04_prioritised_memory_access/DEEP.md`](subfields/04_prioritised_memory_access/DEEP.md) | done, batch 7 (2026-11-01) |
-| Map versus value replay | | not started |
+| Map versus value replay | [`subfields/05_map_versus_value_replay/DEEP.md`](subfields/05_map_versus_value_replay/DEEP.md) | done, batch 8 (2026-11-01) |
 | Preplay and replay recordings | | not started |
 | Planning by tree search with pruning | [`subfields/07_planning_by_tree_search_with_pruning/DEEP.md`](subfields/07_planning_by_tree_search_with_pruning/DEEP.md) | done, batch 5 (2026-10-27) |
 | Hierarchical planning, options, subgoal discovery | [`subfields/08_hierarchical_planning_options_subgoal_discove/DEEP.md`](subfields/08_hierarchical_planning_options_subgoal_discove/DEEP.md) | done, batch 7 (2026-11-01) |

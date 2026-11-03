@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Sociology of science and Merton's norms | | not started |
+| Sociology of science and Merton's norms | [`subfields/01_sociology_of_science_and_merton_s_norms/DEEP.md`](subfields/01_sociology_of_science_and_merton_s_norms/DEEP.md) | done, batch 8 (2026-11-01) |
 | Strong Programme and SSK | | not started |
 | Laboratory studies and ANT | | not started |
 | Network epistemology | [`subfields/04_network_epistemology/DEEP.md`](subfields/04_network_epistemology/DEEP.md) | done, batch 7 (2026-11-01) |

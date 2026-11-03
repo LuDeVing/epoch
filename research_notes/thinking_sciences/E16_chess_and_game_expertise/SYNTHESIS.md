@@ -118,3 +118,5 @@ Run order from the UNKNOWNS files: T1, T2, then T3 (subfield 01); T5, then T6 on
 **Source audit, 2026-10-26:** 22 formerly established claims in E16 were re-opened. 19 confirmed, 1 reworded (E16.01-K03), 2 downgraded to single-source (E16.05-K03, E16.05-K18; one opened source each). Downgraded ids: E16.05-K03, E16.05-K18. Rows F10 and F11 keep only their still-established parts; the display-size and cross-domain recall details moved to section 7.
 
 **Audit (code check, 2026-11-01):** E16.06-K03, E16.06-K04, E16.06-K08, E16.06-K09, E16.06-K10, E16.06-K13, E16.06-K18, E16.06-K26, E16.07-K04, E16.08-K01 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-03):** E16.04-K04, E16.04-K07, E16.04-K12, E16.04-K14, E16.04-K25 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

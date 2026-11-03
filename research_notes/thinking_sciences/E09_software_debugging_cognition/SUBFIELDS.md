@@ -35,7 +35,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Hypotheses in debugging | [`subfields/02_hypotheses_in_debugging/DEEP.md`](subfields/02_hypotheses_in_debugging/DEEP.md) | done, batch 3 (2026-10-26) |
 | Mental model of the system | [`subfields/03_mental_model_of_the_system/DEEP.md`](subfields/03_mental_model_of_the_system/DEEP.md) | done, batch 7 (2026-11-01) |
 | Debugging as scientific method | [`subfields/04_debugging_as_scientific_method/DEEP.md`](subfields/04_debugging_as_scientific_method/DEEP.md) | done, batch 7 (2026-11-01) |
-| Program comprehension | | not started |
+| Program comprehension | [`subfields/05_program_comprehension/DEEP.md`](subfields/05_program_comprehension/DEEP.md) | done, batch 8 (2026-11-01) |
 | Tools and questions | | not started |
 | Fault localisation and repair | [`subfields/07_fault_localisation_and_repair/DEEP.md`](subfields/07_fault_localisation_and_repair/DEEP.md) | done, batch 7 (2026-11-01) |
 | Novices and education | | not started |

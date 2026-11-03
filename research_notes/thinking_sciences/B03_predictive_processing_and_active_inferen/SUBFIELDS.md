@@ -16,6 +16,22 @@ Predictive processing says the brain keeps a model of the world, predicts its in
 | Link to variational methods | Negative free energy equals the evidence lower bound used for variational autoencoders | Wikipedia Active inference [V]; Dayan, Hinton, Neal, Zemel | Low | Background |
 | Philosophy and interoception | What predictive models imply for mind and emotion | Clark; Hohwy; Seth | Low | Not relevant |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Hierarchical predictive coding | | not started |
+| Free energy principle | | not started |
+| Active inference decision theory | [`subfields/03_active_inference_decision_theory/DEEP.md`](subfields/03_active_inference_decision_theory/DEEP.md) | done, batch 8 (2026-11-01) |
+| Active inference versus reinforcement learning | [`subfields/04_active_inference_versus_reinforcement_learnin/DEEP.md`](subfields/04_active_inference_versus_reinforcement_learnin/DEEP.md) | done, batch 8 (2026-11-01) |
+| Epistemic value and curiosity | | not started |
+| Structure learning and model reduction | | not started |
+| Precision weighting and attention | | not started |
+| Link to variational methods | | not started |
+| Philosophy and interoception | | not started |
+
 ## Dig into next
 
 **1. Expected-information-gain test selection.**

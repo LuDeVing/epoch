@@ -23,8 +23,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Shannon information, entropy | | not started |
-| Kolmogorov complexity | | not started |
+| Shannon information, entropy | [`subfields/01_shannon_information_entropy/DEEP.md`](subfields/01_shannon_information_entropy/DEEP.md) | done, batch 8 (2026-11-01) |
+| Kolmogorov complexity | [`subfields/02_kolmogorov_complexity/DEEP.md`](subfields/02_kolmogorov_complexity/DEEP.md) | done, batch 8 (2026-11-01) |
 | Statistical MDL | [`subfields/03_statistical_mdl/DEEP.md`](subfields/03_statistical_mdl/DEEP.md) | done, batch 6 (2026-10-31) |
 | Minimum message length | | not started |
 | MDL and Bayes | | not started |

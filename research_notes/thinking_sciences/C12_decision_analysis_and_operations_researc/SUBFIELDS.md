@@ -29,9 +29,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Sequential analysis | [`subfields/04_sequential_analysis/DEEP.md`](subfields/04_sequential_analysis/DEEP.md) | done, batch 7 (2026-11-01) |
 | Metareasoning, value of computation | [`subfields/05_metareasoning_value_of_computation/DEEP.md`](subfields/05_metareasoning_value_of_computation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Bounded rationality, anytime | [`subfields/06_bounded_rationality_anytime/DEEP.md`](subfields/06_bounded_rationality_anytime/DEEP.md) | done, batch 7 (2026-11-01) |
-| MDPs and POMDPs | | not started |
+| MDPs and POMDPs | [`subfields/07_mdps_and_pomdps/DEEP.md`](subfields/07_mdps_and_pomdps/DEEP.md) | done, batch 8 (2026-11-01) |
 | Bandit allocation | [`subfields/08_bandit_allocation/DEEP.md`](subfields/08_bandit_allocation/DEEP.md) | done, batch 7 (2026-11-01) |
-| Learned termination | | not started |
+| Learned termination | [`subfields/09_learned_termination/DEEP.md`](subfields/09_learned_termination/DEEP.md) | done, batch 8 (2026-11-01) |
 | Search theory | | not started |
 
 ## Dig into next

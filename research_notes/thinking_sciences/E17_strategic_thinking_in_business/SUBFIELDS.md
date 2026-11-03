@@ -22,7 +22,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Scenario planning (Shell method) | | not started |
+| Scenario planning (Shell method) | [`subfields/01_scenario_planning/DEEP.md`](subfields/01_scenario_planning/DEEP.md) | done, batch 8 (2026-11-01) |
 | Other scenario traditions | | not started |
 | Scenario evidence | | not started |
 | Planning-performance research | [`subfields/04_planning_performance_research/DEEP.md`](subfields/04_planning_performance_research/DEEP.md) | done, batch 7 (2026-11-01) |

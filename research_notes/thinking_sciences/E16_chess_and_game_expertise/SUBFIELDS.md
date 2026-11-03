@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Thought-process studies | [`subfields/01_thought_process_and_progressive_deepening/DEEP.md`](subfields/01_thought_process_and_progressive_deepening/DEEP.md) | done, batch 4 (2026-10-26) |
 | Progressive deepening and search depth | covered in [`subfields/01_thought_process_and_progressive_deepening/DEEP.md`](subfields/01_thought_process_and_progressive_deepening/DEEP.md) | done, batch 4 (2026-10-26) |
 | Chunking | covered in [`subfields/05_chunks_and_templates/DEEP.md`](subfields/05_chunks_and_templates/DEEP.md) | done, batch 4 (2026-10-26) |
-| Computational chunk models | | not started |
+| Computational chunk models | [`subfields/04_computational_chunk_models/DEEP.md`](subfields/04_computational_chunk_models/DEEP.md) | done, batch 8 (2026-11-01) |
 | Template theory | [`subfields/05_chunks_and_templates/DEEP.md`](subfields/05_chunks_and_templates/DEEP.md) | done, batch 4 (2026-10-26) |
 | Pattern-recognition theory of search | [`subfields/06_pattern_recognition_theory_of_search/DEEP.md`](subfields/06_pattern_recognition_theory_of_search/DEEP.md) | done, batch 7 (2026-11-01) |
 | Recognition-primed decisions | [`subfields/07_recognition_primed_decisions/DEEP.md`](subfields/07_recognition_primed_decisions/DEEP.md) | done, batch 7 (2026-11-01) |

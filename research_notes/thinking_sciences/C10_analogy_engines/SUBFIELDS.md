@@ -26,9 +26,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Structure mapping (SME) | [`subfields/01_structure_mapping_sme/DEEP.md`](subfields/01_structure_mapping_sme/DEEP.md) | done, batch 5 (2026-10-27) |
 | Systematicity | [`subfields/02_systematicity/DEEP.md`](subfields/02_systematicity/DEEP.md) | done, batch 6 (2026-10-31) |
 | Candidate inferences | [`subfields/03_candidate_inferences/DEEP.md`](subfields/03_candidate_inferences/DEEP.md) | done, batch 7 (2026-11-01) |
-| Incremental mapping | | not started |
+| Incremental mapping | [`subfields/04_incremental_mapping/DEEP.md`](subfields/04_incremental_mapping/DEEP.md) | done, batch 8 (2026-11-01) |
 | Analogical retrieval (MAC/FAC) | [`subfields/05_analogical_retrieval/DEEP.md`](subfields/05_analogical_retrieval/DEEP.md) | done, batch 7 (2026-11-01) |
-| Multiconstraint theory | | not started |
+| Multiconstraint theory | [`subfields/06_multiconstraint_theory/DEEP.md`](subfields/06_multiconstraint_theory/DEEP.md) | done, batch 8 (2026-11-01) |
 | Working-memory-limited mapping | | not started |
 | Neural analogy and relation learning | | not started |
 | Vector-space relational similarity | | not started |

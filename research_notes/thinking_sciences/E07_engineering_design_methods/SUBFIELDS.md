@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Systematic design | | not started |
+| Systematic design | [`subfields/01_systematic_design/DEEP.md`](subfields/01_systematic_design/DEEP.md) | done, batch 8 (2026-11-01) |
 | Functional decomposition | [`subfields/02_functional_decomposition/DEEP.md`](subfields/02_functional_decomposition/DEEP.md) | done, batch 5 (2026-10-27) |
 | TRIZ | | not started |
 | Morphological analysis | | not started |

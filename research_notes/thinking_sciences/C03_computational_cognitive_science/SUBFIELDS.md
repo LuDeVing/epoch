@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Bayesian models of cognition | | not started |
+| Bayesian models of cognition | [`subfields/01_bayesian_models_of_cognition/DEEP.md`](subfields/01_bayesian_models_of_cognition/DEEP.md) | done, batch 8 (2026-11-01) |
 | Program induction, language of thought | [`subfields/02_program_induction_language_of_thought/DEEP.md`](subfields/02_program_induction_language_of_thought/DEEP.md) | done, batch 6 (2026-10-31) |
 | Library learning, wake-sleep | [`subfields/03_library_learning/DEEP.md`](subfields/03_library_learning/DEEP.md) | done, batch 4 (2026-10-26) |
 | Language-guided library learning | covered in [`subfields/03_library_learning/DEEP.md`](subfields/03_library_learning/DEEP.md) | done, batch 4 (2026-10-26) |
@@ -31,7 +31,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Rational strategy selection | [`subfields/06_resource_rational_strategy_selection/DEEP.md`](subfields/06_resource_rational_strategy_selection/DEEP.md) | done, batch 4 (2026-10-26) |
 | Probabilistic programming | | not started |
 | Intuitive theories and simulation | | not started |
-| Metacognition models | | not started |
+| Metacognition models | [`subfields/09_metacognition_models/DEEP.md`](subfields/09_metacognition_models/DEEP.md) | done, batch 8 (2026-11-01) |
 | LLMs as cognitive subjects | | not started |
 
 ## Dig into next

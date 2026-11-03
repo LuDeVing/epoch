@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Problem selection | | not started |
+| Problem selection | [`subfields/01_problem_selection/DEEP.md`](subfields/01_problem_selection/DEEP.md) | done, batch 8 (2026-11-01) |
 | Novelty and atypicality | [`subfields/02_novelty_and_atypicality/DEEP.md`](subfields/02_novelty_and_atypicality/DEEP.md) | done, batch 5 (2026-10-27) |
 | Knowledge networks | | not started |
 | Team science | | not started |

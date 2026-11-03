@@ -119,3 +119,5 @@ Order to run: M1 first (cheapest, makes the funnel log). Then M2 (the central op
 **Source audit, 2026-10-26:** the papers behind every established claim were re-opened. Of 26 established claims, 15 were confirmed and 11 reworded (C06.03-K01, K04, K05, K06, K07, K15, K20, K28; C06.07-K01, K04, K12). None were downgraded, so no section 2 row moved to Gaps. The wording above follows the reworded claims; the K28 threshold (60 to 70%) is now a one-benchmark simulation, not a general rule.
 
 **Audit (code check, 2026-11-01):** C06.10-K17 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-03):** C06.01-K05, C06.01-K07, C06.01-K10, C06.01-K12, C06.01-K13, C06.01-K20, C06.01-K23 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

@@ -1,0 +1,37 @@
+# Learned refinement and self-verification: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| C01.06-U1 | Does our agent's own revise step fix more than it breaks? (fix rate c, damage rate d) | Per-class refine gate in S0: refine only classes where c*(1-p) beats d*p | S0, S5, logging | K32 derived formula (assumed c and d); K08 SCoRe d=1.4% vs base 15.8% (single-source) | Log every S5 revise on 200+ items per class; arms: never-refine, always-refine, resample at same tokens; metric: wrong-to-right and right-to-wrong counts, net accuracy | Net gain of refine over resample at least +2 points with paired 95% CI above 0 | High |
+| C01.06-U2 | Is a no-training trigger (verbalized confidence + 2-sample agreement) good enough to gate refinement? | S5 trigger on no-check items, replacing "refine always" | S0, S5 | K29 (single-source, reasoning models, math); K11 ReVISE AUROC 76; K31 fails on small code models | 300 no-check items; compute AUROC of the gate vs correctness; then arms: gate-refine, never, always, resample at same tokens | AUROC at least 0.76 and net accuracy gain at least +2 points over resample | High |
+| C01.06-U3 | Does a "Wait"-style re-check cue after the first answer give net gain on natural errors? | Prompted re-entry step at S5 for no-check items, gated on a disagreement signal | S5 | K21 (single-source; injected errors, non-reasoning models); K28 (+8.41 pp but 23,500 breaks, no matched-token control) | Items with logged first answers; arms: Wait cue, neutral continuation, fresh resample, all same tokens; metric: net accuracy, breaks | Net gain over fresh resample at least +2 points and right-to-wrong under 5% of correct answers | High |
+| C01.06-U4 | Is a code-check trigger always better than a model trigger, and by how much, after cost? | Hard rule: S5 only from a runnable check; budget cap for check time | S4, S5, G2 | K31 (single-source, n=31); K17 established for tests/tools | Code and ARC items; arms: execution-triggered revise, entropy-triggered revise, resample; metric: pass rate per token and per second | Execution-triggered beats resample by at least +3 points per equal tokens | High |
+| C01.06-U5 | Does reflection after the first answer in reasoning-model backends add anything worth its tokens? | Cap or skip second pass after first candidate (G11 sharpening) | G11, S5 | K30 (single-source, 8 open reasoning models, math) | Our reasoning backend, 200 math items; arms: full reasoning, truncated at first candidate answer, resample at saved tokens | Truncation loses under 2 points and saves at least 20% tokens | Med |
+| C01.06-U6 | Can our agent locate its own first wrong step? | Step-level trigger in S5 (regenerate from step), otherwise whole-answer only | S5 | K04, K05 (single-source, 2023 model, simple algorithmic tasks) | 100 labelled traces from our logs; arms: prompted locator, code locator, random location; metric: location accuracy, net repair gain | Prompted locator at least 65% accurate and net repair gain positive on right traces too | Med |
+| C01.06-U7 | Does confidence-weighted voting beat plain voting? | Vote weights from trigger confidence in S7 | S7, G5 | K12 (single-source, +0.7 at 8 samples, near noise) | 4 and 8 samples, 300 items; arms: weighted vs plain vote, same samples; metric: accuracy | At least +1.0 point, paired CI above 0, in two task classes | Low |
+| C01.06-U8 | Do backward checks add anything as vote weights on our items? | Backward check as S7 tie-breaker | S7 | K25 (established but small: +1.67 on arithmetic, 2022-23 models) | Arithmetic and rule items; arms: plain vote, vote weighted by backward check, extra sampled vote at same tokens | Beats extra-sample arm by at least +1 point | Low |
+| C01.06-U9 | Does the refine trigger (any kind) hold up on shifted items and on a different model? | Per-class re-calibration of any trigger threshold in S9 | S0, S9 | K14 and d13 (single paper, +0.6 to +1.2 out of domain, no CIs) | Calibrate a gate on class A, apply to class B and to a second backend model; metric: AUROC drop | AUROC drop under 0.05 across classes and models | Med |
+| C01.06-U10 | Is small-model self-judging replaced well by a stronger external judge only at checks where no code exists? | Use a stronger-model judge for no-check items on small backends | G5, S5 | K15 (established: 10.8% self vs 15.6% GPT-4 verifier) | No-check items, small backend; arms: self judge, stronger judge, count of samples; metric: accuracy at equal total cost including judge | Stronger judge beats counting at equal cost by at least +2 points | Low |
+| C01.06-U11 | Does a model-side finding hold on newer models: does always-refine still overturn correct answers? | Confirms 4b ban on unstructured self-reflection for our current backend | 4b, G1 | K34 (single-source, o1-family table garbled) | Our current backend, 200 items with known answers; arms: "are you sure" prompt vs none; metric: share of correct answers overturned | Overturn rate over 5%: keep ban. Under 1% and net non-negative: relax ban for that backend | Low |
+| C01.06-U12 | What is the shape of the break-even curve on our data? | A table in S0 mapping (p, d, trigger quality) to refine yes/no | S0, S5 | K32 (derived, assumed c) | Offline simulation on logged outputs: vary recall/false-alarm from 0.5 to 10 | Simulated gain matches measured gain within 1 point | Med |
+
+## Open questions we cannot test on our bench yet
+
+- **Learned [stop/refine] trigger replication** on other families at equal tokens vs best-of-N. Needs training budget and labelled train sets; unblock by fine-tuning an open 1B to 8B model on our own item pool.
+- **Learned trigger on reasoning-RL (R1-style) models.** Needs an open reasoning model we can fine-tune; no published test.
+- **Out-of-domain and hard-benchmark robustness** (AIME, GPQA) of learned triggers. Needs a held-out hard set with labels.
+- **Learned stop-or-refine vs adaptive compute (early exit, budget forcing, EAT) at matched tokens.** Needs logit access or an open model.
+- **Hidden-state probes as triggers.** Needs open weights; API backends cannot do it.
+- **Natural vs injected error blind spot.** We need a set of natural own-errors labelled by step to see if Tsui's blind spot is as large for real errors.
+- **2026 frontier models and Huang's negative result.** Needs a current frontier backend and a fair-prompt protocol (T=0, neutral prompt) to settle the Liu dispute.
+- **Why users' errors are fixed and own errors are not.** Mechanism tested only at 7B to 8B; needs open models.
+
+## Order to run
+
+1. **C01.06-U1** (fix and damage rates of our revise step): it costs only logging, and the break-even formula and every other gate depend on c and d.
+2. **C01.06-U4** (execution-triggered revise vs resample on code and ARC): cheapest, most likely to confirm the best-supported rule (K17), and sets the baseline every model-side trigger must beat.
+3. **C01.06-U2** (verbalized confidence + 2-sample agreement gate): the only no-training trigger with a plausible AUROC at or above 0.76 for no-check items; U3 follows once the gate exists.

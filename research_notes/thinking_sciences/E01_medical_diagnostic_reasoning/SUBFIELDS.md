@@ -22,7 +22,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Hypothetico-deductive model | | not started |
+| Hypothetico-deductive model | [`subfields/01_hypothetico_deductive_model/DEEP.md`](subfields/01_hypothetico_deductive_model/DEEP.md) | done, batch 8 (2026-11-01) |
 | Forward and backward reasoning | | not started |
 | Knowledge organisation: illness scripts, categories | [`subfields/03_knowledge_organisation_illness_scripts_catego/DEEP.md`](subfields/03_knowledge_organisation_illness_scripts_catego/DEEP.md) | done, batch 6 (2026-10-31) |
 | Dual-process theory | | not started |

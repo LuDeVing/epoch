@@ -26,8 +26,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Factor structure of abilities | | not started |
-| Fluid reasoning (Gf) | | not started |
-| Working memory and Gf | | not started |
+| Fluid reasoning (Gf) | [`subfields/02_fluid_reasoning/DEEP.md`](subfields/02_fluid_reasoning/DEEP.md) | done, batch 8 (2026-11-01) |
+| Working memory and Gf | [`subfields/03_working_memory_and_gf/DEEP.md`](subfields/03_working_memory_and_gf/DEEP.md) | done, batch 8 (2026-11-01) |
 | Capacity hypothesis test | [`subfields/04_capacity_hypothesis_test/DEEP.md`](subfields/04_capacity_hypothesis_test/DEEP.md) | done, batch 6 (2026-10-31) |
 | Working memory training transfer | | not started |
 | Matrix tests and task analysis | | not started |

@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Active systems consolidation | [`subfields/01_active_systems_consolidation/DEEP.md`](subfields/01_active_systems_consolidation/DEEP.md) | done, batch 6 (2026-10-31) |
-| Synaptic homeostasis / downselection | | not started |
+| Synaptic homeostasis / downselection | [`subfields/02_synaptic_homeostasis_downselection/DEEP.md`](subfields/02_synaptic_homeostasis_downselection/DEEP.md) | done, batch 8 (2026-11-01) |
 | Relevance-based fate of memories | [`subfields/03_relevance_based_fate_of_memories/DEEP.md`](subfields/03_relevance_based_fate_of_memories/DEEP.md) | done, batch 7 (2026-11-01) |
 | Targeted memory reactivation | | not started |
 | Slow-wave and REM roles | | not started |

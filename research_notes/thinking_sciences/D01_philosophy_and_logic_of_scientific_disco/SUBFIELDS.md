@@ -25,8 +25,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Abduction and inference to the best explanation | [`subfields/01_abduction_and_ibe/DEEP.md`](subfields/01_abduction_and_ibe/DEEP.md) | done, batch 4 (2026-10-26) |
 | Proofs and refutations (conjecture refinement) | [`subfields/02_proofs_and_refutations/DEEP.md`](subfields/02_proofs_and_refutations/DEEP.md) | done, batch 4 (2026-10-26) |
-| Research programmes | | not started |
-| Falsificationism | | not started |
+| Research programmes | [`subfields/03_research_programmes/DEEP.md`](subfields/03_research_programmes/DEEP.md) | done, batch 8 (2026-11-01) |
+| Falsificationism | [`subfields/04_falsificationism/DEEP.md`](subfields/04_falsificationism/DEEP.md) | done, batch 8 (2026-11-01) |
 | Anomalies and paradigm change | | not started |
 | Heuristic programming and machine discovery | [`subfields/06_heuristic_programming_and_machine_discovery/DEEP.md`](subfields/06_heuristic_programming_and_machine_discovery/DEEP.md) | done, batch 6 (2026-10-31) |
 | Methodologies of discovery | | not started |

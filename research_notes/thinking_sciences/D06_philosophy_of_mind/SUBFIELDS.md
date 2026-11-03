@@ -17,6 +17,23 @@ Philosophy of mind asks what minds are, what mental states are about, and what c
 | Extended and situated mind | Tools and environment as part of cognition | Clark and Chalmers (1998) | Med | Memory and tools: external notes and code as part of the thinker |
 | Mental causation and reasons | Do reasons cause thoughts | Davidson; Kim | Low | Background only |
 
+## Deep research
+
+One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what the agent should take, section 8 the tests. `UNKNOWNS.md` lists what we don't know and must test before adding.
+
+| Subfield | Deep document | Status |
+|---|---|---|
+| Theories of mental representation | [`subfields/01_theories_of_mental_representation/DEEP.md`](subfields/01_theories_of_mental_representation/DEEP.md) | done, batch 8 (2026-11-01) |
+| Language of thought | | not started |
+| Connectionism and distributed representation | | not started |
+| Imagery debate | | not started |
+| Computational theory of mind | | not started |
+| Global workspace theory | | not started |
+| Other consciousness theories | | not started |
+| Metacognition and higher-order representation | | not started |
+| Extended and situated mind | | not started |
+| Mental causation and reasons | | not started |
+
 ## Dig into next
 
 **1. Representation theories.** Questions: (a) What properties make a representation good for a task (structure-preserving, supports needed operations)? (b) Can they become a test that S2 or O6 outputs must pass (e.g. recompute the answer from the new form)? Evidence: examples where a change of representation solved a task, with code-checkable criteria.

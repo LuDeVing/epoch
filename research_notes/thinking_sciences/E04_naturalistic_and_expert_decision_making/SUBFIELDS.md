@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Recognition-primed decision (RPD) | [`subfields/01_rpd_and_mental_simulation/DEEP.md`](subfields/01_rpd_and_mental_simulation/DEEP.md) | done, batch 4 (2026-10-26) |
 | Mental simulation | covered in [`subfields/01_rpd_and_mental_simulation/DEEP.md`](subfields/01_rpd_and_mental_simulation/DEEP.md) | done, batch 4 (2026-10-26) |
-| Sensemaking, data-frame model | | not started |
+| Sensemaking, data-frame model | [`subfields/03_sensemaking_data_frame_model/DEEP.md`](subfields/03_sensemaking_data_frame_model/DEEP.md) | done, batch 8 (2026-11-01) |
 | Pre-mortem | | not started |
 | Conditions for valid intuition | [`subfields/05_conditions_for_valid_intuition/DEEP.md`](subfields/05_conditions_for_valid_intuition/DEEP.md) | done, batch 4 (2026-10-26) |
 | Cognitive task analysis | | not started |

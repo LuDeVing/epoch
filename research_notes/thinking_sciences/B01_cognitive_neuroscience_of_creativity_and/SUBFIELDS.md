@@ -23,9 +23,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Network neuroscience of creative cognition | | not started |
+| Network neuroscience of creative cognition | [`subfields/01_network_neuroscience_of_creative_cognition/DEEP.md`](subfields/01_network_neuroscience_of_creative_cognition/DEEP.md) | done, batch 8 (2026-11-01) |
 | Generation versus evaluation | [`subfields/02_generation_versus_evaluation/DEEP.md`](subfields/02_generation_versus_evaluation/DEEP.md) | done, batch 5 (2026-10-27) |
-| Insight as a process | | not started |
+| Insight as a process | [`subfields/03_insight_as_a_process/DEEP.md`](subfields/03_insight_as_a_process/DEEP.md) | done, batch 8 (2026-11-01) |
 | Insight neural signatures | | not started |
 | Metacognition of insight | [`subfields/05_metacognition_of_insight/DEEP.md`](subfields/05_metacognition_of_insight/DEEP.md) | done, batch 6 (2026-10-31) |
 | Cognitive conflict and impasse | | not started |

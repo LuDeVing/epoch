@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Conceptual metaphor theory | | not started |
+| Conceptual metaphor theory | [`subfields/01_conceptual_metaphor_theory/DEEP.md`](subfields/01_conceptual_metaphor_theory/DEEP.md) | done, batch 8 (2026-11-01) |
 | Conceptual blending | [`subfields/02_conceptual_blending/DEEP.md`](subfields/02_conceptual_blending/DEEP.md) | done, batch 7 (2026-11-01) |
 | Blend network types | | not started |
 | Computational blending | [`subfields/04_computational_blending/DEEP.md`](subfields/04_computational_blending/DEEP.md) | done, batch 7 (2026-11-01) |

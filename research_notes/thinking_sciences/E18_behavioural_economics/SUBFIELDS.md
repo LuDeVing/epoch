@@ -25,7 +25,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Bounded rationality and satisficing | [`subfields/01_bounded_rationality_and_satisficing/DEEP.md`](subfields/01_bounded_rationality_and_satisficing/DEEP.md) | done, batch 7 (2026-11-01) |
 | Ecological rationality, adaptive toolbox | [`subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md`](subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md) | done, batch 5 (2026-10-27) |
-| Heuristics and biases | | not started |
+| Heuristics and biases | [`subfields/03_heuristics_and_biases/DEEP.md`](subfields/03_heuristics_and_biases/DEEP.md) | done, batch 8 (2026-11-01) |
 | Prospect theory | | not started |
 | Choice architecture and nudging | | not started |
 | Nudge evidence | | not started |

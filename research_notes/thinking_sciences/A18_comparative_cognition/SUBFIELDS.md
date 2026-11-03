@@ -31,14 +31,14 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Causal reasoning and transfer tasks | [`subfields/01_causal_reasoning_and_transfer_tasks/DEEP.md`](subfields/01_causal_reasoning_and_transfer_tasks/DEEP.md) | done, batch 6 (2026-10-31) |
 | Alternative-explanation controls | [`subfields/02_alternative_explanation_controls/DEEP.md`](subfields/02_alternative_explanation_controls/DEEP.md) | done, batch 5 (2026-10-27) |
 | Limits found | [`subfields/03_limits_found/DEEP.md`](subfields/03_limits_found/DEEP.md) | done, batch 7 (2026-11-01) |
-| Tool manufacture and use | | not started |
+| Tool manufacture and use | [`subfields/04_tool_manufacture_and_use/DEEP.md`](subfields/04_tool_manufacture_and_use/DEEP.md) | done, batch 8 (2026-11-01) |
 | Prospection and mental time travel | | not started |
 | Social cognition in animals | | not started |
 | Insight in animals | | not started |
 | Learning theory | | not started |
 | Methods: parsimony | [`subfields/09_methods_parsimony/DEEP.md`](subfields/09_methods_parsimony/DEEP.md) | done, batch 7 (2026-11-01) |
 | Evolution and convergence | | not started |
-| Relational reasoning gap | | not started |
+| Relational reasoning gap | [`subfields/11_relational_reasoning_gap/DEEP.md`](subfields/11_relational_reasoning_gap/DEEP.md) | done, batch 8 (2026-11-01) |
 
 ## Dig into next
 

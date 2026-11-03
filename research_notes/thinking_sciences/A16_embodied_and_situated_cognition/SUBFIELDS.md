@@ -30,7 +30,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Embedded cognition | [`subfields/02_embedded_cognition/DEEP.md`](subfields/02_embedded_cognition/DEEP.md) | done, batch 6 (2026-10-31) |
 | Epistemic action | [`subfields/03_epistemic_action/DEEP.md`](subfields/03_epistemic_action/DEEP.md) | done, batch 5 (2026-10-27) |
 | Extended mind | [`subfields/04_extended_mind/DEEP.md`](subfields/04_extended_mind/DEEP.md) | done, batch 7 (2026-11-01) |
-| Distributed cognition | | not started |
+| Distributed cognition | [`subfields/05_distributed_cognition/DEEP.md`](subfields/05_distributed_cognition/DEEP.md) | done, batch 8 (2026-11-01) |
 | Gesture and thinking | | not started |
 | Enactivism | | not started |
 | Replacement / dynamical approaches | | not started |

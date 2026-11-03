@@ -145,3 +145,5 @@ Order: T1 and T2 first (they decide whether search and escalation stay). T13 and
 **Source audit, 2026-10-26:** of 33 established claims in this field that were re-opened against their papers, 16 were confirmed, 9 were reworded (A02.01-K07, K23, K26, K28; A02.04-K01, K18, K27, K35, K36) and 8 were downgraded to single-source: A02.01-K09, A02.01-K11, A02.01-K25, A02.01-K29, A02.02-K24, A02.02-K26, A02.04-K06, A02.04-K21. Three more claims were downgraded earlier by a code check and are also single-source: A02.01-K01, A02.01-K02, A02.02-K01. Established claims now total 25 (8, 4, 13).
 
 **Audit (code check, 2026-11-01):** A02.05-K20, A02.05-K21, A02.06-K01, A02.06-K41 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-03):** A02.08-K11, A02.08-K17 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

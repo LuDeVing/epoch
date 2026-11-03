@@ -24,10 +24,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Early, attenuation and late selection | | not started |
 | Perceptual load theory | [`subfields/02_perceptual_load_theory/DEEP.md`](subfields/02_perceptual_load_theory/DEEP.md) | done, batch 7 (2026-11-01) |
-| Working memory guidance and biased competition | | not started |
+| Working memory guidance and biased competition | [`subfields/03_working_memory_guidance_and_biased_competitio/DEEP.md`](subfields/03_working_memory_guidance_and_biased_competitio/DEEP.md) | done, batch 8 (2026-11-01) |
 | Attentional capture, bottom-up versus top-down | [`subfields/04_attentional_capture_bottom_up_versus_top_dow/DEEP.md`](subfields/04_attentional_capture_bottom_up_versus_top_dow/DEEP.md) | done, batch 5 (2026-10-27) |
 | Three attention networks | | not started |
-| Attentional control theory and executive functions | | not started |
+| Attentional control theory and executive functions | [`subfields/06_attentional_control_theory_and_executive_func/DEEP.md`](subfields/06_attentional_control_theory_and_executive_func/DEEP.md) | done, batch 8 (2026-11-01) |
 | Feature integration and visual search | | not started |
 | Divided and sustained attention | | not started |
 | Developmental and cultural attention | | not started |

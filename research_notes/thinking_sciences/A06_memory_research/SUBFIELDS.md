@@ -29,9 +29,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Interference | [`subfields/03_interference/DEEP.md`](subfields/03_interference/DEEP.md) | done, batch 7 (2026-11-01) |
 | Cue overload and fan effect | [`subfields/04_cue_overload_and_fan_effect/DEEP.md`](subfields/04_cue_overload_and_fan_effect/DEEP.md) | done, batch 5 (2026-10-27) |
 | Schemas | [`subfields/05_schemas/DEEP.md`](subfields/05_schemas/DEEP.md) | done, batch 7 (2026-11-01) |
-| Semantic networks and spreading activation | | not started |
+| Semantic networks and spreading activation | [`subfields/06_semantic_networks_and_spreading_activation/DEEP.md`](subfields/06_semantic_networks_and_spreading_activation/DEEP.md) | done, batch 8 (2026-11-01) |
 | Retrieval as consolidation | | not started |
-| Retrieval failure view of amnesia | | not started |
+| Retrieval failure view of amnesia | [`subfields/08_retrieval_failure_view_of_amnesia/DEEP.md`](subfields/08_retrieval_failure_view_of_amnesia/DEEP.md) | done, batch 8 (2026-11-01) |
 | Working memory | | not started |
 | Retrieval-induced forgetting; memory errors | | not started |
 | Case-based reasoning | [`subfields/11_case_based_reasoning/DEEP.md`](subfields/11_case_based_reasoning/DEEP.md) | done, batch 7 (2026-11-01) |

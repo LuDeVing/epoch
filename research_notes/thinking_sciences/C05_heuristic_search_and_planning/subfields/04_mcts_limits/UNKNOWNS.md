@@ -1,0 +1,32 @@
+# MCTS limits: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| C05.04-U1 | Does our judge or averaged scoring accept a plan with one fatal refutable step? | Rule: every top candidate gets a code refutation attempt before S8 | S4/S8 | K01, K25, K30; chess-only, 2010, single-source; LLM version unmeasured | 20 fatal-refutation items; arms: sample+vote, sample+LLM-judge, sample+code refutation; metric: share of answers with the fatal flaw | Judge arm accepts flaw at least 15 points more often than code-refutation arm | High |
+| C05.04-U2 | Does selecting by worst test (minimum) beat selecting by mean test pass? | S7 groups by worst-case unfitted test, not mean | S7 | K03, K01; b08, b09; games only | Items with 3+ unfitted tests per candidate; arms: mean, min, vote; metric: final accuracy | Min beats mean by 3+ points with no loss elsewhere | High |
+| C05.04-U3 | What is our checker's false-positive rate, and where does more sampling stop helping? | Per-class attempt cap set from measured curve (default under 10) | G2/G3, S3 | K14 established for others (b19, c20, d07); ours unmeasured | Weak checker vs strong checker; attempts 1..32; metric: strong-checker pass rate | Curve peaks, then falls by 2+ points; cap = peak | High |
+| C05.04-U4 | Does an S6 idea tree beat k independent attempts at equal tokens, with a code check as value? | Keep S6 tree for classes with a test signal; drop elsewhere | S6, G12 | K10 (established, ARC favours sampling), K11, K18; mixed | ARC subset plus 20 code items; arms: k attempts, tree with code value, tree with LLM-judge value; metric: unfitted pass rate | Tree with code value beats k attempts by 3+ points on code; judge-value tree is not better than k attempts | High |
+| C05.04-U5 | Can our judge or PRM-like scorer be fooled (master keys, style suffixes), and does G5 blinding close it? | Adversarial audit as a gate before any judge-based pruning | G3/G5 | K27 established for others (d05, d06); K08 patches fix one family only; ours untested | 50 wrong answers plus master keys; arms: raw judge, blind length-normalised judge; metric: false-positive rate; re-run on held-out attack family | Blind judge FP under 10% on held-out family | High |
+| C05.04-U6 | Does keeping 2+ diverse branches beat pruning to the top score as depth grows? | S6 tree keeps top-2 by diversity | S6 | K31, K21; d14 abstract only, c25 preprint | 40 items with noisy scorer; arms: top 1, top 2, top 2 diverse; metric: accuracy | Top-2 diverse beats top-1 by 3+ points at depth 2 | Med |
+| C05.04-U7 | Does a code check on the first committed step save tokens or raise accuracy? | First-step check in S3/S4 | S3/S4 | K30; d12 (injected errors, not natural) | Items where first step is checkable; arms: no early check, early check; metric: accuracy and tokens to answer | Accuracy +3 points or tokens -20% at equal accuracy | Med |
+| C05.04-U8 | Does adaptive width (go wider or deeper by posterior) beat a fixed 3-child tree? | Replace fixed width in S6 | S6 | K11; b16, c17; one group, mixed on ARC | 30 planning/code items; arms: fixed width 3, adaptive, repeated sampling; metric: pass rate | Adaptive beats fixed by 3+ points and sampling on items with tests | Med |
+| C05.04-U9 | Which depth and width settings are task specific for our model? | Per-class settings in the class record (S0) | S0, section 5 class record | K20, K28 established elsewhere (b06, d09, d10); small models | 30 planning items; width 2/3/5 x depth 1/2/3; metric: accuracy at equal tokens | Best setting differs between classes by 3+ points; then store per class | Med |
+| C05.04-U10 | Does gating search by difficulty bin beat always-on search? | S0 difficulty gate for S6 | S0, G12 | K13; a12 (MATH levels, older models) | Bin items by plain pass rate; arms: always-on, middle bins only, none | Gated beats always-on by 2+ points | Med |
+| C05.04-U11 | Does depth vs breadth depend on the model's answer diversity? | Probe diversity at S0; choose breadth for low-diversity models | S0, G11 | K29; d11 (Pass@16, one model tuned) | 16 iid samples for diversity; then depth vs breadth at equal tokens | Depth wins only when diversity is low in at least 70% of splits | Low |
+| C05.04-U12 | Does sequential backtracking beat parallel sampling for some task classes? | Operator-choice rule by class structure | S0/S6 | K22; c16 single paper | Sudoku-like and CountDown-like items; arms: backtracking, parallel | Class-dependent winner with 5+ point gap in both directions | Low |
+| C05.04-U13 | Does a depth cap tied to scorer noise help? | Depth cap derived from measured scorer noise | S6 | K16 established for planners; K31 theory | Plan lengths 2-10; arms: depth 1-4 with per-depth check vs end check | Per-depth check holds success at length 6+ within 10 points of length 4 | Low |
+
+## Open questions we cannot test on our bench yet
+- Natural trap density in reasoning or debugging trees. Needs a labelled corpus of search trees with ground-truth refutations; none exists (critique gap 8).
+- Whether any tree search beats sampling on frontier long-chain reasoning models. Needs access to such a model at matched tokens and a bench with exact checks (gap 9).
+- Whether code-checked values rescue R1, rStar and ReST-MCTS style search at equal tokens. Needs a trained step value; our scaffold does not train (d08 has no equal-token comparison).
+- The exact crossover of verifier false-positive rate where tree search wins. Needs a family of verifiers with controlled error rates (d16).
+- Whether an evaluator's blind-spot class survives patching, as in Go. Needs an adversary trained against our judge; costly (a09).
+- Policy-probability-based enumeration (LevinTS). Needs token or step probabilities from the deployed model.
+
+## Order to run
+1. U1 (fatal-refutation items): cheapest, and decides whether trap blindness exists for LLM judges at all.
+2. U3 (checker false-positive sweep): sets the attempt cap and the rest of the bench depends on knowing it.
+3. U4 (tree vs k attempts with code value): decides whether the S6 tree is worth its tokens.

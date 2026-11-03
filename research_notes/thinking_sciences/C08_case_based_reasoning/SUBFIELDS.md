@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | The 4R cycle | [`subfields/01_the_4r_cycle/DEEP.md`](subfields/01_the_4r_cycle/DEEP.md) | done, batch 5 (2026-10-27) |
-| Dynamic memory, early CBR | | not started |
+| Dynamic memory, early CBR | [`subfields/02_dynamic_memory_early_cbr/DEEP.md`](subfields/02_dynamic_memory_early_cbr/DEEP.md) | done, batch 8 (2026-11-01) |
 | Deployed CBR | | not started |
 | Case representation | [`subfields/04_case_representation/DEEP.md`](subfields/04_case_representation/DEEP.md) | done, batch 6 (2026-10-31) |
 | Retrieval and similarity | [`subfields/05_retrieval_and_similarity/DEEP.md`](subfields/05_retrieval_and_similarity/DEEP.md) | done, batch 7 (2026-11-01) |
@@ -32,7 +32,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Case-base maintenance | [`subfields/07_case_base_maintenance/DEEP.md`](subfields/07_case_base_maintenance/DEEP.md) | done, batch 7 (2026-11-01) |
 | Retention policy | [`subfields/08_retention_policy/DEEP.md`](subfields/08_retention_policy/DEEP.md) | done, batch 7 (2026-11-01) |
 | Retrieval as a bandit | [`subfields/09_retrieval_as_a_bandit/DEEP.md`](subfields/09_retrieval_as_a_bandit/DEEP.md) | done, batch 7 (2026-11-01) |
-| Failure-driven CBR | | not started |
+| Failure-driven CBR | [`subfields/10_failure_driven_cbr/DEEP.md`](subfields/10_failure_driven_cbr/DEEP.md) | done, batch 8 (2026-11-01) |
 
 ## Dig into next
 

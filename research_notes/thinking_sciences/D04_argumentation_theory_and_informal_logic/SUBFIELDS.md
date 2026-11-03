@@ -22,9 +22,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Argument standardisation and diagramming | | not started |
+| Argument standardisation and diagramming | [`subfields/01_argument_standardisation_and_diagramming/DEEP.md`](subfields/01_argument_standardisation_and_diagramming/DEEP.md) | done, batch 8 (2026-11-01) |
 | Argument schemes and critical questions | [`subfields/02_argument_schemes_and_critical_questions/DEEP.md`](subfields/02_argument_schemes_and_critical_questions/DEEP.md) | done, batch 5 (2026-10-27) |
-| Fallacy theory | | not started |
+| Fallacy theory | [`subfields/03_fallacy_theory/DEEP.md`](subfields/03_fallacy_theory/DEEP.md) | done, batch 8 (2026-11-01) |
 | Pragma-dialectics | | not started |
 | Argument evaluation criteria | | not started |
 | Formal argumentation frameworks (AI) | | not started |

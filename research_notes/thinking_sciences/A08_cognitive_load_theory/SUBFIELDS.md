@@ -29,8 +29,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Expertise reversal | [`subfields/04_expertise_reversal/DEEP.md`](subfields/04_expertise_reversal/DEEP.md) | done, batch 7 (2026-11-01) |
 | Germane load | | not started |
 | Measurement of load | | not started |
-| Critiques of the three-load model | | not started |
-| Working-memory limits and chunking | | not started |
+| Critiques of the three-load model | [`subfields/07_critiques_of_the_three_load_model/DEEP.md`](subfields/07_critiques_of_the_three_load_model/DEEP.md) | done, batch 8 (2026-11-01) |
+| Working-memory limits and chunking | [`subfields/08_working_memory_limits_and_chunking/DEEP.md`](subfields/08_working_memory_limits_and_chunking/DEEP.md) | done, batch 8 (2026-11-01) |
 | Collective working memory and evolutionary educational psychology | | not started |
 | Task-type limits | | not started |
 

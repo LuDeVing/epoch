@@ -1,0 +1,38 @@
+# Theory comparison: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| A12.05-U1 | Does a reframe operator need a stated search criterion for the new space to pay off? | O4/O6 always called together with a criterion line | O4, O6, S6 | K03; b06, b07; single-source, human-only | Plain vs reframe-only vs reframe+criterion; 40 constrained-construction items, 10 needing reframe; solve rate, tokens per solve | (c) beats (b) by 10pp or more on reframe items, and (c) does not lose to plain on the rest | High |
+| A12.05-U2 | Does a relative stall rule (gap / remaining budget, or no new facts in k steps) beat a fixed step cap? | Relative stall detector as the S6 trigger | S6 | K21, K18; d04, a09; single-source, model of humans | Fixed cap vs relative vs no-progress-in-k; same item set plus unlimited-move items; solve rate and tokens before trigger | Same or higher solve rate with at least 15% fewer tokens, or 5pp higher at equal tokens | High |
+| A12.05-U3 | Does an endorse step cut verification failure (right candidate written, then dropped) at lower cost than an extra sample? | Endorse check on every dropped candidate | S4 harvest, S8 | K11, K24; b19, d07, d10; single-source, older models (riddles) | Harvest-and-test vs harvest plus endorse vs one extra plain sample; riddle-style and situation-puzzle items; gold-in-trace-rejected rate, solve rate | Verification failure falls by a third or more and solve gain per token beats the extra-sample arm | High |
+| A12.05-U4 | Does the Ormerod interaction exist in LLMs (a large goal-distance cue lifts the hardest class)? | Goal-distance cue check before a reframe is spent | S2, S6 | K01; a07, b03; single-source, human-only | Factorial: loose/tight x small/large value x standard/reverse tautology; 20+ fresh items per cell; plain, reframe, cue, both; per-cell solve rate | Cue arm lifts standard tautology by 15pp or more, interaction test p<.05 | Med |
+| A12.05-U5 | Does a variation tracker (force a different strategy when attempts repeat) help? | Similarity check in S3 with forced different direction | S3, G anti-repetition | K04; a14, b07; single-source, human-only, post hoc | No tracker vs tracker at a similarity threshold; fresh multi-step items; solve rate, distinct strategies | Gain of 5pp or more on repeat-prone items and no loss elsewhere | Med |
+| A12.05-U6 | Does a gate (sample disagreement or low consistency) make a second pass pay on puzzles, where published gains sit on a floor? | Gated second pass in S5/S6 | S5, S6 | K13; b25, c18, d05; single-source, small models, floor effect | Spontaneous vs scheduled vs gated second pass; math with headroom plus puzzle items with a stronger model; wrong-to-right minus right-to-wrong | Gated net gain 3pp or more over scheduled with equal tokens, scheduled arm not better | Med |
+| A12.05-U7 | Does frame memory keyed by problem-type tag beat untagged memory? | Type tag on lesson lines in memory | Memory | K07; a20, b16, d15; single-source, human-only | No memory vs untagged vs tagged, shown after first attempt; sequences of 5 same-type vs mixed; accuracy on trials 2-5 | Tagged beats untagged by 10pp on same-type sequences and does not hurt mixed ones | Med |
+| A12.05-U8 | Is an entropy-based or step-time stall proxy usable, fitted per domain? | Per-domain stall threshold | S6 | K22, K20; d06, d03; single-source, sign flips by domain | Fit a threshold on a held-out half per task family; compare with relative rule (U2); solve rate and false-trigger rate | Beats the relative rule of U2 by 5pp on at least 2 families, with false triggers under 20% | Low |
+| A12.05-U9 | Is the staged design (stall trigger plus operators) better than either part alone? | Keep both parts as designed, or drop the weaker | S6, O1-O8 | K06; b13, b14, a24; contested, humans and older | Ablation: trigger only, operators only, both; hard-item set; solve rate at equal tokens | "Both" beats the better single part by 5pp; otherwise drop the weaker part | High |
+| A12.05-U10 | Does restating and relaxing a constraint beat acting more (extra tool calls) on tautology-class items? | Prefer O4 over extra actions at an impasse | O4, S6 | K19; d01, d02; single-source, human, post hoc | More tool calls vs restate-and-relax at equal tokens; tautology items | Restate arm wins by 10pp or more | Low |
+| A12.05-U11 | Does reducing branching or context length change when a stall trigger helps (WM-search reading)? | Trigger sensitivity tied to branching factor | S6 | K05; b08, b09, b10, d12; contested, human-only | Items with small vs large move space; trigger vs no trigger; interaction on solve rate | Interaction p<.05 in the predicted direction (trigger helps more in small spaces) | Low |
+| A12.05-U12 | Can public insight items be used at all, or are they contaminated for current models? | Fresh-item rule in bench design (already adopted as a cost-free rule), plus a contamination probe | Bench | K16, K23; c13-c16, d08; contested | Same trigger arms on public classic items vs freshly written paraphrased items; compare solve rates | Public-item rate exceeds fresh-item rate by 20pp or more, then drop public items from trigger tests | Med |
+
+## Open questions we cannot test on our bench yet
+
+- **Jones 2003 per-cell numbers.** Only the abstract and reconstructed counts (7/13 vs 12/13, N=39) are known. Needs the published table (library copy or author). Until then the "RCT predicted better" claim has no weight beyond one small study.
+- **PRODIGI (Ormerod 2024).** Seen only as a summary. Needs the paper to see what it replaces in CSP.
+- **Eye-fixation analogue.** Humans show an abrupt late attention shift. We have no instrument that reads a model's attention to a task element. Unblock with a candidate-set change-point log per step (needs a trace logger on every run).
+- **Floor effects in published LLM gate tests.** The puzzle nulls came from 1.5B to 8B models with base accuracy of 0.02% to 9.7%. Unblock with a stronger model and items with headroom (also U6).
+- **Ormerod interaction in LLMs.** Needs a generator for matchstick-style items with controlled chunk tightness and value gap. Text form only, to remove perception.
+- **Causal role of an Aha-like shift in models.** Detection uses words like "wait" and can miss unspoken restructuring. Needs a behavioural measure of candidate-set change, not lexical cues.
+- **Thought-log faithfulness.** Verification failure is counted by string match in logs that may not reflect internal computation (G10). Needs a check that does not read the reasoning text, such as forced-candidate probing.
+- **Pre/post-cutoff contamination split.** No per-item contamination measure exists. Needs items dated after each model's cutoff.
+- **Human data on repeated measures.** Matchstick work uses one problem per participant. Whether effects hold when the same solver sees many items is unknown.
+
+## Order to run
+
+1. **U1 (reframe plus criterion):** cheapest, largest human effect (72% vs 7-21%), and it decides how the O4/O6 operators are written.
+2. **U2 (relative stall rule vs step cap):** the trigger is the core of S6 and G1; the test reuses the U1 item set.
+3. **U3 (endorse step):** the verification-failure rate reaches 39% of wrong answers in published logs, and the test needs no new items beyond the riddle and situation-puzzle sets.

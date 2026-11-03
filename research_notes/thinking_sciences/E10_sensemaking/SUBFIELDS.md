@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Weick's organisational sensemaking | | not started |
 | Reviews that map the field | | not started |
 | Sensemaking in defence and safety | | not started |
-| Analyst sensemaking | | not started |
+| Analyst sensemaking | [`subfields/07_analyst_sensemaking/DEEP.md`](subfields/07_analyst_sensemaking/DEEP.md) | done, batch 8 (2026-11-01) |
 | Manipulated sensemaking | | not started |
 
 ## Dig into next
