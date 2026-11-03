@@ -351,3 +351,10 @@ All arms get the same total tokens (prompt plus output, setup cost counted, G7).
 - [V] Kinney (2025) LLM-generated semantic networks predict semantic priming effects. https://journalpub.escholarship.org/cognitivesciencesociety/article/49
 - [V] Meghdadi, Duff, Demberg (2026) Integrating language model embeddings into ACT-R. https://www.frontiersin.org/journals/language-sciences/
 - [V] Colombi and Strapparava (2025) Semantic priming in GPT. https://ceur-ws.org/Vol-4112/28_main_long.pdf
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 10 established claims: 8 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A06.06-K01** (now single-source: the sources are not independent). d=.26 vs .51 comes only from Lucas (2000), which is listed twice (a11 and b01 are the same paper); Hutchison (2003) is a critique of Lucas that reports no d values, so the numeric claim rests on a single meta-analysis (numbers themselves match).
+- **A06.06-K22** (reworded: the sources support less). Neither source says social-priming replication failures 'do not apply'; Wikipedia only reports that the 2012 failures concerned behavioural priming and cites Meyer 2014 (a short letter) saying semantic priming is well established, and the Semantic Priming Project (Hutchison et al. 2013) only shows a large dataset exists, not that it is immune or independently replicated. Corrected claim: The 2012 replication failures concerned behavioural (social) priming; semantic priming is described as well established (Meyer 2014, via Wikipedia) and has a large dataset in the Semantic Priming Project (1,661 targets, 768 subjects, 4 universities), so those failures are not known to extend to word-level semantic priming.

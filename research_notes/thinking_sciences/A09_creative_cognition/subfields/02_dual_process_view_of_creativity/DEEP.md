@@ -383,3 +383,9 @@ Use a non-same-family judge or a human sample for open tasks (c09 and c10 used s
 - [M] GenSelect and best-of-N selectors. https://arxiv.org/abs/2504.16891 [d14]
 - [M] NexusAI and Conversational Agents as Catalysts. https://arxiv.org/pdf/2604.10575 [d15]
 - [M] Search log, incubation and interleaved schedules in LLMs (no source found) [d17]
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A09.02-K08** (now single-source: the sources are not independent). All numbers come from Padmakumar et al. alone (listed twice); Lu et al. only introduced denial prompting and reports no matching result. Numbers do match (OLMo-Instruct, asking-for-novelty and denial prompting pooled).

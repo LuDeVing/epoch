@@ -315,3 +315,10 @@ All arms get the same token budget (setup cost counted, G7). Use fresh items wri
 - [M] Knoblich, Ohlsson, Haider and Rhenius (1999) Constraint relaxation and chunk decomposition. https://research.ceu.edu/en/publications/constraint-relaxation-and-chunk-decomposition-in-insight-problem-/ (c23)
 - [M] Bai et al. (2025, AAAI) metacognitive prompting on BRAINTEASER, via Mizumoto (c16); Latif et al. (2024) via Mizumoto (c22). Second-hand only.
 - Search notes (not sources): a25, c25.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 2 established claims: 1 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A12.05-K14** (reworded: the sources support less). Naeini et al. supports red-herring fixation and few-shot gains that stay far below humans; Haq et al. (six problems per condition, three models) reports that zero-shot CoT improves exact match for all models while raising step counts, with no finding that CoT 'helps only partly'. Corrected claim: LLMs are fixated by red herrings and few-shot examples bring only gradual gains that stay far below human scores (Naeini et al. 2023); a small study of mathematical equivalence problems (Haq et al. 2025, six problems per condition) suggests mental set, with in-context examples not reducing step counts and zero-shot chain of thought raising accuracy while taking more steps than the human one-step shortcut.
+- **A12.05-K09** (now single-source: only one opened source, code check).

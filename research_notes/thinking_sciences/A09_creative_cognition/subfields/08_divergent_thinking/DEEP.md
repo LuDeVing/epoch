@@ -331,3 +331,11 @@ All arms get the same total tokens, counted including setup (G7). Use at least 3
 - [M] Gonthier and Besancon 2024; Miroshnik and Shcherbakova, via Barbot 2026 (b07)
 - [M] Acar, Runco, Park (2020) explicit instructions meta-analysis. https://eprints.whiterose.ac.uk/209749/2/Supplemental_Material_accepted_pre_format_version.pdf (b23, d16)
 - [M] DT and evaluative skill meta-analysis (2022). https://eld.bl.uk/catalog/100167803796_0x000001 (b24)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A09.08-K01** (reworded: the sources support less). Haase and Hanel (listed as support) found no mean originality difference between chatbots and humans, and in Bellemare-Pepin only some LLMs (GPT-4, 'several leading LLMs') beat the human DAT mean while Gemini Pro did not; fluency was matched only in the Hubert AUT; evidence is from 2023-24 chatbots and mostly GPT-4. Corrected claim: In 2023-24 studies, some chatbots (mainly GPT-4, also ChatGPT-3 and Copy.ai in Koivisto and Grassini) scored higher than the average human on semantic-distance originality in the AUT (fluency controlled or matched) and in the DAT (GPT-4 over humans; other models such as Gemini Pro were indistinguishable from humans, and Haase and Hanel found no mean AUT difference); in one-shot tasks the best humans still matched or beat the best AI (Koivisto and Grassini; top human decile/quartile beat every DAT model in Bellemare-Pepin).
+- **A09.08-K05** (reworded: the sources support less). r = -.56 (humans) and -.61 (GPT-3) is confirmed in Stevenson, but neither source shows originality rising with temperature or prompts while usefulness falls; Peeperkorn measures novelty vs coherence/typicality, not usefulness. Corrected claim: Originality and utility were negatively correlated within responses (r = -.56 for humans, r = -.61 for GPT-3, Stevenson et al 2022); higher temperature gave slightly more novel but more incoherent stories (Peeperkorn et al 2024), so open-mode metrics should score both novelty and usefulness or coherence.
+- **A09.08-K15** (now single-source: only one opened source, code check).

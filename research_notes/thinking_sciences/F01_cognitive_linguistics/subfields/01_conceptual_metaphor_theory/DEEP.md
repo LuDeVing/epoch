@@ -288,3 +288,10 @@ All arms at equal tokens (cap the longest arm, trim or pad others to the same bu
 - [M] Chang, Qu and Li (2026) Metaphors We Compute By (abstract only). https://arxiv.org/abs/2604.04732
 - [V] Liu and Lupyan (2026) The unity of sense and mind (first 100k characters). https://pmc.ncbi.nlm.nih.gov/articles/PMC12769545/
 - [M] Brugman 2019 / Lynott 2014 / Boroditsky 2000 full-text attempts (403 and 404). https://onlinelibrary.wiley.com/doi/full/10.1111/lang.12313
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F01.01-K07** (reworded: the sources support less). Both listed sources exist (Lynott abstract confirms N=861 null; Chabris abstract confirms triple-size null replications; per-study ORs and r values not checked in full text), but neither covers the head-heart moral judgement replications (N=203, 304), so that part is unsupported by the listed evidence. Corrected claim: Embodied-metaphor priming effects replicate poorly for warmth and prosocial choice: original OR=3.52 (N=50) versus pooled replication N=861 with no effect (OR=0.77), and two Chabris field replications (N=128 and 177) with effects near zero (r about 0).
+- **F01.01-K09** (now single-source: the sources are not independent). Every number and finding (71.3%, priming asymmetry, line-length asymmetry, Aymara/Mandarin/Spain-Morocco variation) comes from one review chapter (Samuel et al. 2017) summarising Boroditsky and others; Teuscher 2008 supplies no figure used in the claim, and the ranking as having the best behavioural support is not stated in the sources.

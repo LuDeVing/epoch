@@ -303,3 +303,12 @@ All arms get equal total tokens including setup (G7). Report accuracy, bias scor
 - [V] Alleviating choice-supportive bias in LLM with reasoning dependency generation (2025). https://arxiv.org/abs/2512.03082 (c21)
 - [V] Cognitive biases in LLMs: a systematic quantitative assessment and debiasing, Electronics 2026. https://doi.org/10.3390/electronics15112428 (d18)
 - [V] Algorithmic anchoring (SSRN 6366838). https://doi.org/10.2139/ssrn.6366838 (d19)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A03.05-K19** (reworded: the sources support less). Malberg et al. report evidence of all 30 biases only in at least some of the 20 LLMs, not that LLMs generally show all 30; 'human-like' is not tested there; sources are abstract-level. Corrected claim: Instruction tuning and RLHF can add or strengthen decoy, certainty and belief biases (Itzhak et al.); across 20 LLMs, evidence was found for each of 30 cognitive biases in at least some models (Malberg et al.); small changes to vignettes sent GPT-3 far astray (Binz and Schulz).
+- **A03.05-K01** (now single-source: only one opened source, code check).
+- **A03.05-K07** (now single-source: only one opened source, code check).
+- **A03.05-K08** (now single-source: only one opened source, code check).

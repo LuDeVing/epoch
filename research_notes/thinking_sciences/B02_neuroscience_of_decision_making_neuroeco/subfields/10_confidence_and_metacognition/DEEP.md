@@ -353,3 +353,10 @@ Run order and priorities are in UNKNOWNS.md.
 - [V] Hiremath and Hiremath (2026) Calibration drift under reasoning. https://arxiv.org/abs/2606.11211 (d19)
 
 Note: a16, a24, b27, c05 and c16 carry little or no extracted data; a07, c12, c25 and d18 were not read in full. Do not cite numbers from them.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 7 established claims: 5 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B02.10-K08** (reworded: the sources support less). DeepConf 99.9% (offline, tail confidence, 10% retention) and the 84.7% token cut (online DeepConf-low, 97.9% accuracy) are different settings, so the sentence implies both gains come together; CISC, P(True) and Adaptive-Consistency numbers match. Corrected claim: Confidence-weighted voting cuts cost: CISC needs over 40% fewer paths; P(True) SC needs 18.6 samples to match CISC at 10 (46% saving); Adaptive-Consistency cuts samples up to 7.9x with under 0.1% accuracy loss; DeepConf reaches 99.9% on AIME 2025 (GPT-OSS-120B, offline) vs 97.0% majority, and separately its online mode cuts tokens up to 84.7% (at 97.9% accuracy).
+- **B02.10-K11** (number corrected). Lin et al. Multi-answer MSE: finetuned verbalized numbers 22.0, constant baseline 34.1; 37.4 is the zero-shot answer-logit baseline. The 1,000-example claim is Kapoor et al., not Lin et al. Corrected claim: Models trained to express uncertainty can generalise: finetuned verbalized numbers beat a constant baseline out of distribution (Multi-answer MSE 22.0 vs 34.1; zero-shot answer logit 37.4); a thousand graded examples suffice for finetuned calibration (Kapoor et al. 2024), and prompting alone is insufficient.

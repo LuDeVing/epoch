@@ -418,3 +418,10 @@ All urls were opened by first-pass agents (opened:true in the evidence files). T
 | DeepSeek-AI 2025, DeepSeek-R1 | [V] | https://arxiv.org/abs/2501.12948 |
 | Shojaee et al. 2025, The illusion of thinking | [V] | https://arxiv.org/abs/2506.06941 |
 | Opus and Lawsen 2025, The illusion of the illusion of thinking | [V] | https://arxiv.org/abs/2506.09250 |
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 12 established claims: 11 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C01.01-K07** (number corrected). SVAMP +11.0, AQuA +12.2, StrategyQA +6.4, ARC-c +3.9 are code-davinci-002 gains (the abstract's headline numbers), not PaLM; PaLM-540B is SVAMP +7.6, AQuA +12.5. Also Stechly says self-consistency was 'generally worse' (5 samples), and '40x tokens' is 40 sampled paths, not a measured token cost. Corrected claim: Self-consistency (sample many chains, majority vote) adds large gains over greedy CoT: PaLM-540B GSM8K 56.5 -> 74.4 (+17.9), AQuA +12.5, SVAMP +7.6; code-davinci-002 gets SVAMP +11.0, AQuA +12.2, StrategyQA +6.4, ARC-c +3.9. It samples 40 paths (about 40x the generation cost), and on Blocksworld table-to-stack (5 samples) it was generally worse than plain CoT.
+- **C01.01-K02** (now single-source: only one opened source, code check).

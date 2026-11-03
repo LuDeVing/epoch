@@ -354,3 +354,9 @@ All arms at equal tokens (count setup, check and retry tokens). Metric: pass rat
 | Laban et al. (2025) LLMs get lost in multi-turn conversation | [V] | https://arxiv.org/abs/2505.06120 |
 | Lenat et al. (2025) A novel skill modeling approach (COCOM table) | [V] | https://arxiv.org/abs/2509.12851 |
 | Stanton, Ashleigh, Roberts, Xu (2001) Testing Hollnagel's COCOM | [M] | https://bura.brunel.ac.uk/handle/2438/1680 |
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 12 established claims: 11 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E13.01-K10** (reworded: the sources support less). Numbers match (95 developers, 55.8% less time, p=0.0017; 16 developers, 246 tasks, 19% more time), but the trials also differ in year, tool, population and task, and neither paper tests that task or expertise explains the sign difference (Peng only reports larger gains for less experienced developers). Corrected claim: Two randomised trials point in opposite directions: GitHub Copilot cut completion time 55.8% on a self-contained HTTP-server task (95 developers, Peng et al. 2023), while allowing AI made 16 experienced developers 19% slower on 246 real issues in mature repos (METR 2025); the studies differ in tool, year, task and population, so the cause of the difference is not established.

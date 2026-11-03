@@ -335,3 +335,15 @@ Minimum size: 50 items per condition (Haq's 6 per cell was unusable, K22). Pre-r
 - [V] Gu and Shi (2025) Einstellung Rigidity Index. https://arxiv.org/abs/2510.00475 (c24)
 - [M] Trapped by Expectations: functional fixedness in LLM-enabled chat search (2025). https://arxiv.org/abs/2504.02074 (c26, listing only)
 - [V] arXiv title searches for Einstellung and functional fixedness (c28). https://arxiv.org/search/?query=Einstellung&searchtype=title
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 6 established claims: 2 confirmed as written, 4 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A10.02-K01** (unverifiable). Paper exists (Cognitive Psychology 2008; Europe PMC abstract confirms the set effect in experts and an effect equal to about 3 SD lower skill), but the full-text PDF host was down or blocked on every attempt, so the 100/50/18/0% figures could not be checked; a search snippet only corroborated that Grand Masters all found it and Candidate Masters 0%.
+- **A10.02-K07** (now single-source: the sources are not independent). Numbers match Pope-Caldwell & Washburn 2022 (89.6% = 100 minus 10.45%; 70.6% = 24 of 34; 29.4% of informed still did not adopt), but the claim rests on that one study (listed twice); Ninomiya et al. is a different water-jar study with no shortcut-viewing data.
+- **A10.02-K12** (now single-source: the sources are not independent). Numbers match Gigerenzer & Goldstein 1996 Table 2 (.658 Take The Best vs .657 regression, 83 German cities simulation), but that is the only source for them (listed twice); Fenwick et al. is a Bayesian-reasoning paper that does not report them.
+- **A10.02-K14** (now single-source: the sources are not independent). Percentages match Macnamara, Hambrick & Oswald 2014 (confirmed via Crossref abstract), but Burgoyne et al. 2019 is a follow-up by the same authors (Macnamara, Hambrick) that only cites those figures, so there is one lab and one source.
+- **A10.02-K10** (now single-source: only one opened source, code check).
+- **A10.02-K15** (now single-source: only one opened source, code check).
+- **A10.02-K17** (now single-source: only one opened source, code check).

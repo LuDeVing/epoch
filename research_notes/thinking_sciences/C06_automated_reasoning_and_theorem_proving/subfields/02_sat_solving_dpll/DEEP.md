@@ -307,3 +307,9 @@ All arms get the same total token budget, including setup, repairs and solver-ca
 - [M] LLM-guided evolutionary search for constraint model reformulation (d13). https://arxiv.org/abs/2607.28268
 - [M] FSTA 2026 trace-learning lead (d12): no title, do not cite.
 - [M] Search status notes (d15, d16).
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 10 established claims: 9 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C06.02-K17** (reworded: the sources support less). G4SATBench findings are accurate (b09 and b10 are the same paper), but the general claim ignores that the original NeuroSAT paper reports generalisation to larger problems (25% of satisfiable SR(200)) and new domains by running more iterations, and G4SATBench says SR-trained models generalise better. Corrected claim: G4SATBench finds that NeuroSAT and GGNN struggle to generalise across distributions in most cases and show limited generalisation to larger formulas (better when trained on SR), and that GNNs learn a heuristic akin to greedy local search and fail to learn the CDCL heuristic; the original NeuroSAT paper reported more favourable transfer to larger problems when run for more iterations.

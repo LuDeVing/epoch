@@ -339,3 +339,11 @@ All arms get equal tokens (G7). The tracker's own tokens are counted inside the 
 | ChatGPT meta-analyses (ERIC EJ1501298; EJ1478249) (d23) | [M] | http://dx.doi.org/10.1111/jcal.70096 |
 
 Note on versions: critique.md corrections are folded in above (LKT table rows in c13; Scarlatos columns in b19, use c19; "+20.0%" is relative; Bastani GPT Tutor gave no positive unaided gain; b28 DOI). Evidence lines c13 and b19 stay in the jsonl files as written; do not cite them for those numbers.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 6 established claims: 4 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A05.08-K06** (reworded: the sources support less). Hooshyar et al. report 0.8789 vs 0.5782 only as Youden-optimal ROC thresholds used for sequence analysis; they do not show that raising the threshold reduces the optimism bias. Corrected claim: LLMs show strong optimistic bias when judging learners: Llama-3.3-70B was right 85.4% of the time when the student was correct but 12.6% when wrong; zero-shot Llama 3 8B recall on incorrect answers was only 20%. The bias is model-specific (Qwen3-80B-Instruct 56.5% vs 51.0%); fine-tuning raised low-performer recall from 20% to 64% but AUC stays below DKT (0.77 vs 0.83), and the zero-shot model's Youden-optimal threshold (0.8789 vs 0.5782 for DKT) shows its probabilities are inflated.
+- **A05.08-K08** (number corrected). In LLM-KT's ablation (Table 3) the 3.08-point AUC cost of removing question information (0.8291 vs 0.7983) is on Nips2020, not Assist2009 (where it is 0.8870 vs 0.8788, about 0.8 points). Corrected claim: Question text is where LLM-based tracing gets its edge: removing question information costs 3.08 AUC points on Nips2020 (LLM-KT, 0.8291 vs 0.7983; about 0.8 points on Assist2009), NTKT on Eedi rises from 77.06 AUC with IDs only to 90.32 with full question text, and text-based tracers (LKT) pre-trained on one dataset transfer to a new dataset without training while ID-based DKT drops to 0.5.
+- **A05.08-K14** (now single-source: only one opened source, code check).

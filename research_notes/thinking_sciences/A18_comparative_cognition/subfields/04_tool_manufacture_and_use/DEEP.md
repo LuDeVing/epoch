@@ -341,3 +341,13 @@ LLM and AI studies
 - [V] Stengel-Eskin et al., ReGAL: https://arxiv.org/abs/2401.16467
 - [M, second-hand] Berlot-Attwell, Rudzicz, Si 2024 (library learning claim, read in AllocBench related work): https://arxiv.org/abs/2607.23332
 - [M] Europe PMC search log for LLM-on-crow-task studies (none found): https://europepmc.org/
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 6 established claims: 3 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A18.04-K01** (now contested: a source does not say this). Neither listed source (Hunt 2000 abstract, Emery and Clayton 2004) gives 5550 tools, 21 sites, 3 designs or between-population design differences; those figures come from Hunt and Gray 2003 (Proc R Soc B 270:867), which I verified but which is not cited.
+- **A18.04-K06** (now contested: a source does not say this). Compound tool (4 of 8, transfer, 70.8% vs 20.8%, Fisher p values) and metatool criterion 16/20 are confirmed in von Bayern 2018 and Gruber 2019, but 'metatool use 4 of 7 on trial 1' is in neither listed source (it would come from Taylor et al. 2007, which is not cited); also Gruber 2019 shows 4 of 11 crows reaching 16/20 with few errors and others needing up to 46 trials, not a first-trial pass.
+- **A18.04-K09** (now contested: a source does not say this). The magpie paper supports 'significant only in late trials' and mentions (via Hennefield et al.) learning from success but not failure, but neither listed source reports a pooled analysis of 5 articles / 32+ experiments or a no-transfer finding; Jelbert 2015 is a narrative review that predates that meta-analysis.
+- **A18.04-K05** (now single-source: only one opened source, code check).
+- **A18.04-K13** (now single-source: only one opened source, code check).

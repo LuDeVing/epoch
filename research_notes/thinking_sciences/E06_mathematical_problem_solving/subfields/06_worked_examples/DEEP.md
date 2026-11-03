@@ -345,3 +345,10 @@ All arms at equal total tokens (G7): the arm with an example gets a smaller reas
 - [V] An et al. (2024) LEMA, Learning from mistakes. https://arxiv.org/abs/2310.20689 (d12)
 - [V] Zelikman et al. (2022) STaR. https://arxiv.org/abs/2203.14465 (d16)
 - [M] Gap-search attempts d17, d18, d19: no source found.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 9 established claims: 7 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E06.06-K10** (reworded: the sources support less). Numbers match Chen et al. (SKiC), but removing the skill text costs only 4 points (98.0 to 94.0) versus 16 for removing grounding (82.0), so 'both parts are needed' is too strong; the claim also rests on one paper, with the second listed paper (subgoal theorem proving) not testing it. Corrected claim: In one study (Chen et al. 2024, ChatGPT, dynamic programming task), putting skill definitions and worked examples that cite those skills in one prompt gave 98.0 vs 72.0 for CoT; grounding the steps in skills mattered most (82.0 without grounding) while dropping the skill text cost only 4 points (94.0).
+- **E06.06-K20** (reworded: the sources support less). Numbers match (70% of ChatGPT hints passed checks; human-hint groups significant pre-post gain, ChatGPT groups not in v1; 56.6% of 150 tutoring dialogs fully correct), but neither study measures the quality of human-authored solutions, so 'less reliable than human ones' is not shown for quality; the ChatGPT groups also began with much higher pre-test scores (confound), and the '32% failure in another report' is traced to no listed source. Corrected claim: LLM-authored worked solutions and hints are often flawed: in Pardos and Bhandari (v1, N=77) 70% of ChatGPT hints passed manual quality checks, and only the human-hint groups showed a significant pre-to-post gain (ChatGPT groups started with higher pre-test scores); in Gupta et al. 2025 only 56.6% of 150 LLM tutoring dialogs were fully correct, though 90% were rated high quality.

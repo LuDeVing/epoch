@@ -279,3 +279,10 @@ Pre-register the DSL and the stop rule before T1-T3. The expected effects are gu
 - [M] Greenblatt (2024) Getting 50% on ARC-AGI with GPT-4o. https://blog.redwoodresearch.org/p/getting-50-sota-on-arc-agi-with-gpt (d10)
 - [M] Sterkenburg (2026) Solomonoff induction. https://arxiv.org/abs/2603.20274 (d13)
 - [M] Negative search results d14, d15, d16 (syntheses over the sources above).
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 9 established claims: 9 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C11.02-K03** (now single-source: only one opened source, code check).
+- **C11.02-K27** (now single-source: only one opened source, code check).

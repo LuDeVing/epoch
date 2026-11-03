@@ -335,3 +335,10 @@ All arms get the same token budget, counting every pass. Setup tokens count (G7)
 - [M] Sunavsky and Poppenk (2020) Neuroimaging predictors of creativity. https://pubmed.ncbi.nlm.nih.gov/31654758/ [d14]
 - [V] Rosenbaum et al. (2025) Scaffolding creativity. https://arxiv.org/abs/2510.26490 [d16]
 - [M] Beaty, Seli, Schacter (2019) Curr Opin Behav Sci landing page. https://doi.org/10.1016/j.cobeha.2018.12.016 [c25]
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 6 established claims: 6 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B01.01-K04** (now single-source: only one opened source, code check).
+- **B01.01-K09** (now single-source: only one opened source, code check).

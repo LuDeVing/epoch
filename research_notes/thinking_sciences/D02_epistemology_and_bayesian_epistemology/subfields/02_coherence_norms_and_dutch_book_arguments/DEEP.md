@@ -325,3 +325,13 @@ All arms get equal tokens (G7). Setup tokens count.
 - [V] Xiong et al. (2024). https://arxiv.org/abs/2306.13063 (d09)
 - [V] Robinson and Wingate (2023). https://arxiv.org/abs/2210.12353 (d10)
 - d15 is a search-status line, not a source.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 8 established claims: 7 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D02.02-K21** (reworded: the sources support less). Numbers match, but Imran et al. conclude BCC rises significantly with scale (r=0.906 vs log parameters), so 'improves only weakly' is the researcher's own spin on small absolute gaps; batch>BP is supported by the Apple paper (Chen et al., not Williamson). Corrected claim: Bayes-consistency of in-context belief updates rises with model size but from modest levels (Llama 3 1.24B 0.658 to 8B 0.739; BCC vs log parameters r=0.906), and batch updating usually beats sequential belief propagation.
+- **D02.02-K11** (now single-source: only one opened source, code check).
+- **D02.02-K13** (now single-source: only one opened source, code check).
+- **D02.02-K14** (now single-source: only one opened source, code check).
+- **D02.02-K15** (now single-source: only one opened source, code check).

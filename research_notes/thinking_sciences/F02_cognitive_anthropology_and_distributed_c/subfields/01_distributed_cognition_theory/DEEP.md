@@ -283,3 +283,9 @@ All arms at equal total tokens (code, tool output and verifier calls counted). O
 - [V, weak] Cognitive Workspace, arXiv 2508.13171. https://arxiv.org/abs/2508.13171
 
 Links to parallel subfields (not covered here): Joint cognitive systems; Chain-of-thought prompting; Learned refinement and self-verification; Tool manufacture and use; Consensus and premature agreement; Confidence and metacognition. Earlier F02 folders: 03_cognitive_offloading, 05_cognitive_artefacts_and_cockpit_studies, 06_external_representations, 07_epistemic_actions.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F02.01-K22** (number corrected). All accuracy figures match Table 1 of Tran and Kiela, but the paper covers three model families (Qwen3, DeepSeek-R1-Distill-Llama, Gemini 2.5; four models since Flash and Pro are both Gemini), not four families. Corrected claim: At matched thinking tokens a single agent is the best default on multi-hop QA across three model families (four models: Qwen3-30B, R1-Distill-Llama-70B, Gemini-2.5-Flash and Pro): mean accuracy at 1000 tokens single 0.418 vs debate 0.388, roles 0.381, sequential 0.379, subtask-parallel 0.369, ensemble 0.333; multi-agent leads only at 100 tokens or under heavy context corruption.

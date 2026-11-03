@@ -358,3 +358,9 @@ Placebo (T13): add a noise-revision arm to B1, B2, B4 and B10. If a real challen
 - [M] Lee et al. (2025) Amplifying minority voices. https://arxiv.org/abs/2502.06251 (c21, snippet only)
 
 **Links to parallel subfields (not covered here):** Debiasing by training; Debiasing by structure (pre-mortem, reference class); Analysis of competing hypotheses; Good Judgment Project; Consensus and premature agreement; Dialectical reasoning; Falsificationism; Confidence and metacognition; Learned refinement and self-verification; Scenario planning; Surprisingly popular method.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E12.03-K03** (number corrected). Kamoi's survey supports the external-feedback point, but CRITIC with tools beats CRITIC w/o Tool by 1.6 to 8.0 EM points across tasks and backbones (text-davinci-003: +8.0, +5.4, +3.8; ChatGPT: +6.8, +1.6, +7.2), not a uniform 4 to 8. Corrected claim: Self-correction works when feedback comes from a reliable external tool (code, search, tests); CRITIC with tools beats the same loop without tools by about 2 to 8 EM points (text-davinci-003 and ChatGPT, AmbigNQ/TriviaQA/HotpotQA).

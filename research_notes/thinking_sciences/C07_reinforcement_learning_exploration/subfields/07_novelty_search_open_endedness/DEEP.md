@@ -298,3 +298,12 @@ All tests: both arms use the same total tokens (prompt plus completion, setup co
 42. [V] Jiang et al. 2025, Artificial Hivemind. https://arxiv.org/abs/2510.22954 (d12, d13).
 43. [V] Panickssery, Bowman and Feng 2024, LLM evaluators recognize and favor their own generations. https://arxiv.org/abs/2404.13076 (d14).
 44. [M] "Sampling Is Not Curiosity", NeurIPS 2026 poster listing, https://neurips.cc/virtual/2026/poster/140072 (listed in SUBFIELDS.md, snippet only).
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C07.07-K13** (number corrected). Panickssery et al. report GPT-4 is 73.5% accurate at distinguishing its own summaries from other LLMs' and humans' (self-recognition), not that it picks its own text 73.5% of the time; the other numbers (72.7%, 92.2%, 0.833 vs 0.800, 61.1-71.4%) match. Corrected claim: The judges used in LLM open-endedness systems are only moderately reliable: OMNI-EPIC success detector 72.7% agreement with 50 humans; ACD 92.2% of tasks valid; QDAIF human-AI agreement 0.833 vs human-human 0.800. Self-judging adds bias: GPT-4 is 73.5% accurate at recognising its own summaries and self-preference strength is linearly correlated with self-recognition; pairwise LLM judging reaches 61-71% on paper acceptance; judge-human agreement is lowest on similar-quality items.
+- **C07.07-K23** (reworded: the sources support less). The sources compare goal-only RL with goal plus novelty/rarity bonuses (Song et al.: bonus needs a baseline, naive UCB did not help test performance; He et al.: GRPO sharpens and underperforms base sampling at large N; Yue et al.: base beats RL at large k), but none tests novelty-only RL, so 'beats either alone' is wider than the evidence. Corrected claim: Adding a novelty bonus to goal-only LLM RL can help: an answer-novelty bonus needed a baseline to improve test pass@k (naive UCB did not), and rewarding rare-but-correct proofs raised pass@N where goal-only GRPO sharpened and lost to base sampling at large N; goal-only RL narrows coverage (base beats RL at large k, e.g. 128-256). Novelty-only LLM RL and adaptive-weight rules (as in NSRA-ES) were not tested in these sources.
+- **C07.07-K06** (now single-source: only one opened source, code check).
+- **C07.07-K18** (now single-source: only one opened source, code check).

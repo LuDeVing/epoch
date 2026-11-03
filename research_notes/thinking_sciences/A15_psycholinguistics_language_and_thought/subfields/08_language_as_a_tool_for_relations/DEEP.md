@@ -294,3 +294,12 @@ All arms get the same total token budget; name-writing calls count. Use at least
 - [M] Mahowald et al. (2024) Dissociating language and thought in LLMs. https://pmc.ncbi.nlm.nih.gov/articles/PMC11416727/ (b25)
 - [M] INLG 2025 (2025.inlg-main.28) analogical reasoning fragile. https://preview.aclanthology.org/ingest-luhme/2025.inlg-main.28.pdf (d14)
 - [M] Second-hand via other papers, originals not opened: Rattermann & Gentner 1998; Christie & Gentner 2014; Hoyos et al. 2016; Bassok, Chase & Martin 1998; Gentner & France 1988; Gentner & Namy 1999; Namy & Gentner 2002; Dessalegn & Landau 2008; Loewenstein & Gentner 2001; Lupyan, Rakison & McClelland 2007; Lupyan & Spivey 2008, 2010; Gentner et al. 2013 (a06, a07, a09-a11, a15, a18, c22, c23).
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 2 established claims: 1 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A15.08-K03** (reworded: the sources support less). In Jamrozik and Gentner, label position mattered only for labels at test (after the passage n.s., p=.188); at encoding before vs after did not differ (3.19 vs 3.40 relational matches), and the 1600 ms decay comes from a perceptual 'five' search task (Lupyan and Spivey), not relational labelling. Corrected claim: In Jamrozik and Gentner (2020), test labels helped only when placed before the test passage (labels after the passage did not, p=.188), while at encoding the position (before or after) made no clear difference. In a separate perceptual search task (Lupyan and Spivey 2010), a spoken label's benefit disappeared when it preceded the display by more than about 1600 ms.
+- **A15.08-K05** (now single-source: only one opened source, code check).
+- **A15.08-K14** (now single-source: only one opened source, code check).
+- **A15.08-K15** (now single-source: only one opened source, code check).

@@ -350,3 +350,12 @@ Stop rule (G7): an element stays only if it beats the plain arm at equal tokens 
 - [V] Deng et al. (2023), Rephrase and Respond. https://arxiv.org/pdf/2311.04205 (d12)
 
 Source counting notes: WildFrame (b21, c01-c03) is one paper with eleven LLMs; the "eight" in c01 is the annotator count. Echterhoff (b16, c14-c16) is one paper. Siev et al. (a22, b05) is one body of work. Bizer-Zezelj-Luguri (a12, b04, a23) is one paper seen through three secondary sources.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 9 established claims: 7 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A15.02-K02** (now single-source: the sources are not independent). Numbers verified (3.90 vs 3.43, N=451 after exclusions, Study 3 p=.146, Study 4 p=.026, ambivalence drop), but both papers are from Petty's lab (Bizer, Larsen, Petty; Teeny and Petty) and no outside replication is listed.
+- **A15.02-K09** (number corrected). WildFrame reports r>=0.52 for all eleven LLMs; 0.52 to 0.61 is only the range across the GPT models (GPT-3.5 to GPT-5-mini), which the authors call the least human-correlated family. Corrected claim: LLM framing sensitivity is not simply human-like in direction: allow/forbid shifts in Tjuatja 2024 were often opposite to humans (Llama2-7b -60.4, GPT-3.5 +25.3); Braun 2025 finds an LLM 'no' bias rather than human acquiescence; in WildFrame (eleven LLMs) all models correlate with human reframing shifts at r>=0.52 (GPT models lowest, 0.52 for GPT-3.5 to 0.61 for GPT-5-mini), so response to naturally occurring reframing is more human-like than the survey-bias results.
+- **A15.02-K01** (now single-source: only one opened source, code check).
+- **A15.02-K07** (now single-source: only one opened source, code check).

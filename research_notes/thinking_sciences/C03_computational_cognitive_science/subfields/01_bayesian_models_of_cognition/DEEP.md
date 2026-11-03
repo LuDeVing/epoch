@@ -398,3 +398,11 @@ All arms get equal total tokens (the plain arm gets extra samples to match). Set
 - [M] Tauber et al. (2017). https://doi.org/10.1037/rev0000052
 - [M] Sanborn & Chater (2016). https://doi.org/10.1016/j.tics.2016.10.003
 - [M] Heuristic-anchored Bayesian sampler (2026) and The myth of the Bayesian brain (2025), via europepmc search pages.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C03.01-K17** (now single-source: the sources are not independent). All numbers (number game R2=0.95, logical concepts R2=.81, Zendo .57 vs .10) come from two papers by the same lab (Ellis 2023; Piriyakulkij, Langenfeld, Le, Ellis 2024), and the Wong et al. papers are conceptual with no matching numbers; the figures themselves match the sources, and the 'far better than direct LLM' contrast is vs GPT-4 / ReAct baselines from those same papers.
+- **C03.01-K22** (reworded: the sources support less). Sources are position papers (Griffiths 2020; Griffiths, Zhu, Grant, McCoy 2023 argue Bayesian and neural models sit at different Marr levels and are complementary; Perfors et al. 2011 proposes rational process models as a bridge), so 'best used' is the authors' argument, not an established finding, and two of the three authors are one lab. Corrected claim: Griffiths and colleagues argue that Bayesian models are useful at the computational level for describing what a network implicitly assumes (priors, inductive biases), with resource-rational or rational process models proposed as the bridge to process-level accounts (Griffiths 2020; Griffiths et al. 2023; Perfors et al. 2011); this is a position, not an empirical result.
+- **C03.01-K13** (now single-source: only one opened source, code check).

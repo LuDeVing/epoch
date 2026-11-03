@@ -365,3 +365,10 @@ Marked [V] opened (substantial text read in a research session) or [M] snippet o
 - [M] TU Delft thesis (2026), fault localization in LLM-based multi-agent systems, https://repository.tudelft.nl/record/uuid:871ed180-d4a9-4aef-b5bc-007cdf1ceac7 (b27)
 - [M] AgentLocate search snippet, https://www.alphaxiv.org/abs/2607.07989 (b26; superseded by the opened arXiv text)
 - Search notes (no source): a21, c27, d15, d16, d17 (negative searches; rate limits hit)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C09.04-K03** (reworded: the sources support less). Greiner et al. say the pruning rule applies only when some conflict is a strict superset of another, and the loss occurs when a smaller conflict is found after a larger one was used to label a node; the claim states the direction backwards ('a superset of a conflict seen earlier'). The LLM-contradictions-are-non-minimal part is flagged as inference and is not in the sources. Corrected claim: The bug only bites when conflicts are non-minimal, i.e. when the conflict finder returns a conflict that is a proper subset of one already used to label a node (a smaller conflict arriving after a larger one); whether LLM-produced contradictions are often non-minimal is an unmeasured inference.
+- **C09.04-K14** (reworded: the sources support less). Sources show ENT, SPL and MPS (most probable singleton) perform comparably (median savings 50/52/52%, not significantly different), so entropy/split are not shown to work 'best'; the 50/52/52% figures are DynamicHS runtime savings over HS-Tree, not a comparison among selection rules. Corrected claim: In sequential diagnosis, queries chosen by entropy, split-in-half or most-probable-singleton heuristics all narrow diagnoses and gave similar DynamicHS median runtime savings over HS-Tree (50/52/52%); in ontology debugging, entropy-based query selection needed significantly fewer queries than split-in-half.

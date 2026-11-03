@@ -432,3 +432,9 @@ Run each on at least 2 model families and with thinking on and off. Report per-i
 - [V] Bamman et al. (2024) classification with LLMs in cultural analytics. https://arxiv.org/pdf/2410.12029v1 (a24: read, does not use the theory; c26: snippet only)
 - [M] Moell et al. (2025) DeepSeek R1 diagnostic failure analysis. https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2025.1616145/pdf (c27)
 - [M] Rao et al. (2026) 21 LLMs on differential diagnosis, JAMA Network Open, via news summary. https://www.epocrates.com/online/article/llms-struggle-with-clinical-reasoning-despite-strong-final-answers (c28; collapse to one answer, accuracy about 80-90%)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E04.03-K04** (now single-source: the sources are not independent). The key sentence appears only in Heuer (1999), listed twice from the same chapter, where it is an extrapolation ('presumably happens in real life') from Bruner and Potter 1964 (original not opened); Prochaska and the Wikipedia belief-perseverance page do not state it, so there is one source, not independent support.

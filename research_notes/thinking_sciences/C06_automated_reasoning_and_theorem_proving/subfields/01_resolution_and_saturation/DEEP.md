@@ -356,3 +356,19 @@ All arms get the same total token budget, counting scorer, judge and setup token
 - [M] Bostrom et al. (2022) Natural Language Deduction through Search over Statement Compositions. https://arxiv.org/abs/2201.06028 (d15; fetched, not read)
 - [M] Suda (2021) arXiv 2102.03529, seen in search results only (d13). https://arxiv.org/abs/2102.03529
 - [M] Search records c25, d13, d14 (no URL; negative results).
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 6 established claims: 2 confirmed as written, 4 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C06.01-K04** (now single-source: the sources are not independent). All four listed sources are the one Suda 2021 paper (the 'cross-reading' entry cites other papers but links the same arXiv id), so the general 'helps most when mixed, fails as full replacement' rests on a single study; its numbers (net-only 190 solved = 25% of 756; layered 1:1 1032 = 136%, 1:2 1036 = 137%) are correct.
+- **C06.01-K06** (now single-source: the sources are not independent). ENIGMA-NG (2019) and ENIGMA Anonymous (2020) are by the same group (Jakubuv, Chvalovsky, Suda, Urban), so they count as one lab; all numbers check out (1256 vs 1197 on MPTP2078; 24,347 vs 23,262 on Mizar40 at 10 s; GNN had higher TPR).
+- **C06.01-K08** (reworded: the sources support less). The Vampire study notes one exception (a TPTP-trained model still improves over default elsewhere), and the TRAIL authors read their 11%/3% transfer losses as evidence of relatively domain-general features, which does not support 'dataset-specific'; TRAIL is also a different system (Beagle RL, Mizar-derived sets only). Corrected claim: In a Vampire neural-guidance study, a model trained on one benchmark family usually scores below the unguided default on the others (with one exception, a TPTP-trained model), and a single model trained on all four sets nearly matches the dedicated models (95-101%); in TRAIL (a Beagle-based RL prover) transfer between two Mizar-derived sets lost only 11% and 3%.
+- **C06.01-K21** (reworded: the sources support less). Numbers match, but 'translation is the main loss' is general while the evidence is mainly AR-LSAT; on FOLIO the same Logic-LM pipeline executes and scores 94.2% of executable cases, so translation loss is not shown to dominate everywhere. Corrected claim: On hard first-order tasks, translation to formal logic is a major loss in LLM-plus-solver pipelines: GPT-4o Logic-LM on AR-LSAT produced executable programs for only 33.8% of problems (51.3% accuracy on those), its translation accuracy falls as formula complexity rises, and LINC syntax errors fall with model strength (13% GPT-4, 24% GPT-3.5, 38% StarCoder+) while missing-information and mis-encoding errors remain; on easier sets like FOLIO the loss is small.
+- **C06.01-K05** (now single-source: only one opened source, code check).
+- **C06.01-K07** (now single-source: only one opened source, code check).
+- **C06.01-K10** (now single-source: only one opened source, code check).
+- **C06.01-K12** (now single-source: only one opened source, code check).
+- **C06.01-K13** (now single-source: only one opened source, code check).
+- **C06.01-K20** (now single-source: only one opened source, code check).
+- **C06.01-K23** (now single-source: only one opened source, code check).

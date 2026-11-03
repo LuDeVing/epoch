@@ -346,3 +346,9 @@ All arms get the same total tokens (setup cost counted, G7). Score strictly (exa
 - [M] Ma, Husain, Bays (2014) Changing concepts of working memory. https://doi.org/10.1038/nn.3655
 - [M] Gobet et al. (2001) Chunking mechanisms in human learning; Gobet and Simon (1998) template theory (background recall, no URL).
 - [M] Chen and Cowan (2005, 2009) and Cowan et al. (2012), via Norris et al. (2020). https://pmc.ncbi.nlm.nih.gov/articles/PMC7144498/
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 6 established claims: 6 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A08.08-K01** (now single-source: only one opened source, code check).

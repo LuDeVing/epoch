@@ -258,3 +258,10 @@ All arms at equal tokens. Report accuracy, tokens, and distinct valid outputs.
 - [V] Pan, He, Bowman, Feng (2024) Spontaneous reward hacking in iterative self-refinement. https://arxiv.org/abs/2407.04549
 - [M] APEX agent forum post. https://discuss.google.dev/t/apex-agent-beyond-react-autogpt-active-inference-hierarchical-world-models-meta-cognition-for-agi-level-agency/336867
 - [M] Cullen et al. (2018), second hand via Da Costa 2022 (a28).
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B03.04-K22** (reworded: the sources support less). PUMA numbers (Qwen3-8B 1.62 vs 1.07, 75.9% vs 52.0%, DynPatient simulator), Prakki (no baseline) and Wen (conceptual) verified; but Dutta et al. Section 7 does include a no-question 'baseline' policy, so 'no plain-prompt baseline' is too strong; BED-LLM/K24 update not checked against any listed source. Corrected claim: LLM-agent uses of active inference are weakly validated: Prakki 2025 reports no baseline comparison, Wen 2025 papers report no experiments; only PUMA (2026) reports measured gains in a simulator (Stage Lift 1.62 vs 1.07, Prep 75.9% vs 52.0%, Qwen3-8B vs DIIR). Dutta 2026 (2608.19202) is a framework paper with a dynamic-programming oracle comparison and a no-question baseline in its clarification experiment, but no direct with/without active-inference prompt comparison on the main question-asking task. (BED-LLM update not verified here.)
+- **B03.04-K09** (now single-source: only one opened source, code check).

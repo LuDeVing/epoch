@@ -329,3 +329,9 @@ All arms at equal total tokens (count lesson-writing and retry calls). Report pa
 - [V] ConMem (2026). https://arxiv.org/abs/2606.08702 (d11)
 - [V] Zhang et al. (2025) CorrectBench. https://arxiv.org/abs/2510.16062 (d13)
 - [V] Cheng et al. (2026) TAME / Trust-Memevo (abstract and introduction only). https://arxiv.org/abs/2602.03224 (d15)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C08.10-K18** (number corrected). Zhang et al.'s abstract says GPT-5.4 'fails on 54%' but the body (intro and results) says accuracy fell from 100% to 54% on a 19-problem slice, i.e. it failed on 46%; the claim repeats the abstract's misstatement. Corrected claim: Memory pollution and drift: online AWM workflows from unverified trajectories can degrade results, and add-all memory with a weak evaluator is flat or declining. Gap search: LLM consolidation itself erodes memory (GPT-5.4 dropped from 100% to 54% accuracy, i.e. failed 46% of a 19-problem ARC-AGI slice it solved without memory), and history-based deletion with a reliable evaluator helps.

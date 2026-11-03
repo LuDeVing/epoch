@@ -340,3 +340,11 @@ All arms get equal total tokens, same items, same seeds. Report mean, 95% interv
 - [V] Diversity of Thought elicits stronger reasoning in multi-agent debate. https://arxiv.org/abs/2410.12853 (d12)
 - [V] Huang et al. (2024) LLMs cannot self-correct reasoning yet. https://arxiv.org/abs/2310.01798 (d15)
 - [V] Gou et al. (2024) CRITIC. https://arxiv.org/abs/2305.11738 (d16)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 10 established claims: 9 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F03.01-K08** (reworded: the sources support less). Howell (402,500 responses, reject down 1.7 pp, about 25% relative) and Vasu (252 ICLR papers, seven models, 66.0-94.2%) match, but the same family of models is loose (Vasu tests seven models, GPT-4o Mini being one) and Claude 3.5 not listed as biased holds only for the economics abstract: the body shows Claude penalising Chulalongkorn University and MIT/Harvard raising ratings for all four LLMs. Corrected claim: LLM prestige leak is real but its size depends on the measurement. GPT-4o-mini with 402,500 audit responses: reject falls 1.7 pp (about 25% relative) when identity is shown, quality score shifts about 1%. With token-probability (soft) ratings, seven LLMs (including GPT-4o Mini) prefer highly ranked institutions in 66-94% of paired comparisons (252 ICLR 2025 papers). In the economics audit the abstract names GPT, Gemma and LLaMA as favouring top male authors and elite institutions; Claude 3.5 showed no author-prominence effect but did penalise one non-US university. Hard integer scores under-measure the leak.
+- **F03.01-K01** (now single-source: only one opened source, code check).
+- **F03.01-K04** (now single-source: only one opened source, code check).

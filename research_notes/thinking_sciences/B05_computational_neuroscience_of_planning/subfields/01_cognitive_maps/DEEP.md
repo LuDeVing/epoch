@@ -363,3 +363,13 @@ All arms at equal total tokens (count setup and map text). Report the success ra
 - [V] Zhu et al. (2026) Mind over Space. https://arxiv.org/abs/2603.21577 (d08)
 
 *Links to parallel subfields: Active inference vs RL; Map versus value replay; MDPs and POMDPs; Chain-of-thought prompting; Monte Carlo tree search; Pruning of decision trees; Distributed cognition. Not covered here.*
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 3 established claims: 3 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B05.01-K03** (now single-source: only one opened source, code check).
+- **B05.01-K11** (now single-source: only one opened source, code check).
+- **B05.01-K19** (now single-source: only one opened source, code check).
+- **B05.01-K20** (now single-source: only one opened source, code check).
+- **B05.01-K32** (now single-source: only one opened source, code check).

@@ -305,3 +305,12 @@ All arms at equal total tokens including setup (G7). Fixed seeds, items shuffled
 - [V] Zhao et al. ExpeL: https://arxiv.org/abs/2308.10144
 - [V] Huang et al. self-correction: https://arxiv.org/abs/2310.01798
 - [V] Pfau et al. filler tokens: https://arxiv.org/abs/2404.15758
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 10 established claims: 7 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A10.06-K02** (now single-source: the sources are not independent). Numbers match (music 0.25 to 0.03, WM 0.18 to 0.05, chess one active-control study at 0.10) but they come from one Sala and Gobet paper; the other listed sources are the same authors' follow-up or a coauthor's editorial, so there is no independent confirmation.
+- **A10.06-K06** (reworded: the sources support less). The 92%/19% recall figures could not be checked (Brunel PDF returned 503; PubMed abstract has no numbers), and 'the advantage vanishes' conflicts with the Sala and Gobet 2017 meta-analysis (r = .41, experts better in 49 of 55 samples) showing a reduced but real expert advantage on random material; in the single study the skill effect on random recall was just non-significant (N = 26). Corrected claim: Expert chess skill rests on large stores of chunks and templates; in Gobet and Simon (1998, N = 26) masters recalled about 92% of game positions but only about 19% of random ones (experts 13.8%, class A 12.4%, skill effect on random positions not significant), so the advantage largely shrinks, though not entirely, for structure that does not match learned patterns.
+- **A10.06-K07** (now single-source: the sources are not independent). Sheridan and Reingold 2014 (experts distinguish relevant from irrelevant regions earlier, 'early part of the trial') is supported, but the only other source is the same authors' 2017 review of that and related work, so one lab; 'first fixations' is a loose paraphrase of 'early part of the trial'.
+- **A10.06-K22** (now single-source: only one opened source, code check).

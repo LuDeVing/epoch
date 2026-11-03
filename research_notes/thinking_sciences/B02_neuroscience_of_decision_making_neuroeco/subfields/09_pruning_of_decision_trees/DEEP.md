@@ -266,3 +266,10 @@ All arms at equal total tokens. Report per-item results with bootstrap intervals
 - [V] Muennighoff et al. 2025, s1. https://arxiv.org/html/2501.19393 (d08)
 - [M] PRM false negative vs false positive snippet. https://arxiv.org/pdf/2602.09305 (d12)
 - [M] Negative searches for an LLM run of the Huys task and for replication of cost-insensitivity (d13, d14); search was partial.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B02.09-K01** (now single-source: the sources are not independent). Huys 2015 (PNAS) and Lally 2017 report the same 41 recruited / 37 analysed volunteers (Huys 2015: 'the same 37 subjects included there' for the fMRI report), so the '2015 sample' is not a fourth sample; independent samples are Huys 2012 (N=46), the Lally/Huys 2015 sample (N=37) and Faulkner 2022 (N=61, depressed and healthy), all one task from related labs.
+- **B02.09-K03** (reworded: the sources support less). Numbers are right (iBIC 2472 vs 2466; Faulkner reward weight 7.25 vs loss -2.60), but Lally et al. call loss aversion 'evident' and Pruning+Loss the best model (dIBIC 5.8, which they report as an improvement), and Huys 2012 found subjects about 1.4x more sensitive to punishments than rewards; the robust finding is that pruning beats loss-aversion-only models, not that loss weighting adds nothing. Corrected claim: Pruning is not reducible to loss aversion: models with pruning beat models with loss weighting alone (Huys 2012, Lally 2017), and pruning remains after loss sensitivities are fitted. Loss weighting still adds a little: in Lally 2017 Pruning+Loss was the best model (iBIC 2466 vs 2472 for Pruning), Huys 2012 found punishments weighted about 1.4 times rewards although adding loss aversion to its best model did not improve parsimony, and in Faulkner 2022 the fitted large-gain weight (7.25) was about 2.8 times the large-loss weight (-2.60) in healthy controls.

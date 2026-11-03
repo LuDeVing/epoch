@@ -285,3 +285,8 @@ All arms get equal total tokens, including setup (G7). Blind or code-based scori
 - [M] Leemhuis and Kutz (2025) Abstractron slides. https://www.inf.unibz.it/~okutz/resources/Leemhuis-Abstractron25.pdf
 - [M] Du et al. (2025) The Challenge of Teaching Reasoning to LLMs. https://arxiv.org/abs/2507.09850
 - [M] BIG-bench conceptual combinations (2023), FakeReef. https://arxiv.org/abs/2206.04615
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 5 established claims: 5 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

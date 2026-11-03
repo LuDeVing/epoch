@@ -373,3 +373,15 @@ All arms get the same token budget, set by the most expensive arm and counted wi
 - [M] Valmeekam et al. (2022) PlanBench. https://arxiv.org/abs/2206.10498 (c18).
 - [M] Valmeekam et al. (2023) On the planning abilities of LLMs. https://arxiv.org/abs/2302.06706 (c19, second-hand).
 - [M] Chen et al. (2021) Decision Transformer. https://arxiv.org/abs/2106.01345 (c21).
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 14 established claims: 9 confirmed as written, 5 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C12.07-K04** (reworded: the sources support less). The Tag numbers match (Perseus -6.17, PBVI -9.18, QMDP -16.9) but no source states '10-100x lower cost at near-equal quality' as a general result; Perseus actually beats PBVI on Tag, speedups differ by problem (about 36x vs PBVI on Tag), and POMCP scored 20.01 vs SARSOP 21.56 on RockSample(11,11). Corrected claim: Point-based and sampling planners (PBVI, Perseus, SARSOP, POMCP, DESPOT) plan over sampled or reachable beliefs only and reach comparable or better reward than earlier solvers at much lower cost on benchmarks (e.g. Tag: Perseus -6.17 in 1,670 s vs PBVI -9.18 in 59,772 s, QMDP -16.9; POMCP 20.01 in 1 s per action vs SARSOP 21.56 with about 1,000 s offline on RockSample(11,11)).
+- **C12.07-K11** (now single-source: the sources are not independent). All supporting numbers come from a single paper (Qiu et al., opened three times under different ids); Imran et al. (BCC vs scale) does not test multi-round plateaus, so the generalisation rests on one study.
+- **C12.07-K14** (now single-source: the sources are not independent). Numbers match (40/55/88; 5/3/36; 97.09% FNR; 87 to 99% verifier accuracy, 17x tokens) but all sources are the Kambhampati group (Valmeekam, Stechly, Kambhampati), so this is one lab, not independent confirmation.
+- **C12.07-K16** (number corrected). Kambhampati et al. say LLM-Modulo with a VAL verifier reaches only about 10% on Mystery Blocksworld; 28.3% is GPT-4o one-shot without any verifier. Corrected claim: Search helps only when the LLM can propose plausible actions: with a VAL verifier in the loop Mystery Blocksworld reaches only about 10% (one-shot GPT-4o alone scores 28.3%), and LLM-MCTS wins where the world model is simpler than the policy (e.g. multiplication via 1-digit tables).
+- **C12.07-K19** (number corrected). Shai et al. report R2 = 0.95 for the RRXOR belief-state geometry (vs 0.31 for next-token geometry), not for Mess3; no Mess3 R2 of 0.95 is stated. Corrected claim: Transformers trained on hidden-Markov data linearly encode the Bayes belief-state geometry (R2 = 0.95 on RRXOR; Mess3 also recovered, Shai et al. 2024) and Decision-Pretrained Transformers behave like posterior sampling (Lee et al. 2023); this is training-time evidence, not prompt-time.
+- **C12.07-K01** (now single-source: only one opened source, code check).
+- **C12.07-K03** (now single-source: only one opened source, code check).

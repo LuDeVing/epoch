@@ -358,3 +358,11 @@ All tests: both arms at equal total tokens (count every generated and prompt tok
 - [V] Inoue et al. (2025) Wider or deeper? Adaptive branching MCTS (AB-MCTS). https://arxiv.org/abs/2503.04412
 
 Links to other subfields in this run (not covered here): Pruning of decision trees; MCTS limits; Chain-of-thought prompting; Count-based exploration; Active inference decision theory; Learned refinement and self-verification; Hitting-set tree search; Process models.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 10 established claims: 8 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C05.03-K02** (reworded: the sources support less). Sources show asymptotic polynomial-rate failure and a double-exponential worst case for UCT, but Kocsis-Szepesvari only say 'some constant C' (no huge constants are shown), and the LLM-budget implication is the researcher's inference. Corrected claim: UCT guarantees are asymptotic: root failure probability falls at a polynomial rate with an unspecified constant, and Coquelin and Munos show a worst case needing exp(exp(D)) rounds before the best branch is first seen; the paper does not analyse budgets of tens of rollouts, so treat the theory as design motivation only.
+- **C05.03-K26** (reworded: the sources support less). A universal negative contradicted by its own evidence: LATS does report a 3-value exploration-weight ablation (w=0.5, 1, 2); and 'width matters more than c' is unsupported, since the 0.432 vs 0.402 width gap (std ~0.015-0.02, w=3 gives 0.429) was never compared against any c effect. Corrected claim: Few LLM-MCTS papers sweep the UCT constant: LATS ablates the exploration weight at three values on HotPotQA (w=0.5 gave 0.55 EM vs 0.63 at w=1; w=2 gave no gain), TS-LLM chose c_init from only {0.3, 3.0}, and SWE-Search uses c=1.41 with no sweep found. For fixed-width MCTS on LiveCodeBench (DeepSeek-V3) width 5 scored 0.432, width 3 0.429 and width 10 0.402, so performance is sensitive to width at least at the larger setting.
+- **C05.03-K20** (now single-source: only one opened source, code check).

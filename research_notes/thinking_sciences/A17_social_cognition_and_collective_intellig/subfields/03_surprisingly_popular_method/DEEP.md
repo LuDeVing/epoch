@@ -347,3 +347,11 @@ All arms get the same total token budget per item (G7). Count the prediction cal
 - [V] Amiri-Margavi et al. 2025, inter-model consensus. https://arxiv.org/abs/2411.16797
 - [M] Generative Self-Aggregation (listing only). https://www.researchgate.net/publication/389648493_LLMs_Can_Generate_a_Better_An
 - [V] arXiv listing for "surprisingly popular", 2026-11-01. https://arxiv.org/search/?query=%22surprisingly+popular%22
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A17.03-K12** (reworded: the sources support less). Consensus-is-not-verification does report models predict other models better than truth and SP/aggregation failing; the popularity paper (arXiv 2608.29257) never tests SP, so 'both make SP fail' is an inference, not a finding. Corrected claim: Models are better at predicting what other models will say than at identifying what is true, and aggregation methods including Surprisingly Popular gave no reliable gain over a single sample (Denisov-Blanch et al. 2026); separately, LLMs systematically favour popular options and pick a popular wrong answer 66% of the time when all distractors are more popular than the correct one (Abdallah et al. 2026), which would plausibly hurt SP when the popular answer is wrong, but SP was not tested there.
+- **A17.03-K16** (number corrected). Table 2 of Luo and Liu: the heuristic variant (HMTS) fixed 48 of 149 on Spambase and 5 of 52 on Hill Valley; '1 of 64' on Hill Valley is the discriminative variant (DMTS), whose Spambase result is 70 of 76, so the claim mixes variants. Corrected claim: Learned aggregation using confidence plus meta-prediction reached 64% success (RCR-Agg) when only 28% of respondents were individually correct (Shinitzky et al. 2022); Machine Truth Serum gains over majority vote on high-disagreement items vary widely by dataset and variant: heuristic MTS fixed 48 of 149 on Spambase (+32%) but 5 of 52 on Hill Valley (+9.8%), and discriminative MTS fixed 70 of 76 on Spambase but 1 of 64 on Hill Valley.
+- **A17.03-K10** (now single-source: only one opened source, code check).

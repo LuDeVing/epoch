@@ -353,3 +353,10 @@ All arms use equal total tokens (input plus output) unless stated. Report accura
 - [V] Kadavath et al. (2022) Language models (mostly) know what they know. https://arxiv.org/abs/2207.05221
 - [V] He-Yueya, Goodman, Brunskill (2024) Evaluating and optimizing educational content with LLMs. https://arxiv.org/abs/2403.02795
 - [V] The few-shot dilemma: over-prompting LLMs (2025). https://arxiv.org/abs/2509.13196
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A08.07-K05** (number corrected). Paper's per-questionnaire pooled alphas run from .73-.74 (Klepsch GCL .734, Eysink ECL .740) to .91 (Leppink 2013 GCL), not .77-.91; the paper calls reliability 'satisfactory' and Eysink gives only an ECL alpha. Corrected claim: Self-rating questionnaires have satisfactory internal reliability (pooled alpha .77 to .86 overall for ECL/ICL/GCL, about .73 to .91 across scales of the four instruments; 53 articles, 67 experiments, N=7413).
+- **A08.07-K01** (now single-source: only one opened source, code check).

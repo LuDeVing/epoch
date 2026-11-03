@@ -296,3 +296,11 @@ At least 100 items per cell to see a 5-point effect. Use paired items.
 45. [V, via fetch summary] Wu et al. (2025) LongMemEval. https://arxiv.org/abs/2410.10813
 46. [V] Ma et al. (2023) Query rewriting for retrieval-augmented LLMs. https://arxiv.org/abs/2305.14283
 47. [V] Chhikara et al. (2025) Mem0. https://arxiv.org/abs/2504.19413
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 10 established claims: 8 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A06.08-K02** (reworded: the sources support less). Sarma et al. 2026 rescued social recognition memory after sleep deprivation, not freezing; the wording 'restores freezing ... and after sleep loss' wrongly extends the freezing result to a different behavior. Corrected claim: In mice, light on tagged dentate gyrus engram cells restores freezing after anisomycin amnesia (Ryan 2015, Roy 2017) and restores social recognition memory after sleep deprivation (Sarma 2026); natural cues fail. Rodent only, specific cell populations and stimulation protocols. Dissent: Abdou 2018 found light on auditory inputs to the lateral amygdala failed to induce recall after complete amnesia. Replications are by related labs; strict count unknown.
+- **A06.08-K26** (reworded: the sources support less). Kadavath et al. Table 1 shows trained-on-TriviaQA P(IK) AUROC out of distribution of 0.606 (LAMBADA), 0.687 (Python), 0.624 (GSM8K) but 0.928 on Mixed-Arithmetic, so the stated 0.606-0.687 range omits the strongest transfer case. Corrected claim: A feeling-of-knowing analogue exists for LLMs but needs training or hidden states: P(IK) AUROC 0.864 on TriviaQA (52B), and when trained on TriviaQA only 0.606 to 0.687 on LAMBADA, Python and GSM8K (0.928 on Mixed-Arithmetic); probes on exact-answer tokens give AUC 0.83 to 0.95 but do not transfer across datasets once a logit baseline is subtracted.
+- **A06.08-K22** (now single-source: only one opened source, code check).

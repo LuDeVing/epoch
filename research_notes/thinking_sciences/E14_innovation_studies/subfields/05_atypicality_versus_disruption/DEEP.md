@@ -310,3 +310,12 @@ All arms get equal tokens. Setup cost counts (G7).
 - [M] Enhancing Research Idea Generation through Combinatorial Innovation (2026) https://arxiv.org/abs/2604.20548
 
 Note: several 2026 arXiv records (c13, c14, c16, c17, c19, c21, c24) were read at abstract level only. Treat their numbers as [M] even where the evidence file sets opened:true.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E14.05-K05** (now single-source: the sources are not independent). All quoted figures (0.051 growth, 13.6 yr doubling, b_r=-0.0039, 100% of gap, 35%) verified in Petersen et al. arXiv 2406.15311/2306.01949, but these are one lab's two versions; Bentley et al. only gives ~5%/yr publication growth, not the other numbers.
+- **E14.05-K15** (reworded: the sources support less). Numbers verified (53.3% Claude-3.5 pairwise vs chance 50 on the Si idea-review task; 71.4% accepted-vs-rejected ICLR pairs; LLM rater AUC 0.424 in Huang), but 71.4% is well above chance, and the |rho|<=0.005 is human reviewer score vs EDM disruptiveness, not an LLM judge. Corrected claim: LLM judges of research ideas are unreliable: in Si et al. the best LLM evaluator reached 53.3% agreement with held-out expert reviewers (chance 50%, human-human 56.1%) though Claude-3.5-Sonnet scored 71.4% on accepted-vs-rejected ICLR pairs; a single-paper LLM rater had AUC 0.42 for highly cited ICLR papers; separately, human ICLR reviewer scores are essentially uncorrelated with later disruptiveness (|rho|<=0.005).
+- **E14.05-K08** (now single-source: only one opened source, code check).
+- **E14.05-K18** (now single-source: only one opened source, code check).

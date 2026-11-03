@@ -436,3 +436,9 @@ LLM and AI
 - [V] Qian et al. (2025) SMART. https://arxiv.org/abs/2502.11435 (d15)
 - [V] Yang et al. (2025) AgentNet. https://arxiv.org/abs/2504.00587 (d17)
 - [V] Yao et al. (2023) ReAct. https://arxiv.org/abs/2210.03629 (d18)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A16.05-K01** (reworded: the sources support less). Fansher, Shah and Helie is a new Tower of Hanoi study of computer vs mental presentation (its Experiment 2 replicates its own Experiment 1), not a replication of Zhang and Norman; the two entries a18/b08 are the same preprint. Corrected claim: Moving part of a task's rules or state into an external, well-structured display lowers errors, steps and time for humans (Zhang & Norman 1994, N=18-36 per experiment). A later Tower of Hanoi study (Fansher, Shah & Helie, preprint) found that an external computer display improved completion (100% vs 91%) and progress, while move count did not differ significantly.

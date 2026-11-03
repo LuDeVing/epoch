@@ -381,3 +381,9 @@ Links to subfields researched in parallel (not covered here): Analogical problem
 - [M] Das and Balke (2025) From prototypical to relational. https://aclanthology.org/2025.inlg-main.28 (d17; snippet)
 - [M] Deep relational reasoning, DeepSeek-R1. https://arxiv.org/abs/2506.23128 (d18; snippet, adjacent task)
 - [M] DOI records of founding papers listed in c23-c25 (https://doi.org/10.1207/s15516709cog1303_1, https://doi.org/10.1006/cogp.1996.0019, https://doi.org/10.1207/s15516709cog1904_1); the papers themselves were opened under the ids above.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C10.06-K01** (number corrected). The 1989 paper says no experiment exceeded 220 cycles but also reports 402 cycles for the large Hamlet/Macbeth network, so 'max 220' is wrong; also all substantive sources are Holyoak and Thagard (same lab) plus Wikipedia. Corrected claim: Analogical mapping is guided by three soft pressures at once (structural isomorphism, semantic similarity, pragmatic purpose), not a hard structural rule; Holyoak and Thagard's ACME constraint-satisfaction network usually settles in well under 100 cycles, with 220 cycles the most in their main examples and 402 cycles for the largest network (Hamlet/Macbeth, 730 units).

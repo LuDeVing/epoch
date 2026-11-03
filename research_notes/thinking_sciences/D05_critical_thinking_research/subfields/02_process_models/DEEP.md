@@ -372,3 +372,10 @@ All arms use equal tokens (cap per item; setup cost counted, G7). Report accurac
 - [V] Snell et al. (2024) Scaling test-time compute. https://arxiv.org/abs/2408.03314
 - [V] Zhang et al. (2025) Dark side of intrinsic self-correction. https://arxiv.org/abs/2412.14959
 - [M] Self-Debug: cited only for "up to +12 points with tests" as stated in critique.md; no separate evidence line.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 10 established claims: 8 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D05.02-K17** (reworded: the sources support less). Kappa 0.74 was reached only on the third transcript after three training sessions (earlier kappas .35 and .49); 42% exploration is the largest share, not 'most'; the '1 to 18% across reviews' resolution range is not in the opened sources (Akyol et al. cite 20% at the highest phases). Corrected claim: Coders applying the four-phase practical-inquiry model (trigger, exploration, integration, resolution) reached kappa 0.74 only on the third transcript after three training sessions (earlier kappas .35 and .49); in that study exploration was the most frequent phase (42%), integration 13% and resolution 4%, and most coding disagreement was between exploration and integration; a later study cited by the CoI authors reported 20% of contributions at the highest phases.
+- **D05.02-K21** (reworded: the sources support less). Atomic Reasoner (2503.15944) names Dewey, cites How We Think and has an appendix mapping its actions onto Dewey's five steps, so Dewey is named in an opened LLM paper (Hitchcock is not). Corrected claim: Dewey is named in only one of the opened LLM prompting papers (Atomic Reasoner, which maps its actions onto Dewey's five steps) and Hitchcock in none; the other stage-prompting papers (Self-Discover, Plan-and-Solve, Cognitive Prompting) reach a Dewey-like cycle by convergence (Polya, Toulmin), so LLM evidence supports staged prompting loosely, not Dewey specifically.

@@ -325,3 +325,10 @@ All arms get equal total tokens, setup and extra calls included (G7). Seeds fixe
 - [V] Li, Kim, Wang (2025) QuestBench. https://arxiv.org/abs/2503.22674 (d10)
 
 Note: evidence lines b10, c23-c26 are plots or syntheses, not extracted numbers; no figure above rests on them alone.
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C11.01-K10** (number corrected). Kuhn et al. App. B: 61% (hot, T=1.5) vs over 92% (cooler) is the accuracy of the semantic-equivalence clustering, not the accuracy of sampled answers. Corrected claim: Entropy signals have limits: a model that is consistently wrong has low semantic entropy (an inference from the definition; Farquhar et al. say it detects only confabulation); sampling temperature trades accuracy against diversity (best AUROC at T=0.5, Kuhn Fig 3b, TriviaQA/OPT-30B); at T=1.5 semantic-equivalence classification accuracy falls to 61% vs over 92% at lower temperatures; tests are mostly factual QA (TriviaQA, CoQA), not multi-step reasoning.
+- **C11.01-K01** (now single-source: only one opened source, code check).

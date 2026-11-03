@@ -377,3 +377,12 @@ All arms run at equal total tokens, setup cost included (G7). Report mean with a
 - [V, not re-opened by checker] Guo et al. (2025) EngDesign. https://arxiv.org/abs/2509.16204
 - [V, not re-opened by checker] Gu et al. (2025) EngiBench. https://arxiv.org/abs/2509.17677
 - [V, not re-opened by checker] Kim et al. (2025) GraphicBench. https://arxiv.org/abs/2504.11571
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 13 established claims: 10 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E05.01-K02** (reworded: the sources support less). Simon supports solver-relative structure and a mechanizable test as a WSP criterion, and Kambhampati shows verifier loops help, but no source shows that adding a code check turns a sub-problem well-structured and searchable; that is the researcher's inference, and Huang is about self-correction, not structure. Corrected claim: Whether a task counts as ill-structured depends on the solver and its resources (Simon 1973: chess is well-structured in the small, ill-structured in the large). A mechanizable test of solutions is one of Simon's criteria for a well-structured problem, and external verifier loops lift LLM planning where a verifier exists (Kambhampati 2024); this suggests, but no opened source tests, that adding a code check makes a sub-problem more searchable.
+- **E05.01-K09** (now single-source: the sources are not independent). Numbers match the PlanBench o1 paper, but every listed source (Valmeekam 2023, Kambhampati 2024, Valmeekam 2024) comes from the same Kambhampati/Valmeekam ASU group, so the surface-form claim rests on one lab.
+- **E05.01-K25** (reworded: the sources support less). Numbers for Koh et al. and Brown et al. match, but the ToT paper (opened in the same batch) measured a tree-search gain on open-ended Creative Writing judged by GPT-4 scores and human pairwise preference, so 'all measured search gains are on tasks with a check' is too broad. Corrected claim: Among the opened studies, the tree-search gains on tasks with an exact external check are large (Game of 24, crosswords, VisualWebArena +39.7% relative, WebArena +28.0%); the one open-ended test, ToT creative writing, was judged only by GPT-4 scores (7.56 vs 6.93 CoT) and a human preference comparison, and no opened study measures tree search against an expert verdict on a truly ill-structured brief.
+- **E05.01-K19** (now single-source: only one opened source, code check).

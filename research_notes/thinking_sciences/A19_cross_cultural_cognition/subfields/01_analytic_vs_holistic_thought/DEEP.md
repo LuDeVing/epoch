@@ -351,3 +351,8 @@ Rules: pre-register the analysis. Use at least 3 prompt wordings per condition, 
 38. [V] Smit et al. (2024) Should we be going MAD? https://arxiv.org/pdf/2311.17371 (d18)
 39. [V] Zheng et al. (2024) Take a step back. https://arxiv.org/pdf/2310.06117 (d19)
 40. [M] Ji, Zhang, Nisbett (2004) Is it culture or is it language? JPSP. https://doi.org/10.1037/0022-3514.87.1.57 (c25, not opened)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 3 established claims: 3 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

@@ -349,3 +349,12 @@ All arms at equal total tokens (setup cost counted, G7). Report exact attributio
 - [V] DRAGO (2026) - https://arxiv.org/abs/2610.22568 (c24)
 - [V] Qu et al. (2026), NeSy-CTM - https://arxiv.org/abs/2606.20895 (c26 listing; d12 opened)
 - [M] Crossref bibliographic records for the classic papers (d14)
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 13 established claims: 10 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C09.02-K02** (now contested: a source does not say this). Neither source gives the definition: Wikipedia's section mentions Ab(S) but not minimality or consistency, and Theseider Dupre uses mode assignments, not minimal Ab sets.
+- **C09.02-K16** (reworded: the sources support less). Only Kim et al. rank interpretation hallucination as the most frequent pitfall (71.2 percent of runs); ORCA-bench (7-40 percent of reports) and Roy et al. (4-40 percent of predictions, only 4 percent for ReAct) report hallucination rates but not that it is the leading failure. Corrected claim: Hallucinated interpretation of retrieved data is the most frequent pitfall in Kim et al. (71.2 percent of runs); ORCA-bench finds invented root causes in 7 to 40 percent of reports and Roy et al. find hallucination in 4 to 40 percent of predictions depending on the agent.
+- **C09.02-K18** (reworded: the sources support less). GEAR's 20 percent consistent hypotheses for 70B-class models is verified, but Theseider Dupre says Cordier rejected parametrised assumptions for possible hypothesis proliferation in a methodology, not that weak models proliferate hypotheses. Corrected claim: Single gold answers hide underdetermination: in GEAR, 70B-class models give only about 20 percent consistent hypotheses (consistent ones cover about 95 percent of the sample space); separately, in model-based diagnosis Cordier rejected parametrised assumptions because of potential proliferation of hypotheses.
+- **C09.02-K17** (now single-source: only one opened source, code check).

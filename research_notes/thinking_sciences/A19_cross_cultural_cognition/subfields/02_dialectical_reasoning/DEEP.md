@@ -322,3 +322,14 @@ Marks: [V] opened and read this session (full text, or enough body text to take 
 - [V] Li et al. (2026) Taming actor-observer asymmetry. https://arxiv.org/abs/2604.19548 (d15)
 - [M] Chan (2000) and Ho (2000) comments on Peng and Nisbett. https://pubmed.ncbi.nlm.nih.gov/11036714/ (d18, records only)
 - Search log for gaps 5 and 7, null result (d19).
+
+## Source audit (2026-11-03)
+
+Fresh auditors re-opened the sources of 7 established claims: 5 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A19.02-K12** (reworded: the sources support less). Numbers verified (Atari: r=-.70, 94,278 people, 65 nations; Tao et al.: GPT-4o 2.42 to 1.57), but Tao et al. call cultural prompting 'effective' (not a panacea: no improvement for 19-29% of countries); 'weak lever' is the claim's own interpretation, and a 35% distance cut is not weak. Corrected claim: LLM value alignment tracks distance from US/WEIRD populations (r=-.70, WVS 94,278 people, 65 nations); cultural prompting narrows the distance for most countries (GPT-4o 2.42 to 1.57) but is not a panacea (no improvement for 19-29% of countries) and leaves substantial distance.
+- **A19.02-K18** (number corrected). Kim and Khashabi: the 93.9% is Llama-4-Maverick's Sure Rebuttal (SR) value, not 'Are You Sure'; the paper says Are-You-Sure is about as persuasive as the full rebuttal (56.1% avg) and the casual Sure Rebuttal averages 84.5%. Minor: SYCON Llama-3.1-8B holds 2.44 turns (Qwen-7B 0.83), so '1-2 turns' is loose. SycEval and SYCON (4.97, 4.90) and Silicon Mirror (9.6 to 1.4) figures verified. Corrected claim: LLMs yield too easily to challenge, which makes a keep-both-alive rule fragile: sycophancy in 58.19% of cases (43.52% to correct, 14.66% to wrong, persistence 78.5%); a casual Sure-Rebuttal assertion persuaded far more (average F 84.5%, up to 93.9% for one model) than a full rebuttal (56.1%), while Are-You-Sure was about as persuasive as the full rebuttal. Gap search: on SYCON-Bench strong models hold a debate stance for about 4.9 of 5 turns (o3-mini 4.97, Qwen2.5-72B 4.90) while 7-8B models flip within about 1-2.5 turns; a third-person prompt cut sycophancy by up to 63.8%; a gating approach cut Claude Sonnet 4 sycophancy from 9.6% to 1.4%.
+- **A19.02-K03** (now single-source: only one opened source, code check).
+- **A19.02-K04** (now single-source: only one opened source, code check).
+- **A19.02-K11** (now single-source: only one opened source, code check).
+- **A19.02-K21** (now single-source: only one opened source, code check).
