@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Quality-diversity, novelty search | [`subfields/06_quality_diversity_and_novelty_search/DEEP.md`](subfields/06_quality_diversity_and_novelty_search/DEEP.md) | done, batch 4 (2026-10-26) |
 | Story, music, art, humour systems | | not started |
 | Conceptual blending | [`subfields/08_conceptual_blending/DEEP.md`](subfields/08_conceptual_blending/DEEP.md) | done, batch 8 (2026-11-01) |
-| Creative problem solving | | not started |
-| Scientific discovery systems | | not started |
+| Creative problem solving | [`subfields/09_creative_problem_solving/DEEP.md`](subfields/09_creative_problem_solving/DEEP.md) | done, batch 9 (2026-11-09) |
+| Scientific discovery systems | [`subfields/10_scientific_discovery_systems/DEEP.md`](subfields/10_scientific_discovery_systems/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

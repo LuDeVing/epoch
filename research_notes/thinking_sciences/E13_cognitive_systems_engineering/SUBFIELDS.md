@@ -25,8 +25,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Joint cognitive systems | [`subfields/01_joint_cognitive_systems/DEEP.md`](subfields/01_joint_cognitive_systems/DEEP.md) | done, batch 8 (2026-11-01) |
 | Anomaly response (dynamic fault management) | [`subfields/02_anomaly_response_dynamic_fault_management/DEEP.md`](subfields/02_anomaly_response_dynamic_fault_management/DEEP.md) | done, batch 5 (2026-10-27) |
 | Coordination and common ground | | not started |
-| Cognitive artifacts | | not started |
-| Macrocognition | | not started |
+| Cognitive artifacts | [`subfields/04_cognitive_artifacts/DEEP.md`](subfields/04_cognitive_artifacts/DEEP.md) | done, batch 9 (2026-11-09) |
+| Macrocognition | [`subfields/05_macrocognition/DEEP.md`](subfields/05_macrocognition/DEEP.md) | done, batch 9 (2026-11-09) |
 | Naturalistic decision making | | not started |
 | Human error and recovery | [`subfields/07_human_error_and_recovery/DEEP.md`](subfields/07_human_error_and_recovery/DEEP.md) | done, batch 6 (2026-10-31) |
 | Resilience engineering | | not started |

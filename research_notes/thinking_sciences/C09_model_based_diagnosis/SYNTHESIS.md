@@ -125,3 +125,5 @@ Run order: T1, then T2 with T4, then T3, then T7, T6, T8.
 **Audit (code check, 2026-10-31):** C09.08-K14 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-03):** C09.02-K17 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** C09.09-K18 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

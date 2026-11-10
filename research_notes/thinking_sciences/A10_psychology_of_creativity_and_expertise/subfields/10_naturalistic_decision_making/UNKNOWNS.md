@@ -1,0 +1,34 @@
+# Naturalistic decision making: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| A10.10-U1 | Does a recognition-primed frame beat plain chain of thought at equal tokens? | One-line "match to a typical case, then simulate one option" frame in S1 for ill-defined classes | S0/S1 | K03-K05, a01-a03; single-source, one domain, no CoT arm, no gain on GPT-5.2 | Plain vs plain+CoT vs RP vs DF; 3+ ill-defined classification sets; accuracy per class | RP beats plain+CoT by 2+ points, CI excludes 0, on at least 2 of 3 sets | High |
+| A10.10-U2 | Does answer-repeat or 0.95-threshold early exit keep accuracy on easy items at fewer tokens on our model? | Early-stop rule in direct and short-reason modes | S0, G11 | K14, K23; b17, d09-d12; open reasoning models only | Fixed budget vs answer-repeat vs threshold; easy/hard split of our banks; accuracy and tokens | 20%+ fewer tokens, accuracy drop under 1 point on easy items | High |
+| A10.10-U3 | Is the first answer usually the final answer, per class? Can agreement of first vs deliberated answer serve as the gate? | Per-class quick-path agreement rate stored in memory and read by S0 | S0, S9, memory | K01, K06, K28; d13; human-only base rate | Run direct and full-graph on all classes; log agreement and correctness | Agreement 90%+ in a class with plain accuracy equal to full graph (within 1 point): class goes to direct mode | High |
+| A10.10-U4 | Does a forced re-look (find an option unlike the first) escape a familiar-but-worse option? | Re-look operator at S6 and before S8 when a familiar pattern matched | G, S6, O | K08, K25; b09, d18, d19; human strong, LLM penalty size unknown | Planted familiar-worse tasks; plain vs forced re-look vs +1 sample | Re-look finds the better solution 10+ points more often than extra sampling | High |
+| A10.10-U5 | Which escalation trigger carries the gain: stall, invalid output, critical decision, surprise? | Keep only the triggers that matter; set stall length | S0 to S4/S6 | K12, K24; c05, d14, d15; no per-trigger ablation | Multi-step tasks; fast only vs all triggers vs drop-one; success, tokens, false activations | Triggers beat always-slow on success per token; any trigger whose removal costs under 1 point is dropped | Med |
+| A10.10-U6 | Does an execution-time checker on the quick path beat extra memory or extra samples? | Cheap post-check after S0 direct answer | S4 | K13; c08, c09; single-source | Direct vs direct+check vs direct+memory vs 2 samples; success and slow-call count | Check beats the best other arm by 5+ points at equal tokens | Med |
+| A10.10-U7 | Is the first generated option better than later ones on our tasks (take-the-first) or worse? | Rule on how many options to generate in S3 | S3, O1 | K02, contested; a27, b06-b08, d06; primary papers unread | Generate 5 options in order; score option 1 vs best-of-5 by code check | Option 1 within 2 points of best-of-5: generate fewer. Gap over 10 points: keep k options | Med |
+| A10.10-U8 | Does model plus formula beat model alone where a scored rule exists? | Formula-as-input rule | G5, S4 | K22; d04, d23; abstract level, LLM test small | Model alone vs model+formula vs formula alone on 3 scored tasks | Formula-alone at least equals model-alone on 2 of 3 tasks and model+formula is not worse | Med |
+| A10.10-U9 | Where is the break point of the simulate branch (variables and transitions)? | A hard cap on simulation size with forced decomposition above it | S3, O3 | K27; d20-d22; LLM load limits seen, exact cap not measured | Vary variables 2-8 and transitions 2-12; one model; accuracy surface | Accuracy falls 15+ points past a clear threshold: add cap and decompose rule | Med |
+| A10.10-U10 | Can the agent detect regular, feedback-rich classes better than stated confidence? | Regularity feature in S0 (has a check, has repeated items, past pass rate) | S0, G | K06, K26; d16, d17; confidence contested, regularity detection untested | Regular vs irregular classes; compare AUC of stated confidence vs class record vs both for predicting correctness | Class record AUC exceeds confidence AUC by 0.05+ | Med |
+| A10.10-U11 | Does a pre-mortem (list failure modes first) beat extra sampling? | Pre-mortem step at S8 | O | K18; c20-c22; analogy to NDM; hand off to premortem subfield | Pre-mortem vs +1 sample at equal tokens; open and risky tasks | 3+ points over extra sampling | Low |
+| A10.10-U12 | Does the agent re-check state when a task changes mid-run? | State re-check at each step in dynamic tasks | G | K17; b18; single benchmark, gap over 50% | Tasks with a mid-run change; with vs without forced state re-read | Re-read recovers 10+ points of the dynamic drop | Low |
+| A10.10-U13 | Does the slow-down penalty (blunders under speed) show up as a token-budget curve in our agent? | Difficulty-routed budget replaces flat budget | S0, G12 | K07; a04-a06; human-only | Same items at 3 budget levels; error curve per difficulty | Routed budget beats flat at equal total tokens by 3+ points | Med |
+
+## Open questions we cannot test on our bench yet
+- The founding fireground report (DTIC ADA199492) and its 2010 postscript: we cannot read them (HTTP 403). Unblock: a library copy or a different mirror. Until then the "under 12% comparison" figure stays single-source.
+- Take-the-first effect sizes (Johnson and Raab 2003; Raab and Johnson 2007) are behind paywalls. Unblock: institutional access or an author preprint.
+- Kahneman and Klein (2009) full text unopened. We use only the abstract-level conditions.
+- Grove et al. "136 studies" is unverified. Low stakes; abstract-level result is enough.
+- Early-exit and probe results come from open reasoning models. Frontier API models have no hidden-state access and no published early-exit result. Unblock: our own T2 run.
+- NDM prompt effect on frontier models: Kopka and Feufel found none on GPT-5.2. Unblock: U1 on our strongest base model.
+- Real time pressure, team talk and embodied cues have no analogue in our bench. Not testable.
+- Independent replications of the RPD fireground result: none described. Unblock: a human-subjects replication, outside our scope.
+
+## Order to run
+1. U3 (first-answer agreement per class): cheapest, uses runs we already make, and it produces the per-class record that S0 needs.
+2. U2 (early exit on easy items): the largest expected token saving, and it directly tests G11 and G12.
+3. U1 (recognition-primed frame vs plain and plain+CoT): the only direct NDM test on LLMs, with a missing control; one prompt change makes it cheap.

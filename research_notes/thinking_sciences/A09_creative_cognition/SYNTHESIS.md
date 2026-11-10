@@ -122,3 +122,5 @@ Items already in SCHEMA 4b and confirmed here: creativity training as prompts, s
 **Audit (code check, 2026-11-01):** A09.04-K01, A09.04-K02, A09.04-K03, A09.04-K21 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-03):** A09.08-K15 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** A09.09-K01, A09.09-K03, A09.09-K20, A09.10-K17 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

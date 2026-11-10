@@ -32,8 +32,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Episode analysis of reasoning models | [`subfields/04_episode_analysis_of_reasoning_models/DEEP.md`](subfields/04_episode_analysis_of_reasoning_models/DEEP.md) | done, batch 3 (2026-10-26) |
 | Expert-novice schemas | [`subfields/05_expert_novice_schemas/DEEP.md`](subfields/05_expert_novice_schemas/DEEP.md) | done, batch 7 (2026-11-01) |
 | Worked examples | [`subfields/06_worked_examples/DEEP.md`](subfields/06_worked_examples/DEEP.md) | done, batch 8 (2026-11-01) |
-| Teaching heuristics | | not started |
-| Problem posing, conjecture | | not started |
+| Teaching heuristics | [`subfields/07_teaching_heuristics/DEEP.md`](subfields/07_teaching_heuristics/DEEP.md) | done, batch 9 (2026-11-09) |
+| Problem posing, conjecture | [`subfields/08_problem_posing_conjecture/DEEP.md`](subfields/08_problem_posing_conjecture/DEEP.md) | done, batch 9 (2026-11-09) |
 | Beliefs and affect | | not started |
 
 ## Dig into next

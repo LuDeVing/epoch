@@ -29,7 +29,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Framing and preference construction | [`subfields/04_framing_and_preference_construction/DEEP.md`](subfields/04_framing_and_preference_construction/DEEP.md) | done, batch 6 (2026-10-31) |
 | Debiasing by training | [`subfields/05_debiasing_by_training/DEEP.md`](subfields/05_debiasing_by_training/DEEP.md) | done, batch 8 (2026-11-01) |
 | Debiasing by structure: incentives, nudges, reference class forecasting | [`subfields/06_debiasing_by_structure_incentives_nudges_refe/DEEP.md`](subfields/06_debiasing_by_structure_incentives_nudges_refe/DEEP.md) | done, batch 8 (2026-11-01) |
-| Calibration and overconfidence | | not started |
+| Calibration and overconfidence | [`subfields/07_calibration_and_overconfidence/DEEP.md`](subfields/07_calibration_and_overconfidence/DEEP.md) | done, batch 9 (2026-11-09) |
 | Expert judgment and forecasting | [`subfields/08_expert_judgment_and_forecasting/DEEP.md`](subfields/08_expert_judgment_and_forecasting/DEEP.md) | done, batch 7 (2026-11-01) |
 | Dual-process accounts of judgment | | not started |
 | Intertemporal and social choice | | not started |

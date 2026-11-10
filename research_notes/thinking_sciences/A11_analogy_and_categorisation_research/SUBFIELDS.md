@@ -32,9 +32,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Schema induction | [`subfields/04_schema_induction/DEEP.md`](subfields/04_schema_induction/DEEP.md) | done, batch 4 (2026-10-26) |
 | Connectionist and hybrid mapping models | [`subfields/05_connectionist_and_hybrid_mapping_models/DEEP.md`](subfields/05_connectionist_and_hybrid_mapping_models/DEEP.md) | done, batch 8 (2026-11-01) |
 | Logic and philosophy of analogical arguments | [`subfields/06_logic_and_philosophy_of_analogical_arguments/DEEP.md`](subfields/06_logic_and_philosophy_of_analogical_arguments/DEEP.md) | done, batch 8 (2026-11-01) |
-| Category learning: rule, prototype, exemplar | | not started |
-| Category learning: clustering, explanation-based, Bayesian | | not started |
-| Comparison and relational language | | not started |
+| Category learning: rule, prototype, exemplar | [`subfields/07_category_learning_rule_prototype_exemplar/DEEP.md`](subfields/07_category_learning_rule_prototype_exemplar/DEEP.md) | done, batch 9 (2026-11-09) |
+| Category learning: clustering, explanation-based, Bayesian | [`subfields/08_category_learning_clustering_explanation_base/DEEP.md`](subfields/08_category_learning_clustering_explanation_base/DEEP.md) | done, batch 9 (2026-11-09) |
+| Comparison and relational language | [`subfields/09_comparison_and_relational_language/DEEP.md`](subfields/09_comparison_and_relational_language/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

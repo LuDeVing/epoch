@@ -36,7 +36,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Dual-process and three-process accounts | | not started |
 | Stage model and incubation | | not started |
 | Neuroscience and individual differences | | not started |
-| Methods and measurement | | not started |
+| Methods and measurement | [`subfields/10_methods_and_measurement/DEEP.md`](subfields/10_methods_and_measurement/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

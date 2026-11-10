@@ -1,0 +1,36 @@
+# Creative problem solving: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| C04.09-U1 | Does dropping the failed attempt and resampling fresh beat continuing the same trace after impasse? | A "context reset" operator at S6 | S6, O | K25 (single-source, math only); K01 (human break d 0.2 to 0.3, established); no LLM insight test | Arms: continue ("wait") vs reset-resample vs reset plus one-line failure note. Fresh riddles, walls, rewrites. Metric: accuracy at same tokens | Reset arm beats continue by 3 or more points with a paired CI above 0, on 2 or more item sets | High |
+| C04.09-U2 | Does a candidate ledger with commit-by-check recover answers the model wrote and dropped? | Harvest every candidate across attempts and test all (tighten S4) | S4 | K13 (NazoNazo only, 5% to 39% of wrong answers; literal string match) | Arms: final answer vs harvest-and-test vs harvest-and-model-pick. NazoNazo-type fresh items with logs. Metric: net accuracy and false-commit rate | Net gain of 3 or more points and false commits under half the recoveries | High |
+| C04.09-U3 | Is a gated second pass useful on insight-type items, not only math? | Gate rule for a forced re-look (check fail or disagreement) | G1, S5 | K15 (math +7.7 to +8.4 pp; crosswords +0.45; Rush Hour +0.01); K24 (ungated hurts) | Arms: no re-look, gated re-look (sample disagreement), always re-look. Fresh insight items. Metric: accuracy; flips wrong to right vs right to wrong | Gated beats no re-look by 2 or more points and beats always-re-look at equal tokens | High |
+| C04.09-U4 | Which impasse trigger works best: step count, sample disagreement, progress stall? | One default trigger for S6 | S6 | K03, K07 (human only, single-source); no LLM head-to-head | Three triggers, same tasks with a progress score. Metric: accuracy, tokens to solve | One trigger beats step count by 3 or more points | High |
+| C04.09-U5 | Does an explicit "name your assumptions and widen one / split the unit" prompt beat generic retry? | Rewrite O3 and O4 prompts to the named form | O3, O4 | K06 (human, established; LLM untested) | Arms: generic retry, name-and-widen, split-unit. Text matchstick and rule puzzles with constraint and chunk variants. Metric: accuracy by item type | Named form beats generic by 3 or more points on its matching item type | Med |
+| C04.09-U6 | Does letting the agent act on external state (code, scratch object) lift insight items? | An "externalise" operator | O (new) | K10 (human, one problem: 43% vs 6%); nothing for LLMs | Arms: text only vs code or scratch-state tool. Physical-process and sequence puzzles. Metric: accuracy | Gain of 5 or more points on items where state is not already in the text | Med |
+| C04.09-U7 | Do short targeted hints beat long ones? | A hint-format rule in the operator prompts | O | K19 (contested; uncontrolled log), K29 (clue amount only, figure-only data) | Arms: none, short trick-type, long, compressed; same solver and items. Metric: accuracy | Short or compressed beats long by 3 or more points on two item sets | Med |
+| C04.09-U8 | Does "name the tempting frame, then test alternatives" reduce red-herring failure? | A fixation-guard step in S3 | S3, O8 | K18 (single source; variants confounded) | Arms: plain vs frame-naming. Only Connect-style walls with matched red-herring and clean versions. Metric: walls and groups solved | Gain of 3 or more points on red-herring walls with no loss on clean walls | Med |
+| C04.09-U9 | Does a connection-forcing step and clue re-read beat more thinking effort on fresh expert puzzles? | A connection step at S2 or S6 | O6 | K26 (errors are missing connections and misread clues; effort helped but not at equal tokens) | Arms: plain, connection-forcing, higher effort. Fresh puzzles written after cutoff. Metric: accuracy | Beats higher effort at equal tokens by 3 or more points | Med |
+| C04.09-U10 | Is "aha" or stated confidence after a reframe a usable signal? | Nothing now; if it works, a calibration signal | G | K11, K28 (human false insight; model aha text uncorrelated with accuracy; verbal confidence already in 4b) | Verbal aha vs sample disagreement vs independent check on fresh puzzles. Metric: AUC against correctness | Aha AUC above 0.65 and adds to disagreement; otherwise it stays in 4b | Low |
+| C04.09-U11 | Does delaying the reset until k failed attempts beat resetting at once? | A preparation threshold for S6 | S6 | K03 (human, correlational across studies, creative and visual only) | Reset after 1, 2, 3 attempts at equal total tokens; riddles and visual puzzles. Metric: accuracy | Best k beats k=1 by 3 or more points on two item sets | Low |
+| C04.09-U12 | Does precomputing facts from reused context help? | A prep step before the question on reused contexts | M | K16 (math, predictable context, about 5x compute saving) | Sleep-time prep vs none on tasks that reuse one context across questions. Metric: accuracy per token | Same accuracy at 30% fewer tokens, or higher accuracy at equal tokens | Low |
+| C04.09-U13 | Does capping restructuring moves per attempt help? | A move cap in S6 | G | K23 (theory only) | Cap of 1, 2, 3 operators per attempt. Metric: accuracy and tokens | A cap beats no cap at equal tokens | Low |
+
+## Open questions we cannot test on our bench yet
+
+- Contamination of old public insight sets is measured for one model only (CresOWLve). We need fresh items written after the model cutoff, in two languages. Without them, U1 to U3 are hard to read.
+- Human incubation on insight tasks since 2015: no large replication was found, and the search was blocked. Needs a literature pass with working search tools. Not testable on our bench.
+- Hidden-state probes for correctness (ROC-AUC above 0.7) need model internals, which an API does not give. Unblock by running an open-weights model locally.
+- Whether LLM "restructuring" exists at all. We have only outcome tests, no mechanism test. Needs a way to compare representations before and after a reset (for example, code-extracted constraint lists).
+- Cost of a false commit in the candidate ledger. Needs items with a gold answer and a check that can be wrong.
+- Equal-token comparison against extended thinking on insight items: CresOWLve varies effort without matching tokens. We must run it ourselves.
+- Controlled hint-length ablation: no source exists; needs our own item bank with hints at several lengths.
+
+## Order to run
+
+1. C04.09-U1 (context reset vs continue): cheapest test, a direct analogue of the best-supported human effect; the nearest LLM evidence (equal-token fresh samples) is math only.
+2. C04.09-U2 (candidate ledger and commit-by-check): targets the largest measured LLM failure on insight items (up to 39% of wrong answers contain the right string) with no new model calls.
+3. C04.09-U3 (gated second pass on insight items): decides whether the math gain (+7.7 to +8.4 pp) carries to insight items; reuses the U1 item set and the sample-disagreement gate.

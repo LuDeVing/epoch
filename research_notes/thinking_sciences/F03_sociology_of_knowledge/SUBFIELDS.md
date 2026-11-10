@@ -31,10 +31,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Laboratory studies and ANT | | not started |
 | Network epistemology | [`subfields/04_network_epistemology/DEEP.md`](subfields/04_network_epistemology/DEEP.md) | done, batch 7 (2026-11-01) |
 | Division of cognitive labour | [`subfields/05_division_of_cognitive_labour/DEEP.md`](subfields/05_division_of_cognitive_labour/DEEP.md) | done, batch 7 (2026-11-01) |
-| Epistemic diversity | | not started |
+| Epistemic diversity | [`subfields/06_epistemic_diversity/DEEP.md`](subfields/06_epistemic_diversity/DEEP.md) | done, batch 9 (2026-11-09) |
 | Judgment and credence aggregation | [`subfields/07_judgment_and_credence_aggregation/DEEP.md`](subfields/07_judgment_and_credence_aggregation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Testimony, trust and peer disagreement | | not started |
-| Peer review and replication | | not started |
+| Peer review and replication | [`subfields/09_peer_review_and_replication/DEEP.md`](subfields/09_peer_review_and_replication/DEEP.md) | done, batch 9 (2026-11-09) |
 | Values and inductive risk | | not started |
 | Group belief and justification | | not started |
 | Epistemic injustice and misinformation | | not started |

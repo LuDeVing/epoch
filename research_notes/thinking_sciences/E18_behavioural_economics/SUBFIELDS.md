@@ -27,8 +27,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Ecological rationality, adaptive toolbox | [`subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md`](subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md) | done, batch 5 (2026-10-27) |
 | Heuristics and biases | [`subfields/03_heuristics_and_biases/DEEP.md`](subfields/03_heuristics_and_biases/DEEP.md) | done, batch 8 (2026-11-01) |
 | Prospect theory | | not started |
-| Choice architecture and nudging | | not started |
-| Nudge evidence | | not started |
+| Choice architecture and nudging | [`subfields/05_choice_architecture_and_nudging/DEEP.md`](subfields/05_choice_architecture_and_nudging/DEEP.md) | done, batch 9 (2026-11-09) |
+| Nudge evidence | [`subfields/06_nudge_evidence/DEEP.md`](subfields/06_nudge_evidence/DEEP.md) | done, batch 9 (2026-11-09) |
 | Behavioural finance and game theory | | not started |
 | Debiasing | | not started |
 | Resource-rational analysis | [`subfields/09_resource_rational_analysis/DEEP.md`](subfields/09_resource_rational_analysis/DEEP.md) | done, batch 7 (2026-11-01) |

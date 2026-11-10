@@ -31,7 +31,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Competence-based motivation | | not started |
 | Novelty search, open-endedness | [`subfields/07_novelty_search_open_endedness/DEEP.md`](subfields/07_novelty_search_open_endedness/DEEP.md) | done, batch 8 (2026-11-01) |
 | Go-Explore, archives | [`subfields/08_go_explore_and_archives/DEEP.md`](subfields/08_go_explore_and_archives/DEEP.md) | done, batch 4 (2026-10-26) |
-| Language-guided exploration | | not started |
+| Language-guided exploration | [`subfields/09_language_guided_exploration/DEEP.md`](subfields/09_language_guided_exploration/DEEP.md) | done, batch 9 (2026-11-09) |
 | Curiosity in RL training of LLMs | | not started |
 
 ## Dig into next

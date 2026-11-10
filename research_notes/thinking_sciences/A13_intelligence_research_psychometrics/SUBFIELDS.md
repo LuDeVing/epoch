@@ -30,9 +30,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Working memory and Gf | [`subfields/03_working_memory_and_gf/DEEP.md`](subfields/03_working_memory_and_gf/DEEP.md) | done, batch 8 (2026-11-01) |
 | Capacity hypothesis test | [`subfields/04_capacity_hypothesis_test/DEEP.md`](subfields/04_capacity_hypothesis_test/DEEP.md) | done, batch 6 (2026-10-31) |
 | Working memory training transfer | | not started |
-| Matrix tests and task analysis | | not started |
+| Matrix tests and task analysis | [`subfields/06_matrix_tests_and_task_analysis/DEEP.md`](subfields/06_matrix_tests_and_task_analysis/DEEP.md) | done, batch 9 (2026-11-09) |
 | Item difficulty modelling | [`subfields/07_item_difficulty_modelling/DEEP.md`](subfields/07_item_difficulty_modelling/DEEP.md) | done, batch 5 (2026-10-27) |
-| Strategy on matrices | | not started |
+| Strategy on matrices | [`subfields/08_strategy_on_matrices/DEEP.md`](subfields/08_strategy_on_matrices/DEEP.md) | done, batch 9 (2026-11-09) |
 | Motivation and test performance | | not started |
 | Processing speed, executive function, prediction, genetics | | not started |
 

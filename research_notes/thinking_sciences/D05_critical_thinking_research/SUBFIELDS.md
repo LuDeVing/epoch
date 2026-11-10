@@ -24,9 +24,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Definitions and ideals | | not started |
 | Process models | [`subfields/02_process_models/DEEP.md`](subfields/02_process_models/DEEP.md) | done, batch 8 (2026-11-01) |
-| Skills versus dispositions | | not started |
-| Assessment and tests | | not started |
-| Instruction effectiveness | | not started |
+| Skills versus dispositions | [`subfields/03_skills_versus_dispositions/DEEP.md`](subfields/03_skills_versus_dispositions/DEEP.md) | done, batch 9 (2026-11-09) |
+| Assessment and tests | [`subfields/04_assessment_and_tests/DEEP.md`](subfields/04_assessment_and_tests/DEEP.md) | done, batch 9 (2026-11-09) |
+| Instruction effectiveness | [`subfields/05_instruction_effectiveness/DEEP.md`](subfields/05_instruction_effectiveness/DEEP.md) | done, batch 9 (2026-11-09) |
 | Generalisability and transfer | [`subfields/06_generalisability_and_transfer/DEEP.md`](subfields/06_generalisability_and_transfer/DEEP.md) | done, batch 6 (2026-10-31) |
 | Bias and debiasing | [`subfields/07_bias_and_debiasing/DEEP.md`](subfields/07_bias_and_debiasing/DEEP.md) | done, batch 5 (2026-10-27) |
 | Argument mapping training | | not started |

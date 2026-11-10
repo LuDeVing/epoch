@@ -26,11 +26,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Resolution and saturation | [`subfields/01_resolution_and_saturation/DEEP.md`](subfields/01_resolution_and_saturation/DEEP.md) | done, batch 8 (2026-11-01) |
 | SAT solving, DPLL | [`subfields/02_sat_solving_dpll/DEEP.md`](subfields/02_sat_solving_dpll/DEEP.md) | done, batch 8 (2026-11-01) |
 | CDCL | [`subfields/03_cdcl_conflict_learning/DEEP.md`](subfields/03_cdcl_conflict_learning/DEEP.md) | done, batch 4 (2026-10-26) |
-| Interactive theorem proving | | not started |
-| Neural and LLM proof search | | not started |
+| Interactive theorem proving | [`subfields/04_interactive_theorem_proving/DEEP.md`](subfields/04_interactive_theorem_proving/DEEP.md) | done, batch 9 (2026-11-09) |
+| Neural and LLM proof search | [`subfields/05_neural_and_llm_proof_search/DEEP.md`](subfields/05_neural_and_llm_proof_search/DEEP.md) | done, batch 9 (2026-11-09) |
 | Premise selection | [`subfields/06_premise_selection/DEEP.md`](subfields/06_premise_selection/DEEP.md) | done, batch 6 (2026-10-31) |
 | Lemma discovery, conjecturing | [`subfields/07_lemma_discovery_and_conjecturing/DEEP.md`](subfields/07_lemma_discovery_and_conjecturing/DEEP.md) | done, batch 4 (2026-10-26) |
-| Proof planning and repair | | not started |
+| Proof planning and repair | [`subfields/08_proof_planning_and_repair/DEEP.md`](subfields/08_proof_planning_and_repair/DEEP.md) | done, batch 9 (2026-11-09) |
 | Autoformalisation | | not started |
 | Counterexample finding | [`subfields/10_counterexample_finding/DEEP.md`](subfields/10_counterexample_finding/DEEP.md) | done, batch 7 (2026-11-01) |
 

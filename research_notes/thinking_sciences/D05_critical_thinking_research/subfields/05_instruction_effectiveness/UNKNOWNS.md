@@ -1,0 +1,33 @@
+# Instruction effectiveness: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| D05.05-U1 | Does an explicit "think step by step" cue add anything on our current base model over its default thinking? | Nothing (confirm no cue); or cue only for tagged items | G7, G11, S0 | K30; d01-d03; single-source, one benchmark, older and reasoning models mixed | Default vs cue vs cue-on-symbolic-only; mixed bench with symbolic and non-symbolic items; accuracy and tokens | Cue arm beats default by 3 or more points on symbolic items at equal tokens, otherwise keep it off | High |
+| D05.05-U2 | Do lessons written as abstract rules beat full worked cases for a strong model? | Rule-form lesson store (no pasted solutions) | memory, O2 | K31; d12, d13, d14; LLM-only, small distilled models; human reversal not read | No memory vs full case vs abstract rule; items with a stored neighbour; held-out accuracy | Rule arm beats no-memory by 3 or more points and beats full case by 3 or more | High |
+| D05.05-U3 | Does gating lessons by a passed external check beat ungated lessons, with a no-memory arm token-matched? | Gated write plus per-lesson pruning in S9 | memory, S9, G2 | K32, K25; d08, d10, d11; established in direction, not token-matched | No memory vs add-all vs gated vs gated plus prune on later failure; items with code checks; accuracy on later items | Gated beats no-memory by 2 or more points and beats add-all by 5 or more | High |
+| D05.05-U4 | Does memory create a crutch (better on seen items, worse unaided)? | A frozen-memory unaided score in every memory test; rule not answer storage | G6, memory | K35; d17; single human RCT, no replication, no agent analogue | Same items, memory frozen: agent with stored answers for seen items vs agent without; score unseen items | Unseen-item accuracy with memory is not below no-memory by more than 1 point (otherwise remove answer storage) | High |
+| D05.05-U5 | Does retrieving similar solved items beat random items and self-generated analogues on our model? | Similarity retrieval at S2/S3 | O7, memory | K11; c20, c12, c21; non-reasoning models, 2021-2023 | Random vs similar vs self-generated; pool of solved items; accuracy | Similar beats random by 3 or more points | Med |
+| D05.05-U6 | Does stating the governing principle first, then solving, help hard items? | Step-back as the form of O2 | O2 | K18; b16; single-source, PaLM-2L | Direct vs principle-then-solve; hard STEM and multi-hop items; accuracy | Gain of 3 or more points on hard items with no loss on easy ones | Med |
+| D05.05-U7 | Does ordered decomposition with answers passed forward beat flat reasoning as problems get longer? | Ordered form of O3 | O3 | K19; c07, c08; older models | Flat CoT vs least-to-most; length-generalisation items; accuracy by length bucket | Gap grows with length and is 5 or more points at the longest bucket | Med |
+| D05.05-U8 | Does lesson placement (start/end vs middle) matter at our context size? | Placement rule in memory insert | memory | K27; c22; single-source, older models | Start vs middle vs end with many lessons; accuracy | Middle placement is 2 or more points below best | Low |
+| D05.05-U9 | Does retrieving the rule and re-deriving beat retrieving near-duplicate past answers? | "Rules not answers" retrieval | G12, memory | K33; d09; single-source | Store with deliberate wrong near-duplicate; retrieve answer vs retrieve rule; error rate | Rule arm cuts error on poisoned items by 5 or more points | Med |
+| D05.05-U10 | Do critical-question checks (CQoT-style) beat a plain check pass? | Question list inside S8 | G1, S8 | K26; c23; single preprint, LLM-judged, small gains | Plain verify vs critical-question verify; items with a ground-truth check; accuracy | 2 or more points over plain verify at equal tokens with ground-truth scoring | Low |
+| D05.05-U11 | Does a taught operator help matched tasks more than held-out tasks (near vs far transfer)? | Operator-to-task-type map in S0 | G7, S0, O1-O8 | K02; a02; human only, secondary | Operator on tasks of its type vs other types; gain per type | Matched gain is above held-out gain by 3 or more points; otherwise do not claim generality | Med |
+| D05.05-U12 | Is the combination (worked case + outside critic + lesson memory) better than each alone? | Keep all three; otherwise drop the weakest | G7 | K03; a03; human only, confounded | Each element alone vs all three; mixed items; accuracy at equal tokens | Combination beats the best single element by 2 or more points | Low |
+| D05.05-U13 | Are correct exemplars better than flawed ones for multi-step reasoning in the memory store? | Correctness filter on exemplars | memory | K05, K10; a20 (human), b12 (label noise small on classification) | Correct vs wrong-answer exemplars; multi-step items and classification items | Correct beats wrong by 3 or more points on multi-step items | Low |
+
+## Open questions we cannot test on our bench yet
+- Exact Abrami 2015 moderator values and the inclusion rule (1 hour vs 3 hours). Needs the journal full text; the publisher blocked access.
+- Which component of the Kestin tutor drives the gain (expert solutions, enforced order, self-pacing). Needs an ablation study that does not exist; our bench cannot run human learners.
+- Dispositions (g 0.23). A model has no persistent disposition; nothing to measure apart from skill outcomes.
+- Debate vs voting on reasoning models, code and factual tasks. Needs a reasoning-model run set at matched compute; costly.
+- Human expertise reversal numbers and the founding studies (Sweller and Cooper 1985, Kirschner 2006). Needs the papers; only secondary accounts so far.
+- Whether Bastani's harm replicates in humans. Needs an independent human study.
+- Mixed-model debate (Heter-MAD). Needs several different base models; the single-model agent cannot use it.
+
+## Order to run
+1. U1 (step cue vs default thinking): cheapest and decides whether a whole class of prompt text can be dropped from every state.
+2. U3 (gated vs ungated lessons, with no-memory arm): the memory design depends on it, and the evidence is strongest in direction but not token-matched.
+3. U4 (unaided scoring after memory use): a one-point harness change that guards every later memory result against the crutch effect.

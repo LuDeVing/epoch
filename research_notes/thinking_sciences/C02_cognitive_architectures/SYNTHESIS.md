@@ -121,3 +121,5 @@ Most of these repeat 4b. Only the store rules and the Soar-count point are new.
 **Source audit, 2026-10-26:** 15 established claims in this field were re-checked against the papers. 11 confirmed, 4 reworded (C02.01-K02, C02.01-K18, C02.01-K22, C02.03-K14: narrowed scope), none downgraded in this audit. Downgraded ids: none. C02.01-K01 and C02.01-K05 were already single-source from the earlier code check; their rows are moved to section 7.
 
 **Audit (code check, 2026-11-03):** C02.05-K01, C02.05-K10 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** C02.06-K06, C02.06-K07, C02.06-K15, C02.07-K01, C02.07-K05, C02.07-K08 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

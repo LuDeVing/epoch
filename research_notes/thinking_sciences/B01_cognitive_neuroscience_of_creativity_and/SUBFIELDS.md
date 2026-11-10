@@ -28,8 +28,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Insight as a process | [`subfields/03_insight_as_a_process/DEEP.md`](subfields/03_insight_as_a_process/DEEP.md) | done, batch 8 (2026-11-01) |
 | Insight neural signatures | | not started |
 | Metacognition of insight | [`subfields/05_metacognition_of_insight/DEEP.md`](subfields/05_metacognition_of_insight/DEEP.md) | done, batch 6 (2026-10-31) |
-| Cognitive conflict and impasse | | not started |
-| Semantic memory network structure | | not started |
+| Cognitive conflict and impasse | [`subfields/06_cognitive_conflict_and_impasse/DEEP.md`](subfields/06_cognitive_conflict_and_impasse/DEEP.md) | done, batch 9 (2026-11-09) |
+| Semantic memory network structure | [`subfields/07_semantic_memory_network_structure/DEEP.md`](subfields/07_semantic_memory_network_structure/DEEP.md) | done, batch 9 (2026-11-09) |
 | Cognitive control and creativity | | not started |
 | Incubation, sleep, mood | | not started |
 | Individual differences and stimulation | | not started |

@@ -126,3 +126,5 @@ Single-source, so not established, but do not add before the test: multi-agent d
 **Audit (code check, 2026-10-31):** E09.01-K26 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-03):** E09.05-K10, E09.05-K14 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** E09.06-K05 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

@@ -1,0 +1,40 @@
+# Analogical prompting for LLMs: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| C10.10-U1 | Does one-prompt recall-then-solve beat plain CoT and CoT-SC at equal total tokens on our backbone? | O7 recall (or S3 recall variant) as a gated option | S3 / O7 | K01, K02, K10, K16 (contested; older models; no token-matched study) | Arms: short CoT; CoT-SC at the recall arm's token cost; recall K=3 then solve. Items: 500+ GSM8K/MATH plus our math and ARC items. Metric: accuracy, accuracy per 1000 tokens, 3 seeds, paired 95% CI | Recall beats CoT-SC by >= 2 points with CI above 0 on at least 2 task classes | High |
+| C10.10-U2 | Is the gain from relevance, or only from extra generation? | Relevance instruction in the recall prompt (if relevance wins); otherwise drop the "relevant" wording and use any warm-up | S3 / O7 | K02, K03 (contested; Qin one lab, GPT-3.5 and open models) | Arms: relevant recall; unrelated (N/A) recall; no recall, same wording. Items: 500 math. Metric: accuracy; recalled-solution accuracy | Relevant beats unrelated by >= 2 points, paired CI above 0 | High |
+| C10.10-U3 | Does recall help only when written in the same stream as the solve (Integrated), and does this hold with S3 as a separate state? | Rule: S3 recall and solve stay in one generation | S3 | K08 (single-source, one group, 5 models) | Arms: Integrated; Decoupled (call 1 recall, call 2 solve); zero-shot. Items: 500 math. Metric: accuracy | Integrated beats Decoupled by >= 3 points and beats zero-shot by >= 2 | High |
+| C10.10-U4 | Does a same-model check of recalled problems (re-solve, drop disagreements) recover the accuracy loss, and at what cost? | Verification step inside S3 recall | G3 / S4 / O7 | K03 (single-source; used GPT-4 answers, not same-model check) | Arms: unchecked recall; recall plus re-solve check; fixed verified bank. Items: 500 math. Metric: accuracy; extra tokens | Check adds >= 2 points and costs under 30% more tokens than unchecked recall | Med |
+| C10.10-U5 | Does a fixed, verified bank of worked problems beat per-query recall? | A problem-class bank in memory, replacing per-query recall | Memory / S3 | K21 (single-source, authors' own method, instruction models) | Arms: per-query recall; fixed bank of 5 verified problems per class (written once); plain CoT. Items: 500 math plus 100 ARC-like. Metric: accuracy, tokens | Bank beats per-query recall by >= 1 point at fewer tokens, and beats plain CoT at equal tokens | High |
+| C10.10-U6 | Do worked-example recalls hurt reasoning-trained backbones while strategy-only recall helps? | Rule: on reasoning backbones recall strategies, never worked answers | S3 / O7 | K17, K18 (single-source; R1-written demos, not self-generated; calls not tokens) | Arms: direct; worked-recall; insight-first; CoT-SC. Items: AIME-like and GPQA-like, 3 seeds. Metric: accuracy at equal tokens | Insight-first beats direct by >= 3 points and CoT-SC by >= 0 at equal tokens | High |
+| C10.10-U7 | Does recalled analogy mislead on counterfactual or novel-rule variants, or on post-cutoff items? | A recall-off rule for items flagged novel or altered by S0 | O7 / G3 / S0 | K13, K23 (human-only and zero-shot LLM studies; no AP test) | Arms: plain; recall. Items: our tasks with altered symbols or rules, originals, and a post-cutoff set. Metric: accuracy drop from original to variant | Recall's drop exceeds plain's drop by >= 3 points (then add the rule) | Med |
+| C10.10-U8 | Does cross-domain recall beat same-type recall on open tasks, judged blind? | Cross-domain operator form for open mode | O7 (open) / G8 | K14, K22 (single-source; no same-type arm; LLM-judged novelty) | Arms: same-type recall; cross-domain recall; no recall. Items: 50 open idea tasks. Metric: blind human or run-based novelty, usefulness, distinct count | Cross-domain beats same-type on novelty by >= 15 points with usefulness not lower | Med |
+| C10.10-U9 | Can we predict the loss tail from task features, and are losses format failures? | An S0 gate: no recall for short-answer symbolic classes | S0 | K20, K09 (single-source; cause not isolated) | Arms: plain; recall; recall with lenient extractor. Items: BBH-style short-answer tasks. Metric: accuracy, format-error rate per class | Gate predicts sign of the delta on held-out classes at >= 75% accuracy | Med |
+| C10.10-U10 | Does a short pilot (20 items) reliably predict whether recall helps on a class? | S0 pilot rule for turning O7 on per class | S0 / G7 | K19 (established that effect is model-dependent; pilot reliability unknown) | Arms: recall vs plain on 20-item pilots, compared with the 500-item result for 10 classes. Metric: agreement of sign and size | Pilot sign matches full-run sign on >= 8 of 10 classes | Med |
+| C10.10-U11 | Does a diversity instruction and K=3 matter on modern backbones? | Keep "distinct problems" and K=3 in the recall prompt | S3 / O7 | K05, K06 (single-source, GPT-3.5; K=3 to 5 flat) | Arms: K=1, K=3, K=3 non-diverse, K=3 diverse. Items: 500 math. Metric: accuracy at equal tokens | Diverse K=3 beats non-diverse by >= 1.5 points | Low |
+| C10.10-U12 | Does a "write the principle first, then problems" step (knowledge-first) help beyond plain recall? | Knowledge-first step for hard and code classes | S3 / O7 | K06 (single-source; 50 Codeforces problems; 1 to 2 problem differences) | Arms: recall only; principle then recall; principle only (step-back). Items: 200 hard code or MATH items. Metric: pass rate at equal tokens | Principle-first beats recall-only by >= 2 points | Low |
+| C10.10-U13 | Does easy-to-hard proxy recall beat flat recall? | Curriculum recall at S6 impasses | O7 / S6 | d11 (single-source, one open-model study) | Arms: flat recall; easy-then-hard proxies; hard-only proxies. Items: items that reached S6. Metric: solve rate at equal tokens | Easy-then-hard beats flat by >= 2 points | Low |
+
+## Open questions we cannot test on our bench yet
+
+- Why Zhang 2026 and CodeSim find AP below CoT: the prompts are not published. Unblock: obtain the supplementary prompts or write to the authors, then re-run with Yasunaga's published prompt.
+- Whether Zhang's identical deltas across backbones are a shared-harness artifact: same unblock.
+- Fresh, post-cutoff benchmarks: we have none built. Unblock: assemble a post-cutoff math and code set (fresh contest problems after the backbone's cutoff) and freeze it.
+- Self-generated (not R1-written) recall on reasoning-trained backbones: needs access to such a model on our harness and a budget for long outputs.
+- Human-judged novelty for open tasks: needs blind human raters. Model judges are barred by G8.
+- Inter-rater reliability of the founding error analysis (15 of 50 correct answers with flawed recall): needs a second grader on a sample of our own logs.
+- Gick and Holyoak's exact percentages: the source (a25) was not opened. Unblock: read the 1980 paper before citing any figure.
+- Whether the recall effect is partly benchmark memory: needs a contamination probe (compare on seen vs unseen items of the same type).
+
+## Order to run
+
+1. C10.10-U1: recall vs CoT vs CoT-SC at equal tokens. Nobody has measured it. It decides whether any other row matters.
+2. C10.10-U2: relevant vs unrelated vs none. Cheap, same items as U1, and it tells whether the "analogy" part is real or only extra generation.
+3. C10.10-U6: reasoning-backbone test with strategy-only recall. Our agent will mostly run on strong or reasoning models, where worked demos may hurt, and the only positive evidence (insight-first) is single-source.
+
+U3 and U5 run on the same item set at little extra cost, so schedule them with U1 and U2 if the harness allows.

@@ -146,3 +146,5 @@ All 36 unknown ids are covered. Cross-cutting: every test above also needs the S
 **Source audit, 2026-10-26:** of the 23 claims audited as established for this field, 17 were confirmed, 5 were reworded (E10.01-K06, E10.01-K26, E10.03-K05, E10.03-K13, E10.03-K16) and 1 was downgraded to single-source (E10.03-K10, not independent: all support is one paper). Earlier, E10.01-K25 was downgraded for having one opened source. Downgraded ids: E10.01-K25, E10.03-K10. Their rows were removed from section 2 and moved to section 7. 22 claims remain established.
 
 **Audit (code check, 2026-11-03):** E10.07-K22, E10.07-K27 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** E10.08-K03, E10.08-K10, E10.08-K16 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

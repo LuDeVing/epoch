@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Search strategies | [`subfields/04_troubleshooting_search_strategies/DEEP.md`](subfields/04_troubleshooting_search_strategies/DEEP.md) | done, batch 3 (2026-10-26) |
 | Surface-cue heuristics | [`subfields/05_surface_cue_heuristics/DEEP.md`](subfields/05_surface_cue_heuristics/DEEP.md) | done, batch 8 (2026-11-01) |
 | Model-based diagnosis | [`subfields/06_model_based_diagnosis/DEEP.md`](subfields/06_model_based_diagnosis/DEEP.md) | done, batch 7 (2026-11-01) |
-| Training and tutors | | not started |
-| Complexity of expert troubleshooting | | not started |
+| Training and tutors | [`subfields/07_training_and_tutors/DEEP.md`](subfields/07_training_and_tutors/DEEP.md) | done, batch 9 (2026-11-09) |
+| Complexity of expert troubleshooting | [`subfields/08_complexity_of_expert_troubleshooting/DEEP.md`](subfields/08_complexity_of_expert_troubleshooting/DEEP.md) | done, batch 9 (2026-11-09) |
 | LLM help in hardware debugging | | not started |
 | Industrial fault detection | | not started |
 

@@ -32,7 +32,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Expert versus novice problem representation | [`subfields/07_expert_versus_novice_problem_representation/DEEP.md`](subfields/07_expert_versus_novice_problem_representation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Problem finding | [`subfields/08_problem_finding/DEEP.md`](subfields/08_problem_finding/DEEP.md) | done, batch 5 (2026-10-27) |
 | Creative process models | | not started |
-| Naturalistic decision making | | not started |
+| Naturalistic decision making | [`subfields/10_naturalistic_decision_making/DEEP.md`](subfields/10_naturalistic_decision_making/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

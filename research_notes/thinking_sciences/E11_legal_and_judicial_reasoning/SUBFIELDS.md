@@ -24,8 +24,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Story model of juror decisions | [`subfields/01_story_model_of_juror_decisions/DEEP.md`](subfields/01_story_model_of_juror_decisions/DEEP.md) | done, batch 5 (2026-10-27) |
 | Other acceptance principles | [`subfields/02_other_acceptance_principles/DEEP.md`](subfields/02_other_acceptance_principles/DEEP.md) | done, batch 8 (2026-11-01) |
-| Critiques of the story model | | not started |
-| Computational coherence models | | not started |
+| Critiques of the story model | [`subfields/03_critiques_of_the_story_model/DEEP.md`](subfields/03_critiques_of_the_story_model/DEEP.md) | done, batch 9 (2026-11-09) |
+| Computational coherence models | [`subfields/04_computational_coherence_models/DEEP.md`](subfields/04_computational_coherence_models/DEEP.md) | done, batch 9 (2026-11-09) |
 | Case-based reasoning in law | [`subfields/05_case_based_reasoning_in_law/DEEP.md`](subfields/05_case_based_reasoning_in_law/DEEP.md) | done, batch 6 (2026-10-31) |
 | Argumentation and defeasible rules | | not started |
 | Analogy and precedent in legal theory | | not started |

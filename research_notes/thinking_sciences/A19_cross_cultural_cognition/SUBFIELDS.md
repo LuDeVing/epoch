@@ -34,9 +34,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Categorisation and attention | | not started |
 | Origins: social orientation hypothesis | | not started |
 | Within-culture comparisons | | not started |
-| Priming of orientation | | not started |
-| Individual-level links | | not started |
-| Critiques and universals | | not started |
+| Priming of orientation | [`subfields/07_priming_of_orientation/DEEP.md`](subfields/07_priming_of_orientation/DEEP.md) | done, batch 9 (2026-11-09) |
+| Individual-level links | [`subfields/08_individual_level_links/DEEP.md`](subfields/08_individual_level_links/DEEP.md) | done, batch 9 (2026-11-09) |
+| Critiques and universals | [`subfields/09_critiques_and_universals/DEEP.md`](subfields/09_critiques_and_universals/DEEP.md) | done, batch 9 (2026-11-09) |
 | WEIRD samples | | not started |
 | Number, space, colour across cultures | | not started |
 

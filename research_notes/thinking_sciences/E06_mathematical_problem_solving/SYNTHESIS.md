@@ -101,3 +101,5 @@ For the agent, human results are design hints until tested on our model (section
 **Source audit, 2026-10-26:** 11 established claims of this field were re-opened against their papers: 8 confirmed, 3 reworded (E06.01-K25, E06.01-K28, E06.04-K18; the last had a wrong number), 0 downgraded. An earlier one-source check had already left E06.01-K04 single-source; it is out of section 2 and listed below as a gap.
 
 **Audit (code check, 2026-11-01):** E06.05-K03, E06.05-K06, E06.05-K08 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** E06.07-K09 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

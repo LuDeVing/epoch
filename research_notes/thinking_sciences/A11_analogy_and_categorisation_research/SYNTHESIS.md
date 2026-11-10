@@ -114,3 +114,5 @@ Run order (from the subfields): T1 offline Hit@1 first (cheapest, needs no solvi
 **Source audit, 2026-10-26:** the papers behind all 22 established claims of this field were re-opened: 20 confirmed, 2 reworded (A11.04-K02, A11.04-K22), 0 downgraded. Rewording: comparison alone reached 70% in one experiment, so "70 to 90% needs heavy scaffolding" was dropped (F10, section 6); comparers linking cases were 98 to 100%, not 88 to 100%, and a third experiment gave 45% vs 90% (F9, section 6). No downgraded ids.
 
 **Audit (code check, 2026-11-03):** A11.05-K10 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** A11.09-K14 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

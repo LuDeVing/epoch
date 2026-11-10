@@ -29,7 +29,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Verification design | [`subfields/04_verification_design/DEEP.md`](subfields/04_verification_design/DEEP.md) | done, batch 3 (2026-10-26) |
 | Self-correction | [`subfields/05_self_correction/DEEP.md`](subfields/05_self_correction/DEEP.md) | done, batch 7 (2026-11-01) |
 | Learned refinement and self-verification | [`subfields/06_learned_refinement_and_self_verification/DEEP.md`](subfields/06_learned_refinement_and_self_verification/DEEP.md) | done, batch 8 (2026-11-01) |
-| Search over thoughts | | not started |
+| Search over thoughts | [`subfields/07_search_over_thoughts/DEEP.md`](subfields/07_search_over_thoughts/DEEP.md) | done, batch 9 (2026-11-09) |
 | Adaptive stopping, metareasoning | [`subfields/08_adaptive_stopping_and_metareasoning/DEEP.md`](subfields/08_adaptive_stopping_and_metareasoning/DEEP.md) | done, batch 3 (2026-10-26) |
 | RL on verifiable rewards | | not started |
 | Overthinking | [`subfields/10_overthinking/DEEP.md`](subfields/10_overthinking/DEEP.md) | done, batch 7 (2026-11-01) |

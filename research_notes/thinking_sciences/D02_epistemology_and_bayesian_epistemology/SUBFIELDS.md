@@ -30,7 +30,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Belief revision (AGM) | [`subfields/06_belief_revision_agm/DEEP.md`](subfields/06_belief_revision_agm/DEEP.md) | done, batch 5 (2026-10-27) |
 | Formal learning theory | | not started |
 | Justification theories | | not started |
-| Social epistemology | | not started |
+| Social epistemology | [`subfields/09_social_epistemology/DEEP.md`](subfields/09_social_epistemology/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

@@ -123,3 +123,5 @@ Order to run: T5 first (cheap, builds the token log), then T8 and T1, then T6 af
 **Audit (code check, 2026-11-01):** C04.02-K11 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-03):** C04.04-K23 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** C04.09-K08 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

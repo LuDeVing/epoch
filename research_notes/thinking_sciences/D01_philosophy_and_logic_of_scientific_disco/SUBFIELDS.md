@@ -27,10 +27,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Proofs and refutations (conjecture refinement) | [`subfields/02_proofs_and_refutations/DEEP.md`](subfields/02_proofs_and_refutations/DEEP.md) | done, batch 4 (2026-10-26) |
 | Research programmes | [`subfields/03_research_programmes/DEEP.md`](subfields/03_research_programmes/DEEP.md) | done, batch 8 (2026-11-01) |
 | Falsificationism | [`subfields/04_falsificationism/DEEP.md`](subfields/04_falsificationism/DEEP.md) | done, batch 8 (2026-11-01) |
-| Anomalies and paradigm change | | not started |
+| Anomalies and paradigm change | [`subfields/05_anomalies_and_paradigm_change/DEEP.md`](subfields/05_anomalies_and_paradigm_change/DEEP.md) | done, batch 9 (2026-11-09) |
 | Heuristic programming and machine discovery | [`subfields/06_heuristic_programming_and_machine_discovery/DEEP.md`](subfields/06_heuristic_programming_and_machine_discovery/DEEP.md) | done, batch 6 (2026-10-31) |
-| Methodologies of discovery | | not started |
-| Cognitive approaches | | not started |
+| Methodologies of discovery | [`subfields/07_methodologies_of_discovery/DEEP.md`](subfields/07_methodologies_of_discovery/DEEP.md) | done, batch 9 (2026-11-09) |
+| Cognitive approaches | [`subfields/08_cognitive_approaches/DEEP.md`](subfields/08_cognitive_approaches/DEEP.md) | done, batch 9 (2026-11-09) |
 | Social epistemology of discovery | | not started |
 | Pragmatic logics (early) | | not started |
 

@@ -26,8 +26,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Organisational ambidexterity | | not started |
 | Bandit-style exploration | [`subfields/04_bandit_style_exploration/DEEP.md`](subfields/04_bandit_style_exploration/DEEP.md) | done, batch 7 (2026-11-01) |
 | Atypicality versus disruption | [`subfields/05_atypicality_versus_disruption/DEEP.md`](subfields/05_atypicality_versus_disruption/DEEP.md) | done, batch 8 (2026-11-01) |
-| Breakthrough innovation | | not started |
-| Novelty measurement | | not started |
+| Breakthrough innovation | [`subfields/06_breakthrough_innovation/DEEP.md`](subfields/06_breakthrough_innovation/DEEP.md) | done, batch 9 (2026-11-09) |
+| Novelty measurement | [`subfields/07_novelty_measurement/DEEP.md`](subfields/07_novelty_measurement/DEEP.md) | done, batch 9 (2026-11-09) |
 | Design thinking, stage-gate, open and user innovation | | not started |
 
 ## Dig into next

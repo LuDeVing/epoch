@@ -28,9 +28,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Heuristic design by relaxation | [`subfields/02_heuristics_by_relaxation/DEEP.md`](subfields/02_heuristics_by_relaxation/DEEP.md) | done, batch 4 (2026-10-26) |
 | Monte Carlo tree search | [`subfields/03_monte_carlo_tree_search/DEEP.md`](subfields/03_monte_carlo_tree_search/DEEP.md) | done, batch 8 (2026-11-01) |
 | MCTS limits | [`subfields/04_mcts_limits/DEEP.md`](subfields/04_mcts_limits/DEEP.md) | done, batch 8 (2026-11-01) |
-| Tree of Thoughts | | not started |
-| Language Agent Tree Search | | not started |
-| Automated planning (STRIPS, PDDL) | | not started |
+| Tree of Thoughts | [`subfields/05_tree_of_thoughts/DEEP.md`](subfields/05_tree_of_thoughts/DEEP.md) | done, batch 9 (2026-11-09) |
+| Language Agent Tree Search | [`subfields/06_language_agent_tree_search/DEEP.md`](subfields/06_language_agent_tree_search/DEEP.md) | done, batch 9 (2026-11-09) |
+| Automated planning (STRIPS, PDDL) | [`subfields/07_automated_planning/DEEP.md`](subfields/07_automated_planning/DEEP.md) | done, batch 9 (2026-11-09) |
 | Hierarchical task networks | [`subfields/08_hierarchical_task_networks/DEEP.md`](subfields/08_hierarchical_task_networks/DEEP.md) | done, batch 7 (2026-11-01) |
 | Means-ends analysis | [`subfields/09_means_ends_analysis/DEEP.md`](subfields/09_means_ends_analysis/DEEP.md) | done, batch 7 (2026-11-01) |
 | Constraint satisfaction | | not started |

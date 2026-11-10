@@ -145,3 +145,5 @@ Order to run: T1 first (it sets the unit and cutoff for T2 to T4 and supplies di
 **Audit (code check, 2026-11-01):** C05.09-K05, C05.09-K06, C05.09-K21 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-03):** C05.03-K20 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** C05.05-K24, C05.06-K08 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

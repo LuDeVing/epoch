@@ -25,9 +25,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Wargaming | [`subfields/02_wargaming/DEEP.md`](subfields/02_wargaming/DEEP.md) | done, batch 5 (2026-10-27) |
 | Red teaming as alternative analysis | [`subfields/03_red_teaming_as_alternative_analysis/DEEP.md`](subfields/03_red_teaming_as_alternative_analysis/DEEP.md) | done, batch 8 (2026-11-01) |
 | Technical and physical red teams | | not started |
-| Premortem and prospective hindsight | | not started |
+| Premortem and prospective hindsight | [`subfields/05_premortem_and_prospective_hindsight/DEEP.md`](subfields/05_premortem_and_prospective_hindsight/DEEP.md) | done, batch 9 (2026-11-09) |
 | Recognition-primed decision making | [`subfields/06_recognition_primed_decision_making/DEEP.md`](subfields/06_recognition_primed_decision_making/DEEP.md) | done, batch 7 (2026-11-01) |
-| Automated wargaming | | not started |
+| Automated wargaming | [`subfields/07_automated_wargaming/DEEP.md`](subfields/07_automated_wargaming/DEEP.md) | done, batch 9 (2026-11-09) |
 | Red-team failure modes | | not started |
 
 ## Dig into next

@@ -25,11 +25,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Scoring rules and calibration | [`subfields/01_scoring_rules_and_calibration/DEEP.md`](subfields/01_scoring_rules_and_calibration/DEEP.md) | done, batch 6 (2026-10-31) |
 | Good Judgment Project | [`subfields/02_good_judgment_project/DEEP.md`](subfields/02_good_judgment_project/DEEP.md) | done, batch 8 (2026-11-01) |
-| Training | | not started |
+| Training | [`subfields/03_training/DEEP.md`](subfields/03_training/DEEP.md) | done, batch 9 (2026-11-09) |
 | Outside view and base rates | [`subfields/04_outside_view_and_base_rates/DEEP.md`](subfields/04_outside_view_and_base_rates/DEEP.md) | done, batch 5 (2026-10-27) |
 | Decomposition (Fermi-ize) | [`subfields/05_decomposition/DEEP.md`](subfields/05_decomposition/DEEP.md) | done, batch 7 (2026-11-01) |
-| Aggregation and extremizing | | not started |
-| Belief updating | | not started |
+| Aggregation and extremizing | [`subfields/06_aggregation_and_extremizing/DEEP.md`](subfields/06_aggregation_and_extremizing/DEEP.md) | done, batch 9 (2026-11-09) |
+| Belief updating | [`subfields/07_belief_updating/DEEP.md`](subfields/07_belief_updating/DEEP.md) | done, batch 9 (2026-11-09) |
 | LLM forecasting benchmarks | [`subfields/08_llm_forecasting_benchmarks/DEEP.md`](subfields/08_llm_forecasting_benchmarks/DEEP.md) | done, batch 7 (2026-11-01) |
 | Retrieval and ensembles for LLM forecasts | | not started |
 | Verbal confidence | | not started |

@@ -25,11 +25,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Problem selection | [`subfields/01_problem_selection/DEEP.md`](subfields/01_problem_selection/DEEP.md) | done, batch 8 (2026-11-01) |
 | Novelty and atypicality | [`subfields/02_novelty_and_atypicality/DEEP.md`](subfields/02_novelty_and_atypicality/DEEP.md) | done, batch 5 (2026-10-27) |
-| Knowledge networks | | not started |
+| Knowledge networks | [`subfields/03_knowledge_networks/DEEP.md`](subfields/03_knowledge_networks/DEEP.md) | done, batch 9 (2026-11-09) |
 | Team science | | not started |
 | Mentorship and success | | not started |
 | Disruption trends | | not started |
-| Reproducibility and methods | | not started |
+| Reproducibility and methods | [`subfields/07_reproducibility_and_methods/DEEP.md`](subfields/07_reproducibility_and_methods/DEEP.md) | done, batch 9 (2026-11-09) |
 | Funding and incentives | | not started |
 | Scientific discovery as reasoning | [`subfields/09_scientific_discovery_as_reasoning/DEEP.md`](subfields/09_scientific_discovery_as_reasoning/DEEP.md) | done, batch 6 (2026-10-31) |
 | Automated discovery | | not started |

@@ -34,11 +34,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Surprisingly popular method | [`subfields/03_surprisingly_popular_method/DEEP.md`](subfields/03_surprisingly_popular_method/DEEP.md) | done, batch 8 (2026-11-01) |
 | Social influence on crowds | [`subfields/04_social_influence_on_crowds/DEEP.md`](subfields/04_social_influence_on_crowds/DEEP.md) | done, batch 7 (2026-11-01) |
 | Consensus and premature agreement | [`subfields/05_consensus_and_premature_agreement/DEEP.md`](subfields/05_consensus_and_premature_agreement/DEEP.md) | done, batch 8 (2026-11-01) |
-| Conformity | | not started |
+| Conformity | [`subfields/06_conformity/DEEP.md`](subfields/06_conformity/DEEP.md) | done, batch 9 (2026-11-09) |
 | Collective intelligence factor c | | not started |
 | Disputes over c | | not started |
 | Group ability and task type | | not started |
-| Transactive memory and reasoning | | not started |
+| Transactive memory and reasoning | [`subfields/10_transactive_memory_and_reasoning/DEEP.md`](subfields/10_transactive_memory_and_reasoning/DEEP.md) | done, batch 9 (2026-11-09) |
 | Mass collaboration, deliberation | | not started |
 | Theory of mind | | not started |
 

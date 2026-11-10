@@ -121,3 +121,5 @@ Order to run: M1 first (cheapest, makes the funnel log). Then M2 (the central op
 **Audit (code check, 2026-11-01):** C06.10-K17 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-03):** C06.01-K05, C06.01-K07, C06.01-K10, C06.01-K12, C06.01-K13, C06.01-K20, C06.01-K23 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** C06.05-K06, C06.05-K22, C06.08-K18 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

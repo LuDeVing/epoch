@@ -26,9 +26,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Conceptual metaphor theory | [`subfields/01_conceptual_metaphor_theory/DEEP.md`](subfields/01_conceptual_metaphor_theory/DEEP.md) | done, batch 8 (2026-11-01) |
 | Conceptual blending | [`subfields/02_conceptual_blending/DEEP.md`](subfields/02_conceptual_blending/DEEP.md) | done, batch 7 (2026-11-01) |
-| Blend network types | | not started |
+| Blend network types | [`subfields/03_blend_network_types/DEEP.md`](subfields/03_blend_network_types/DEEP.md) | done, batch 9 (2026-11-09) |
 | Computational blending | [`subfields/04_computational_blending/DEEP.md`](subfields/04_computational_blending/DEEP.md) | done, batch 7 (2026-11-01) |
-| Mental spaces | | not started |
+| Mental spaces | [`subfields/05_mental_spaces/DEEP.md`](subfields/05_mental_spaces/DEEP.md) | done, batch 9 (2026-11-09) |
 | Frame semantics | | not started |
 | Force dynamics | | not started |
 | Prototype theory and categorisation | | not started |

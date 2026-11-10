@@ -28,10 +28,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Testing effect (retrieval practice) | | not started |
 | Desirable difficulties | [`subfields/04_desirable_difficulties/DEEP.md`](subfields/04_desirable_difficulties/DEEP.md) | done, batch 7 (2026-11-01) |
 | Transfer of learning | [`subfields/05_transfer_of_learning/DEEP.md`](subfields/05_transfer_of_learning/DEEP.md) | done, batch 7 (2026-11-01) |
-| Productive failure | | not started |
+| Productive failure | [`subfields/06_productive_failure/DEEP.md`](subfields/06_productive_failure/DEEP.md) | done, batch 9 (2026-11-09) |
 | Self-explanation | [`subfields/07_self_explanation/DEEP.md`](subfields/07_self_explanation/DEEP.md) | done, batch 8 (2026-11-01) |
 | Intelligent tutoring and knowledge tracing | [`subfields/08_intelligent_tutoring_and_knowledge_tracing/DEEP.md`](subfields/08_intelligent_tutoring_and_knowledge_tracing/DEEP.md) | done, batch 8 (2026-11-01) |
-| Scaffolding and guided discovery | | not started |
+| Scaffolding and guided discovery | [`subfields/09_scaffolding_and_guided_discovery/DEEP.md`](subfields/09_scaffolding_and_guided_discovery/DEEP.md) | done, batch 9 (2026-11-09) |
 | Motivation, mindset, classroom factors | | not started |
 
 ## Dig into next

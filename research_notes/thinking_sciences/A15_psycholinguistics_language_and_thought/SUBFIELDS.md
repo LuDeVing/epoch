@@ -36,7 +36,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Cross-language domains | | not started |
 | Language as a tool for relations | [`subfields/08_language_as_a_tool_for_relations/DEEP.md`](subfields/08_language_as_a_tool_for_relations/DEEP.md) | done, batch 8 (2026-11-01) |
 | Language of thought | | not started |
-| Pragmatics and shallow comprehension | | not started |
+| Pragmatics and shallow comprehension | [`subfields/10_pragmatics_and_shallow_comprehension/DEEP.md`](subfields/10_pragmatics_and_shallow_comprehension/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

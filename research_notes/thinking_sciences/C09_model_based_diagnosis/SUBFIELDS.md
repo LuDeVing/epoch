@@ -29,10 +29,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Hitting-set tree search | [`subfields/04_hitting_set_tree_search/DEEP.md`](subfields/04_hitting_set_tree_search/DEEP.md) | done, batch 8 (2026-11-01) |
 | Efficient diagnosis algorithms | | not started |
 | Probing and measurement selection | [`subfields/06_probing_and_measurement_selection/DEEP.md`](subfields/06_probing_and_measurement_selection/DEEP.md) | done, batch 3 (2026-10-26) |
-| Diagnosability | | not started |
+| Diagnosability | [`subfields/07_diagnosability/DEEP.md`](subfields/07_diagnosability/DEEP.md) | done, batch 9 (2026-11-09) |
 | Spectrum-based fault localisation | [`subfields/08_spectrum_based_fault_localisation/DEEP.md`](subfields/08_spectrum_based_fault_localisation/DEEP.md) | done, batch 6 (2026-10-31) |
-| Readings in model-based diagnosis | | not started |
-| Software, spreadsheet, KB debugging | | not started |
+| Readings in model-based diagnosis | [`subfields/09_readings_in_model_based_diagnosis/DEEP.md`](subfields/09_readings_in_model_based_diagnosis/DEEP.md) | done, batch 9 (2026-11-09) |
+| Software, spreadsheet, KB debugging | [`subfields/10_software_spreadsheet_kb_debugging/DEEP.md`](subfields/10_software_spreadsheet_kb_debugging/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

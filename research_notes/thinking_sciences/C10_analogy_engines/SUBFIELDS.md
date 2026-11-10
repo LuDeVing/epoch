@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Multiconstraint theory | [`subfields/06_multiconstraint_theory/DEEP.md`](subfields/06_multiconstraint_theory/DEEP.md) | done, batch 8 (2026-11-01) |
 | Working-memory-limited mapping | | not started |
 | Neural analogy and relation learning | | not started |
-| Vector-space relational similarity | | not started |
-| Analogical prompting for LLMs | | not started |
+| Vector-space relational similarity | [`subfields/09_vector_space_relational_similarity/DEEP.md`](subfields/09_vector_space_relational_similarity/DEEP.md) | done, batch 9 (2026-11-09) |
+| Analogical prompting for LLMs | [`subfields/10_analogical_prompting_for_llms/DEEP.md`](subfields/10_analogical_prompting_for_llms/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

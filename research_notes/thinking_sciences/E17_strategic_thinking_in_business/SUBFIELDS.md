@@ -24,9 +24,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Scenario planning (Shell method) | [`subfields/01_scenario_planning/DEEP.md`](subfields/01_scenario_planning/DEEP.md) | done, batch 8 (2026-11-01) |
 | Other scenario traditions | | not started |
-| Scenario evidence | | not started |
+| Scenario evidence | [`subfields/03_scenario_evidence/DEEP.md`](subfields/03_scenario_evidence/DEEP.md) | done, batch 9 (2026-11-09) |
 | Planning-performance research | [`subfields/04_planning_performance_research/DEEP.md`](subfields/04_planning_performance_research/DEEP.md) | done, batch 7 (2026-11-01) |
-| Planned versus emergent strategy | | not started |
+| Planned versus emergent strategy | [`subfields/05_planned_versus_emergent_strategy/DEEP.md`](subfields/05_planned_versus_emergent_strategy/DEEP.md) | done, batch 9 (2026-11-09) |
 | Ten schools of strategy formation | | not started |
 | Analysis tools | | not started |
 | Managerial cognition and decision processes | | not started |

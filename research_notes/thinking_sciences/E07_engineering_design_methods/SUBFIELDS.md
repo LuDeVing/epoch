@@ -28,8 +28,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Systematic design | [`subfields/01_systematic_design/DEEP.md`](subfields/01_systematic_design/DEEP.md) | done, batch 8 (2026-11-01) |
 | Functional decomposition | [`subfields/02_functional_decomposition/DEEP.md`](subfields/02_functional_decomposition/DEEP.md) | done, batch 5 (2026-10-27) |
-| TRIZ | | not started |
-| Morphological analysis | | not started |
+| TRIZ | [`subfields/03_triz/DEEP.md`](subfields/03_triz/DEEP.md) | done, batch 9 (2026-11-09) |
+| Morphological analysis | [`subfields/04_morphological_analysis/DEEP.md`](subfields/04_morphological_analysis/DEEP.md) | done, batch 9 (2026-11-09) |
 | TRIZ with systematic design | | not started |
 | Axiomatic design | | not started |
 | Bio-inspired and analogical design | [`subfields/07_bio_inspired_and_analogical_design/DEEP.md`](subfields/07_bio_inspired_and_analogical_design/DEEP.md) | done, batch 6 (2026-10-31) |

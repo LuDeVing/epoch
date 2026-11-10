@@ -124,3 +124,5 @@ Several rows duplicate SCHEMA 4b on purpose: the E04 evidence is a second source
 - **Audit follow-up.** E04.01-K12, K16, K25 and E04.05-K01 were confirmed. K12's comparisons remain not token-matched.
 
 **Source audit, 2026-10-26:** 20 formerly established claims in E04 were re-opened. 14 confirmed, 5 reworded (E04.01-K03, K06, K17, K27; E04.05-K15), 1 downgraded to single-source (E04.01-K07, one opened source). Downgraded id: E04.01-K07 (row F5 moved to section 7; the C5 reading is a hint only). Weakened: F4 (K06 numbers were wrong and the sample is sub-2000 players, not experts) and F2 (K03 coders and no-outcome-control details were not in the sources).
+
+**Audit (code check, 2026-11-10):** E04.04-K09 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

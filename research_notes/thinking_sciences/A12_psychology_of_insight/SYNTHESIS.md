@@ -116,3 +116,5 @@ Order to run: T1 first (cheapest, from logs we hold), then T2 (its bank feeds T3
 **Source audit, 2026-10-26:** 22 A12 claims were re-opened against their papers (the 20 now established plus A12.04-K03 and A12.04-K07). 14 were confirmed, 6 reworded (all overstated: A12.01-K03, A12.01-K17, A12.04-K04, A12.04-K09, A12.04-K13, A12.04-K14) and 2 downgraded to single-source: A12.04-K03, A12.04-K07. A12.04-K10 was downgraded in the earlier code check and stays out of section 2. Downgraded ids: A12.04-K03, A12.04-K07, A12.04-K10.
 
 **Audit (code check, 2026-11-03):** A12.05-K09 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-10):** A12.10-K01 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

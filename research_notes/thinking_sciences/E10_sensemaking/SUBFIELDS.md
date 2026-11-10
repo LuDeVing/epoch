@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Reviews that map the field | | not started |
 | Sensemaking in defence and safety | | not started |
 | Analyst sensemaking | [`subfields/07_analyst_sensemaking/DEEP.md`](subfields/07_analyst_sensemaking/DEEP.md) | done, batch 8 (2026-11-01) |
-| Manipulated sensemaking | | not started |
+| Manipulated sensemaking | [`subfields/08_manipulated_sensemaking/DEEP.md`](subfields/08_manipulated_sensemaking/DEEP.md) | done, batch 9 (2026-11-09) |
 
 ## Dig into next
 

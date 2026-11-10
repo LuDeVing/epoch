@@ -30,8 +30,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Modal and epistemic logic | | not started |
 | Paraconsistent logic | [`subfields/06_paraconsistent_logic/DEEP.md`](subfields/06_paraconsistent_logic/DEEP.md) | done, batch 8 (2026-11-01) |
 | Intuitionistic and constructive logic | | not started |
-| Logic programming and knowledge representation | | not started |
-| Inductive logic and ILP | | not started |
+| Logic programming and knowledge representation | [`subfields/08_logic_programming_and_knowledge_representatio/DEEP.md`](subfields/08_logic_programming_and_knowledge_representatio/DEEP.md) | done, batch 9 (2026-11-09) |
+| Inductive logic and ILP | [`subfields/09_inductive_logic_and_ilp/DEEP.md`](subfields/09_inductive_logic_and_ilp/DEEP.md) | done, batch 9 (2026-11-09) |
 | Computability and complexity | | not started |
 
 ## Dig into next

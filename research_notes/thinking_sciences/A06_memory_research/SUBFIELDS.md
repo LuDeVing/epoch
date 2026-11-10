@@ -32,8 +32,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Semantic networks and spreading activation | [`subfields/06_semantic_networks_and_spreading_activation/DEEP.md`](subfields/06_semantic_networks_and_spreading_activation/DEEP.md) | done, batch 8 (2026-11-01) |
 | Retrieval as consolidation | | not started |
 | Retrieval failure view of amnesia | [`subfields/08_retrieval_failure_view_of_amnesia/DEEP.md`](subfields/08_retrieval_failure_view_of_amnesia/DEEP.md) | done, batch 8 (2026-11-01) |
-| Working memory | | not started |
-| Retrieval-induced forgetting; memory errors | | not started |
+| Working memory | [`subfields/09_working_memory/DEEP.md`](subfields/09_working_memory/DEEP.md) | done, batch 9 (2026-11-09) |
+| Retrieval-induced forgetting; memory errors | [`subfields/10_retrieval_induced_forgetting_memory_errors/DEEP.md`](subfields/10_retrieval_induced_forgetting_memory_errors/DEEP.md) | done, batch 9 (2026-11-09) |
 | Case-based reasoning | [`subfields/11_case_based_reasoning/DEEP.md`](subfields/11_case_based_reasoning/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next

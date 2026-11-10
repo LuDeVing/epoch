@@ -24,11 +24,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Design as problem solving | [`subfields/01_design_as_problem_solving/DEEP.md`](subfields/01_design_as_problem_solving/DEEP.md) | done, batch 8 (2026-11-01) |
-| Reflection-in-action | | not started |
+| Reflection-in-action | [`subfields/02_reflection_in_action/DEEP.md`](subfields/02_reflection_in_action/DEEP.md) | done, batch 9 (2026-11-09) |
 | Problem-solution co-evolution | [`subfields/03_problem_solution_co_evolution/DEEP.md`](subfields/03_problem_solution_co_evolution/DEEP.md) | done, batch 5 (2026-10-27) |
 | Framing and reframing | [`subfields/04_framing_and_reframing/DEEP.md`](subfields/04_framing_and_reframing/DEEP.md) | done, batch 6 (2026-10-31) |
 | Designerly ways of knowing | | not started |
-| Protocol analysis | | not started |
+| Protocol analysis | [`subfields/06_protocol_analysis/DEEP.md`](subfields/06_protocol_analysis/DEEP.md) | done, batch 9 (2026-11-09) |
 | Fixation and ideation | [`subfields/07_fixation_and_ideation/DEEP.md`](subfields/07_fixation_and_ideation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Analogy in design | [`subfields/08_analogy_in_design/DEEP.md`](subfields/08_analogy_in_design/DEEP.md) | done, batch 7 (2026-11-01) |
 | Expert-novice designers | | not started |

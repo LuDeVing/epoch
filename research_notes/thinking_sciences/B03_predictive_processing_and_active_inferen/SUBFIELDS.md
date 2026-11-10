@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Free energy principle | | not started |
 | Active inference decision theory | [`subfields/03_active_inference_decision_theory/DEEP.md`](subfields/03_active_inference_decision_theory/DEEP.md) | done, batch 8 (2026-11-01) |
 | Active inference versus reinforcement learning | [`subfields/04_active_inference_versus_reinforcement_learnin/DEEP.md`](subfields/04_active_inference_versus_reinforcement_learnin/DEEP.md) | done, batch 8 (2026-11-01) |
-| Epistemic value and curiosity | | not started |
+| Epistemic value and curiosity | [`subfields/05_epistemic_value_and_curiosity/DEEP.md`](subfields/05_epistemic_value_and_curiosity/DEEP.md) | done, batch 9 (2026-11-09) |
 | Structure learning and model reduction | | not started |
 | Precision weighting and attention | | not started |
 | Link to variational methods | | not started |

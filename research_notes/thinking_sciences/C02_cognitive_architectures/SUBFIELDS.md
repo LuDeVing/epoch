@@ -28,8 +28,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Soar: chunking | [`subfields/03_soar_chunking/DEEP.md`](subfields/03_soar_chunking/DEEP.md) | done, batch 3 (2026-10-26) |
 | Soar: other memories and RL | [`subfields/04_soar_other_memories_and_rl/DEEP.md`](subfields/04_soar_other_memories_and_rl/DEEP.md) | done, batch 8 (2026-11-01) |
 | ACT-R: production selection | [`subfields/05_act_r_production_selection/DEEP.md`](subfields/05_act_r_production_selection/DEEP.md) | done, batch 8 (2026-11-01) |
-| ACT-R: declarative memory | | not started |
-| ACT-R: production compilation | | not started |
+| ACT-R: declarative memory | [`subfields/06_act_r_declarative_memory/DEEP.md`](subfields/06_act_r_declarative_memory/DEEP.md) | done, batch 9 (2026-11-09) |
+| ACT-R: production compilation | [`subfields/07_act_r_production_compilation/DEEP.md`](subfields/07_act_r_production_compilation/DEEP.md) | done, batch 9 (2026-11-09) |
 | Hybrid and connectionist (CLARION, Sigma) | | not started |
 | Global workspace, LIDA | | not started |
 | Language agents as architectures | [`subfields/10_language_agents_as_architectures/DEEP.md`](subfields/10_language_agents_as_architectures/DEEP.md) | done, batch 6 (2026-10-31) |

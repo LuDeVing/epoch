@@ -25,9 +25,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Hypothetico-deductive model | [`subfields/01_hypothetico_deductive_model/DEEP.md`](subfields/01_hypothetico_deductive_model/DEEP.md) | done, batch 8 (2026-11-01) |
 | Forward and backward reasoning | | not started |
 | Knowledge organisation: illness scripts, categories | [`subfields/03_knowledge_organisation_illness_scripts_catego/DEEP.md`](subfields/03_knowledge_organisation_illness_scripts_catego/DEEP.md) | done, batch 6 (2026-10-31) |
-| Dual-process theory | | not started |
-| Cognitive bias and premature closure | | not started |
-| Debiasing and cognitive forcing | | not started |
+| Dual-process theory | [`subfields/04_dual_process_theory/DEEP.md`](subfields/04_dual_process_theory/DEEP.md) | done, batch 9 (2026-11-09) |
+| Cognitive bias and premature closure | [`subfields/05_cognitive_bias_and_premature_closure/DEEP.md`](subfields/05_cognitive_bias_and_premature_closure/DEEP.md) | done, batch 9 (2026-11-09) |
+| Debiasing and cognitive forcing | [`subfields/06_debiasing_and_cognitive_forcing/DEEP.md`](subfields/06_debiasing_and_cognitive_forcing/DEEP.md) | done, batch 9 (2026-11-09) |
 | Reflective reasoning and second look | [`subfields/07_reflective_reasoning_and_second_look/DEEP.md`](subfields/07_reflective_reasoning_and_second_look/DEEP.md) | done, batch 5 (2026-10-27) |
 | Probabilistic and test-based reasoning | [`subfields/08_probabilistic_and_test_based_reasoning/DEEP.md`](subfields/08_probabilistic_and_test_based_reasoning/DEEP.md) | done, batch 7 (2026-11-01) |
 | Clinical decision support and LLMs | [`subfields/09_clinical_decision_support_and_llms/DEEP.md`](subfields/09_clinical_decision_support_and_llms/DEEP.md) | done, batch 7 (2026-11-01) |
