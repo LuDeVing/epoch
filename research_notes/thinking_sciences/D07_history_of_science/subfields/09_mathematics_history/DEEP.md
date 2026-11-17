@@ -290,3 +290,10 @@ All tests: both arms use the same total tokens, setup included (G7). Report per 
 - [M] CRAFT (ICML 2026, abstract page). https://icml.cc/virtual/2026/74819 (d03)
 - [V] Martin and Pease (2013) Mathematical practice, crowdsourcing, and social machines. https://arxiv.org/abs/1305.0900 (d04, d05)
 - [M] Gap-search note (d18); related link https://arxiv.org/abs/2502.19414 (not re-opened).
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 7 established claims: 5 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D07.09-K01** (reworded: the sources support less). Numbers are right, but in Chuharski et al. only 109 of 420 unique conjectures were falsified; 271 (64.5%) could not be tested because the generated code did not run, so the 40 (9.5%) is not the share surviving a counterexample search and 'mostly false' is not shown. Corrected claim: Model-made conjectures are mostly duplicate, untestable, false or trivial, so a cheap falsification and filtering funnel must dominate the loop. Chuharski et al.: 757 outputs gave 420 unique conjectures (55.5% unique); counterexample code falsified 109 (25.95%), could not run on 271 (64.5%), and found no counterexample for only 40 (9.5%). LeanConjecturer: 3,776 of 12,289 (30.7%; 34.5% of 10,950 syntactically valid) were not aesop-provable.
+- **D07.09-K06** (reworded: the sources support less). PS+ numbers are right (average 76.7 vs 70.4; GSM8K 59.3 vs 56.4), and Least-to-Most gets 99%+ vs 16% on SCAN length split, but neither paper ranks heuristics, so 'best-supported Polya-type heuristic in LLM tests' is not shown; the SCAN gain is on a symbolic task and gains on GSM8K are small. Corrected claim: Least-to-Most (decompose into ordered subproblems) gives a very large gain on the symbolic SCAN task (99%+ vs 16% for chain of thought, code-davinci-002, 14 exemplars); the plan-then-execute prompt (Plan-and-Solve PS+) gives a few points on text-davinci-003 (math average 76.7 vs 70.4 for zero-shot CoT; GSM8K 59.3 vs 56.4). No test compares Polya-type heuristics head to head.

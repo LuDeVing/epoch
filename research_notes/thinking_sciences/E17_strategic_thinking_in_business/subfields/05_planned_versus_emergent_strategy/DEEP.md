@@ -357,3 +357,14 @@ All arms get the same total token budget, including setup and any replans. At le
 - [V] Laban et al. 2025. https://arxiv.org/abs/2505.06120 (d21)
 - [V] MAST, Cemri et al. 2025. https://arxiv.org/abs/2503.13657 (d22)
 - [V] arXiv search gap note. https://arxiv.org/search/?query=LLM+strategic+management+business+strategy&searchtype=all (c26)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E17.05-K21** (number corrected). Huang et al. Table 2 gives GPT-3.5 oracle GSM8K 75.9 to 84.3 (not 95.5; 95.5 is GPT-4's standard-prompting GSM8K). Intrinsic 74.7 and 41.8 are round-2 values (CSQA round 1 is 38.1). EnterpriseBench and ExpeL specifics could not be confirmed from abstract pages. Corrected claim: Reflection and self-correction help when a hard verifier or true label exists and not otherwise: GPT-3.5 GSM8K 75.9 to 84.3 with oracle labels vs 75.9 to 74.7 intrinsic (after two rounds); CommonSenseQA 75.8 to 89.7 with oracle vs 75.8 to 41.8 intrinsic (two rounds). Reflexion and Self-Refine stay below CoT on rubric-judged consulting cases (EnterpriseBench); adding unverified reflections hurt ExpeL.
+- **E17.05-K05** (now single-source: only one opened source, code check).
+- **E17.05-K07** (now single-source: only one opened source, code check).
+- **E17.05-K10** (now single-source: only one opened source, code check).
+- **E17.05-K11** (now single-source: only one opened source, code check).
+- **E17.05-K18** (now single-source: only one opened source, code check).

@@ -301,3 +301,12 @@ All arms get the same total tokens. Report pass@1 over at least 3 seeds.
 - [M] The model proposes, the code disposes (2026), pre-registered verifier ablation (abstract). https://arxiv.org/abs/2609.15887
 - [M] Arce (2026) methods audit of 41 self-improving agent papers (title only; link unusual).
 - Derived power calculation d09: own arithmetic, no external source.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 8 established claims: 7 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E15.07-K20** (reworded: the sources support less). Near-zero variance occurred in the 6 of 14 studies that could not be analysed (the 'correct answer' effect); the 99.6% figure is GPT identifying as conservative in the Moral Foundations survey, not a variance measure. Corrected claim: LLM simulated samples are not independent replications: in Park et al. text-davinci-003 replicated 37.5% of 8 analysable Many Labs 2 studies, while 6 of 14 could not be analysed because answers had zero or near-zero variation (and GPT identified as conservative in 99.6% of Moral Foundations cases); Saynova et al. get F1 up to 77% but results vary with temperature; Aher et al. replicated some tasks but found hyper-accuracy in wisdom of crowds.
+- **E15.07-K05** (now single-source: only one opened source, code check).
+- **E15.07-K07** (now single-source: only one opened source, code check).
+- **E15.07-K12** (now single-source: only one opened source, code check).

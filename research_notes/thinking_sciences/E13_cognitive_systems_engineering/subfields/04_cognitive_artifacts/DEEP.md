@@ -289,3 +289,10 @@ All arms use equal total tokens (input plus output, setup counted). Run on our b
 - [M] Parasuraman and Manzey 2010, complacency (recalled, b27; not opened).
 
 Corrections carried from critique.md: the SWE-agent shell-only gap is 7 points by Table 1 (the paper text says 10.7); HumanEvalFix 87.7 is Python only; Kosmyna session 4 is n = 9 per cell; ReAct 71 vs 45 is best trial only; cite Hesselmann (2020).
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 2 established claims: 1 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E13.04-K18** (reworded: the sources support less). The -14.5 to -6.3 underconfidence change is the pooled pre-to-post change in both groups (no-feedback group fell -17.9 to -6.4, a larger drop), so it is not an effect of feedback; the feedback benefit is in the Time x Group interaction and reminder strategy, and prediction alone was ineffective in Exp 2. Corrected claim: Humans offload too eagerly (bias toward excessive reminder use) when metacognition is poor; making predictions plus receiving feedback improved metacognitive calibration and reminder-setting strategies (Ngai and Gilbert 2026; N=164, replicated N=416; prediction alone was ineffective in Exp 2). Underconfidence fell from -14.5 to -6.3 pre- to post-task across both groups in Exp 1.
+- **E13.04-K04** (now single-source: only one opened source, code check).

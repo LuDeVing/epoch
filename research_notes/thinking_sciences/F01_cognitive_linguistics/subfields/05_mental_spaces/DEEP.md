@@ -304,3 +304,8 @@ Rule for any of these: also run the plain model with a larger token allowance, s
 - [V] Kulakova and Nieuwland (2016) Pragmatic skills predict online counterfactual comprehension. https://doi.org/10.3758/s13415-016-0433-4 (d16)
 - [V] Autistic adults and counterfactual maintenance and switching (2022). https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8732958/ (d17)
 - [V] Lynn (2026) Conceptual blending in humans and language models. https://doi.org/10.3389/fpsyg.2026.1849083 (d19)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 9 established claims: 9 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

@@ -264,3 +264,9 @@ All arms at equal total tokens (including setup, G7). Report mean and spread ove
 - [V] Brewer and Chinn (1994) PSA, d14: https://www.cambridge.org/core/journals/psa-proceedings-of-the-biennial-meeting-of-the-philosophy-of-science-association/article/scientists-responses-to-anomalous-data-evidence-from-psychology-history-and-philosophy-of-science/668FEBB13D35B22E47A57FD3487AC2CF
 - [V] Wu et al. (2024) Reasoning or Reciting, d15: https://arxiv.org/pdf/2307.02477
 - [V] HypoArena, d17: https://www.alphaxiv.org/abs/2607.15766.md
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D01.05-K01** (now single-source: the sources are not independent). All numbers verified in Fugelsang et al. 2004 (417, 223, 196, 27, 84, 51, 61%), but the second source (Dunbar 1995/97) is the same lab/author, contains none of these figures, so only one independent source supports the claim.

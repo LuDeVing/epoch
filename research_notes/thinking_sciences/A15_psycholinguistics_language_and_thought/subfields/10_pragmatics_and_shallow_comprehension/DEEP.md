@@ -302,3 +302,21 @@ All arms at equal total tokens (thinking plus answer plus any extra check calls)
 - [V] Pu et al. (2026) LHAW. https://arxiv.org/abs/2602.10525
 - [V] Zhang et al. (2024) CLAMBER. https://arxiv.org/abs/2405.12063
 - [V] Arai and Ren (2026) DRInQ. https://arxiv.org/abs/2605.24267
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 7 established claims: 3 confirmed as written, 4 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A15.10-K01** (now single-source: the sources are not independent). Christianson et al. 2001 numbers verified (47.4% vs 32.1% long vs short Exp 1a; 55.6% vs 9.4% subordinate vs matrix questions, Exp 2); a01 and a02 are the same paper and Patson et al. 2009 comes from the same lab (Ferreira), so it is one research line.
+- **A15.10-K02** (now single-source: the sources are not independent). Numbers (72% vs 29% partial reanalysis) match Patson et al. 2009, but both sources are from the Ferreira lab (Christianson 2001 is the original probe study, Patson 2009 its follow-up), so only one independent lab supports the paraphrase claim.
+- **A15.10-K14** (now single-source: the sources are not independent). Numbers match Ruis et al. (71.97, 81.63, 83.18, 86.23, 88.66 verified), but a16 and c04 are the same arXiv paper (2210.14986) listed twice, and DRInQ (the only other source) does not test CoT on particularised vs generalised items, so only one source supports the claim.
+- **A15.10-K30** (number corrected). Cancer-Myth, Sieker, Sathyanathan figures verified (43%, GPT-5 42.1, 84.08, 26-42, 37-70 at level 4), but MultiHoax others are Gemini 0.29, GPT-4o 0.23, Qwen 0.19 (Table 3, Claude Sonnet 3.5 0.46), not 0.18-0.22; those models are early-2025 not 2025-2026, and GPT-4o's 84% is the best of three models tested. Corrected claim: False-premise flag rates remain low: reasoning models fail to challenge 26-42% of false presuppositions (37-70% at the strongest wording; GPT-5 Mini and Gemini 2.5 runs Dec 2025-Jan 2026); no frontier model corrected more than 43% of hidden false premises in patient questions (GPT-5 42.1%); in German political questions GPT-4o rejected 84% (best of three models; Llama-3-8B 50%, Mistral 2%); in multi-hop hidden-premise questions (early-2025 models) Claude Sonnet 3.5 scored 0.46 and Gemini, GPT-4o and Qwen2.5-7B 0.19-0.29.
+- **A15.10-K05** (now single-source: only one opened source, code check).
+- **A15.10-K06** (now single-source: only one opened source, code check).
+- **A15.10-K09** (now single-source: only one opened source, code check).
+- **A15.10-K11** (now single-source: only one opened source, code check).
+- **A15.10-K12** (now single-source: only one opened source, code check).
+- **A15.10-K13** (now single-source: only one opened source, code check).
+- **A15.10-K16** (now single-source: only one opened source, code check).
+- **A15.10-K19** (now single-source: only one opened source, code check).
+- **A15.10-K20** (now single-source: only one opened source, code check).

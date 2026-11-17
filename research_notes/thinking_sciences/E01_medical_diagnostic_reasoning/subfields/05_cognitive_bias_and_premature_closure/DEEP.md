@@ -338,3 +338,8 @@ Include an Instant Answer arm in T3 and T8 as a premature-closure control. Repor
 - [M] BiasMedQA follow-up, medRxiv 2025. https://www.medrxiv.org/content/10.1101/2025.06.22.25330078.full.pdf (d16)
 
 **Corrections carried from the critique:** 5.9 factors per case (not 4.3); BiasMedQA drops are relative percent; GPT-3.5 baseline 0.497; Lou and Sun use 62 questions; Norman 2014 first-author order unverified; Echterhoff prompt counts (400 per experiment vs 13,465 total) not reconciled.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 13 established claims: 13 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

@@ -299,3 +299,10 @@ All arms use equal token budgets (setup counted, G7), the same items and the sam
 - [V] Many AI analysts, one dataset (PNAS 2026). https://pmc.ncbi.nlm.nih.gov/articles/PMC13393493/
 
 Links to parallel subfields (not covered here): Calibration and overconfidence; Social epistemology; Epistemic diversity; Conformity; Reproducibility and methods; Debiasing and cognitive forcing; Scientific discovery systems; Methodologies of discovery.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 8 established claims: 7 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F03.09-K17** (reworded: the sources support less). Kohler et al. agents get only the methods description and data and never see the original code, so 'from code and data' does not describe that result; SocSci paper says memorisation is 'not primarily' driving results. Corrected claim: Strong agents can reproduce social-science results: given original data and code, Claude Code reached 93.4% task accuracy on SocSci-Repro-Bench (analyses suggest results are not primarily driven by memorisation); and even from only a paper's methods description plus data (no code), the best systems in Kohler et al. completed 92-100% of papers and reproduced coefficients within the original 95% CI over 80% of the time.
+- **F03.09-K13** (now single-source: only one opened source, code check).

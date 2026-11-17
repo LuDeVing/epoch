@@ -285,3 +285,11 @@ All arms use equal total tokens, including retrieval and setup cost (G7). Use at
 - [V] Zheng et al. (2023) Take a Step Back: Evoking Reasoning via Abstraction. https://arxiv.org/abs/2310.06117 (ids d13)
 - [V] Dunbar via Frontiers/PMC review (secondary) on in vivo analogy distance. https://pmc.ncbi.nlm.nih.gov/articles/PMC4244599 (ids d15)
 - [M] Search for agent-memory analogical retrieval (xMemory 2602.02007, Co-Need Index, GAAMA 2603.27910). https://arxiv.org/abs/2602.02007 (ids d16)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A09.10-K04** (now single-source: the sources are not independent). Only Hope et al. 2017 compares against TF-IDF/LSA/LDA; Hope 2021 (same lab, compares to embedding baselines) and Sultan and Shahaf 2023 (shares an author, no TF-IDF/LSA/LDA comparison) are not independent or do not test the claim, and AnalogyKB is irrelevant.
+- **A09.10-K08** (reworded: the sources support less). Lewis and Mitchell's 0.35-0.49 (GPT-3.5 0.350, GPT-3 0.488, GPT-4 0.452) is accuracy over all alphabets including the original, not permuted alphabets only; Webb et al. show GPT-3 above chance on near stories but humans beat GPT-3 on stories overall (OR 0.37), so 'match or beat humans on near stories' is not shown, and the Digit Matrices OR 1.88 is for generation only. Corrected claim: GPT-3 matched or beat UCLA undergraduates on digit matrices (generation OR 1.88), letter strings (OR 1.76) and verbal analogies, but on story analogies humans beat GPT-3 overall and GPT-3 was above chance only for near stories (far p=.065, n.s.); models score worse than humans on far-domain or counterfactual formats (ARN far analogies: models 39.6% vs humans 94.1%; letter-string accuracy over all alphabets GPT-3 0.488, GPT-4 0.452, GPT-3.5 0.350 vs humans 0.753; Stevenson symbol domain GPT-4o .48 vs adults .89; KidsARC LLMs below children aged 9+).
+- **A09.10-K17** (now single-source: only one opened source, code check).

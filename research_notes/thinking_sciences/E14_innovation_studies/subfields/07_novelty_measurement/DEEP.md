@@ -317,3 +317,10 @@ All arms get the same total token budget, counting setup. Each item is scored by
 - [M] Lu et al. (2024) The AI Scientist. https://arxiv.org/abs/2408.06292
 - [M] Park, Leahey, Funk (2023) Papers and patents are becoming less disruptive (cited in LLM papers)
 - [M] Kobak et al. (2025); Kwon and Yang (2025), as cited in Safari and Babaei 2026
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E14.07-K24** (number corrected). Only 14.0% (7/50) were one-to-one methodological mapping (score 5); the 24.0% total includes 10.0% scoring 4. Corrected claim: 24.0% of 50 LLM-agent research documents were judged plagiarism by experts (14.0% one-to-one methodological mapping, 10.0% score 4); the AI Scientist novelty checker marked all 10 generated ideas (and both seed ideas) novel in one case study.
+- **E14.07-K27** (reworded: the sources support less). Two sources propose different mechanisms: Panickssery links self-preference linearly to self-recognition (fine-tuning), while Wataoka concludes the essence of the bias lies in perplexity; the claim merges them as one mechanism. Corrected claim: Judge models favour their own outputs; Panickssery et al. find GPT-4 is 73.5% accurate at recognising its own text and that self-preference rises linearly with self-recognition after fine-tuning, while Wataoka et al. find GPT-4 has the largest self-preference score (0.520) among eight judges and that LLM judges rate lower-perplexity text higher than humans do, which they suggest is the essence of the bias.

@@ -274,3 +274,11 @@ All arms at equal tokens. Report mean and range across 5 paraphrases; at least 1
 - [V] Sabir et al. (2025) Cognitive styles in vision-language models. https://arxiv.org/abs/2507.00700 (b23, b24, d12)
 - [M] "Questioning the Rice Theory" (2018, title and citation count only). https://doi.org/10.3724/SP.J.1041.2018.00572 (d16)
 - Process notes, not sources: c24, d15. Own syntheses, not sources: a22, a25, c23.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A19.09-K13** (reworded: the sources support less). Hu et al. 2026 verified (English 10.90 vs Chinese 10.06, d=0.36) but the authors only say this 'suggests' verbose description 'may be' a feature of English training-data density; one LLM study does not show counting measures in general 'are confounded'. Sabir et al. 2025 uses background-vs-object caption openings, not object counts or verbosity, so it does not support the claim. Corrected claim: In one LLM study (Hu et al. 2026), English descriptions listed slightly more objects than Chinese ones (10.90 vs 10.06, d=0.36); the authors suggest this reflects verbose output tied to English training-data density rather than holistic attention, so raw object counts may be a confounded measure of 'holism'.
+- **A19.09-K21** (now single-source: only one opened source, code check).
+- **A19.09-K26** (now single-source: only one opened source, code check).

@@ -275,3 +275,13 @@ Opened = [V]; snippet or abstract only, or second-hand = [M].
 - [V] Kelly and Mandel (2024) The effect of calibration training on the calibration of intelligence analysts' judgments. OSF file store (d08)
 - [M] Stone, Luu, Costello, Somerville (2023) Automated calibration feedback. https://doi.org/10.1002/bdm.2334 (d09, abstract only)
 - [M] Karimi Motahhar and Gruca (2025) How does training improve individual forecasting performance. https://doi.org/10.1016/j.ijforecast.2024.12.001 (d17, closed access)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E03.03-K06** (now single-source: the sources are not independent). Moore et al. 2017 Table 1 matches exactly (4.3 to 2.0, 2.8 to 0.7, hit rate 60.7 to 61.5, n=494,552 forecasts), but the other listed source (Mellers et al. 2014) is from the same Good Judgment Project team (shared authors Mellers, Moore, Swift, Ungar, Tetlock), so there is one independent source, and Mellers reports training improved resolution too.
+- **E03.03-K13** (now single-source: only one opened source, code check).
+- **E03.03-K16** (now single-source: only one opened source, code check).
+- **E03.03-K21** (now single-source: only one opened source, code check).
+- **E03.03-K22** (now single-source: only one opened source, code check).

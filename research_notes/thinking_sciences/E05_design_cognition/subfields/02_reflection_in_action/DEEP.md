@@ -292,3 +292,9 @@ All tests keep both arms at equal total tokens and equal number of model calls. 
 - [V] Material for Thought: generative AI as an active creative medium (2026), https://arxiv.org/abs/2605.19832
 
 **Links to parallel subfields (not covered here):** Productive failure; Cognitive conflict and impasse; Search over thoughts; Tree of Thoughts; Language Agent Tree Search; Debiasing and cognitive forcing; Belief updating; Metacognition and higher-order representation; Calibration and overconfidence; Protocol analysis; Conceptual change and revolutions; Anomalies and paradigm change; Software, spreadsheet, KB debugging; Proof planning and repair.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E05.02-K16** (reworded: the sources support less). Opened sources are Wikipedia summaries (case-study basis, no experiments) and one two-participant protocol study; the Schon-Wiggins and Suwa/Gero records were not read, so 'core studies are single cases with author-coded protocols' and the universal 'no study tests ... with an LLM against human designers' are not shown by the sources. Corrected claim: Reflection-in-action is a descriptive lens built on Schon's practitioner case studies (Wikipedia summaries report no experiments); the sources read here include no test of its predictions, and no LLM-versus-human-designer test was found in the searches made.

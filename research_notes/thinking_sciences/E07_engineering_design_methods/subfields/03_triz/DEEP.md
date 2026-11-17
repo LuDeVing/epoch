@@ -265,3 +265,10 @@ Links to other subfields in this run (not covered here): Morphological analysis,
 - [M] Nuclear TRIZ GPT (2024). https://doi.org/10.13182/t130-45953 (c26)
 - [M] 153-senior patent-analogy study, via the ASEE paper. https://peer.asee.org/21369.pdf (a29)
 - [M] Yilmaz et al. on random design heuristics, second hand via AutoTRIZ (d18); Chulvi et al. 2013 and Duran-Novoa et al. 2019, second hand via a24 and a25.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 4 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E07.03-K06** (now single-source: the sources are not independent). All five evidence lines are the single TRIZBench paper (Wang and Uzzi 2026); numbers match its Table 2 (HasF1 0.75-0.90, PairF1 0.29-0.45, patent Hit@3 0.13-0.28, though the 0.45 top is the non-LLM PatentSBERTa retrieval and best LLM-based pair F1 is 0.43), but there is no second independent source.
+- **E07.03-K22** (reworded: the sources support less). Both sources are student studies (Ogot and Okudan course experience; Cok et al. student experiment, abstract only), so 'human users' is wider than the evidence; Ogot also reports the drift as instructor observation, fixed by in-class guided practice. Corrected claim: Engineering students in a TRIZ course found the contradiction matrix tedious (many tables, number lookups) and drifted from the chosen principles without instructor supervision; in a student experiment (Cok et al. 2026, abstract only) LLM support lowered workload but did not always improve design quality on complex tasks.

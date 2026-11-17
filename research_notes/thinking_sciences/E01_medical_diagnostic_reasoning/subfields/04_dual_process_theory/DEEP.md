@@ -278,3 +278,17 @@ Arms get equal total tokens (generated plus reasoning) unless an arm is "single 
 - [M] Frederick (2005) Cognitive reflection and decision making. https://www.aeaweb.org/articles?id=10.1257/089533005775196732 (a23; 41% cross-checked via Hagendorff)
 - [M] Evans, Barston, Pollard (1983). https://link.springer.com/article/10.3758/BF03196976 (a24; figures from memory, not used)
 - [M] Neufeld et al. as cited in Pelaccia 2011 (a25; secondhand)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 3 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E01.04-K11** (now single-source: the sources are not independent). All numbers match Sprague et al. 2024/2025 (110 papers, 1,218 comparisons, up to 95% of MMLU gain on '=' questions), but both evidence lines for the claim are that same paper; Kojima 2022 only shows zero-shot CoT gains on arithmetic and does not support 'little elsewhere' or the 95% figure.
+- **E01.04-K20** (reworded: the sources support less). Hagendorff et al. report 38% of human responses correct vs 41% in the original (n=3,428) but the 38% is on their own 150 new CRT-style tasks (500 Prolific participants), not a replication of the original items, and these are per-response rates; Tay et al. 44% is all three items correct among 128 medical students, a different metric, so the three figures are not comparable. Corrected claim: The Cognitive Reflection Test traps fast answers in people: about 41% of responses were correct in the original sample (n=3,428), 38% in a 2023 Prolific sample on new CRT-style tasks (per-response rates), and 44% of 128 medical students got all three items right (about 10% gave the intuitive answer to all three).
+- **E01.04-K25** (reworded: the sources support less). Nori numbers match (MedQA 88/92/96% at about $5/$50/$500; metareasoning only future work), but the universal 'no published study' is contradicted in spirit by SynapseRoute (arXiv 2507.02822, 2025), which routes each medical question to thinking or non-thinking mode and compares with thinking-only (0.8390 vs 0.8272 accuracy, 39.66% fewer tokens) on medical QA, though not diagnosis-specific and not at matched tokens. Corrected claim: We found no study that tests per-item fast/slow mode routing against always-slow and never-slow at matched tokens on medical diagnosis; the nearest data are SynapseRoute (medical QA routing vs thinking-only, 39.66% fewer tokens at 0.8390 vs 0.8272 accuracy) and the MedQA cost-accuracy Pareto curves (88/92/96% at roughly $5/$50/$500).
+- **E01.04-K01** (now single-source: only one opened source, code check).
+- **E01.04-K02** (now single-source: only one opened source, code check).
+- **E01.04-K06** (now single-source: only one opened source, code check).
+- **E01.04-K08** (now single-source: only one opened source, code check).
+- **E01.04-K10** (now single-source: only one opened source, code check).
+- **E01.04-K12** (now single-source: only one opened source, code check).

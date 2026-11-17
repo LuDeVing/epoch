@@ -266,3 +266,10 @@ Rule for all: both arms get the same total tokens (setup counted, G7). Use at le
 - [M] Tabular robustness papers. https://arxiv.org/abs/2406.12719 (d19, summary only)
 
 Links to parallel subfields (not covered here): Cognitive bias and premature closure; Debiasing and cognitive forcing; Aggregation and extremizing; Cognitive artifacts; Choice architecture and nudging; Compression at inference time; Comparison and relational language.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 3 established claims: 1 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E02.05-K12** (now single-source: the sources are not independent). The model-specific claims (GPT-3.5 prefers JSON, GPT-4 Markdown, IoU below 0.2) all rest on one paper (He et al. 2024, listed four times); Sui et al. and Mighty ToRR only show formats matter / no single format wins, not per-model preference flips.
+- **E02.05-K20** (reworded: the sources support less). An absence claim 'no study has tested' cannot be established by the sources (the wiki page merely does not mention orientation; Jhaveri et al. is about Wason 2-4-6 confirmation bias, not layout); it is only a search-gap statement. Corrected claim: No study varying hypotheses-in-rows vs hypotheses-in-columns for an LLM was found in this search; evidence on LLM table layout (e.g. Sui et al. 2024) is indirect and does not test hypothesis evaluation.

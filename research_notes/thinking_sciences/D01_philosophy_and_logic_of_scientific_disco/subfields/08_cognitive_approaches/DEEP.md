@@ -367,3 +367,9 @@ All tests: both arms get the same total token budget (including setup and any re
 | V | Si, Yang and Hashimoto (2024) Can LLMs generate novel research ideas? | https://arxiv.org/abs/2409.04109 | b25, b26 |
 | V | Si, Hashimoto and Yang (2025) The ideation-execution gap | https://arxiv.org/pdf/2506.20803 | d09, d10 |
 | V | Padmakumar and He (2024) Does writing with language models reduce content diversity? | https://arxiv.org/abs/2309.05196 | b28 |
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D01.08-K13** (now single-source: the sources are not independent). All numbers match (5% non-duplicates, 71.4% judge accuracy, N=43, AI drops 1.05-1.98 vs human -0.63 to +0.08, FDR p 0.001-0.025, weak correlation), but both papers are from the same lab (Si, Hashimoto, Yang) and the only other source, SciMON, finds GPT-4 ideas of low novelty rather than corroborating.

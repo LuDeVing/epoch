@@ -276,3 +276,10 @@ All tests: both arms at equal total tokens (input plus output; the plain arm get
 - [V] RAG vs GraphRAG systematic evaluation (2025). https://arxiv.org/html/2502.11371 (d14)
 - [V] GraphRAG benchmark on textbook questions (2025). https://arxiv.org/html/2506.02404 (d15)
 - [V] Wang et al. (2024) Agent Workflow Memory. https://arxiv.org/html/2409.07429 (d17)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E13.05-K13** (reworded: the sources support less). Suri found ChatGPT vs human anchoring differences not significant (high anchor p=.06), so larger t-value does not show more extreme bias; zero variance for GPT-3.5 not found in the paper; recency 78-91% vs 67% confirmed. Corrected claim: LLMs reproduce human heuristic effects (anchoring: ChatGPT t(58)=8.78, humans t(58)=5.55, with no significant ChatGPT-human difference at either anchor) and follow recent outcomes more than humans (78-91% match to a pure recency player vs 67% for humans in Horowitz and Plonsky's GPT-4o mini and Gemini-1.5 Flash agents); mechanism unproven.
+- **E13.05-K02** (now single-source: only one opened source, code check).

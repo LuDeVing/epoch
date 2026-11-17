@@ -303,3 +303,18 @@ Bench is the HTSA harness (ARC and BRAINTEASER items). All arms at equal tokens.
 - Culturally adapted GSM8K search summaries (arXiv 2503.18018). [M] https://arxiv.org/abs/2503.18018
 
 Links to subfields researched in parallel (not covered here): Priming of orientation; Conformity; Task-type limits; Methods and measurement; Pragmatics and shallow comprehension.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 3 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A19.08-K11** (reworded: the sources support less). d=5.86 vs 0.53 verified, but all five evidence lines are one 2023 paper (Kovac et al.) measuring ChatGPT only, and human benchmarks are cross-study d values; 'LLM' in general is wider than the sources. Corrected claim: In one 2023 study (Kovac et al.), ChatGPT's expressed values shifted far more under irrelevant context changes (max |d|=5.86) than human values moved over years of development or after primes (largest d=0.53); this suggests ChatGPT is not one stable individual, and it was not tested on other LLMs.
+- **A19.08-K12** (reworded: the sources support less). Tao et al. numbers verified (2.42 to 1.57; 71.0-81.3% of countries improved, so ~19-29% not improved), but Durmus et al. say country prompting 'can reflect' stereotypes, not that it relies on them, and Tao's 'not improved' is not the same as 'worsened'; the five OpenAI-model scope is GPT-only plus one Constitutional-AI model. Corrected claim: Default answers from the GPT models studied (Tao et al.) and a Claude-style Constitutional-AI model (Durmus et al.) resemble US and some Western European respondents; cultural prompting helps on average (mean distance falls e.g. 2.42 to 1.57 for GPT-4o) but alignment improves for only 71-81% of countries across five GPT models (so roughly 19-29% do not improve), and Durmus et al. report that country prompts can reflect harmful cultural stereotypes.
+- **A19.08-K13** (number corrected). Kharchenko's text does say only one combination (GPT-4o, individualism, high-resource languages, multilingual, r=0.71, p<0.05) was significant, though its own Table 2 flags many correlations as significant; Cao et al. correlations are Spearman across the 6 Hofstede dimensions within each of 5 cultures (n=6 each, e.g. Spain 0.93 p=.01 is significant), not 'resting on 5 countries'. Corrected claim: Country-level alignment of LLMs with Hofstede scores is weak and inconsistent: Kharchenko et al. report that across the models, values and approaches tested only one combination (GPT-4o, individualism, high-resource languages, multilingual approach, r=0.71, p<0.05) gave a significant country-value correlation in the text (their Table 2 marks more as significant), with GPT-4 uncertainty avoidance at r=-0.656 in one setup; Cao et al. (ChatGPT, 5 cultures) computed Spearman correlations across only 6 Hofstede dimensions per culture, with mixed signs (China -0.77, p=.07; Spain 0.93, p=.01).
+- **A19.08-K02** (now single-source: only one opened source, code check).
+- **A19.08-K04** (now single-source: only one opened source, code check).
+- **A19.08-K05** (now single-source: only one opened source, code check).
+- **A19.08-K07** (now single-source: only one opened source, code check).
+- **A19.08-K21** (now single-source: only one opened source, code check).
+- **A19.08-K22** (now single-source: only one opened source, code check).
+- **A19.08-K24** (now single-source: only one opened source, code check).

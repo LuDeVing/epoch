@@ -314,3 +314,10 @@ All arms at equal total tokens, setup included (G7). Use at least 25 trials per 
 - [V] Lin et al. (2026) Plan and Budget. https://jshun.csail.mit.edu/PlanBudget.pdf
 - [V] Huan et al. (2025) Does math reasoning improve general LLM capabilities. https://arxiv.org/abs/2507.00432
 - [M] Breaking barriers: RL post-training transfer (2026). https://arxiv.org/abs/2506.19733
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E06.07-K28** (number corrected). Stechly Table: Game of 24 false negative rate is 20.7% and Mystery Blocksworld 97.09%, but Blocksworld is 15.48%, so 20.7% is not the low end of the range; other numbers (36%, 42% at k=25) match. Corrected claim: Verification pays only with an outside sound signal: GPT-4 self-critique lowers accuracy, a sound verifier raises it, and plain re-sampling under the verifier gets most of the gain (Game of 24 42% at k=25 vs 36% with first-error feedback). LLM-as-verifier false negative rate ranges from 15.5% (Blocksworld) to 97% (Mystery Blocksworld), with 20.7% in Game of 24.
+- **E06.07-K09** (now single-source: only one opened source, code check).

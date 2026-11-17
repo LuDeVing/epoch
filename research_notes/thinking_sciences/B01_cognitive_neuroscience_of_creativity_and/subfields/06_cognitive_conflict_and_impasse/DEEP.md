@@ -327,3 +327,10 @@ All arms use equal total tokens. Report solve rate, tokens per state, flips righ
 - [M] Wiley and Danek (2023/2024). https://doi.org/10.1038/s44159-023-00257-x (a27, d15)
 - [M] Pupil dilation and unconscious analytic thought in insight (2026). https://doi.org/10.3390/jintelligence14090211 (d16)
 - [M] Cai et al. (2009), Metcalfe and Wiebe (1987), Dietrich and Kanso, Sprugnoli meta-analyses: relayed through Danek 2019 and Schonauer 2018, not opened.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B01.06-K06** (reworded: the sources support less). Headline is wider than two small studies whose authors hedge (impasse reports 'might be unreliable indicators'; Hedne found insight solutions more accurate overall and warmth ratings not differing). Corrected claim: In a five-square puzzle study, participants did not report impasse more often during behaviourally defined impasse stages (so impasse reports may be unreliable indicators), and in a magic-trick study warmth ratings did not differ between insight and non-insight solutions; people were more likely to repeat their wrong answers after insight solutions.
+- **B01.06-K02** (now single-source: only one opened source, code check).

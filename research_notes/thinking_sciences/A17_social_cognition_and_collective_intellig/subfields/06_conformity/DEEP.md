@@ -403,3 +403,12 @@ All tests use hold-out items the agent answers correctly alone (at least 3 of 3 
 - [M] When agents trust the wrong tool output (NeurIPS 2026 listing, abstract only). d18. https://neurips.cc/virtual/2026/166680
 - [V] Liao et al. (2026) Auditing provenance sensitivity. d19. https://arxiv.org/abs/2607.20827
 - [V] Kasprova et al. (2026) Too polite to disagree. d20. https://arxiv.org/abs/2604.02668
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 16 established claims: 13 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A17.06-K08** (now single-source: the sources are not independent). Numbers (15.6->62.9, 32.7->51.5, 56.8%) match Qu, Fu & Hu 2026, but b25 and b26 are the same paper and Hussain & Nielbo (b28) does not report the right-vs-wrong consensus contrast, so the claim rests on one study (4 open 7-9B models).
+- **A17.06-K19** (now single-source: the sources are not independent). CR_D (69.9%) exceeding CR_T (44.4%) comes only from Weng et al. (a18 and b16 are the same paper); Kasprova et al. shows sycophancy rankings help but says nothing about doubt versus trust asymmetry.
+- **A17.06-K26** (now single-source: the sources are not independent). Both eta2p values (0.1665 vs 0.068) come from Choi et al. alone (b24, c09, c10 are the same paper); Xiong et al. is a different study and reports no headcount comparison.
+- **A17.06-K31** (now single-source: only one opened source, code check).

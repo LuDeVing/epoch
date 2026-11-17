@@ -314,3 +314,12 @@ Links to parallel subfields (not covered here): Search over thoughts; Tree of Th
 - [V] PUMA (2026) user-state modeling with expected free energy for LLM counselors. https://arxiv.org/abs/2605.24647
 - [M] F-Explorer, cognitive LLM web-exploration agent. https://escholarship.org/content/qt1vp251h4/qt1vp251h4.pdf
 - [M] Framework for inherently safer AGI through language-mediated active inference (2025). https://arxiv.org/abs/2508.05766
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 14 established claims: 12 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B03.05-K13** (reworded: the sources support less). UoT shows higher absolute success in closed set and notes answers may not cleanly eliminate possibilities, but its gains over direct prompting are not uniformly smaller in open set (Llama3-70B MedDG 25.7->50.6 OS vs 60.2->64.3 CS); 'works best' is not shown for gains. Corrected claim: Expected-information-gain selection (UoT) reaches higher absolute success with a closed hypothesis set (Llama3-70B DX 90.4 closed vs 35.6 open), and the authors note real answers may not cleanly eliminate possibilities; the gain over direct prompting in open set is not consistently smaller (it is larger on MedDG).
+- **B03.05-K25** (reworded: the sources support less). Third clause calls the model 'a frontier thinking model', but Semantic Bandits (Austin et al.) tested Gemini 3.1 Flash Lite, OLMo and Qwen3-32B (thinking capped), a small/lite model; the other two clauses match Zhang et al. Corrected claim: Thinking raises directed exploration but the picture is mixed: o3-mini at high thinking exceeded the human level of directed exploration in a stationary 2-armed task, yet LLMs including thinking models failed to engage in effective directed exploration in a non-stationary 4-armed task; action labels and reward sign still bias exploration even in a thinking-enabled small model (Gemini 3.1 Flash Lite).
+- **B03.05-K06** (now single-source: only one opened source, code check).
+- **B03.05-K26** (now single-source: only one opened source, code check).

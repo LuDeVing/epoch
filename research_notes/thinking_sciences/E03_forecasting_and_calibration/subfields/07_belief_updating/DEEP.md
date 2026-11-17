@@ -443,3 +443,11 @@ All arms use equal total tokens; report setup tokens. Use paired items and a pai
 - [M] Augenblick and Rabin (2021) Belief movement, uncertainty reduction, and rational updating (via Atanasov appendix)
 - [M] Soll and Larrick (2009) Strategies for revising judgment. https://doi.org/10.1037/a0015145
 - [M] Fildes et al. (2009) (via Atanasov)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 2 established claims: 2 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E03.07-K05** (now single-source: only one opened source, code check).
+- **E03.07-K18** (now single-source: only one opened source, code check).
+- **E03.07-K23** (now single-source: only one opened source, code check).

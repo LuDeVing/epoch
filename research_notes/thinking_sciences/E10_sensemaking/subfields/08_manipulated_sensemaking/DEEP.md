@@ -290,3 +290,11 @@ All arms at equal tokens (setup cost counted, G7), against plain and best-of-N. 
 - [V] Zhou et al. 2023 Context-faithful prompting. https://arxiv.org/abs/2303.11315
 - [V] Hines et al. 2024 Spotlighting. https://arxiv.org/abs/2403.14720
 - [M] Greshake et al. 2023 (first page only). https://arxiv.org/abs/2302.12173
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 6 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E10.08-K03** (now single-source: only one opened source, code check).
+- **E10.08-K10** (now single-source: only one opened source, code check).
+- **E10.08-K16** (now single-source: only one opened source, code check).

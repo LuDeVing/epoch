@@ -281,3 +281,10 @@ Links to sibling subfields run in parallel (not covered here): Working memory; M
 - [V] netsky-lab (2026) gwt-context honest report. https://netsky-lab.github.io/gwt-context/honest-gwt-report.html (d18)
 - [V] Ye et al. (2025) CogniPair. https://arxiv.org/abs/2506.03543 (d19; abstract only)
 - [M] Tait et al. (2026) Evaluating global workspace markers in contemporary LLMs. https://www.preprints.org/manuscript/202601.1683/v1 (d21; 403, not read)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 5 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D06.06-K01** (now single-source: only one opened source, code check).
+- **D06.06-K05** (now single-source: only one opened source, code check).

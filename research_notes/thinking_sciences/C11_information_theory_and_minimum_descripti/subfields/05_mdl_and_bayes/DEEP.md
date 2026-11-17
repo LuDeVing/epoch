@@ -306,3 +306,10 @@ All arms use equal total tokens (generation plus scoring passes). Report per-ite
 - [M] Gap-search log (2026-11-10), NML in LLM work. https://huggingface.co/api/papers/search (c24, d19; weak negative, no source)
 
 Links to other subfields in this run (not covered here): Calibration and overconfidence; Compression at inference time; Aggregation and extremizing; Belief updating; Language Agent Tree Search; Search over thoughts; Epistemic value and curiosity.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 7 established claims: 5 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C11.05-K02** (now single-source: the sources are not independent). All technical content is correct (NML minimax regret, Bernoulli within a constant of Bayes-Jeffreys, (k/2) log n agreement, plain NML integral ill-defined for unbounded models, luckiness fix) but it rests on one paper (Grunwald and Roos 2019, listed five times); the Wikipedia article is a derivative tertiary source and says NML has no Bayesian equivalent.
+- **C11.05-K12** (reworded: the sources support less). Xie et al. numbers match (12 vs 16 layers, both val loss 1.33, accuracy 81.2 vs 84.7; 10-40% spread across permutations), but neither Xie nor Zhang et al. says order sensitivity is something exact Bayesian inference would not allow; Xie only says it is mirrored in GINC and goes beyond the theory. Corrected claim: In-context learning can be explained as implicit Bayesian inference over latent concepts (Xie et al. 2022: theory plus synthetic GINC; Zhang et al. 2023: Bayesian model averaging, theory only). In GINC, larger models do better at the same pretraining loss (12 vs 16 layers, both validation loss 1.33: 81% vs 85%), and accuracy varies by 10-40% across permutations of the same examples, a sensitivity that goes beyond the authors' theory.

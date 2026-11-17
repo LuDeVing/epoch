@@ -289,3 +289,9 @@ All arms get the same total token budget, counting setup, tool output and extra 
 - [V] Beck et al. (2026) Towards a neural debugger for Python. https://arxiv.org/pdf/2603.09951 (b26)
 - [V] Chang et al. (2025) BugCerberus. https://arxiv.org/abs/2502.15292 (c25; abstract numbers)
 - [M] Semantic Scholar citation list for Parnin and Orso. https://api.semanticscholar.org/graph/v1/paper/DOI:10.1145/2001420.2001445/citations (d20)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 5 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E09.06-K05** (now single-source: only one opened source, code check).

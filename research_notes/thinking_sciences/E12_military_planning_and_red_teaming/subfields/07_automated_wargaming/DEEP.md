@@ -275,3 +275,11 @@ Marks: [V] opened (full text this session), [M] snippet or summary only.
 - Hegazy (2024) Diversity of Thought in Multi-Agent Debate. [V] https://arxiv.org/abs/2410.12853 (d10)
 - RAND Strategy Assessment System (1980s). [M, via Hogan and Brennen] (c28)
 - Status note: arXiv, Semantic Scholar and OpenAlex returned rate-limit errors in the gap pass (d12).
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 7 established claims: 4 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E12.07-K11** (reworded: the sources support less). Welfare Diplomacy exploiters used a trained RL policy (not a scripted defector); Payne's games were between different models, so same-model non-independence is not shown; Richelieu played against Cicero, not self-play. Corrected claim: LLM Diplomacy players are exploitable: in Welfare Diplomacy one or two exploiters using a trained RL policy exploited GPT-4-based agents; frontier models in a nuclear-crisis tournament never chose any of eight de-escalatory options in 21 games/329 turns; and Richelieu's win-rate gain over Cicero (about 0.7 points) was not significant.
+- **E12.07-K14** (reworded: the sources support less). Payne's 70% is signal-vs-action match, not written reasoning; Rivera only reports deterrence/first-strike justifications; neither tests that written reasoning is an unreliable record of cause. Corrected claim: Simulated agents' stated signals matched their later actions only about 70% of the time on average (Payne 2026), and their written reasoning included deterrence and first-strike justifications for escalation including nuclear use (Rivera 2024); neither source tests whether the written reasoning causally explains the actions.
+- **E12.07-K15** (reworded: the sources support less). 9% is rare but not almost none; sources do not state LLM adjudicator validity is untested; Snow Globe failures are qualitative. Corrected claim: Few studies give an LLM both roles: 20 of 223 papers (9%) in one scoping review; Snow Globe's authors report repeated output and deviation from players' stated plans as common low-quality adjudication failures (qualitative, no counts).

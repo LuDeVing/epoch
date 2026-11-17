@@ -418,3 +418,14 @@ Scoring rule for all: report accuracy, tokens, ECE and AUROC2 within difficulty 
 - [V] Lindsey (2025) Emergent introspective awareness in large language models. https://transformer-circuits.pub/2025/introspection/index.html (a20, a21, b24, c14, c15; a20 lists arXiv 2601.01828 and year 2026 for the same work)
 - [V] Naphade et al. (2026) Me, Myself, and pi: LLM introspection. https://arxiv.org/abs/2603.20276 (d15)
 - [M] Shinn et al. (2023) Reflexion. https://arxiv.org/abs/2303.11366 (c26)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D06.08-K10** (reworded: the sources support less). The oracle-label numbers are right (GPT-4 GSM8K 95.5 to 97.5, HotpotQA 49.0 to 59.0) but the closing claim that the tolerable imperfection of a check is unmeasured is contradicted by Tyen et al. section 5.1, which simulates mistake-location classifiers of different accuracy and finds backtracking helps at roughly 60-70% accuracy. Corrected claim: Self-correction works when reliable external feedback exists (tools, tests, oracle labels): GPT-4 GSM8K 95.5 to 97.5, HotpotQA 49.0 to 59.0 with oracle labels (Huang). Tyen et al. show the gain comes from knowing where the mistake is; with simulated mistake-location checkers, backtracking already beats no correction at about 60-70% location accuracy (PaLM 2, BIG-Bench Mistake tasks), but this is untested for other kinds of imperfect checks.
+- **D06.08-K13** (reworded: the sources support less). Betley claims are right; the r=.50-.54 values (Plunkett et al., GPT-4o-mini/4o) are the pre-training baseline that the authors call meaningfully correlated and which rise to .74-.75 after introspection training, so 'only' misframes it. Corrected claim: Models finetuned on a behaviour (risk-seeking, insecure code) can describe it without examples and sometimes tell whether they have a backdoor, but cannot name the trigger by default (Betley et al.); in a separate study (Plunkett et al.) finetuned GPT-4o and 4o-mini reported attribute weights that correlated r=.54 and r=.50 with their real weights before explanation training, rising to r=.74-.75 after it.
+- **D06.08-K01** (now single-source: only one opened source, code check).
+- **D06.08-K04** (now single-source: only one opened source, code check).
+- **D06.08-K06** (now single-source: only one opened source, code check).
+- **D06.08-K16** (now single-source: only one opened source, code check).

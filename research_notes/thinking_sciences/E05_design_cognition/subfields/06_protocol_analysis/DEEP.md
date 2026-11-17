@@ -271,3 +271,9 @@ All arms run at equal total tokens (setup cost counted, G7), at least 3 seeds, p
 [V] UXCascade authors (2026) UXCascade. https://arxiv.org/abs/2601.15777 (c28)
 [V] Borchers, Vie, Azevedo (2026) LLMs as students who think aloud. https://arxiv.org/abs/2602.01015 (b17)
 [V] Li, Kargupta, Wang et al. (2025) Cognitive foundations for reasoning and their manifestation in LLMs. https://arxiv.org/abs/2511.16660 (b18-b20)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E05.06-K05** (reworded: the sources support less). Counts verified (47 studies, ~350 participants, median 6, 64% of 33 in-depth studies used five or fewer), but the review does not report an inter-rater-reliability finding at all, and it says meta-analysis was 'not appropriate owing to the qualitative nature of the findings', not that the evidence base was too thin; Dinar et al. was not opened. Corrected claim: Hay et al. (2017) reviewed 47 protocol studies of conceptual design with about 350 participants in total (median 6 per study, maximum 36); 64% of the 33 studies reported in depth used five or fewer participants; the review used qualitative synthesis because meta-analysis was judged not appropriate for qualitative findings.

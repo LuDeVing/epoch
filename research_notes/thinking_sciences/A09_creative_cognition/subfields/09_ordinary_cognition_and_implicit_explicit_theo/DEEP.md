@@ -293,3 +293,14 @@ Both arms at equal total tokens, setup counted. Items: BRAINTEASER items for ins
 - [V] Sprague et al. 2024. https://arxiv.org/pdf/2409.12183 (d10)
 - [V] Gema et al. 2025 (abstract and figure overview). https://arxiv.org/pdf/2507.14417 (d11)
 - [M] Kumar et al. 2025. https://arxiv.org/abs/2410.03703 (d13)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 10 established claims: 7 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A09.09-K14** (reworded: the sources support less). Si et al. numbers verified (4.84, 5.64, 5.81, about 5% non-duplicates of 4000 at 0.8 threshold) but the comparison is AI agent (overgenerate, dedupe, rank) vs human expert ideas, not vs single-pass generation; Hivemind does not support the novelty claim. Corrected claim: An agent that overgenerates thousands of ideas, deduplicates and ranks them produced research ideas rated more novel than expert human ideas (Si et al. 2024: 5.64 vs 4.84; 5.81 with human rerank), but diversity plateaus (only about 5% of 4000 seed ideas per topic remain after deduplication at 0.8 similarity) and LLM-based ranking is unreliable; the study did not compare against single-pass generation.
+- **A09.09-K24** (reworded: the sources support less). Brown et al. verified (coverage grows with samples; voting and reward models plateau beyond several hundred samples without a verifier), but Snell et al. say easy questions favour purely sequential compute while harder questions do best with some balance of sequential and parallel, not parallel sampling alone. Corrected claim: Wide independent sampling plus a reliable automatic verifier scales with sample count; without a reliable verifier, majority voting and reward models plateau beyond several hundred samples (Brown et al. 2024). At equal test-time compute, easy questions benefit most from sequential revision, while harder questions do best with a balanced mix of sequential and parallel compute (Snell et al. 2024).
+- **A09.09-K25** (number corrected). Sprague et al. give symbolic reasoning +14.2, math +12.3, logical reasoning +6.9 (the claim lists math first, so reading in order swaps 14.2 and 12.3); other categories 56.8 vs 56.1 (+0.7) verified; Gema et al. inverse scaling on distractor and spurious-feature tasks verified. Corrected claim: CoT gains are concentrated in symbolic, math and logic tasks (mean +14.2, +12.3 and +6.9 points respectively); other categories show about +0.7. Longer reasoning can hurt on distractor and spurious-pattern tasks. A task-class rule for rationale is supported but not tested on insight items with current models.
+- **A09.09-K01** (now single-source: only one opened source, code check).
+- **A09.09-K03** (now single-source: only one opened source, code check).
+- **A09.09-K20** (now single-source: only one opened source, code check).

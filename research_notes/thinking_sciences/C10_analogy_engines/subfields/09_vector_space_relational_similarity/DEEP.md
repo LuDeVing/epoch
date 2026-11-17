@@ -299,3 +299,9 @@ All arms get the same token budget, counted including setup (G7). Use 95% binomi
 37. [V] Su et al. (2025) BRIGHT. https://arxiv.org/pdf/2407.12883
 38. [V] Yu, He, Ying (2024) Thought propagation. https://arxiv.org/pdf/2310.03965
 39. [V] Petrov et al. (2025) ALF: fine-grained French analogy dataset. https://aclanthology.org/2025.jeptalnrecital-taln.2.pdf
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 5 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C10.09-K01** (now single-source: only one opened source, code check).

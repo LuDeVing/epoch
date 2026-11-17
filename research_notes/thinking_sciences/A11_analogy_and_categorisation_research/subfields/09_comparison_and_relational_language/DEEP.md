@@ -328,3 +328,12 @@ For every test, log per SCHEMA section 6: tokens per state, whether the comparis
 - [M] Turney (2006) Similarity of semantic relations. https://arxiv.org/abs/cs/0608100 (c24; figure recalled)
 - [M] Hansen and Richland (2020), Rittle-Johnson et al. (2009), Richland and McDonough (2010), Bustamante et al. (2022): cited through Richland and Zhao (b17, b18)
 - [M] Self-Discover is [V] only for its abstract-level table numbers in d15; DeepSeek-R1 only for one sentence.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 2 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A11.09-K01** (now single-source: the sources are not independent). Numbers confirmed in Gentner & Markman 1994 (11.44 vs 5.88; 8.97 vs 3.88; nonalignable 2.47 vs 2.00 ns), but every listed source is the same experiment from one lab (the 1994 paper, its 1997 summary, and the 1993 Markman & Gentner proceedings version with slightly different preliminary numbers 11.38/9.09).
+- **A11.09-K04** (now single-source: the sources are not independent). Numbers confirmed in Gentner, Loewenstein & Thompson 2003 (59% vs 22%, chi2=8.26; 38% vs 16%, chi2=3.92; Exp 3 70% vs 55% vs guided 90%), but all listed negotiation sources are that one paper; the other (Richland & Zhao review) covers mitosis/algebra, not negotiation.
+- **A11.09-K19** (reworded: the sources support less). Yasunaga Table 4 shows self-generated also edges out retrieved CoT for text-davinci-002 (48% vs 47%), and the text says the method beats few-shot CoT at davinci-002 and -003; it loses to retrieval only for the weaker curie-001/davinci-001 (curie tied 2 vs 2, davinci-001 9 vs 11). Other numbers (61 vs 54; +1.1 GSM8K, +2.4 MATH for GPT-3.5-turbo; Codeforces 11 to 15) check out. Corrected claim: Self-generated analogues beat retrieved exemplars only for the stronger base models (text-davinci-003 61% vs 54% on GSM8K, and marginally text-davinci-002 48% vs 47%); for the weakest models (text-davinci-001 9% vs 11%, curie-001 tied at 2%) retrieved or labeled exemplars do as well or better. For GPT-3.5-turbo the gain over fixed 5-shot CoT is +1.1 on GSM8K (77.8 vs 76.7) and +2.4 on MATH (37.3 vs 34.9); the largest gain is on Codeforces (Acc@1 11 to 15, with self-generated knowledge).
+- **A11.09-K14** (now single-source: only one opened source, code check).

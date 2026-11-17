@@ -292,3 +292,12 @@ All arms use the same total token budget, counting setup and edge-judge calls. A
 - [V] Nguyen et al. (2026) Creative-MAD. https://aclanthology.org/2026.emnlp-main.2298 (d14)
 - [V] Ajjour et al. (2026) ArgBench. https://aclanthology.org/2026.findings-acl.1099 (d15)
 - [V] Own Monte Carlo simulation (this run). D:/research_scratch/D04.06/tmp/D04.06_sim.py (d17)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D04.06-K05** (reworded: the sources support less). The 2019 Cramer-Guillaume study found grounded and CF2 equally best (not different, p=.212), so the Luxembourg studies do not all agree grounded fails; the '2024 experiment' on reinstated arguments rated lower has no listed source, and the 2022 paper does not compare reinstated vs unattacked ratings (reinstated A was mostly accepted). Corrected claim: Simple reinstatement cannot separate semantics (all standard semantics agree); floating reinstatement and cycles do. In the Luxembourg studies, grounded semantics predicted human judgments worst in 2018 (floating reinstatement) and 2022 (CF2 best, 59.6% to 73.6% vs chance 33%), but the 2019 12-framework study found grounded as good as CF2, with participants split between a grounded-like and a CF2-like strategy.
+- **D04.06-K18** (now single-source: the sources are not independent). All evidence rows are the single Gorur, Rago and Toni (2024) paper (plus an unsourced internal synthesis with empty url); numbers match but there is no second independent source, and 'edge-building is the weak point of S7' is the researcher's own inference.
+- **D04.06-K01** (now single-source: only one opened source, code check).
+- **D04.06-K02** (now single-source: only one opened source, code check).

@@ -225,3 +225,12 @@ All tests: both arms at equal total tokens (the control arm gets a length-matche
 - [M] Cultural norm-based alignment, AAAI 2026: https://doi.org/10.1609/aaai.v40i21.38839 [d15]
 - [V] Schwartz values in Gemini, ChatGPT and DeepSeek: https://osf.io/bmkzw_v1 [d16]
 - [V] Gap-pass search note (Crossref): https://api.crossref.org/works [d17]
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A19.07-K05** (reworded: the sources support less). Face-task, women-only fairness-game and baseline-subgroup results are confirmed, but no listed source mentions 'social threat'; the closest listed result (OSF replication) shows the prime worked only among full compliers. Corrected claim: Human priming results are task-specific and conditional: the same self-construal prime changed some face tasks and not others, moved only women in a fairness game (men reversed in later studies), worked only in a baseline low-self-bias subgroup, or only among participants who fully complied in a spatial-memory replication.
+- **A19.07-K09** (reworded: the sources support less). Kharchenko et al. show the US/Japan pattern as one example (similar Hofstede individualism scores, yet US individualist and Japan collectivist answers) and r=0.71 for one GPT-4o cell, not a rule 'regardless of real Hofstede scores'; 'deference to a claimed identity' is only loosely backed (Jeripity: GPT-5.4 follows the stated country identity, and all three models stay more individualist than local survey values). Corrected claim: Persona cues give coarse stereotypes rather than calibrated profiles: models predominantly give the US individualist and Japan collectivist answers even though the two have similar Hofstede individualism scores; only one model-method cell correlated significantly with country values (GPT-4o, individualism, r 0.71); and frontier models still give more individualist advice than local survey values (mean +0.76 on a 1-5 scale), with GPT-5.4 responding to the stated country identity.
+- **A19.07-K02** (now single-source: only one opened source, code check).
+- **A19.07-K18** (now single-source: only one opened source, code check).

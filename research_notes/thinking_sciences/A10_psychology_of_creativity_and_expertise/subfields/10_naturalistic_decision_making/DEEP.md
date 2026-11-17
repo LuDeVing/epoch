@@ -299,3 +299,11 @@ All arms at equal total tokens (G7). Report per-class accuracy and tokens.
 - [V] Maliha and Kabir (2026). https://arxiv.org/abs/2606.00031 (d23)
 
 *Corrections carried forward from critique.md: Kopka and Feufel published version used 10 models (six was the preprint). Hagendorff CRT GPT-4 is 96% in Study 1; 95% is the Study 2 baseline (b14, b15 say 95%). Chen "over 92%" applies to QwQ-32B and R1 on ASDIV and MATH500 only. GPT-4.1 mini DF gain is +12.6 (a03 rounds to 13).*
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 10 established claims: 8 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A10.10-K06** (now contested: a source does not say this). Grove et al. 2000 only show mechanical prediction about 10% more accurate than clinical judgment, regardless of judge experience; it does not test environment regularity or feedback-rich practice, and Saxena & Upadhyay (2026) is about LLM confidence signals, not human intuition or confidence calibration; the Kahneman-Klein conditions are not in any listed source.
+- **A10.10-K21** (reworded: the sources support less). Rivera et al. (all five models escalate, no significant de-escalation; GPT-3.5 10.15 to 26.02) and Lamparth et al. (no significant difference when teams were described as strict pacifists or aggressive sociopaths) verified, but the inference that persona text does not change 'fast-path behaviour' generalises beyond one US-China crisis simulation with team-level descriptions and a 'fast path' concept that neither paper uses. Corrected claim: In wargame simulations LLM agents escalate (Rivera et al. 2024: significant initial escalation for all five models, no significant de-escalation), and in a US-China crisis simulation describing teams as strict pacifists or aggressive sociopaths produced no significant difference in moves (Lamparth et al. 2024), so these models were inadequate at reflecting player traits in that setting.
+- **A10.10-K07** (now single-source: only one opened source, code check).

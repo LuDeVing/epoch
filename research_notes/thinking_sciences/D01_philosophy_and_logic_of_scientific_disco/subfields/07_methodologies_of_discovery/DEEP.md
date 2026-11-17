@@ -270,3 +270,8 @@ All arms at equal total tokens, setup included (G7). Use items with a checkable 
 - [M] Weisberg and Muldoon (2009) Epistemic landscapes and the division of cognitive labor. https://repository.upenn.edu/philosophy_papers/7 (b22)
 - [M] Langley, Simon, Bradshaw, Zytkow (1987) Scientific Discovery. https://mitpress.mit.edu/9780262620529/scientific-discovery/ (c21)
 - [M] Darden (2006) Reasoning in Biological Discoveries; Schaffner (1993) Discovery and Explanation in Biology and Medicine. https://www.cambridge.org/core/books/reasoning-in-biological-discoveries/ (c22)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 6 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

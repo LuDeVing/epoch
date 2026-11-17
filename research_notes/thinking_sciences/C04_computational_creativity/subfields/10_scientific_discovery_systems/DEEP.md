@@ -354,3 +354,9 @@ All arms run at equal total tokens (setup and judge calls counted). Report per-a
 - [V] Georgiev, Gomez-Serrano, Tao, Wagner (2025) Mathematical exploration and discovery at scale (AlphaEvolve) (2025). https://arxiv.org/abs/2511.02864 (ids: d16, d17)
 - [V] Xia, Sun, Liu (2026) SR-Scientist: scientific equation discovery with agentic AI (ICLR 2026) (2026). https://arxiv.org/abs/2510.11661 (ids: d18)
 - [V] Liu et al. (2025) HypoBench: systematic benchmarking for hypothesis generation (2025). https://arxiv.org/abs/2504.11524 (ids: d22)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C04.10-K12** (reworded: the sources support less). 49 of 51 (Sonnet 3.5 only; GPT-4o 41) and 24% of 50 are right, but detectors without retrieval did not all score 0-1.3%: Turnitin and OpenScholar 0%, Claude parametric 1.3%, GPT-4o parametric 32.7%, and retrieval-based SSAG 51.3-68.5% versus 88.8-89.0% with oracle access. Corrected claim: Automated novelty checks are over-generous: with Claude Sonnet 3.5, 49 of 51 AI Scientist diffusion ideas were flagged novel (41 with GPT-4o), yet experts found 24% of 50 LLM research documents plagiarised (paraphrase or heavy borrowing). Turnitin and OpenScholar detected 0% and Claude parametric knowledge 1.3% (GPT-4o 32.7%); the common Semantic-Scholar retrieval check reached 51.3-68.5%, versus about 89% with oracle retrieval.

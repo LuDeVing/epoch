@@ -326,3 +326,10 @@ All arms run at equal total tokens. Setup cost counts (G7). Use items not in pub
 - [V] Huang et al. (2024), LatEval. https://arxiv.org/abs/2308.10855
 - [V] Lee et al. (2025), Puzzled by puzzles. https://arxiv.org/abs/2505.23759
 - [V] Liu, Karimnazarov and White (2025), Trapped by expectations (human study; ruled out as evidence). https://arxiv.org/abs/2504.02074
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 5 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C04.09-K24** (reworded: the sources support less). Huang et al. support that intrinsic self-correction lowers accuracy and oracle labels help, but Zhang et al. (probe on hidden states decides when to exit) and d'Aliberti and Ribeiro (entropy-gated second pass, +8.41 pp on math) show internal uncertainty gates also yield gains, so 'only when an outside check or label decides' is too strong. Corrected claim: Ungated intrinsic self-review lowers accuracy without external feedback (Huang et al.); gains appear when something decides when to revise, either an external label or feedback (oracle labels, 'that was incorrect' retries) or an uncertainty gate (hidden-state probe, entropy), so forced reconsideration needs a gate.
+- **C04.09-K08** (now single-source: only one opened source, code check).

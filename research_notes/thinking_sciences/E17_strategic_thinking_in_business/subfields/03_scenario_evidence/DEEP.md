@@ -284,3 +284,12 @@ All arms get the same token budget. Where an arm uses scenarios, the plain arm g
 - [M] Morozumi and Hayashi 2026. https://doi.org/10.5220/0014452200004052
 - [M] Rosen 2025. https://doi.org/10.1016/j.futures.2025.103566
 - [M] The Time Machine, Future Internet 2025. https://doi.org/10.3390/fi17010048
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 2 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E17.03-K14** (reworded: the sources support less). Lamparth et al. conclude the LLM simulations DO follow the added presidential priorities (with model-specific responses); only emphasising role-play had no effect, so 'resists instruction' is not supported. 10 of 21 (GPT-4) and the >50% one-turn escalation swings (Rivera et al.) are confirmed. Corrected claim: LLM wargame behaviour differs from human experts in specific actions (GPT-4 statistically matched human action frequency on only 10 of 21 actions; GPT-3.5 16, GPT-4o 9), responds to added instructions in model-specific ways (Lamparth et al. 2024), and is unstable (some runs changed escalation score by more than 50% in one turn; Rivera et al. 2024).
+- **E17.03-K19** (now contested: a source does not say this). SimpleStrat +0.05 recall over GPT-4o is confirmed, but the 37.5% in Hayati et al. (listed as 'Chen et al.') is the share of 200 Hate Speech statements where GPT-4 gave an imbalanced number of opinions across stances, not a diverse-perspective recall.
+- **E17.03-K20** (reworded: the sources support less). Jungwirth and Haluza (exploratory GPT-3 study, no decision-quality test) and Spaniol and Rowland (practice-reflection article, no experiment) check out, but a universal 'there are no controlled studies' rests on a 9-hit arXiv search and Crossref titles, which can only show none was found. Corrected claim: We found no controlled study showing that LLM-generated scenarios improve decision quality: Jungwirth and Haluza (2023) is an exploratory GPT-3 case with no decision-quality test, Spaniol and Rowland (2023) is a reflection from practice without measurements, a 2026 arXiv search for scenario planning with language models returned no such test, and Kozachek 2026 and the Time Machine study could not be read (snippets only).
+- **E17.03-K08** (now single-source: only one opened source, code check).

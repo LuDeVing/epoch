@@ -334,3 +334,10 @@ Logging for all: which depth the winning branch came from, at which step wrong i
 41. [M] Xiang et al. (2025) Towards System 2 Reasoning in LLMs (Meta-CoT). https://arxiv.org/pdf/2501.04682 (c27; snippet only)
 
 Cross-links to parallel subfields in this run (not covered here): Search over thoughts; Language Agent Tree Search; Neural and LLM proof search; Automated planning (STRIPS, PDDL); Compression at inference time; Metacognition and higher-order representation; Calibration and overconfidence.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C05.05-K21** (reworded: the sources support less). DeepSeek-R1 appendix says MCTS-based self-search for training did not scale (token search space too large, fine-grained value model hard to train) and that MCTS still improves inference with a pre-trained value model; 'dropped MCTS as impractical' is wider than that. Corrected claim: Reasoning models do search-like backtracking inside one chain; the DeepSeek-R1 team reported that MCTS-based self-search for training did not scale (huge token-level search space, hard-to-train value model) while noting MCTS can still help at inference with a pre-trained value model; o1-preview 97.8% on Blocksworld vs 62.6% for the best LLM, but 23.6% on 20-40 step plans. Caveat: R1 negative result is prose only. Gap search: plain o1 beats ToT-on-GPT-4o (d02); outer search on o3-mini lifts an HLE 100-question sample from 13 to 37 with Best-of-N (d03); no clean ToT-on-reasoning-model test found.
+- **C05.05-K24** (now single-source: only one opened source, code check).

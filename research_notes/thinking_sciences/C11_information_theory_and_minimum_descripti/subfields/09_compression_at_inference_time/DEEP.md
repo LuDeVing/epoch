@@ -284,3 +284,10 @@ All arms at equal total tokens (setup and all samples counted), at least 3 seeds
 - [V] LLM-PV (abstract). https://arxiv.org/abs/2510.14331
 - [V] Emergent Mind page on CompressARC (aggregator). https://www.emergentmind.com/topics/compressarc
 - [M] Hinton and van Camp (1993), Kolmogorov, Solomonoff and Rissanen background, and LeGris et al. (2024) human data (cited through b08). Not opened, no URL.
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 4 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C11.09-K10** (number corrected). Akyurek et al. Table 1 gives 18.3% to 47.1% (fine-tuned 8B without vs with TTT) on the full ARC public validation set, and 53.0% with the BARC-based model; the 80-task subset result is a different figure (about 6x, e.g. 5% to 29%). 61.9% with program synthesis and Chollet's 'dominant approach' statement are correct. Corrected claim: Test-time training (per-task fine-tuning on augmented demonstrations) is the dominant 2024-25 ARC method for LLM-based transduction: an 8B model goes from 18.3% to 47.1% on the ARC public validation set (Pass@2), 53.0% when applied to the BARC-based model, and 61.9% ensembled with program synthesis.
+- **C11.09-K19** (number corrected). Hardt and Sun report one gradient step on as few as 50 neighbours cuts bits per byte by 20% on the Pile, with most of that gain already reached at 20 neighbours; the claim attaches the 20% to 20 neighbours. TTT-layers paper (lower perplexity at long context versus Mamba past 16k) checks out. Corrected claim: Token-level test-time training (TTT layers; nearest-neighbour fine-tuning) lowers perplexity: one gradient step on about 50 neighbours cut bits per byte by 20% on Pile tasks, with most of the gain already reached at 20 neighbours.

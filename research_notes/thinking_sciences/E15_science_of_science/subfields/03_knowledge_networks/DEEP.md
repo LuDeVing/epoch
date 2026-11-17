@@ -235,3 +235,11 @@ Opened [V]; snippet or memory only [M].
 - [M] Chu & Evans (2021) Slowed canonical progress in large fields of science. https://doi.org/10.1073/pnas.2021636118
 - [M] Swanson (1986) Fish oil, Raynaud's syndrome, and undiscovered public knowledge. https://doi.org/10.1353/pbm.1986.0087
 - [M] Fortunato et al. (2018) Science of science. https://doi.org/10.1126/science.aao0185
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 6 established claims: 3 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E15.03-K03** (now single-source: the sources are not independent). Rzhetsky et al. PNAS 2015 does say most novel links are at distance 2, but the two entries are the same paper and Krenn and Zeilinger gives only a single example pair, so there is one supporting source.
+- **E15.03-K07** (now single-source: the sources are not independent). Shi and Evans (about 4x context, 5x joint top-10% odds) and Sourati and Evans are supported, but all listed sources are from the Evans group (Shi, Sourati, Foster/Rzhetsky/Evans), so they count as one lab; also Sourati and Evans tunes hypotheses away from experts rather than showing that avoiding crowds delays human discovery.
+- **E15.03-K08** (now single-source: the sources are not independent). Numbers confirmed (85.8% vs 14.2%, rare strategies earn more citations, MEDLINE most efficient at 13% and over 3x costlier), but both sources are from the same group (Foster, Rzhetsky, Evans) on the same MEDLINE chemical network, so they count as one.

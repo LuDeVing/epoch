@@ -322,3 +322,9 @@ Links to parallel subfields in this run: Cognitive task analysis, Protocol analy
 45. [V] READ-Bench (2026). https://arxiv.org/html/2609.32123 (d14)
 46. [V] Stalled, Biased, and Confused (2026). https://arxiv.org/html/2601.22208 (d15)
 47. [V] PMCoder (2026). https://arxiv.org/html/2608.06811 (d16)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E08.07-K19** (now single-source: the sources are not independent). Numbers verified in the RCACopilot paper (micro-F1 0.766 vs 0.026 prompt-only; 163/653 = 24.96% new root-cause category), but both supporting lines are that one Microsoft paper; Ahmed et al. 2023 is a different method and does not corroborate, so there is a single self-reported source.

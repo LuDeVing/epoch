@@ -299,3 +299,13 @@ Common design: both arms at equal total tokens. Items: resolved binary forecasti
 - [V] Wang et al. (2024) Mixture-of-Agents. https://arxiv.org/abs/2406.04692 (c25)
 - [V] Schoenegger, Jones et al. (2025) Prompt Engineering LLM Forecasting. https://arxiv.org/abs/2506.01578 (c27)
 - [V] Prophet Arena (2025). https://arxiv.org/abs/2510.17638 (c28)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 10 established claims: 8 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E03.06-K06** (number corrected). Halawi numbers check out (spread 0.0007), but in Lu (2025) the median-vs-mean gap is 0.0067 for GPT-4o-mini (0.2743 vs 0.2676), not under 0.004 (o3, GPT-4.1, Claude-3.5-Sonnet are 0.001-0.004). Corrected claim: For LLM forecast ensembles, the choice among mean, median, geometric mean and trimmed mean barely matters: spread 0.0007 Brier on Halawi et al.'s validation set; median vs mean differ by 0.001-0.004 Brier for o3, GPT-4.1 and Claude-3.5-Sonnet in Lu (2025), up to 0.0067 for GPT-4o-mini; AIA Forecaster also found mean, median and trimmed mean equal (0.1138-0.1142).
+- **E03.06-K13** (now single-source: the sources are not independent). All evidence for the uncertain-crowd vs near-0/1 pattern is Halawi et al. (2024) listed three times (and the 0.199 vs 0.246 figure is from the validation set); the Alur entry is about extremizing, not this claim.
+- **E03.06-K04** (now single-source: only one opened source, code check).
+- **E03.06-K18** (now single-source: only one opened source, code check).
+- **E03.06-K20** (now single-source: only one opened source, code check).

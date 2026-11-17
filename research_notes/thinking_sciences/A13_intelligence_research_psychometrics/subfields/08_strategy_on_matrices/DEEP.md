@@ -320,3 +320,11 @@ All arms get the same total token budget (stem + options + reasoning + output). 
 - [V] Myrzakhan, Bsharat and Shen (2024), Open-LLM-Leaderboard. https://arxiv.org/abs/2406.07545 (b29)
 - [V] Zheng et al. (2024), robustness of MC selectors; Pezeshkpour and Hruschka. https://arxiv.org/abs/2309.03882 (b30; abstracts and intros)
 - [M] Search coverage note (2026-11-10): no study of build-first vs elimination for reasoning models found (d16)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 9 established claims: 7 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A13.08-K07** (reworded: the sources support less). Toggle count r=.02 (N=130, Rivollier) and de Winter's visual complexity/centrality findings verified, but the clause that clustering found row and column scan patterns rather than a clean elimination class (Kucharsky 2020) appears in none of the opened sources (Rivollier does not mention it). Corrected claim: Gaze indices are proxies and may be confounded: raw toggle count did not predict score in a mouse-tracking replication (r=.02, N=130, although toggle rate r=-.55 did), the indices are assumed rather than proven to track the two strategies, and visual complexity and cell centrality explain fixation counts and response times on a 12-item APM (N=159).
+- **A13.08-K14** (now single-source: the sources are not independent). Numbers all verified, but Hersche et al. 2024 and Camposampiero et al. 2025 share five authors (Hersche, Camposampiero, Wattenhofer, Sebastian, Rahimi) and the neuro-symbolic ARLC solver is their own system, so the two sources are one lab.
+- **A13.08-K09** (now single-source: only one opened source, code check).

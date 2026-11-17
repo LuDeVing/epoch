@@ -302,3 +302,9 @@ All arms at equal total tokens (pad control arms with a neutral-length reasoning
 - [V] CoMem, arXiv 2610.25790. https://arxiv.org/pdf/2610.25790
 - [V] Self-Refine, arXiv 2303.17651 (abstract). https://arxiv.org/pdf/2303.17651
 - [V] arXiv, Crossref, Europe PMC searches for premortem terms (negative result). https://arxiv.org/search/?query=premortem&searchtype=all
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 5 established claims: 5 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E04.04-K09** (now single-source: only one opened source, code check).

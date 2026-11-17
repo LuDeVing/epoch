@@ -331,3 +331,12 @@ Cost note: T1-T5 reuse one replay file. Build the replay once. This also satisfi
 - [M] Anon. (2026) Retrieval beats cheap structured memory. https://doi.org/10.20944/preprints202608.1369.v1 (d12)
 - [M] Rocchi (2026) Does memory credit travel? https://doi.org/10.2139/ssrn.7160321 (d13)
 - [M] Maurya (2026) Beyond the single forgetting curve. https://doi.org/10.2139/ssrn.6933638 (d14)
+
+## Source audit (2026-11-17)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C02.06-K13** (reworded: the sources support less). The saturation was observed only when CAMeR (fixed 0.99 decay, reinforcement +0.2) was run on LoCoMo's 19 session summaries by its single author; that does not show LoCoMo cannot test retention generally, and the 'only use-history benchmark' is an absence claim from one search; CAMeR's own metric (scissors gap) does score weights. Corrected claim: In the CAMeR paper's test, running its fixed-decay method on LoCoMo's 19 session summaries saturated all weights near 0.99 because every query activated every memory, so the author argues LoCoMo and LongMemEval cannot measure retention; CAMeR-Bench (76 memories, 100 rounds, graded query frequency) was built for that and scores memory weights (scissors gap), not answers; no other use-history benchmark was found in this search.
+- **C02.06-K06** (now single-source: only one opened source, code check).
+- **C02.06-K07** (now single-source: only one opened source, code check).
+- **C02.06-K15** (now single-source: only one opened source, code check).
