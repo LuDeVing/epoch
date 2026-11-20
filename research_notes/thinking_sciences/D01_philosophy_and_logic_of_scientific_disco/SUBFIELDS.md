@@ -31,7 +31,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Heuristic programming and machine discovery | [`subfields/06_heuristic_programming_and_machine_discovery/DEEP.md`](subfields/06_heuristic_programming_and_machine_discovery/DEEP.md) | done, batch 6 (2026-10-31) |
 | Methodologies of discovery | [`subfields/07_methodologies_of_discovery/DEEP.md`](subfields/07_methodologies_of_discovery/DEEP.md) | done, batch 9 (2026-11-09) |
 | Cognitive approaches | [`subfields/08_cognitive_approaches/DEEP.md`](subfields/08_cognitive_approaches/DEEP.md) | done, batch 9 (2026-11-09) |
-| Social epistemology of discovery | | not started |
+| Social epistemology of discovery | [`subfields/09_social_epistemology_of_discovery/DEEP.md`](subfields/09_social_epistemology_of_discovery/DEEP.md) | done, batch 10 (2026-11-17) |
 | Pragmatic logics (early) | | not started |
 
 ## Dig into next

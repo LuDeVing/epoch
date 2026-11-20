@@ -1,0 +1,35 @@
+# Thinking for speaking: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| A15.05-U1 | Does giving candidate branches different reasoning languages raise correct-answer rate, not only diversity? | Rule: S3 branches get a rotating reasoning language, answers in task language | S3 GENERATE / O3 | K14, K19 (single-source; 7B distills and Qwen3 only; not strictly equal tokens) | A: N branches in English. B: N branches in N languages. 100 items each MATH-500 and GPQA; metric: pass rate of code-selected answer plus pairwise error overlap | B beats A by 2 points or more on pass rate, or error overlap falls 10% relative with no pass-rate loss, on at least 2 of 3 models | High |
+| A15.05-U2 | Does language-diverse thinking raise candidate diversity on open items at acceptable quality loss? | Use mixed-language thinking in open mode idea generation | S3 / open mode | K14 (single source: Distinct Score +5.3 to +7.7, quality -1.02 to -2.24) | A: English thinking. B: non-English thinking, English answer. 100 NoveltyBench-style items; metric: Distinct Score, quality score, novelty by running (G8) | Distinct Score up 4 points or more and quality loss under 2.5 points in our own grading | Med |
+| A15.05-U3 | Does translate-to-English first help on non-English input for current models? | S1 step: translate non-English input to English, keep original beside it | S1 UNDERSTAND / O1 | K12 (single source, older models: LLaMA 30B +3.5; MGSM flat) | A: direct. B: self-translate then answer, translation tokens counted. 100 MGSM and 100 XNLI items; metric: accuracy | B beats A by 2 points or more on at least 2 models | Med |
+| A15.05-U4 | Does a describe-first step help or hurt judgement tasks at equal tokens (Gennari-type shift)? | Rule: add describe-first only for class X; or ban it for implicit or perceptual-like items | O1/O2, S2 | K04, K20 (contested, human); K21 (single source; GPT-4o 64.0 to 51.2 face recognition after description) | A: no describe. B: describe-first. C: distractor of same length. 100 similarity or category items with exceptions; metric: accuracy and shift toward described category | Ban rule if B is 3 points or more below A. Add rule if B is 3 points or more above A and C does not match it | High |
+| A15.05-U5 | Does fixing the output format first change the plan and its quality? | S0 rule: state output schema before reasoning | S0 GATE | K02 (single lab, N=17 per group; analogy only) | A: free plan then format. B: schema first. 60 structured-output items; metric: field coverage, accuracy | B coverage up 5 points or more and accuracy no lower | Low |
+| A15.05-U6 | Does a source/precondition audit fix Goal-bias in plans? | Code check: plan must name preconditions | S2 / S8 | K09 (single source, humans, N=128: Goal 97.7% vs Source 87.5%); 4b says checklists do not work | A: plain plan. B: plan plus code-run coverage check. 60 planning items; metric: coverage and plan validity | Validity up 3 points or more at equal tokens | Low |
+| A15.05-U7 | Does a prompt entity cue shift what the answer foregrounds (and does S1 input hygiene remove it)? | Extend input hygiene to entity cues | S1 | K08 (single source, abstract only; human structure priming) | A: neutral prompt. B: cue on one entity. C: cue moved to a marked block. 60 items; metric: foregrounding rate and accuracy | B shifts foregrounding by 10 points or more and C removes it | Low |
+| A15.05-U8 | Do current models show manner/path differences by language like speakers (Slobin test)? | Nothing for the schema; measures whether output language changes what the agent encodes | none (diagnostic) | K17 (no LLM or VLM study found); Latin motion annotation only | Same motion scenarios in en, es, el, tr. 50 items; metric: manner and path verb rate by language | Only if rates differ by 15 points or more, then test U1 on motion items | Low |
+| A15.05-U9 | Does the penalty for reasoning in the input language hold on frontier models and non-math tasks? | Confirm the "add now" default; or retire it | S0 | K10 (established on 7B to 32B distills and QwQ; M-Thinker shows it can be trained away) | A: free reasoning language. B: forced input-language reasoning. 100 items each of GPQA and a non-math task, 4 languages | Keep default if B is 3 points or more below A; retire the rule if gap under 1 point on frontier | Med |
+| A15.05-U10 | Does language-diverse voting beat same-language voting at strictly equal tokens (UL-XCoT logic)? | Cross-lingual self-consistency as selection pool | S3, S7 SELECT (code selects, G5) | K19 (single source; Low 83.8 vs 65.5, High 13.6 vs 12.3 on 7B) | A: SC in one language. B: SC over chosen languages with the same pruning. PolyMath or MGSM subsets; metric: accuracy at fixed total tokens | B wins by 2 points or more on a mid-size model; or G4 correlation measure falls | Med |
+| A15.05-U11 | Is the reasoning-language effect different for reasoning-trained models in latent space? | Tune U1 and U9 per model | none (background) | K11, K22 (contested; reasoning models untested in logit-lens work) | Logit lens or answer-agreement probe on one open reasoning model | Only if latent language is non-English, then rerun U9 for that model | Low |
+
+## Open questions we cannot test on our bench yet
+
+- Eye-tracking style attention timing: needs a human lab or model attention logs tied to language. No equivalent exists for a text-only agent.
+- A large or preregistered replication of the Papafragou 2008 gaze result (over 100 per group). Needs a human lab; we can only watch for one.
+- Slobin 1996 and Berman and Slobin 1994 at page level. Needs library or publisher access. Blocked in this run (403).
+- Vision-language models on motion clips in several languages. Needs a clip set with human norms in at least two languages and a VLM API with video or frame input.
+- Aspect-language and bilingual-switching numbers. Original papers were never opened; reading them is cheap and would settle claim K07.
+- Equal-token comparison on frontier models for language-diverse branches. Needs the same logging of tokens per branch and a budget for several frontier-model runs.
+- Reasoning-trained models in logit-lens studies (K22). Needs open reasoning weights and an interpretability pipeline.
+
+## Order to run
+
+1. **U4 (describe-first, with distractor control).** Cheap, uses our own items, and it can both add a rule and add a ban. Contested in humans, hurts models in one study.
+2. **U1 (language-diverse branches vs same-language branches).** The best chance of a real gain for the scaffold, and the only LLM analogue to this subfield.
+3. **U9 (input-language reasoning penalty on current models).** Confirms the one established default on our own model; costs one small run and settles whether to keep it.

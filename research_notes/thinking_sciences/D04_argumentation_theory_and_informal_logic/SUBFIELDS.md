@@ -25,7 +25,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Argument standardisation and diagramming | [`subfields/01_argument_standardisation_and_diagramming/DEEP.md`](subfields/01_argument_standardisation_and_diagramming/DEEP.md) | done, batch 8 (2026-11-01) |
 | Argument schemes and critical questions | [`subfields/02_argument_schemes_and_critical_questions/DEEP.md`](subfields/02_argument_schemes_and_critical_questions/DEEP.md) | done, batch 5 (2026-10-27) |
 | Fallacy theory | [`subfields/03_fallacy_theory/DEEP.md`](subfields/03_fallacy_theory/DEEP.md) | done, batch 8 (2026-11-01) |
-| Pragma-dialectics | | not started |
+| Pragma-dialectics | [`subfields/04_pragma_dialectics/DEEP.md`](subfields/04_pragma_dialectics/DEEP.md) | done, batch 10 (2026-11-17) |
 | Argument evaluation criteria | [`subfields/05_argument_evaluation_criteria/DEEP.md`](subfields/05_argument_evaluation_criteria/DEEP.md) | done, batch 9 (2026-11-09) |
 | Formal argumentation frameworks (AI) | [`subfields/06_formal_argumentation_frameworks/DEEP.md`](subfields/06_formal_argumentation_frameworks/DEEP.md) | done, batch 9 (2026-11-09) |
 | Informal logic of natural-language deduction | | not started |

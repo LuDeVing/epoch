@@ -33,8 +33,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Model-based diagnosis | [`subfields/06_model_based_diagnosis/DEEP.md`](subfields/06_model_based_diagnosis/DEEP.md) | done, batch 7 (2026-11-01) |
 | Training and tutors | [`subfields/07_training_and_tutors/DEEP.md`](subfields/07_training_and_tutors/DEEP.md) | done, batch 9 (2026-11-09) |
 | Complexity of expert troubleshooting | [`subfields/08_complexity_of_expert_troubleshooting/DEEP.md`](subfields/08_complexity_of_expert_troubleshooting/DEEP.md) | done, batch 9 (2026-11-09) |
-| LLM help in hardware debugging | | not started |
-| Industrial fault detection | | not started |
+| LLM help in hardware debugging | [`subfields/09_llm_help_in_hardware_debugging/DEEP.md`](subfields/09_llm_help_in_hardware_debugging/DEEP.md) | done, batch 10 (2026-11-17) |
+| Industrial fault detection | [`subfields/10_industrial_fault_detection/DEEP.md`](subfields/10_industrial_fault_detection/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

@@ -25,14 +25,14 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Worked-example research | [`subfields/01_worked_example_research/DEEP.md`](subfields/01_worked_example_research/DEEP.md) | done, batch 5 (2026-10-27) |
 | Expertise reversal and fading | [`subfields/02_expertise_reversal_and_fading/DEEP.md`](subfields/02_expertise_reversal_and_fading/DEEP.md) | done, batch 6 (2026-10-31) |
-| Testing effect (retrieval practice) | | not started |
+| Testing effect (retrieval practice) | [`subfields/03_testing_effect/DEEP.md`](subfields/03_testing_effect/DEEP.md) | done, batch 10 (2026-11-17) |
 | Desirable difficulties | [`subfields/04_desirable_difficulties/DEEP.md`](subfields/04_desirable_difficulties/DEEP.md) | done, batch 7 (2026-11-01) |
 | Transfer of learning | [`subfields/05_transfer_of_learning/DEEP.md`](subfields/05_transfer_of_learning/DEEP.md) | done, batch 7 (2026-11-01) |
 | Productive failure | [`subfields/06_productive_failure/DEEP.md`](subfields/06_productive_failure/DEEP.md) | done, batch 9 (2026-11-09) |
 | Self-explanation | [`subfields/07_self_explanation/DEEP.md`](subfields/07_self_explanation/DEEP.md) | done, batch 8 (2026-11-01) |
 | Intelligent tutoring and knowledge tracing | [`subfields/08_intelligent_tutoring_and_knowledge_tracing/DEEP.md`](subfields/08_intelligent_tutoring_and_knowledge_tracing/DEEP.md) | done, batch 8 (2026-11-01) |
 | Scaffolding and guided discovery | [`subfields/09_scaffolding_and_guided_discovery/DEEP.md`](subfields/09_scaffolding_and_guided_discovery/DEEP.md) | done, batch 9 (2026-11-09) |
-| Motivation, mindset, classroom factors | | not started |
+| Motivation, mindset, classroom factors | [`subfields/10_motivation_mindset_classroom_factors/DEEP.md`](subfields/10_motivation_mindset_classroom_factors/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

@@ -34,7 +34,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Worked examples | [`subfields/06_worked_examples/DEEP.md`](subfields/06_worked_examples/DEEP.md) | done, batch 8 (2026-11-01) |
 | Teaching heuristics | [`subfields/07_teaching_heuristics/DEEP.md`](subfields/07_teaching_heuristics/DEEP.md) | done, batch 9 (2026-11-09) |
 | Problem posing, conjecture | [`subfields/08_problem_posing_conjecture/DEEP.md`](subfields/08_problem_posing_conjecture/DEEP.md) | done, batch 9 (2026-11-09) |
-| Beliefs and affect | | not started |
+| Beliefs and affect | [`subfields/09_beliefs_and_affect/DEEP.md`](subfields/09_beliefs_and_affect/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

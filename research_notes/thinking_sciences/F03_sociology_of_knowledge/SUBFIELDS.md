@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Sociology of science and Merton's norms | [`subfields/01_sociology_of_science_and_merton_s_norms/DEEP.md`](subfields/01_sociology_of_science_and_merton_s_norms/DEEP.md) | done, batch 8 (2026-11-01) |
-| Strong Programme and SSK | | not started |
+| Strong Programme and SSK | [`subfields/02_strong_programme_and_ssk/DEEP.md`](subfields/02_strong_programme_and_ssk/DEEP.md) | done, batch 10 (2026-11-17) |
 | Laboratory studies and ANT | | not started |
 | Network epistemology | [`subfields/04_network_epistemology/DEEP.md`](subfields/04_network_epistemology/DEEP.md) | done, batch 7 (2026-11-01) |
 | Division of cognitive labour | [`subfields/05_division_of_cognitive_labour/DEEP.md`](subfields/05_division_of_cognitive_labour/DEEP.md) | done, batch 7 (2026-11-01) |
@@ -35,10 +35,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Judgment and credence aggregation | [`subfields/07_judgment_and_credence_aggregation/DEEP.md`](subfields/07_judgment_and_credence_aggregation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Testimony, trust and peer disagreement | | not started |
 | Peer review and replication | [`subfields/09_peer_review_and_replication/DEEP.md`](subfields/09_peer_review_and_replication/DEEP.md) | done, batch 9 (2026-11-09) |
-| Values and inductive risk | | not started |
+| Values and inductive risk | [`subfields/10_values_and_inductive_risk/DEEP.md`](subfields/10_values_and_inductive_risk/DEEP.md) | done, batch 10 (2026-11-17) |
 | Group belief and justification | | not started |
 | Epistemic injustice and misinformation | | not started |
-| Kuhn and paradigm crisis | | not started |
+| Kuhn and paradigm crisis | [`subfields/13_kuhn_and_paradigm_crisis/DEEP.md`](subfields/13_kuhn_and_paradigm_crisis/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

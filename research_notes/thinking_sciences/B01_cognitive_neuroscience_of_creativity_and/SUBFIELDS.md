@@ -26,11 +26,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Network neuroscience of creative cognition | [`subfields/01_network_neuroscience_of_creative_cognition/DEEP.md`](subfields/01_network_neuroscience_of_creative_cognition/DEEP.md) | done, batch 8 (2026-11-01) |
 | Generation versus evaluation | [`subfields/02_generation_versus_evaluation/DEEP.md`](subfields/02_generation_versus_evaluation/DEEP.md) | done, batch 5 (2026-10-27) |
 | Insight as a process | [`subfields/03_insight_as_a_process/DEEP.md`](subfields/03_insight_as_a_process/DEEP.md) | done, batch 8 (2026-11-01) |
-| Insight neural signatures | | not started |
+| Insight neural signatures | [`subfields/04_insight_neural_signatures/DEEP.md`](subfields/04_insight_neural_signatures/DEEP.md) | done, batch 10 (2026-11-17) |
 | Metacognition of insight | [`subfields/05_metacognition_of_insight/DEEP.md`](subfields/05_metacognition_of_insight/DEEP.md) | done, batch 6 (2026-10-31) |
 | Cognitive conflict and impasse | [`subfields/06_cognitive_conflict_and_impasse/DEEP.md`](subfields/06_cognitive_conflict_and_impasse/DEEP.md) | done, batch 9 (2026-11-09) |
 | Semantic memory network structure | [`subfields/07_semantic_memory_network_structure/DEEP.md`](subfields/07_semantic_memory_network_structure/DEEP.md) | done, batch 9 (2026-11-09) |
-| Cognitive control and creativity | | not started |
+| Cognitive control and creativity | [`subfields/08_cognitive_control_and_creativity/DEEP.md`](subfields/08_cognitive_control_and_creativity/DEEP.md) | done, batch 10 (2026-11-17) |
 | Incubation, sleep, mood | | not started |
 | Individual differences and stimulation | | not started |
 

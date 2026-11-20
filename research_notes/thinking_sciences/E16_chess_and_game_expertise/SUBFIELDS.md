@@ -32,7 +32,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Recognition-primed decisions | [`subfields/07_recognition_primed_decisions/DEEP.md`](subfields/07_recognition_primed_decisions/DEEP.md) | done, batch 7 (2026-11-01) |
 | Einstellung effect | [`subfields/08_einstellung_effect/DEEP.md`](subfields/08_einstellung_effect/DEEP.md) | done, batch 7 (2026-11-01) |
 | Computer chess and game AI | [`subfields/09_computer_chess_and_game_ai/DEEP.md`](subfields/09_computer_chess_and_game_ai/DEEP.md) | done, batch 7 (2026-11-01) |
-| Deliberate practice | | not started |
+| Deliberate practice | [`subfields/10_deliberate_practice/DEEP.md`](subfields/10_deliberate_practice/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

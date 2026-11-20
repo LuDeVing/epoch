@@ -28,9 +28,9 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Pre-mortem | [`subfields/04_pre_mortem/DEEP.md`](subfields/04_pre_mortem/DEEP.md) | done, batch 9 (2026-11-09) |
 | Conditions for valid intuition | [`subfields/05_conditions_for_valid_intuition/DEEP.md`](subfields/05_conditions_for_valid_intuition/DEEP.md) | done, batch 4 (2026-10-26) |
 | Cognitive task analysis | [`subfields/06_cognitive_task_analysis/DEEP.md`](subfields/06_cognitive_task_analysis/DEEP.md) | done, batch 9 (2026-11-09) |
-| Expert-novice differences | | not started |
-| NDM in sport | | not started |
-| Heuristics and biases | | not started |
+| Expert-novice differences | [`subfields/07_expert_novice_differences/DEEP.md`](subfields/07_expert_novice_differences/DEEP.md) | done, batch 10 (2026-11-17) |
+| NDM in sport | [`subfields/08_ndm_in_sport/DEEP.md`](subfields/08_ndm_in_sport/DEEP.md) | done, batch 10 (2026-11-17) |
+| Heuristics and biases | [`subfields/09_heuristics_and_biases/DEEP.md`](subfields/09_heuristics_and_biases/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

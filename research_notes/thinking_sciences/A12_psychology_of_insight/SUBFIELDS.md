@@ -33,8 +33,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Progress monitoring theory | [`subfields/04_progress_monitoring_theory/DEEP.md`](subfields/04_progress_monitoring_theory/DEEP.md) | done, batch 3 (2026-10-26) |
 | Theory comparison | [`subfields/05_theory_comparison/DEEP.md`](subfields/05_theory_comparison/DEEP.md) | done, batch 8 (2026-11-01) |
 | Gestalt roots and fixation | [`subfields/06_gestalt_roots_and_fixation/DEEP.md`](subfields/06_gestalt_roots_and_fixation/DEEP.md) | done, batch 8 (2026-11-01) |
-| Dual-process and three-process accounts | | not started |
-| Stage model and incubation | | not started |
+| Dual-process and three-process accounts | [`subfields/07_dual_process_and_three_process_accounts/DEEP.md`](subfields/07_dual_process_and_three_process_accounts/DEEP.md) | done, batch 10 (2026-11-17) |
+| Stage model and incubation | [`subfields/08_stage_model_and_incubation/DEEP.md`](subfields/08_stage_model_and_incubation/DEEP.md) | done, batch 10 (2026-11-17) |
 | Neuroscience and individual differences | | not started |
 | Methods and measurement | [`subfields/10_methods_and_measurement/DEEP.md`](subfields/10_methods_and_measurement/DEEP.md) | done, batch 9 (2026-11-09) |
 

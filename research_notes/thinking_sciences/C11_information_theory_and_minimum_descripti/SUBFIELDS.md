@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Shannon information, entropy | [`subfields/01_shannon_information_entropy/DEEP.md`](subfields/01_shannon_information_entropy/DEEP.md) | done, batch 8 (2026-11-01) |
 | Kolmogorov complexity | [`subfields/02_kolmogorov_complexity/DEEP.md`](subfields/02_kolmogorov_complexity/DEEP.md) | done, batch 8 (2026-11-01) |
 | Statistical MDL | [`subfields/03_statistical_mdl/DEEP.md`](subfields/03_statistical_mdl/DEEP.md) | done, batch 6 (2026-10-31) |
-| Minimum message length | | not started |
+| Minimum message length | [`subfields/04_minimum_message_length/DEEP.md`](subfields/04_minimum_message_length/DEEP.md) | done, batch 10 (2026-11-17) |
 | MDL and Bayes | [`subfields/05_mdl_and_bayes/DEEP.md`](subfields/05_mdl_and_bayes/DEEP.md) | done, batch 9 (2026-11-09) |
 | Model selection links | | not started |
 | Algorithmic MDL | [`subfields/07_algorithmic_mdl/DEEP.md`](subfields/07_algorithmic_mdl/DEEP.md) | done, batch 7 (2026-11-01) |

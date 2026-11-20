@@ -25,7 +25,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Distributed cognition theory | [`subfields/01_distributed_cognition_theory/DEEP.md`](subfields/01_distributed_cognition_theory/DEEP.md) | done, batch 8 (2026-11-01) |
-| Cognitive ethnography | | not started |
+| Cognitive ethnography | [`subfields/02_cognitive_ethnography/DEEP.md`](subfields/02_cognitive_ethnography/DEEP.md) | done, batch 10 (2026-11-17) |
 | Cognitive offloading | [`subfields/03_cognitive_offloading/DEEP.md`](subfields/03_cognitive_offloading/DEEP.md) | done, batch 7 (2026-11-01) |
 | Shared cognition | | not started |
 | Cognitive artefacts and cockpit studies | [`subfields/05_cognitive_artefacts_and_cockpit_studies/DEEP.md`](subfields/05_cognitive_artefacts_and_cockpit_studies/DEEP.md) | done, batch 7 (2026-11-01) |

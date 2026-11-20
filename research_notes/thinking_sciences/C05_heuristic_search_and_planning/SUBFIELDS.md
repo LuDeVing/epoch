@@ -33,7 +33,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Automated planning (STRIPS, PDDL) | [`subfields/07_automated_planning/DEEP.md`](subfields/07_automated_planning/DEEP.md) | done, batch 9 (2026-11-09) |
 | Hierarchical task networks | [`subfields/08_hierarchical_task_networks/DEEP.md`](subfields/08_hierarchical_task_networks/DEEP.md) | done, batch 7 (2026-11-01) |
 | Means-ends analysis | [`subfields/09_means_ends_analysis/DEEP.md`](subfields/09_means_ends_analysis/DEEP.md) | done, batch 7 (2026-11-01) |
-| Constraint satisfaction | | not started |
+| Constraint satisfaction | [`subfields/10_constraint_satisfaction/DEEP.md`](subfields/10_constraint_satisfaction/DEEP.md) | done, batch 10 (2026-11-17) |
 | Anytime search, restarts | [`subfields/11_anytime_search_and_restarts/DEEP.md`](subfields/11_anytime_search_and_restarts/DEEP.md) | done, batch 4 (2026-10-26) |
 
 ## Dig into next

@@ -32,7 +32,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | MDPs and POMDPs | [`subfields/07_mdps_and_pomdps/DEEP.md`](subfields/07_mdps_and_pomdps/DEEP.md) | done, batch 8 (2026-11-01) |
 | Bandit allocation | [`subfields/08_bandit_allocation/DEEP.md`](subfields/08_bandit_allocation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Learned termination | [`subfields/09_learned_termination/DEEP.md`](subfields/09_learned_termination/DEEP.md) | done, batch 8 (2026-11-01) |
-| Search theory | | not started |
+| Search theory | [`subfields/10_search_theory/DEEP.md`](subfields/10_search_theory/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

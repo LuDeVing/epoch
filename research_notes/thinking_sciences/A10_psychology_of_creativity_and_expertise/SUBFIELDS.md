@@ -26,8 +26,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Einstellung (set) effect | [`subfields/01_einstellung_effect/DEEP.md`](subfields/01_einstellung_effect/DEEP.md) | done, batch 6 (2026-10-31) |
 | Expert flexibility and adaptive expertise | [`subfields/02_expert_flexibility_and_adaptive_expertise/DEEP.md`](subfields/02_expert_flexibility_and_adaptive_expertise/DEEP.md) | done, batch 8 (2026-11-01) |
 | Chunking and templates | [`subfields/03_chunking_and_templates/DEEP.md`](subfields/03_chunking_and_templates/DEEP.md) | done, batch 7 (2026-11-01) |
-| Deliberate practice | | not started |
-| Limits of deliberate practice | | not started |
+| Deliberate practice | [`subfields/04_deliberate_practice/DEEP.md`](subfields/04_deliberate_practice/DEEP.md) | done, batch 10 (2026-11-17) |
+| Limits of deliberate practice | [`subfields/05_limits_of_deliberate_practice/DEEP.md`](subfields/05_limits_of_deliberate_practice/DEEP.md) | done, batch 10 (2026-11-17) |
 | Expertise research programmes | [`subfields/06_expertise_research_programmes/DEEP.md`](subfields/06_expertise_research_programmes/DEEP.md) | done, batch 8 (2026-11-01) |
 | Expert versus novice problem representation | [`subfields/07_expert_versus_novice_problem_representation/DEEP.md`](subfields/07_expert_versus_novice_problem_representation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Problem finding | [`subfields/08_problem_finding/DEEP.md`](subfields/08_problem_finding/DEEP.md) | done, batch 5 (2026-10-27) |

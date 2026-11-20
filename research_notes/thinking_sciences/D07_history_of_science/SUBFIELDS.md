@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Experimental practice | [`subfields/04_experimental_practice/DEEP.md`](subfields/04_experimental_practice/DEEP.md) | done, batch 8 (2026-11-01) |
 | Conceptual change and revolutions | [`subfields/05_conceptual_change_and_revolutions/DEEP.md`](subfields/05_conceptual_change_and_revolutions/DEEP.md) | done, batch 9 (2026-11-09) |
 | Computational reconstruction of discoveries | [`subfields/06_computational_reconstruction_of_discoveries/DEEP.md`](subfields/06_computational_reconstruction_of_discoveries/DEEP.md) | done, batch 5 (2026-10-27) |
-| Instruments, institutions, social history | | not started |
+| Instruments, institutions, social history | [`subfields/07_instruments_institutions_social_history/DEEP.md`](subfields/07_instruments_institutions_social_history/DEEP.md) | done, batch 10 (2026-11-17) |
 | Integrated HPS and the method of case studies | [`subfields/08_integrated_hps_and_the_method_of_case_studies/DEEP.md`](subfields/08_integrated_hps_and_the_method_of_case_studies/DEEP.md) | done, batch 9 (2026-11-09) |
 | Mathematics history | [`subfields/09_mathematics_history/DEEP.md`](subfields/09_mathematics_history/DEEP.md) | done, batch 9 (2026-11-09) |
 

@@ -29,7 +29,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Conceptual combination (noun-noun) | [`subfields/04_conceptual_combination/DEEP.md`](subfields/04_conceptual_combination/DEEP.md) | done, batch 7 (2026-11-01) |
 | Structured imagination | covered in [`subfields/06_fixation_and_structured_imagination/DEEP.md`](subfields/06_fixation_and_structured_imagination/DEEP.md) | done, batch 4 (2026-10-26) |
 | Fixation and functional fixedness | [`subfields/06_fixation_and_structured_imagination/DEEP.md`](subfields/06_fixation_and_structured_imagination/DEEP.md) | done, batch 4 (2026-10-26) |
-| Process stage models and incubation | | not started |
+| Process stage models and incubation | [`subfields/07_process_stage_models_and_incubation/DEEP.md`](subfields/07_process_stage_models_and_incubation/DEEP.md) | done, batch 10 (2026-11-17) |
 | Divergent thinking | [`subfields/08_divergent_thinking/DEEP.md`](subfields/08_divergent_thinking/DEEP.md) | done, batch 8 (2026-11-01) |
 | Ordinary-cognition and implicit-explicit theories | [`subfields/09_ordinary_cognition_and_implicit_explicit_theo/DEEP.md`](subfields/09_ordinary_cognition_and_implicit_explicit_theo/DEEP.md) | done, batch 9 (2026-11-09) |
 | Analogy and distant sources | [`subfields/10_analogy_and_distant_sources/DEEP.md`](subfields/10_analogy_and_distant_sources/DEEP.md) | done, batch 9 (2026-11-09) |

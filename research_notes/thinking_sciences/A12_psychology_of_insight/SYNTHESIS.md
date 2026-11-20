@@ -118,3 +118,5 @@ Order to run: T1 first (cheapest, from logs we hold), then T2 (its bank feeds T3
 **Audit (code check, 2026-11-03):** A12.05-K09 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-10):** A12.10-K01 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-20):** A12.07-K02 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

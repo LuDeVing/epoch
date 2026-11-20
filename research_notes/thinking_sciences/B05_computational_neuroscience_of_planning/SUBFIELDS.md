@@ -28,7 +28,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Replay as offline simulation (Dyna family) | [`subfields/03_replay_as_offline_simulation/DEEP.md`](subfields/03_replay_as_offline_simulation/DEEP.md) | done, batch 7 (2026-11-01) |
 | Prioritised memory access | [`subfields/04_prioritised_memory_access/DEEP.md`](subfields/04_prioritised_memory_access/DEEP.md) | done, batch 7 (2026-11-01) |
 | Map versus value replay | [`subfields/05_map_versus_value_replay/DEEP.md`](subfields/05_map_versus_value_replay/DEEP.md) | done, batch 8 (2026-11-01) |
-| Preplay and replay recordings | | not started |
+| Preplay and replay recordings | [`subfields/06_preplay_and_replay_recordings/DEEP.md`](subfields/06_preplay_and_replay_recordings/DEEP.md) | done, batch 10 (2026-11-17) |
 | Planning by tree search with pruning | [`subfields/07_planning_by_tree_search_with_pruning/DEEP.md`](subfields/07_planning_by_tree_search_with_pruning/DEEP.md) | done, batch 5 (2026-10-27) |
 | Hierarchical planning, options, subgoal discovery | [`subfields/08_hierarchical_planning_options_subgoal_discove/DEEP.md`](subfields/08_hierarchical_planning_options_subgoal_discove/DEEP.md) | done, batch 7 (2026-11-01) |
 | Hippocampal sweeps and vicarious trial and error | | not started |

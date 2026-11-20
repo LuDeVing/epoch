@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Valence framing | [`subfields/02_valence_framing/DEEP.md`](subfields/02_valence_framing/DEEP.md) | done, batch 8 (2026-11-01) |
 | Moderators of framing | [`subfields/03_moderators_of_framing/DEEP.md`](subfields/03_moderators_of_framing/DEEP.md) | done, batch 7 (2026-11-01) |
 | Question wording and presupposition | [`subfields/04_question_wording_and_presupposition/DEEP.md`](subfields/04_question_wording_and_presupposition/DEEP.md) | done, batch 5 (2026-10-27) |
-| Thinking for speaking | | not started |
-| Whorfian psychophysics | | not started |
+| Thinking for speaking | [`subfields/05_thinking_for_speaking/DEEP.md`](subfields/05_thinking_for_speaking/DEEP.md) | done, batch 10 (2026-11-17) |
+| Whorfian psychophysics | [`subfields/06_whorfian_psychophysics/DEEP.md`](subfields/06_whorfian_psychophysics/DEEP.md) | done, batch 10 (2026-11-17) |
 | Cross-language domains | | not started |
 | Language as a tool for relations | [`subfields/08_language_as_a_tool_for_relations/DEEP.md`](subfields/08_language_as_a_tool_for_relations/DEEP.md) | done, batch 8 (2026-11-01) |
 | Language of thought | | not started |

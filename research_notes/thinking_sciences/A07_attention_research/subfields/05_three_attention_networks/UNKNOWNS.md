@@ -1,0 +1,31 @@
+# Three attention networks: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| A07.05-U1 | Does a separate "target only" verify pass beat plain prompting on long distractor lists? | A verify pass for distractor-heavy items | S8 / G3 | K10; single-source (Patel 2026, 2 frontier models); no token match | Plain vs verify pass vs short reasoning; text Stroop lists 5/10/20/40, 30+ trials per cell; incongruent accuracy | Verify beats plain by 10+ points at 20+ items, CI excludes 0, equal tokens | High |
+| A07.05-U2 | Does filter-then-answer (S2A rewrite) keep its gain once rewrite tokens are counted, on a current model? | A filter step for items with distractors | S1 input hygiene | K16, K22; single-source; LLaMA-2-70B only; cost uncounted | Plain vs "ignore" instruction vs S2A rewrite vs 3-5 sample vote; GSM-IC style plus long-context QA; accuracy | S2A beats plain and vote by 3+ points on 2 item sets | High |
+| A07.05-U3 | How much of the conflict deficit is prompt wording? | A bench rule: report a 10-phrasing range for every result | G7 measurement | K13, K24; VLM-only (24-97% range); no text sweep | 10 phrasings of one text Stroop list and one flanker list; accuracy range per model | Range over 15 points on a text model (then scaffold gains below the range count as noise) | High |
+| A07.05-U4 | Does a short reasoning step give most of the gain of long reasoning on flanker-style items? | A reasoning-length cap for conflict items | G11 | K11, K20; open 7B-72B only; gain costs hundreds to thousands of tokens | Plain vs 1-line reasoning vs long reasoning vs matched sampling; flanker-style text items, 30 permutations; accuracy per 1,000 tokens | Short step within 5 points of long at under a third of the tokens | Med |
+| A07.05-U5 | Does a conflict-triggered check beat a fixed check schedule? | "Attempts disagree" as an explicit conflict monitor that raises checks | G1 | K21; VLM log-probability only; human theory; no accuracy adaptation in frontier models | Sequential items in II and CI order; fixed vs triggered checks; accuracy on II items and tokens | Triggered beats fixed by 2+ points at equal tokens | Med |
+| A07.05-U6 | Can a cue-validity probe (hint right 80%, wrong 20%) measure and reduce hint-following? | A rule for treating hints in the input | S1 / S0 | K25; none found on LLMs; human ANT-R validity effect 95 ms (single study) | No hint vs hint vs hint plus check-the-hint pass; 80/20 hints; invalid-hint cost | Invalid-hint cost over 10 points and the check halves it | Med |
+| A07.05-U7 | Does a "hard item ahead" warning (alerting analogue) help or hurt? | A readiness prefix | S0 | K25; none found on LLMs; human alerting speeds RT but raises conflict at 400 ms (single study) | No prefix vs warning prefix; mixed easy and hard items; accuracy and tokens | 3+ points gain on hard items with no loss on easy ones | Low |
+| A07.05-U8 | Does a shorter rule list cut the incongruent cost? | A limit on simultaneous rules in the task restatement | S1 / S2 | K24; Gemma-2-2B and Pythia only; 0.30 probability drop for 5 vs 2 clauses | 2 vs 5 clause rule prefixes with a conflicting default; rule restated last vs not; accuracy | 5+ points gain with 2 clauses on a current model | Med |
+| A07.05-U9 | Does position of key material still matter on current models? (spatial orienting analogue) | Code reorders context so key material sits at the ends | S1 | K15; Liu 2023 older models; middle drop over 20 points | Original order vs key-first vs key-last; multi-document QA; accuracy | 5+ points gain at no extra tokens | Med |
+| A07.05-U10 | Does a gated slow path (inhibition signal) pay for its complexity? | A routing rule from draft confidence to slow reasoning | G12 | K17; single-source; +1 point | Gate vs random routing at the same slow fraction; maths set; accuracy | 3+ points over random routing | Low |
+| A07.05-U11 | Do LLM conflict scores predict real agent task accuracy? | A short conflict probe as an input to the mode choice | S0 | K25; nothing found; reliability paradox suggests weak | Conflict probe score vs accuracy on a distractor reasoning set across 8+ models or scaffold variants | Spearman rho of .5 or more | Low |
+| A07.05-U12 | How many trials give a stable LLM conflict score? | Fixed minimum trial counts for conflict benchmarks | G7 measurement | K25; human anchor about 420 for r=.8 only | Split-half reliability of the incongruent cost at 30, 60, 120, 240 trials | Split-half of .8 or more at the chosen count | High |
+| A07.05-U13 | Does an A-not-B check after a pattern switch reduce perseveration? | A "does the pattern still hold" check on a switch | G1 / S5 | Han 2024 (c20); single-source; drops up to 83% | Few-shot all-A then a switch; plain vs check pass; accuracy after switch | Recovers half the drop at equal tokens | Low |
+
+## Open questions we cannot test on our bench yet
+- A real ANT on an LLM: needs a cue-and-target format where a cue changes readiness or selection. No agreed design exists; alerting and orienting may be undefined for a stateless model. Unblock: a defined prompt analogue for "cue-target interval".
+- Mechanism claims (attention-head ablation, supernodes, steering): need open weights and interpretability tooling. Our scaffold is black-box.
+- Rueda 2004 child scores and the ANT-R full text: closed access or damaged files. Unblock: library access.
+- Reasoning models on long-list Stroop: the one supplement had n=5 per model. Unblock: a larger replication.
+- Whether the human interaction (alerting raises conflict at 400 ms) has any LLM counterpart.
+
+## Order to run
+1. A07.05-U12 (trial count for a stable conflict score): cheap, and every other test needs to know how many items to run.
+2. A07.05-U3 (phrasing sweep): cheap, sets the noise floor so later gains can be judged.
+3. A07.05-U1 (verify pass vs plain at equal tokens on long Stroop lists): largest expected gain for S8 and closes the biggest gap in the literature, which has no token-matched comparison.

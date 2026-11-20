@@ -29,7 +29,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Incremental mapping | [`subfields/04_incremental_mapping/DEEP.md`](subfields/04_incremental_mapping/DEEP.md) | done, batch 8 (2026-11-01) |
 | Analogical retrieval (MAC/FAC) | [`subfields/05_analogical_retrieval/DEEP.md`](subfields/05_analogical_retrieval/DEEP.md) | done, batch 7 (2026-11-01) |
 | Multiconstraint theory | [`subfields/06_multiconstraint_theory/DEEP.md`](subfields/06_multiconstraint_theory/DEEP.md) | done, batch 8 (2026-11-01) |
-| Working-memory-limited mapping | | not started |
+| Working-memory-limited mapping | [`subfields/07_working_memory_limited_mapping/DEEP.md`](subfields/07_working_memory_limited_mapping/DEEP.md) | done, batch 10 (2026-11-17) |
 | Neural analogy and relation learning | | not started |
 | Vector-space relational similarity | [`subfields/09_vector_space_relational_similarity/DEEP.md`](subfields/09_vector_space_relational_similarity/DEEP.md) | done, batch 9 (2026-11-09) |
 | Analogical prompting for LLMs | [`subfields/10_analogical_prompting_for_llms/DEEP.md`](subfields/10_analogical_prompting_for_llms/DEEP.md) | done, batch 9 (2026-11-09) |

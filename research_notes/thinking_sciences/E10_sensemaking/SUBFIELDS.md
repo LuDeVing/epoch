@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Data-frame theory | [`subfields/01_data_frame_theory_and_frame_activities/DEEP.md`](subfields/01_data_frame_theory_and_frame_activities/DEEP.md) | done, batch 3 (2026-10-26) |
 | Frame activities (elaborate, question, compare, preserve, reframe, seek) | covered in [`subfields/01_data_frame_theory_and_frame_activities/DEEP.md`](subfields/01_data_frame_theory_and_frame_activities/DEEP.md) | done, batch 3 (2026-10-26) |
 | Anomaly handling and fixation | [`subfields/03_anomaly_handling_and_fixation/DEEP.md`](subfields/03_anomaly_handling_and_fixation/DEEP.md) | done, batch 3 (2026-10-26) |
-| Weick's organisational sensemaking | | not started |
+| Weick's organisational sensemaking | [`subfields/04_weick_s_organisational_sensemaking/DEEP.md`](subfields/04_weick_s_organisational_sensemaking/DEEP.md) | done, batch 10 (2026-11-17) |
 | Reviews that map the field | | not started |
 | Sensemaking in defence and safety | | not started |
 | Analyst sensemaking | [`subfields/07_analyst_sensemaking/DEEP.md`](subfields/07_analyst_sensemaking/DEEP.md) | done, batch 8 (2026-11-01) |

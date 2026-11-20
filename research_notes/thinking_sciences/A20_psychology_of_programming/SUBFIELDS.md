@@ -35,8 +35,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Plans and schemas | [`subfields/06_plans_and_schemas/DEEP.md`](subfields/06_plans_and_schemas/DEEP.md) | done, batch 5 (2026-10-27) |
 | Notional machine, mental models | [`subfields/07_notional_machine_mental_models/DEEP.md`](subfields/07_notional_machine_mental_models/DEEP.md) | done, batch 9 (2026-11-09) |
 | Cognitive biases in software work | [`subfields/08_cognitive_biases_in_software_work/DEEP.md`](subfields/08_cognitive_biases_in_software_work/DEEP.md) | done, batch 9 (2026-11-09) |
-| Language design, tools, education | | not started |
-| Research methods | | not started |
+| Language design, tools, education | [`subfields/09_language_design_tools_education/DEEP.md`](subfields/09_language_design_tools_education/DEEP.md) | done, batch 10 (2026-11-17) |
+| Research methods | [`subfields/10_research_methods/DEEP.md`](subfields/10_research_methods/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

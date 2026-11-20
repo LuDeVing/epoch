@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Aggregation and extremizing | [`subfields/06_aggregation_and_extremizing/DEEP.md`](subfields/06_aggregation_and_extremizing/DEEP.md) | done, batch 9 (2026-11-09) |
 | Belief updating | [`subfields/07_belief_updating/DEEP.md`](subfields/07_belief_updating/DEEP.md) | done, batch 9 (2026-11-09) |
 | LLM forecasting benchmarks | [`subfields/08_llm_forecasting_benchmarks/DEEP.md`](subfields/08_llm_forecasting_benchmarks/DEEP.md) | done, batch 7 (2026-11-01) |
-| Retrieval and ensembles for LLM forecasts | | not started |
-| Verbal confidence | | not started |
+| Retrieval and ensembles for LLM forecasts | [`subfields/09_retrieval_and_ensembles_for_llm_forecasts/DEEP.md`](subfields/09_retrieval_and_ensembles_for_llm_forecasts/DEEP.md) | done, batch 10 (2026-11-17) |
+| Verbal confidence | [`subfields/10_verbal_confidence/DEEP.md`](subfields/10_verbal_confidence/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

@@ -26,11 +26,11 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Bounded rationality and satisficing | [`subfields/01_bounded_rationality_and_satisficing/DEEP.md`](subfields/01_bounded_rationality_and_satisficing/DEEP.md) | done, batch 7 (2026-11-01) |
 | Ecological rationality, adaptive toolbox | [`subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md`](subfields/02_ecological_rationality_adaptive_toolbox/DEEP.md) | done, batch 5 (2026-10-27) |
 | Heuristics and biases | [`subfields/03_heuristics_and_biases/DEEP.md`](subfields/03_heuristics_and_biases/DEEP.md) | done, batch 8 (2026-11-01) |
-| Prospect theory | | not started |
+| Prospect theory | [`subfields/04_prospect_theory/DEEP.md`](subfields/04_prospect_theory/DEEP.md) | done, batch 10 (2026-11-17) |
 | Choice architecture and nudging | [`subfields/05_choice_architecture_and_nudging/DEEP.md`](subfields/05_choice_architecture_and_nudging/DEEP.md) | done, batch 9 (2026-11-09) |
 | Nudge evidence | [`subfields/06_nudge_evidence/DEEP.md`](subfields/06_nudge_evidence/DEEP.md) | done, batch 9 (2026-11-09) |
 | Behavioural finance and game theory | | not started |
-| Debiasing | | not started |
+| Debiasing | [`subfields/08_debiasing/DEEP.md`](subfields/08_debiasing/DEEP.md) | done, batch 10 (2026-11-17) |
 | Resource-rational analysis | [`subfields/09_resource_rational_analysis/DEEP.md`](subfields/09_resource_rational_analysis/DEEP.md) | done, batch 7 (2026-11-01) |
 | Noise and judgement | [`subfields/10_noise_and_judgement/DEEP.md`](subfields/10_noise_and_judgement/DEEP.md) | done, batch 7 (2026-11-01) |
 

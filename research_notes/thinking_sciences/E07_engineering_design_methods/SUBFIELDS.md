@@ -30,10 +30,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Functional decomposition | [`subfields/02_functional_decomposition/DEEP.md`](subfields/02_functional_decomposition/DEEP.md) | done, batch 5 (2026-10-27) |
 | TRIZ | [`subfields/03_triz/DEEP.md`](subfields/03_triz/DEEP.md) | done, batch 9 (2026-11-09) |
 | Morphological analysis | [`subfields/04_morphological_analysis/DEEP.md`](subfields/04_morphological_analysis/DEEP.md) | done, batch 9 (2026-11-09) |
-| TRIZ with systematic design | | not started |
-| Axiomatic design | | not started |
+| TRIZ with systematic design | [`subfields/05_triz_with_systematic_design/DEEP.md`](subfields/05_triz_with_systematic_design/DEEP.md) | done, batch 10 (2026-11-17) |
+| Axiomatic design | [`subfields/06_axiomatic_design/DEEP.md`](subfields/06_axiomatic_design/DEEP.md) | done, batch 10 (2026-11-17) |
 | Bio-inspired and analogical design | [`subfields/07_bio_inspired_and_analogical_design/DEEP.md`](subfields/07_bio_inspired_and_analogical_design/DEEP.md) | done, batch 6 (2026-10-31) |
-| Design-space exploration | | not started |
+| Design-space exploration | [`subfields/08_design_space_exploration/DEEP.md`](subfields/08_design_space_exploration/DEEP.md) | done, batch 10 (2026-11-17) |
 | Empirical design research | [`subfields/09_empirical_design_research/DEEP.md`](subfields/09_empirical_design_research/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next

@@ -29,7 +29,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Language-guided library learning | covered in [`subfields/03_library_learning/DEEP.md`](subfields/03_library_learning/DEEP.md) | done, batch 4 (2026-10-26) |
 | Resource-rational analysis | covered in [`subfields/06_resource_rational_strategy_selection/DEEP.md`](subfields/06_resource_rational_strategy_selection/DEEP.md) | done, batch 4 (2026-10-26) |
 | Rational strategy selection | [`subfields/06_resource_rational_strategy_selection/DEEP.md`](subfields/06_resource_rational_strategy_selection/DEEP.md) | done, batch 4 (2026-10-26) |
-| Probabilistic programming | | not started |
+| Probabilistic programming | [`subfields/07_probabilistic_programming/DEEP.md`](subfields/07_probabilistic_programming/DEEP.md) | done, batch 10 (2026-11-17) |
 | Intuitive theories and simulation | | not started |
 | Metacognition models | [`subfields/09_metacognition_models/DEEP.md`](subfields/09_metacognition_models/DEEP.md) | done, batch 8 (2026-11-01) |
 | LLMs as cognitive subjects | | not started |

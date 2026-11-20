@@ -1,0 +1,36 @@
+# Forward and backward reasoning: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| E01.02-U1 | Does an expected-findings backward check beat self-consistency at equal tokens? | A per-candidate "findings expected if d were true" check | S4 / S7 discriminating test | K10, c01, c06, d11; gain +2 to +6 points, no token match; GPT-4 / Llama only | Plain v SC(k) v forward + backward check; 300+ differential-diagnosis items; top-1 and top-3 accuracy | Check beats SC by 2 points or more with 95% CI above 0 | High |
+| E01.02-U2 | Does the backward check raise factual errors? | Keep the check, add a code-side fact filter if errors rise | S4, G5 | K11, c03, d12; 8.2 to 17 per 100 vs SC-CoT only | Same arms as U1; count unsupported claims per 100 answers | Error rate no more than +2 per 100 over SC, else add filter and retest | High |
+| E01.02-U3 | Does a code-computed shadow score (matches, conflicts, unverified expected findings) cut anchoring? | S(d) ranking in code | S7 select, G5 | K13, c10, c11, d09; bundled ablation only, single source | Plain v prompt-only backward check v code S(d); 200+ trap pairs (same prior, one discriminating fact); trap rate, robust accuracy | Trap rate lower by 5 points or more than prompt-only check | High |
+| E01.02-U4 | Does hypothesis-first v forward-first instruction interact with difficulty? | Mode rule: backward-heavy on hard items, forward on easy | S0 mode choice, G12 | K02, K06, K09; human-only (Coderre, Bass, Singapore trial); no LLM test | Forward-first v hypothesis-first v none; items split into easy and hard by plain pass rate; accuracy per stratum | Interaction significant (p<0.05) and hard-stratum gain of 3 points or more, no easy-stratum loss over 1 point | High |
+| E01.02-U5 | Does tagging a supplied hypothesis with source and reliability cut the loss from misleading hints? | Provenance tag on every supplied hypothesis | S1 input hygiene | K21, K22, d05-d07; single source, GPT-5 and Gemini 3 Flash recover, Claude partial | Untagged v tagged v blind-first; cases with wrong supplied differential; true-diagnosis inclusion; two thinking budgets | Loss shrinks by half or more, and expert-hint gain stays within 2 points | High |
+| E01.02-U6 | Does blind-first generation beat option-first on multiple choice? | Blind differential before the options are read | S0, S1 | K19, K24, d14, d15; indirect (option bias, open v MCQ gap); none in medicine | Options-with-case v blind differential then options; 300+ MCQ diagnosis items; accuracy, option-position bias | Blind-first no worse by more than 1 point and position bias lower | Med |
+| E01.02-U7 | Does a bare candidate list without the truth harm an LLM? | Rule: never show a code-built candidate list before the model's own attempt | S3, memory | K08, b11, d05; human-only list result; LLM test used a clinician differential with rationale | No list v list with truth v list without truth; accuracy | Without-truth list lowers accuracy by 2 points or more, then add the rule | Med |
+| E01.02-U8 | Does forced analysis of the first hypothesis (content-bearing, not generic) work for LLMs? | Second pass naming features for and against the first answer | S5, G2 | K05, a14, b05; human-only, N=15; generic self-review hurts (d13) | Plain v generic review v content check at equal tokens; right-to-wrong and wrong-to-right changes; accuracy | Wrong-to-right changes exceed right-to-wrong 3:1 and net accuracy rises 2 points | Med |
+| E01.02-U9 | Does delaying commitment to the first hypothesis help? | Pre-commitment step: list 3 or more candidates before judging any | S3 | K12, c07, a06; first answer governs the final one | Single-answer-first v list-first; accuracy where first answer is wrong | Recovers 5 percent or more of items where the first answer was wrong | Med |
+| E01.02-U10 | Do reasoning models already mix forward and backward, and does the mix shift with difficulty? | Nothing directly; tells us whether U4 is worth running per model | S0 (diagnostic) | K25, d16, b20; traces never coded for direction | Label F and B steps on plain and reasoning-model traces across difficulty; B share per stratum | B share rises with difficulty by 10 points or more (supports U4) | Low |
+| E01.02-U11 | Is direction (as an agent-trace feature) predictive of accuracy after controlling for difficulty? | A direction monitor as an impasse signal | S6 | K04 contested, a05, b01, a22; human-only, confounded | Regress correctness on F and B share with item difficulty as covariate; 500+ traces | Direction coefficient significant with difficulty controlled and AUC gain of 0.03 or more | Low |
+| E01.02-U12 | Does the backward gain hold with Claude-family and recent models, and differ by thinking budget? | A model-specific switch for the check | S0, G11 | d06 (thinking helps GPT-5 and Qwen3, not Claude Sonnet 4.5 or Gemini 3 Pro); Dual-Inf tested GPT-4, GPT-4o, Llama | Run U1 on each model at two thinking budgets | Gain of 2 points or more at low budget; if it vanishes at high budget, limit the check to low-budget mode | Med |
+
+## Open questions we cannot test on our bench yet
+
+- **Original Patel and Groen (1986) data.** Per-group counts and any 1990s replications (Patel 1990, 1994; Rikers 1997) were never read. Unblock: full-text access to the Cognitive Science and Memory and Cognition papers.
+- **Real clinical data gathering.** Dual-Inf, MSDiagnosis and MedEinst use written notes. Choosing which test to order next has not been measured (best exam-recall 43.61% in MedR-Bench). Unblock: an interactive case benchmark where the agent asks for findings.
+- **Whether MedEinst's accuracy-versus-trap pattern is real.** The paper's text and table disagree on which models have top accuracy. Unblock: author data or our own trap set (U3).
+- **Shadow penalty alone.** No ablation isolates it. Unblock: our own test U3.
+- **Direct human-to-LLM tests of the expert-forward claim.** None exist. Unblock: U4 and U10 give a first answer.
+- **Inter-rater reliability of direction coding.** Patel's 1987 coding has no reported agreement. Unblock: dual-coding a sample of our traces.
+- **Real diagnosis items beyond text exams.** Our bench may lack held-out differential-diagnosis items with known truth. Unblock: build from DDXPlus or case reports with a code-checkable answer.
+
+## Order to run
+
+1. **U1 with U2 (backward check v self-consistency, with factual-error count).** It is the one item with a published gain and a missing compute match; it decides whether any backward step earns its tokens (G7).
+2. **U3 (code-computed shadow score on trap pairs).** Cheap to build, runs in code, and targets anchoring, the largest measured LLM weakness here (trap rates 43 to 66%).
+3. **U5 (provenance tag on supplied hypotheses).** Largest measured loss in the evidence (up to 29.8 points), and the fix is a cheap input-hygiene rule that fits S1.

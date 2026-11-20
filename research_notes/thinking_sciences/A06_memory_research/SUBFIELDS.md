@@ -30,7 +30,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Cue overload and fan effect | [`subfields/04_cue_overload_and_fan_effect/DEEP.md`](subfields/04_cue_overload_and_fan_effect/DEEP.md) | done, batch 5 (2026-10-27) |
 | Schemas | [`subfields/05_schemas/DEEP.md`](subfields/05_schemas/DEEP.md) | done, batch 7 (2026-11-01) |
 | Semantic networks and spreading activation | [`subfields/06_semantic_networks_and_spreading_activation/DEEP.md`](subfields/06_semantic_networks_and_spreading_activation/DEEP.md) | done, batch 8 (2026-11-01) |
-| Retrieval as consolidation | | not started |
+| Retrieval as consolidation | [`subfields/07_retrieval_as_consolidation/DEEP.md`](subfields/07_retrieval_as_consolidation/DEEP.md) | done, batch 10 (2026-11-17) |
 | Retrieval failure view of amnesia | [`subfields/08_retrieval_failure_view_of_amnesia/DEEP.md`](subfields/08_retrieval_failure_view_of_amnesia/DEEP.md) | done, batch 8 (2026-11-01) |
 | Working memory | [`subfields/09_working_memory/DEEP.md`](subfields/09_working_memory/DEEP.md) | done, batch 9 (2026-11-09) |
 | Retrieval-induced forgetting; memory errors | [`subfields/10_retrieval_induced_forgetting_memory_errors/DEEP.md`](subfields/10_retrieval_induced_forgetting_memory_errors/DEEP.md) | done, batch 9 (2026-11-09) |

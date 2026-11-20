@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Satisfiability and SMT solving | [`subfields/02_satisfiability_and_smt_solving/DEEP.md`](subfields/02_satisfiability_and_smt_solving/DEEP.md) | done, batch 7 (2026-11-01) |
 | Automated theorem proving | [`subfields/03_automated_theorem_proving/DEEP.md`](subfields/03_automated_theorem_proving/DEEP.md) | done, batch 8 (2026-11-01) |
 | Non-monotonic and default logic | [`subfields/04_non_monotonic_and_default_logic/DEEP.md`](subfields/04_non_monotonic_and_default_logic/DEEP.md) | done, batch 5 (2026-10-27) |
-| Modal and epistemic logic | | not started |
+| Modal and epistemic logic | [`subfields/05_modal_and_epistemic_logic/DEEP.md`](subfields/05_modal_and_epistemic_logic/DEEP.md) | done, batch 10 (2026-11-17) |
 | Paraconsistent logic | [`subfields/06_paraconsistent_logic/DEEP.md`](subfields/06_paraconsistent_logic/DEEP.md) | done, batch 8 (2026-11-01) |
 | Intuitionistic and constructive logic | | not started |
 | Logic programming and knowledge representation | [`subfields/08_logic_programming_and_knowledge_representatio/DEEP.md`](subfields/08_logic_programming_and_knowledge_representatio/DEEP.md) | done, batch 9 (2026-11-09) |

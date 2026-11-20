@@ -1,0 +1,38 @@
+# Measurement of load: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| A08.06-U1 | Does the model's own 1 to 9 difficulty rating, given before solving, predict its correctness and tokens better than tokens alone? | A one-line pre-solve rating as an S0 gate input | S0 | K27, d04, d03, d17; single-source, no direct paper; pre-solve verbal AUROC .50 to .77 | 200+ mixed-difficulty items; solve-only arm logs tokens, rating arm rates then solves; both at equal total tokens (rating cost counted); AUROC and Spearman | Rating AUROC beats token AUROC by 0.05 or more on held-out items, in 2 of 3 task families | High |
+| A08.06-U2 | Does a per-item token or failed-branch threshold work as a re-plan trigger? | Code trigger at S6 that abandons a long attempt and restarts | G1, S6 | K25, d05, d06, d09; correlational, math and science only | Single capped attempt vs same cap with restart at fitted threshold (abandoned tokens counted); hard and easy items; accuracy at equal total tokens | Gain of 2 points or more on hard items with no loss on easy items over 3 seeds | High |
+| A08.06-U3 | Does an "ignore irrelevant information" line plus code pruning of marked junk help current models on distractor tasks? | Line added to S1 input hygiene; pruning step | S1, G2 | K12, K14, c10, d08; old models (GSM-IC), DNR Bench model-specific and backfires on one category | Plain vs line vs line plus pruning; distractor set at 20, 50, 80% junk plus clean twin; accuracy on both | Gain of 3 points or more on distractor set and clean twin drops under 1 point | High |
+| A08.06-U4 | Is the token-error slope within items stable across our model families and task types? | A per-model, per-class token cap in the class record | G12, memory | K25, d05, d06; math and science, OpenAI and open models; slope -0.81 to -3.16 points per 1000 tokens | 8 samples per item at free length; fixed-effect regression of error on tokens; per task class | Negative slope in 3 of 3 task classes for our model, CI excluding zero | High |
+| A08.06-U5 | Does fixed-size decomposition recover accuracy on long tasks at equal tokens? | Decompose-by-length rule for long inputs | O3 | K11, a16, c13; one benchmark, one paper | Long state-tracking or QA tasks, N 20 to 250; one chain vs fixed-chunk with code-held state; accuracy by N | Gain of 5 points or more at N where plain accuracy is under .5, none lost at small N | Med |
+| A08.06-U6 | Is distractor response non-monotonic for our model, so a linear load score would mislead? | Rule: never fit a linear distractor-load score; use per-class tables | S0 | K13, a17, a18, c14; single-source | Accuracy at ratios 0, 25, 50, 90% on a synthetic task; plain model | Curve has a significant quadratic term (better AIC) for our model | Med |
+| A08.06-U7 | Do output-side signals (abandoned-branch share, answer disagreement across resamples) replace hidden-state probes as a difficulty signal? | Cheap difficulty score for S0 and S6 | S0, S6 | K26, d01, d05; probes beat length but need hidden states, degrade with effort | Compute signals on first pass; correlate with later success; route easy items to direct mode; accuracy at equal tokens vs always-same mode | AUROC of 0.70 or more and routing saves 20% tokens at no more than 1 point loss | High |
+| A08.06-U8 | Does a short-budget plan-then-solve prompt (CLAI-like) keep accuracy at fewer tokens? | Brief plan step in short-reason mode | G11, S0 | K16, c06, c07; single-author, unreplicated, baseline mismatch | Plain CoT vs plan-then-solve, GSM-style and MATH-style items, 3 seeds; accuracy per token | Accuracy within 1 point at 20% fewer tokens in 3 of 3 seeds | Med |
+| A08.06-U9 | Does a CLT-style specialist split help high-intrinsic-load items once tokens are matched? | Specialist split as an O3 variant | O3 | K17, K18, c23, c24, d10; contested, equal-token test negative on multi-hop QA | Single agent vs split at matched total tokens; math, multi-step logic, instruction following | Gain of 3 points or more on hard items and no instruction-following loss | Low |
+| A08.06-U10 | Is a germane-token budget separable from intrinsic load for an agent? | A third budget line | G12 | K03, b08, d12; contested in humans, no LLM data | Two-knob vs three-knob budgeting (difficulty, clutter, plus a "productive reasoning" share) at equal tokens | Three-knob beats two-knob by 2 points or more | Low |
+| A08.06-U11 | Does the agent's post-solve effort rating have useful within-run resolution against tokens or errors? | Rating logged only, or dropped | memory, log | K06, b13; proposal only | 10+ items per run; correlate rating with tokens and error within run, averaged over runs | Mean within-run correlation above 0.4 with errors and not reducible to tokens | Low |
+| A08.06-U12 | Does the tight-cap advantage of structure vanish as the cap grows? | Rule for when to use structure by budget | G4, G7 | K18, c25, d10; contested | Structured vs plain at caps 1k, 2k, 4k, 8k; same items | Gap at 1k to 2k is 5 points or more and falls to under 2 at 8k (then use structure only under tight caps) | Med |
+| A08.06-U13 | Do prompts that raise verbosity or effort setting change the token-difficulty link for our model? | Fixed effort setting in the harness | G11 | K10, b16; contested, inconclusive BF about .4 | Effort low, medium, high; correlate tokens with item difficulty and accuracy | Accuracy gain per extra 1000 tokens above 1 point, else keep the cap | Med |
+
+## Open questions we cannot test on our bench yet
+
+- Hart and Staveland (1988) reliability and sensitivity numbers, and DeLeeuw and Mayer (2008) correlations and samples. Both papers are unread. Unblock: obtain the NASA Ames scan and the Journal of Educational Psychology full text.
+- What Skulmowski and Rey (2020) reported, and whether any study measures a lab-to-field gap. Unblock: locate the paper and any classroom field replications.
+- Hidden-state probes and attention or logit entropy as load signals. Our scaffold is text-only. Unblock: open-weight model access with hidden states.
+- Human data to calibrate token cost against human time on our own items. Unblock: a small human timing study, or reuse of published sets.
+- Whether the CogniLoad finding replicates on another benchmark. Unblock: a second synthetic benchmark with independent dials.
+- Whether three load types exist in a model at all. Unblock: an LLM validation study with a behavioural criterion, none exists.
+- The "indifferent" category regression for the ignore line (Claude .80 to .04). Unblock: read the DNR Bench items and see what the line does there.
+- Effect sizes behind the Ayres counts (EEG beta 0% match). Unblock: pooled effect-size meta-analysis.
+
+## Order to run
+
+1. **A08.06-U4 (token-error slope).** Cheapest: needs only logged tokens and correctness from runs we already do, and it decides whether tokens are a usable proxy for us.
+2. **A08.06-U1 (pre-solve rating vs tokens).** The one gap with no paper; if the rating adds nothing over tokens, the S0 gate stays token-based and we can close the question.
+3. **A08.06-U3 (ignore line plus pruning at equal tokens).** Highest expected gain on distractor items, uses existing distractor sets, and checks whether the 2022-era result and the DNR Bench model dependence hold for our model.

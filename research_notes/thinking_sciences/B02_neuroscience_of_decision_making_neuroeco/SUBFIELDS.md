@@ -24,8 +24,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Valuation and common currency | | not started |
-| Reward prediction error learning | | not started |
+| Valuation and common currency | [`subfields/01_valuation_and_common_currency/DEEP.md`](subfields/01_valuation_and_common_currency/DEEP.md) | done, batch 10 (2026-11-17) |
+| Reward prediction error learning | [`subfields/02_reward_prediction_error_learning/DEEP.md`](subfields/02_reward_prediction_error_learning/DEEP.md) | done, batch 10 (2026-11-17) |
 | Model-based versus model-free control | [`subfields/03_model_based_versus_model_free_control/DEEP.md`](subfields/03_model_based_versus_model_free_control/DEEP.md) | done, batch 6 (2026-10-31) |
 | Habits versus goal-directed action | | not started |
 | Exploration and exploitation | [`subfields/05_exploration_and_exploitation/DEEP.md`](subfields/05_exploration_and_exploitation/DEEP.md) | done, batch 7 (2026-11-01) |

@@ -27,8 +27,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Extraneous load and split attention | [`subfields/02_extraneous_load_and_split_attention/DEEP.md`](subfields/02_extraneous_load_and_split_attention/DEEP.md) | done, batch 6 (2026-10-31) |
 | Worked-example effect | [`subfields/03_worked_example_effect/DEEP.md`](subfields/03_worked_example_effect/DEEP.md) | done, batch 7 (2026-11-01) |
 | Expertise reversal | [`subfields/04_expertise_reversal/DEEP.md`](subfields/04_expertise_reversal/DEEP.md) | done, batch 7 (2026-11-01) |
-| Germane load | | not started |
-| Measurement of load | | not started |
+| Germane load | [`subfields/05_germane_load/DEEP.md`](subfields/05_germane_load/DEEP.md) | done, batch 10 (2026-11-17) |
+| Measurement of load | [`subfields/06_measurement_of_load/DEEP.md`](subfields/06_measurement_of_load/DEEP.md) | done, batch 10 (2026-11-17) |
 | Critiques of the three-load model | [`subfields/07_critiques_of_the_three_load_model/DEEP.md`](subfields/07_critiques_of_the_three_load_model/DEEP.md) | done, batch 8 (2026-11-01) |
 | Working-memory limits and chunking | [`subfields/08_working_memory_limits_and_chunking/DEEP.md`](subfields/08_working_memory_limits_and_chunking/DEEP.md) | done, batch 8 (2026-11-01) |
 | Collective working memory and evolutionary educational psychology | | not started |

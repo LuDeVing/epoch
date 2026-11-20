@@ -26,12 +26,12 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Conceptualization (grounded cognition) | | not started |
+| Conceptualization (grounded cognition) | [`subfields/01_conceptualization/DEEP.md`](subfields/01_conceptualization/DEEP.md) | done, batch 10 (2026-11-17) |
 | Embedded cognition | [`subfields/02_embedded_cognition/DEEP.md`](subfields/02_embedded_cognition/DEEP.md) | done, batch 6 (2026-10-31) |
 | Epistemic action | [`subfields/03_epistemic_action/DEEP.md`](subfields/03_epistemic_action/DEEP.md) | done, batch 5 (2026-10-27) |
 | Extended mind | [`subfields/04_extended_mind/DEEP.md`](subfields/04_extended_mind/DEEP.md) | done, batch 7 (2026-11-01) |
 | Distributed cognition | [`subfields/05_distributed_cognition/DEEP.md`](subfields/05_distributed_cognition/DEEP.md) | done, batch 8 (2026-11-01) |
-| Gesture and thinking | | not started |
+| Gesture and thinking | [`subfields/06_gesture_and_thinking/DEEP.md`](subfields/06_gesture_and_thinking/DEEP.md) | done, batch 10 (2026-11-17) |
 | Enactivism | | not started |
 | Replacement / dynamical approaches | | not started |
 | External representations and diagrams | [`subfields/09_external_representations_and_diagrams/DEEP.md`](subfields/09_external_representations_and_diagrams/DEEP.md) | done, batch 7 (2026-11-01) |

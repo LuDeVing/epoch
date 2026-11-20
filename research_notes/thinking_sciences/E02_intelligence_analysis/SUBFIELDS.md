@@ -24,7 +24,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Analysis of competing hypotheses (ACH) | [`subfields/01_analysis_of_competing_hypotheses/DEEP.md`](subfields/01_analysis_of_competing_hypotheses/DEEP.md) | done, batch 8 (2026-11-01) |
 | Diagnosticity of evidence | [`subfields/02_diagnosticity_of_evidence/DEEP.md`](subfields/02_diagnosticity_of_evidence/DEEP.md) | done, batch 5 (2026-10-27) |
-| Structured analytic techniques (SATs) | | not started |
+| Structured analytic techniques (SATs) | [`subfields/03_structured_analytic_techniques/DEEP.md`](subfields/03_structured_analytic_techniques/DEEP.md) | done, batch 10 (2026-11-17) |
 | Systematic review of SAT evidence | [`subfields/04_systematic_review_of_sat_evidence/DEEP.md`](subfields/04_systematic_review_of_sat_evidence/DEEP.md) | done, batch 9 (2026-11-09) |
 | Layout and presentation | [`subfields/05_layout_and_presentation/DEEP.md`](subfields/05_layout_and_presentation/DEEP.md) | done, batch 9 (2026-11-09) |
 | Red teaming | | not started |

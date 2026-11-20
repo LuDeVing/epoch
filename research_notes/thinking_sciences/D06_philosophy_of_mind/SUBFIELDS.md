@@ -24,14 +24,14 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Subfield | Deep document | Status |
 |---|---|---|
 | Theories of mental representation | [`subfields/01_theories_of_mental_representation/DEEP.md`](subfields/01_theories_of_mental_representation/DEEP.md) | done, batch 8 (2026-11-01) |
-| Language of thought | | not started |
+| Language of thought | [`subfields/02_language_of_thought/DEEP.md`](subfields/02_language_of_thought/DEEP.md) | done, batch 10 (2026-11-17) |
 | Connectionism and distributed representation | | not started |
 | Imagery debate | [`subfields/04_imagery_debate/DEEP.md`](subfields/04_imagery_debate/DEEP.md) | done, batch 9 (2026-11-09) |
 | Computational theory of mind | | not started |
 | Global workspace theory | [`subfields/06_global_workspace_theory/DEEP.md`](subfields/06_global_workspace_theory/DEEP.md) | done, batch 9 (2026-11-09) |
 | Other consciousness theories | | not started |
 | Metacognition and higher-order representation | [`subfields/08_metacognition_and_higher_order_representation/DEEP.md`](subfields/08_metacognition_and_higher_order_representation/DEEP.md) | done, batch 9 (2026-11-09) |
-| Extended and situated mind | | not started |
+| Extended and situated mind | [`subfields/09_extended_and_situated_mind/DEEP.md`](subfields/09_extended_and_situated_mind/DEEP.md) | done, batch 10 (2026-11-17) |
 | Mental causation and reasons | | not started |
 
 ## Dig into next

@@ -24,13 +24,13 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Joint cognitive systems | [`subfields/01_joint_cognitive_systems/DEEP.md`](subfields/01_joint_cognitive_systems/DEEP.md) | done, batch 8 (2026-11-01) |
 | Anomaly response (dynamic fault management) | [`subfields/02_anomaly_response_dynamic_fault_management/DEEP.md`](subfields/02_anomaly_response_dynamic_fault_management/DEEP.md) | done, batch 5 (2026-10-27) |
-| Coordination and common ground | | not started |
+| Coordination and common ground | [`subfields/03_coordination_and_common_ground/DEEP.md`](subfields/03_coordination_and_common_ground/DEEP.md) | done, batch 10 (2026-11-17) |
 | Cognitive artifacts | [`subfields/04_cognitive_artifacts/DEEP.md`](subfields/04_cognitive_artifacts/DEEP.md) | done, batch 9 (2026-11-09) |
 | Macrocognition | [`subfields/05_macrocognition/DEEP.md`](subfields/05_macrocognition/DEEP.md) | done, batch 9 (2026-11-09) |
-| Naturalistic decision making | | not started |
+| Naturalistic decision making | [`subfields/06_naturalistic_decision_making/DEEP.md`](subfields/06_naturalistic_decision_making/DEEP.md) | done, batch 10 (2026-11-17) |
 | Human error and recovery | [`subfields/07_human_error_and_recovery/DEEP.md`](subfields/07_human_error_and_recovery/DEEP.md) | done, batch 6 (2026-10-31) |
-| Resilience engineering | | not started |
-| Work and domain analysis | | not started |
+| Resilience engineering | [`subfields/08_resilience_engineering/DEEP.md`](subfields/08_resilience_engineering/DEEP.md) | done, batch 10 (2026-11-17) |
+| Work and domain analysis | [`subfields/09_work_and_domain_analysis/DEEP.md`](subfields/09_work_and_domain_analysis/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

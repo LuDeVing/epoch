@@ -1,0 +1,37 @@
+# Expert-novice differences: what we don't know and should test
+
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| E04.07-U1 | Does gain from a verified-case library grow with log of library size, and where does it flatten or dip? | Library size target and a retrieval step in S2/S3 | Memory / S2 / S3 | K20 (gate established; no curve). d01 sweet spot, d04 peak then decline, a14 log law in a model only | Sizes 0/10/100/1,000; plain vs top-k retrieval; code-checked items; 3 seeds; accuracy vs log size | Gain at some size at least +3 points with CI above 0, and a fitted slope above 0 for at least 2 of 3 task classes | High |
+| E04.07-U2 | Is verified-only admission better than add-all on our bench, and does pruning help? | Admission rule: add only after a code check passes; prune low-value cases | Memory / S9 | K20 established in agent papers (d02: 70.95 vs 55.48); not on our bench | Add-all vs verified-only vs verified plus prune, same retrieval budget | Verified-only beats add-all by at least 3 points | High |
+| E04.07-U3 | Should scaffold strength fall on familiar tasks (expertise reversal for scaffolds)? | A familiarity gate at S0 that picks light vs full scaffold | S0 / G7 | K10, K19 single-source (d07 r=.75, 9/20 regressions; d08; b20 abstract only) | Split items by baseline pass rate; arms plain / light / full scaffold | Light beats full by at least 2 points on items with baseline pass above 80 percent, and full wins below 40 percent | High |
+| E04.07-U4 | Does the model's accuracy collapse on unfamiliar variants of non-chess tasks, and does our scaffold narrow it? | Unfamiliarity check at S0 and code checks forced when it fires | S0 / G3 / S4 | K11, K23 single-source (chess only, a28); d06 abstract only | Familiar vs novel (or scrambled-structure) splits of one benchmark; plain vs scaffold | Drop on novel items is at least 10 points for plain and scaffold cuts it by at least a third | High |
+| E04.07-U5 | Do LLMs show a structured-vs-shuffled recall or accuracy gap on text tasks, and how big by model size? | A cheap structure-conformity test used as a familiarity signal | S0 | K22 contested; no study (c27); d15 near ceiling, d16 hard | Matched structured and shuffled-step inputs (proofs, code, plans); several model sizes; accuracy gap | Gap above 5 points and it moves with model size or with library coverage | Med |
+| E04.07-U6 | Do slot-filled templates beat raw text notes as stored cases? | Typed slots (core plus variable fields) as the case format | Memory / S1 | K05 human only (a12, a11); a29 loose analogue | Same cases stored as free notes vs template with slots; multi-item recall and downstream accuracy | Templates win by at least 3 points on multi-item tasks, at equal tokens | Med |
+| E04.07-U7 | Does retrieval keyed on both surface and abstract features beat either alone? | Two-key retrieval index | Memory | b02, a13 (human chunks tied to exact squares); d02 experience-following | Library cases re-presented with paraphrase or reorder; three key types; hit rate and accuracy | Two-key at least 3 points above the better single key | Med |
+| E04.07-U8 | Does a cue-first salience pass (tag what matters, then read) help? | A one-line salience pass in S1 | S1 / O2 | K07 single-source (a22, b15); human eye-movement only | Salience pass then solve vs direct solve on mixed-signal items; accuracy and tokens to correct | At least +2 points or at least 15 percent fewer tokens with no loss | Med |
+| E04.07-U9 | Does persona plus retrieved domain facts help when role labels alone do not? | A role/context line inside retrieval cases | Memory / S1 | K15 established for labels (b25, d09, d10); untested with facts; Karvonen skill vector (c07) | Plain / role only / role plus facts / facts only | Role plus facts beats facts only by at least 2 points; otherwise keep G4 as is | Low |
+| E04.07-U10 | Do closed-subgoal summaries beat flat history on our long tasks at equal tokens? | Summary slot at subgoal close | S1 / O3 / memory | K17 established (a29 42 vs 21, c24) but on other benchmarks | Flat history vs summaries with on-demand recall; long multi-step items | At least +5 points success or at least 20 percent fewer tokens | Med |
+| E04.07-U11 | Is precedent retrieval better than more reasoning tokens at impasses on unfamiliar items? | Retrieval-first rule at S6 for unfamiliar problems | S6 / O7 | K12 single-source (c03: per-token gain 22.55 to 3.81 percent) | Equal budget split: all reasoning vs reasoning plus retrieved precedents on novel items | Retrieval arm at least +3 points on novel items, no loss on familiar | Med |
+| E04.07-U12 | Is any chunk-like agent metric reliable enough to use? | A trace-chunk metric for diagnostics | none (metric) | K21 single-source (d11: .65 / .36 / .14 test-retest in humans) | 5 reruns of the same items; compute test-retest r | Add only if r at least .8; expected to fail, so default is no | Low |
+| E04.07-U13 | Does a coarse capacity limit (few active slots, big units) help prompts? | Cap on active slots in state view | S1 / memory | K03 human (a18, b07); c16 LLM n-back limit; c10 window loses state | Compare 3, 6 and 12 active slots with matched total content | A cap wins by at least 2 points on long inputs | Low |
+
+## Open questions we cannot test on our bench yet
+
+- **Human baselines on the same items.** No study gives human and LLM scores on matched non-chess items (a28 has none). We would need a small human panel or published human scores.
+- **Direct chunk measurement in LLMs.** Interpretability work (c20, c21) extracts chunks from LLaMA3-8B, but we use API models with no activations. Unblock with an open-weight model on the bench.
+- **Prompt-level skill steering.** Karvonen and Jiao steer activations or retrain heads (c07, c13). Without weights we can only test prompts (U9), which role-label studies already suggest are weak.
+- **True store size and chunk count.** 3 vs 4 vs 7 chunks and 50,000 vs 300,000 depend on method (K03, K04). Not decision-relevant until U1 gives our own curve.
+- **Abstract-only sources.** The expertise reversal meta-analysis (b20), Connors 2011 (d13), QUEEN (c26), the CoT-mirage study (d06) were not read in full. Reading them could change U3 and U4.
+- **Long-tail domains.** All LLM evidence is chess; domains like law, medicine or code review have no equivalent familiarity splits. Unblock by building familiar/novel splits per domain on our bench.
+- **Scaffold at scale.** Token-matched library curves beyond 1,000 cases need a large verified corpus we do not yet have.
+
+## Order to run
+
+1. **U1 and U2 together (library size and admission rule).** Cheapest, shares one retrieval harness, and the largest expected gain: agent-memory papers already show add-all loses 10+ points to a gated memory.
+2. **U3 (familiarity gate, light vs full scaffold).** It decides whether the S0 gate and G7 need a strength dial; two small preprints suggest the full scaffold may regress on easy items.
+3. **U4 (familiar vs novel split of a non-chess benchmark).** Closes the biggest gap in the evidence (only chess shows OOD collapse) and sets the trigger that U5, U11 and the code-check rule depend on.

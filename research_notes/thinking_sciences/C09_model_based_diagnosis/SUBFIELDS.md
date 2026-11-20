@@ -27,7 +27,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Abductive diagnosis | [`subfields/02_abductive_diagnosis/DEEP.md`](subfields/02_abductive_diagnosis/DEEP.md) | done, batch 8 (2026-11-01) |
 | Conflict generation, GDE | covered in [`subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md`](subfields/01_consistency_based_diagnosis_and_conflicts/DEEP.md) | done, batch 3 (2026-10-26) |
 | Hitting-set tree search | [`subfields/04_hitting_set_tree_search/DEEP.md`](subfields/04_hitting_set_tree_search/DEEP.md) | done, batch 8 (2026-11-01) |
-| Efficient diagnosis algorithms | | not started |
+| Efficient diagnosis algorithms | [`subfields/05_efficient_diagnosis_algorithms/DEEP.md`](subfields/05_efficient_diagnosis_algorithms/DEEP.md) | done, batch 10 (2026-11-17) |
 | Probing and measurement selection | [`subfields/06_probing_and_measurement_selection/DEEP.md`](subfields/06_probing_and_measurement_selection/DEEP.md) | done, batch 3 (2026-10-26) |
 | Diagnosability | [`subfields/07_diagnosability/DEEP.md`](subfields/07_diagnosability/DEEP.md) | done, batch 9 (2026-11-09) |
 | Spectrum-based fault localisation | [`subfields/08_spectrum_based_fault_localisation/DEEP.md`](subfields/08_spectrum_based_fault_localisation/DEEP.md) | done, batch 6 (2026-10-31) |

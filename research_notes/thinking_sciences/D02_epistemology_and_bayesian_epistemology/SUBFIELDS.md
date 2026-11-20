@@ -26,7 +26,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Coherence norms and Dutch book arguments | [`subfields/02_coherence_norms_and_dutch_book_arguments/DEEP.md`](subfields/02_coherence_norms_and_dutch_book_arguments/DEEP.md) | done, batch 8 (2026-11-01) |
 | The problem of the priors | [`subfields/03_the_problem_of_the_priors/DEEP.md`](subfields/03_the_problem_of_the_priors/DEEP.md) | done, batch 8 (2026-11-01) |
 | Uncertain evidence | [`subfields/04_uncertain_evidence/DEEP.md`](subfields/04_uncertain_evidence/DEEP.md) | done, batch 7 (2026-11-01) |
-| Imprecise credences | | not started |
+| Imprecise credences | [`subfields/05_imprecise_credences/DEEP.md`](subfields/05_imprecise_credences/DEEP.md) | done, batch 10 (2026-11-17) |
 | Belief revision (AGM) | [`subfields/06_belief_revision_agm/DEEP.md`](subfields/06_belief_revision_agm/DEEP.md) | done, batch 5 (2026-10-27) |
 | Formal learning theory | | not started |
 | Justification theories | | not started |

@@ -30,8 +30,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Analytic vs holistic thought | [`subfields/01_analytic_vs_holistic_thought/DEEP.md`](subfields/01_analytic_vs_holistic_thought/DEEP.md) | done, batch 8 (2026-11-01) |
 | Dialectical reasoning | [`subfields/02_dialectical_reasoning/DEEP.md`](subfields/02_dialectical_reasoning/DEEP.md) | done, batch 8 (2026-11-01) |
-| Causal attribution | | not started |
-| Categorisation and attention | | not started |
+| Causal attribution | [`subfields/03_causal_attribution/DEEP.md`](subfields/03_causal_attribution/DEEP.md) | done, batch 10 (2026-11-17) |
+| Categorisation and attention | [`subfields/04_categorisation_and_attention/DEEP.md`](subfields/04_categorisation_and_attention/DEEP.md) | done, batch 10 (2026-11-17) |
 | Origins: social orientation hypothesis | | not started |
 | Within-culture comparisons | | not started |
 | Priming of orientation | [`subfields/07_priming_of_orientation/DEEP.md`](subfields/07_priming_of_orientation/DEEP.md) | done, batch 9 (2026-11-09) |

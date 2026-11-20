@@ -27,10 +27,10 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Critiques of the story model | [`subfields/03_critiques_of_the_story_model/DEEP.md`](subfields/03_critiques_of_the_story_model/DEEP.md) | done, batch 9 (2026-11-09) |
 | Computational coherence models | [`subfields/04_computational_coherence_models/DEEP.md`](subfields/04_computational_coherence_models/DEEP.md) | done, batch 9 (2026-11-09) |
 | Case-based reasoning in law | [`subfields/05_case_based_reasoning_in_law/DEEP.md`](subfields/05_case_based_reasoning_in_law/DEEP.md) | done, batch 6 (2026-10-31) |
-| Argumentation and defeasible rules | | not started |
-| Analogy and precedent in legal theory | | not started |
-| Judicial bias and noise | | not started |
-| Evidence and probability reasoning | | not started |
+| Argumentation and defeasible rules | [`subfields/06_argumentation_and_defeasible_rules/DEEP.md`](subfields/06_argumentation_and_defeasible_rules/DEEP.md) | done, batch 10 (2026-11-17) |
+| Analogy and precedent in legal theory | [`subfields/07_analogy_and_precedent_in_legal_theory/DEEP.md`](subfields/07_analogy_and_precedent_in_legal_theory/DEEP.md) | done, batch 10 (2026-11-17) |
+| Judicial bias and noise | [`subfields/08_judicial_bias_and_noise/DEEP.md`](subfields/08_judicial_bias_and_noise/DEEP.md) | done, batch 10 (2026-11-17) |
+| Evidence and probability reasoning | [`subfields/09_evidence_and_probability_reasoning/DEEP.md`](subfields/09_evidence_and_probability_reasoning/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

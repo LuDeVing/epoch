@@ -30,7 +30,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Confidence and signal-detection measures | [`subfields/06_confidence_and_signal_detection_measures/DEEP.md`](subfields/06_confidence_and_signal_detection_measures/DEEP.md) | done, batch 7 (2026-11-01) |
 | Meta-reasoning | [`subfields/07_meta_reasoning/DEEP.md`](subfields/07_meta_reasoning/DEEP.md) | done, batch 7 (2026-11-01) |
 | LLM metacognitive harness | [`subfields/08_llm_metacognitive_harness/DEEP.md`](subfields/08_llm_metacognitive_harness/DEEP.md) | done, batch 3 (2026-10-26) |
-| Social, organisational and clinical metacognition | | not started |
+| Social, organisational and clinical metacognition | [`subfields/09_social_organisational_and_clinical_metacognit/DEEP.md`](subfields/09_social_organisational_and_clinical_metacognit/DEEP.md) | done, batch 10 (2026-11-17) |
 
 ## Dig into next
 

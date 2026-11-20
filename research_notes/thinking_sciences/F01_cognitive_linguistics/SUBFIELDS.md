@@ -29,8 +29,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Blend network types | [`subfields/03_blend_network_types/DEEP.md`](subfields/03_blend_network_types/DEEP.md) | done, batch 9 (2026-11-09) |
 | Computational blending | [`subfields/04_computational_blending/DEEP.md`](subfields/04_computational_blending/DEEP.md) | done, batch 7 (2026-11-01) |
 | Mental spaces | [`subfields/05_mental_spaces/DEEP.md`](subfields/05_mental_spaces/DEEP.md) | done, batch 9 (2026-11-09) |
-| Frame semantics | | not started |
-| Force dynamics | | not started |
+| Frame semantics | [`subfields/06_frame_semantics/DEEP.md`](subfields/06_frame_semantics/DEEP.md) | done, batch 10 (2026-11-17) |
+| Force dynamics | [`subfields/07_force_dynamics/DEEP.md`](subfields/07_force_dynamics/DEEP.md) | done, batch 10 (2026-11-17) |
 | Prototype theory and categorisation | | not started |
 | Cognitive grammar and construction grammar | | not started |
 | Usage-based and connectionist models | | not started |

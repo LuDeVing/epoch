@@ -31,8 +31,8 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Bayesian and causal learning | [`subfields/02_bayesian_and_causal_learning/DEEP.md`](subfields/02_bayesian_and_causal_learning/DEEP.md) | done, batch 7 (2026-11-01) |
 | Exploration and spontaneous experiments | [`subfields/03_exploration_and_spontaneous_experiments/DEEP.md`](subfields/03_exploration_and_spontaneous_experiments/DEEP.md) | done, batch 5 (2026-10-27) |
 | Expected information gain models | [`subfields/04_expected_information_gain_models/DEEP.md`](subfields/04_expected_information_gain_models/DEEP.md) | done, batch 7 (2026-11-01) |
-| Simulation vs theory accounts | | not started |
-| Piagetian and neo-Piagetian stages | | not started |
+| Simulation vs theory accounts | [`subfields/05_simulation_vs_theory_accounts/DEEP.md`](subfields/05_simulation_vs_theory_accounts/DEEP.md) | done, batch 10 (2026-11-17) |
+| Piagetian and neo-Piagetian stages | [`subfields/06_piagetian_and_neo_piagetian_stages/DEEP.md`](subfields/06_piagetian_and_neo_piagetian_stages/DEEP.md) | done, batch 10 (2026-11-17) |
 | Vygotsky: scaffolding | [`subfields/07_vygotsky_scaffolding/DEEP.md`](subfields/07_vygotsky_scaffolding/DEEP.md) | done, batch 8 (2026-11-01) |
 | Core knowledge | | not started |
 | Scientific reasoning skills | [`subfields/09_scientific_reasoning_skills/DEEP.md`](subfields/09_scientific_reasoning_skills/DEEP.md) | done, batch 7 (2026-11-01) |

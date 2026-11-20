@@ -22,14 +22,14 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 
 | Subfield | Deep document | Status |
 |---|---|---|
-| Definitions and ideals | | not started |
+| Definitions and ideals | [`subfields/01_definitions_and_ideals/DEEP.md`](subfields/01_definitions_and_ideals/DEEP.md) | done, batch 10 (2026-11-17) |
 | Process models | [`subfields/02_process_models/DEEP.md`](subfields/02_process_models/DEEP.md) | done, batch 8 (2026-11-01) |
 | Skills versus dispositions | [`subfields/03_skills_versus_dispositions/DEEP.md`](subfields/03_skills_versus_dispositions/DEEP.md) | done, batch 9 (2026-11-09) |
 | Assessment and tests | [`subfields/04_assessment_and_tests/DEEP.md`](subfields/04_assessment_and_tests/DEEP.md) | done, batch 9 (2026-11-09) |
 | Instruction effectiveness | [`subfields/05_instruction_effectiveness/DEEP.md`](subfields/05_instruction_effectiveness/DEEP.md) | done, batch 9 (2026-11-09) |
 | Generalisability and transfer | [`subfields/06_generalisability_and_transfer/DEEP.md`](subfields/06_generalisability_and_transfer/DEEP.md) | done, batch 6 (2026-10-31) |
 | Bias and debiasing | [`subfields/07_bias_and_debiasing/DEEP.md`](subfields/07_bias_and_debiasing/DEEP.md) | done, batch 5 (2026-10-27) |
-| Argument mapping training | | not started |
+| Argument mapping training | [`subfields/08_argument_mapping_training/DEEP.md`](subfields/08_argument_mapping_training/DEEP.md) | done, batch 10 (2026-11-17) |
 | Informal reasoning research | | not started |
 
 ## Dig into next

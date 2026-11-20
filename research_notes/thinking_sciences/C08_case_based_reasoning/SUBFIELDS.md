@@ -25,7 +25,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | The 4R cycle | [`subfields/01_the_4r_cycle/DEEP.md`](subfields/01_the_4r_cycle/DEEP.md) | done, batch 5 (2026-10-27) |
 | Dynamic memory, early CBR | [`subfields/02_dynamic_memory_early_cbr/DEEP.md`](subfields/02_dynamic_memory_early_cbr/DEEP.md) | done, batch 8 (2026-11-01) |
-| Deployed CBR | | not started |
+| Deployed CBR | [`subfields/03_deployed_cbr/DEEP.md`](subfields/03_deployed_cbr/DEEP.md) | done, batch 10 (2026-11-17) |
 | Case representation | [`subfields/04_case_representation/DEEP.md`](subfields/04_case_representation/DEEP.md) | done, batch 6 (2026-10-31) |
 | Retrieval and similarity | [`subfields/05_retrieval_and_similarity/DEEP.md`](subfields/05_retrieval_and_similarity/DEEP.md) | done, batch 7 (2026-11-01) |
 | Adaptation | [`subfields/06_adaptation/DEEP.md`](subfields/06_adaptation/DEEP.md) | done, batch 7 (2026-11-01) |

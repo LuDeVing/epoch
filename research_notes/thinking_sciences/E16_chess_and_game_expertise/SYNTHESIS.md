@@ -120,3 +120,5 @@ Run order from the UNKNOWNS files: T1, T2, then T3 (subfield 01); T5, then T6 on
 **Audit (code check, 2026-11-01):** E16.06-K03, E16.06-K04, E16.06-K08, E16.06-K09, E16.06-K10, E16.06-K13, E16.06-K18, E16.06-K26, E16.07-K04, E16.08-K01 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
 
 **Audit (code check, 2026-11-03):** E16.04-K04, E16.04-K07, E16.04-K12, E16.04-K14, E16.04-K25 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.
+
+**Audit (code check, 2026-11-20):** E16.10-K04, E16.10-K05, E16.10-K08, E16.10-K09 had only one opened source and are now single-source, not established. Treat their rows above as unconfirmed.

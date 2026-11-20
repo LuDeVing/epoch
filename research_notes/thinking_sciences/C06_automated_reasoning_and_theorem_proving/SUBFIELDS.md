@@ -31,7 +31,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 | Premise selection | [`subfields/06_premise_selection/DEEP.md`](subfields/06_premise_selection/DEEP.md) | done, batch 6 (2026-10-31) |
 | Lemma discovery, conjecturing | [`subfields/07_lemma_discovery_and_conjecturing/DEEP.md`](subfields/07_lemma_discovery_and_conjecturing/DEEP.md) | done, batch 4 (2026-10-26) |
 | Proof planning and repair | [`subfields/08_proof_planning_and_repair/DEEP.md`](subfields/08_proof_planning_and_repair/DEEP.md) | done, batch 9 (2026-11-09) |
-| Autoformalisation | | not started |
+| Autoformalisation | [`subfields/09_autoformalisation/DEEP.md`](subfields/09_autoformalisation/DEEP.md) | done, batch 10 (2026-11-17) |
 | Counterexample finding | [`subfields/10_counterexample_finding/DEEP.md`](subfields/10_counterexample_finding/DEEP.md) | done, batch 7 (2026-11-01) |
 
 ## Dig into next

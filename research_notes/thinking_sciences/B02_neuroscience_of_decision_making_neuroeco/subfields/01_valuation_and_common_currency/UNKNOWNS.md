@@ -1,0 +1,32 @@
+# Valuation and common currency: what we don't know and should test
+*Candidates for the schema that are not established. Nothing here goes into SCHEMA.md until its test passes. Source: DEEP.md, claims.jsonl, critique.md in this folder.*
+
+## Test before adding
+| ID | What we don't know | If it works, we add | Schema part | Evidence so far | Test (arms at equal tokens; items; metric) | Add if | Priority |
+|---|---|---|---|---|---|---|---|
+| B02.01-U1 | Does a separate "stakes" number beat value alone? | Output score and importance per option; code weights | O in S3/S7 | K02, a01, b02; single-source, human-only | Value-only vs value+stakes; 40 allocation items with unequal importance; stakes-weighted payoff | Payoff up 3 points or more with no loss on equal-importance items | Low |
+| B02.01-U2 | Does elicit-utilities-then-maximise beat CoT plus voting at equal tokens on open-ended choice? | A utility-elicitation operator for uncertain decisions | O | K22, c24, d15, d16; single-source, not equal-token (5181 vs 1946 tokens) | CoT with k samples vs DeLLMa-style, same total tokens; 60 open option-set items; accuracy vs gold, regret | Accuracy up 5 points or more at equal tokens, on 2 backbones | High |
+| B02.01-U3 | Does scoring each option then ranking in code beat direct pairwise choice? (Hayden and Niv question) | Score-then-rank step, or the opposite: keep direct choice | O, G5 | K09, K13, a21, a23; contested, one paper on LLMs | Direct tournament vs score+rank; 4-8 options; accuracy, cycle rate, reorder flip rate | Wins by 4 points or more, or cuts flips by a third at no accuracy loss | High |
+| B02.01-U4 | Do price or prestige labels shift option scores, and does stripping them help? | Strip irrelevant labels before scoring | G | K12, a18, K29; human single-source, LLM decoy effects established | Labelled vs stripped identical options; 50 items; score shift and rank flips | Flip rate under labels above 10% and stripping removes at least half | Med |
+| B02.01-U5 | Does a re-ask-under-reframing-and-agree step repair framing drops at equal tokens? | Reframe-agreement check as a guardrail | G, S8 | K17, c03, d08, d09; established damage, no 2025-26 reasoning-model test, no repair test | Single answer vs answer+one reframing with agreement rule; budget and valuation items; flip rate, accuracy | Flip rate halves and accuracy does not fall | High |
+| B02.01-U6 | Do verbal probability words shift choices versus numbers, in our backbone? | Force numeric probabilities in the decision step | G | K19, a29, b17; contested, older models | Same gambles with numbers vs words; 40 items; choice agreement and fitted parameter shift | Words change more than 15% of choices and numbers fix it | Med |
+| B02.01-U7 | Do hidden exchange rates survive a scaffold with an audit step? | Exchange-rate audit in S8 | G | K15, c08, d12; single-source, fine-tuning evidence only | Plain vs scaffold+audit; trade-off pairs across groups and goods; fitted rate spread | Spread falls by 50% or more with accuracy intact | Low |
+| B02.01-U8 | Does our agent update asymmetrically on good vs bad evidence, and does a normative-baseline guard fix it? | Bayesian-reference guard on updating | G | K24, K27, c22, d13, d03; single model (Claude v1.3), contested in humans | Symmetric good and bad streams; plain vs guard; update asymmetry vs Bayesian | Asymmetry above 20% in plain and guard halves it | Low |
+| B02.01-U9 | Is a one-shot example better than an instruction for setting risk posture? | Use examples, not instructions, to set risk posture | O | K21, c15; GPT-4 and Ross 2024 only | Instruction vs one-shot vs both; risk items; shift of fitted risk parameter | One-shot moves the parameter at least twice as much on 2 backbones | Med |
+| B02.01-U10 | Is coherence worse on loss-side items than on gain-side? | Extra check on loss-side answers | G, S8 | K10, b09; single-source, human-only | CCEI-style items per side; consistency checks on or off; CCEI per side | Loss-side CCEI lower by 0.05 or more, and the check closes half the gap | Low |
+| B02.01-U11 | Is LLM value relative to the set (divisive normalisation), not just decoy-sensitive? | Score only within one context; add a scale-invariance check | O, G | K30, d19 snippet, d05-d07; no direct LLM test | Scale all option values by a constant; rate alone vs together vs subset; choice-share change | Shares shift by more than 10% under pure scaling (then add a normalise step) | Med |
+| B02.01-U12 | Does a long-horizon step fix LLM impatience on time tradeoffs? | Long-term check on time-tradeoff answers | G | K20, c10, c14; established bias, untested fix | Plain vs add a long-term step; intertemporal items; later-reward share vs policy answer | Share moves toward the policy answer by 15 points with no loss on short-horizon items | Low |
+| B02.01-U13 | Does a cheap GARP-style probe predict which backbone is safe for utility steps? | Per-backbone probe in S0/S1 | S0/S1 | K31, d08, d09, d10; established spread, no link to task accuracy | Run probe on 3-4 backbones; correlate CCEI with U2 and U3 accuracy | Correlation at least 0.5 across backbones | Med |
+
+## Open questions we cannot test on our bench yet
+- Probe replication and causality: needs open-weight models with hidden-state access and a steering setup; the paper used three Llama models only.
+- Cross-domain exchange rates in the Chib sense: needs an item set that pairs money, food, time and social goods with a measured exchange rate per goods pair.
+- Reasoning-model framing drop (2025-26): needs fixed access to a reasoning backbone with token accounting.
+- What the 2026 common-currency defence predicts that Hayden and Niv do not: needs a theory step first, not a bench run.
+- Human-side effect sizes for Sharot 2011 under the Shah 2016 critique: needs the full Shah paper (abstract only so far).
+- Numeric-score-then-choose vs direct choice in medical-style settings (Yamin 2026): only abstract and intro were read.
+
+## Order to run
+1. B02.01-U5 (reframe agreement). Damage is established, the fix is a cheap second short answer, and it applies to every valuation step.
+2. B02.01-U3 (score-then-rank vs direct pairwise). It decides whether any scoring operator is worth keeping, and answers the contested common-currency question for our agent.
+3. B02.01-U2 (elicit-then-maximise at equal tokens). The only strong positive LLM result is not equal-token; this settles whether it is worth its tokens.

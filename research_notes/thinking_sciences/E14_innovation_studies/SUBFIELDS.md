@@ -23,7 +23,7 @@ One folder per subfield in `subfields/`. Read `DEEP.md` first; section 7 is what
 |---|---|---|
 | Recombinant search | [`subfields/01_recombinant_search/DEEP.md`](subfields/01_recombinant_search/DEEP.md) | done, batch 5 (2026-10-27) |
 | Exploration versus exploitation | [`subfields/02_exploration_versus_exploitation/DEEP.md`](subfields/02_exploration_versus_exploitation/DEEP.md) | done, batch 6 (2026-10-31) |
-| Organisational ambidexterity | | not started |
+| Organisational ambidexterity | [`subfields/03_organisational_ambidexterity/DEEP.md`](subfields/03_organisational_ambidexterity/DEEP.md) | done, batch 10 (2026-11-17) |
 | Bandit-style exploration | [`subfields/04_bandit_style_exploration/DEEP.md`](subfields/04_bandit_style_exploration/DEEP.md) | done, batch 7 (2026-11-01) |
 | Atypicality versus disruption | [`subfields/05_atypicality_versus_disruption/DEEP.md`](subfields/05_atypicality_versus_disruption/DEEP.md) | done, batch 8 (2026-11-01) |
 | Breakthrough innovation | [`subfields/06_breakthrough_innovation/DEEP.md`](subfields/06_breakthrough_innovation/DEEP.md) | done, batch 9 (2026-11-09) |
