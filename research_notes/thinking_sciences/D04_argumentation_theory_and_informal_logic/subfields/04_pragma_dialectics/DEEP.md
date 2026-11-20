@@ -314,3 +314,8 @@ All arms get equal tokens. Report 95% bootstrap CIs, at least 5 seeds, and count
 - [V, abstract level] Erotetic fallacy patterns 2025 (d19) https://arxiv.org/abs/2506.11128
 - [M] DayDreamer at CQs-Gen 2025 (d20) https://arxiv.org/abs/2505.15554
 - [V] Search record (a28, d21) https://arxiv.org/search/?query=pragma-dialectical&searchtype=all
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 4 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

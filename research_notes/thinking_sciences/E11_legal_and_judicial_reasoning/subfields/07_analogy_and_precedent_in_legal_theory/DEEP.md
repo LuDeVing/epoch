@@ -394,3 +394,10 @@ All arms at equal total tokens (count generation and setup, per G7). Items have 
 - [M] SAGE 2026 LLM rerun of Spamann and Klohn. https://sage.cnpereading.com/doi/10.1177/2755323X261433614 (d17)
 
 *Note on read depth.* Several [V] lines were read through a page summariser (d13-d15) or only as abstracts (b06, b07, b10, d01, d05, d06, d08, d09). The critique file lists the numbers re-opened from full PDF text: Spamann and Klohn, Liu et al., Zhang 2026, Webb, Lewis and Mitchell, Zhang-Savelka-Ashley, Zhang-Gray, Fan.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 6 established claims: 4 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E11.07-K01** (reworded: the sources support less). Sources support non-whole-case, feature/issue/relation-based similarity; none says the court names the rule or ratio and decides which similarities count, and Schauer and Spellman argue analogy is neither rule-making nor lawmaking but driven by trained perception. Corrected claim: Legal likeness between cases is not whole-case resemblance: it is judged on relevant features, issues or relations (HYPO/CATO factors; Bench-Capon and Atkinson's issue-based view), and which similarities count depends on the reasoner's legal knowledge, training and framing (Schauer and Spellman).
+- **E11.07-K03** (reworded: the sources support less). Zhang et al. code and solver-check distinctions, their support, blocking and emphasis/downplay; citing the most on-point case and rebuttal are not shown to be coded or checked there; Chorley and Bench-Capon only generate Prolog from factors and values. Corrected claim: The HYPO/CATO distinguishing move, including whether a distinction is emphasized or downplayed through a factor hierarchy, can be defined as formal rules and checked by a symbolic solver, giving exact ground truth for that analogy step (Zhang et al. 2026); factor/value theories can be compiled to Prolog (Chorley and Bench-Capon 2003).

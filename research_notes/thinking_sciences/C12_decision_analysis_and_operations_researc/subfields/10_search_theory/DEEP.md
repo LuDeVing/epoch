@@ -303,3 +303,9 @@ All arms at equal total tokens, including pilot, setup and index computation cos
 - [V] Xie et al. Pandora's Box Gittins Index for Bayesian optimisation https://arxiv.org/abs/2406.20062 (d13, abstract only)
 - [V] Horton (2023) https://arxiv.org/abs/2301.07543 (d15)
 - [M] Nie et al. (2025) EVOLvE https://arxiv.org/abs/2410.06238 (d16, skimmed)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C12.10-K16** (reworded: the sources support less). DeepConf, Adaptive-Consistency and DEER numbers verified, and DeepConf says aggressive filtering 'can sometimes hurt' from overconfidence on GPT-OSS-120B, but the cited cost is a small drop (-0.9 points on one Qwen3-32B set; DeepConf-low matches or improves accuracy in most settings), so 'rules fail' is too strong; CISC not opened. Corrected claim: Stopping or abandoning without a reward model works on single-answer math tasks using agreement or the model's own confidence, but confidence-only rules can sometimes hurt where the model is confidently wrong (DeepConf notes overconfidence on incorrect problems with GPT-OSS-120B at aggressive filtering, and DeepConf-low lost 0.9 points on Qwen3-32B BRUMO25 while matching or improving accuracy in most other settings).

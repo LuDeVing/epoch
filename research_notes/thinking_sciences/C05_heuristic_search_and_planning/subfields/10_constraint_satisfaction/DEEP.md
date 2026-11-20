@@ -417,3 +417,12 @@ Run order and cost are in UNKNOWNS.md.
 - [M] Bonlarron et al. IJCAI 2025 replication search (d20; no follow-up found)
 
 Links to other subfields in this run (not covered here): Forward and backward reasoning; Search theory; Efficient diagnosis algorithms; Autoformalisation; Probabilistic programming; Design-space exploration; Computational design; Reward prediction error learning; RL on verifiable rewards; Hybrid and connectionist (CLARION, Sigma).
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 9 established claims: 9 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C05.10-K03** (now single-source: only one opened source, code check).
+- **C05.10-K06** (now single-source: only one opened source, code check).
+- **C05.10-K07** (now single-source: only one opened source, code check).
+- **C05.10-K08** (now single-source: only one opened source, code check).

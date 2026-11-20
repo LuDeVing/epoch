@@ -302,3 +302,10 @@ All tests: both arms at equal total tokens (setup cost counted, G7). At least 10
 - [V] Chen et al. (2025) How generative AI supports human design. https://resolve.cambridge.org/core/services/aop-cambridge-core/content/view/6B60B59DF0CBE7 (c22)
 - [M] Wang et al. (2025) LLM-enabled multi-agent mechatronics. https://arxiv.org/abs/2504.14681 (c24; abstract page, no numbers)
 - [V] Dunivin (2024) Scalable qualitative coding with LLMs. https://arxiv.org/abs/2401.15170 (d09, d10); [M] https://arxiv.org/abs/2507.14384 (d16)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 3 established claims: 1 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E05.10-K01** (reworded: the sources support less). Eight processes and six variables match Gero's FBS, but no source says it can code any design protocol: completeness has been debated (Galle, Dorst and Vermaas, Ralph), the situated version uses 20 processes, and Kannengiesser and Gero (2019) add a ninth process (F to S) for System 1. Corrected claim: FBS gives a small vocabulary of six variables (R, F, Be, Bs, S, D) and eight named processes (formulation, synthesis, analysis, evaluation, documentation, reformulation I-III) that has been used to code designers' protocols; its completeness has been debated, and later work extends it (a ninth F-to-S process for fast thinking; 20 processes in the situated version).
+- **E05.10-K02** (now single-source: the sources are not independent). All sources are from Gero's own group (Gero/Kan/Pourmohamadi, Kannengiesser/Gero, Gero/Milovanovic); the 10,000 coded hours are one domain (industrial systems design, Bott and Mesmer 2019) reported second-hand; and the Kannengiesser-Gero paper simulates three published process models with ANOVAs that found a common slope only for function issues (p=0.06), so it does use inferential tests and mostly shows differences between domains.

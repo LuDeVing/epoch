@@ -342,3 +342,10 @@ All arms get equal total tokens (reasoning plus answer; setup counted, G7). Repo
 - [V] Gjerde, Cheung and Lagnado (2025): https://arxiv.org/pdf/2502.16606
 - [M] Cheung, Qiao, Brown and Lagnado (2026), read via citing text (a24)
 - [M] Search logs: https://garden.causalmap.app/llm-detect-claims/ (untraceable web note), https://arxiv.org/pdf/2505.19683, https://api.crossref.org/works?query=force+dynamics+language+models
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F01.07-K13** (reworded: the sources support less). Kementchedjhieva (6 PLMs, 305 data points, p<0.001), Ballout (VLMs not above 54% vs human 80%) and FlipTest (best of 11 video world models 18.3% vs 25% chance) numbers are right, but FlipTest tests video world models not VLMs (a VLM was selective on the same frames), and no source says physical force reasoning is the weak point; Ballout locates the limitation in vision-language integration. Corrected claim: Pre-trained language models show implicit-causality bias correlated with humans (Spearman p<0.001 on 305 data points, 6 PLMs), but vision-language models stay at or below about 54% on GRASP/IntPhys 2 intuitive-physics tests versus about 80% for humans, and the best of 11 video world models reaches only 18.3% pair accuracy on FlipTest versus 25% for random guessing (a VLM was selective on the same frames).
+- **F01.07-K17** (reworded: the sources support less). CRAFT (Force Dynamics cause/enable/prevent, human 76.60, baselines about 36-61, pre-LLM models) and CaLM (explicitly excludes PD and PE) check out, but two sources cannot show that no benchmark at all covers enable/disable for LLMs. Corrected claim: No benchmark found in this search covers enable and disable relations for LLMs: CaLM states it does not evaluate probability of enablement and disablement; CRAFT (2020) covers cause/enable/prevent but was tested only with pre-LLM video models (humans 76.6%, neural baselines about 36-61%).

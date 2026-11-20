@@ -326,3 +326,11 @@ The bench has code-checkable items (ARC-style, brainteaser with checks) and open
 - [V] Kohli (2026) Nine Judges, Two Effective Votes. https://arxiv.org/abs/2605.29800 (d15)
 - [V] Kumar, Karniadakis (2026) Agentic Risk-Aware Set-Based Engineering Design. https://arxiv.org/abs/2604.16687 (d16)
 - [V] Guo et al. (2025) Toward Engineering AGI (EngDesign). https://arxiv.org/abs/2509.16204 (d17)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 10 established claims: 9 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E07.08-K08** (reworded: the sources support less). LLEMA 4.4 to 30.2 is plain LLM vs the full system (memory, multi-island evolution, surrogate, chemistry rules); the unguided mutation+crossover variant already reaches 29.8, so rules/memory alone do not explain it. Corrected claim: LLM gain in design-space search is tied to domain knowledge in the prompt in several systems: iDSE domain-knowledge injection added a further 45.0% effectiveness; Lumina rules lifted Qwen-3 perf/area accuracy 0.59 to 0.82; MPM-LLM4DSE used a pragma-impact prompt. In LLEMA the full system (memory, multi-island evolution, chemistry rules) reached hit rate 30.2 vs 4.4 for a plain LLM, but unguided mutation+crossover already reached 29.8, so rules add little to hit rate there. A rules-only (no LLM) control is still missing. In iDSE all baselines shared the same rule pruning, so pruning alone is not the lead.
+- **E07.08-K06** (now single-source: only one opened source, code check).
+- **E07.08-K25** (now single-source: only one opened source, code check).

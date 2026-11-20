@@ -296,3 +296,14 @@ Rule for all: report per-family numbers, tokens per blind-rated novel idea, and 
 35. Ghane et al. (2023) Semantic TRIZ systematic review, Heliyon 10(1). https://pmc.ncbi.nlm.nih.gov/articles/PMC10788813/ [V] (a18)
 36. arXiv listing search "TRIZ LLM", 2026-11-19. https://arxiv.org/search/?query=TRIZ+LLM&searchtype=all&order=-announced_date_first [V] (d17)
 37. Dumas 2016; Chang 2016; Dumas and Schmidt 2015 (via Cano-Moreno Table 1, b05). [M] second-hand
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E07.05-K20** (reworded: the sources support less). a01 and a06 are the same paper and d13 does not mention the PSN; they show only that the 2018 paper has no controlled experiment, while a search surfaced later PSN follow-ups by the same group (case study, 'lesson learned') that were not examined, so a universal 'no source' is not supported. Corrected claim: The 2018 Fiorineschi et al. DESIGN paper illustrates the Problem-Solution Network with three academic examples and no controlled experiment or sample, and no source reviewed here tests it against a control; later PSN papers by the same group (a case study, a 'lessons learned' paper) were not examined.
+- **E07.05-K08** (now single-source: only one opened source, code check).
+- **E07.05-K09** (now single-source: only one opened source, code check).
+- **E07.05-K10** (now single-source: only one opened source, code check).
+- **E07.05-K11** (now single-source: only one opened source, code check).
+- **E07.05-K18** (now single-source: only one opened source, code check).

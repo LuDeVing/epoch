@@ -302,3 +302,10 @@ Run all with at least 3 seeds and report per-model results; model style differs 
 - [M] Castagnetti and Potters 2025, SSRN, title only (d19). https://doi.org/10.2139/ssrn.5636063
 - [M] Search gap note for cross-cultural LLM replications (c28). https://arxiv.org/
 - Cited only through reviews, never opened: Jones and Harris 1967; Ross 1977; Heider 1958; Kelley 1967; Jones and Nisbett 1971; Storms 1973; Gilbert, Pelham and Krull 1988; Gilbert 1989; Morris and Peng 1994; Choi and Nisbett 1998; Choi, Nisbett and Norenzayan 1999; Masuda and Kitayama 2004; Knowles et al. 2001; Lieberman et al. 2005; Hedden et al. 2008; Hong et al. 2000; Walker, Smith and Vul 2015.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A19.03-K19** (reworded: the sources support less). Kirkland abstract says Studies 1-2 were mixed and only preregistered Study 3 found moral conviction predicting more dispositional inference (mainly when participants agreed with the essay); d up to 1.64 is the essay-position effect itself, not the conviction effect; Gill is not about moral conviction so there is a single preprint source. Corrected claim: A single preprint (N=1,611 across three studies) found mixed evidence in Studies 1-2 and, in preregistered Study 3, that stronger moral conviction predicted more dispositional inference, mainly when participants agreed with the essay; the underlying correspondence-bias effect of essay position was large (d up to 1.64) regardless.
+- **A19.03-K06** (now single-source: only one opened source, code check).

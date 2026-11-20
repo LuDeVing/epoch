@@ -251,3 +251,8 @@ All arms run at equal total tokens (generation cost counted, G7). Report relatio
 - [M] Breaking the perceptual-conceptual barrier: relational matching and working memory. https://www.semanticscholar.org/paper/5124e763962d2f706a17b7c80bf32710ad16a691
 - [M] Altabaa et al. (2024) Abstractors and relational cross-attention. https://arxiv.org/abs/2304.00195
 - Not opened (cited only): Keane and Brayshaw (1988) IAM https://en.wikipedia.org/wiki/Structure-mapping_theory ; Halford, Wilson, Phillips (1998) https://doi.org/10.1017/S0140525X98001769 ; Hummel and Holyoak (1997) https://doi.org/10.1037/0033-295X.104.3.427 ; Hummel and Holyoak (2003) https://doi.org/10.1037/0033-295X.110.2.220 ; Cowan (2001) https://doi.org/10.1017/S0140525X01003922 ; Markman and Gentner (1993) https://doi.org/10.1006/cogp.1993.1011 ; Waltz et al. (1999) https://doi.org/10.1111/1467-9280.00167
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 2 established claims: 2 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

@@ -309,3 +309,10 @@ All arms at equal total tokens (setup cost counted, G7). Raters blind to arm; co
 - [M] Rittel and Webber (1973). https://doi.org/10.1007/BF01405730 (a21)
 - [M] Schon (1983); Simon (1969); Darke (1979); Cross, Naughton, Walker (1981); Cross (2004); Maher and Poon (1996) https://doi.org/10.1111/j.1467-8667.1996.tb00323.x (a22-a26, c18)
 - [M] IdeaForge (2026), abstract only, arXiv 2605.13311 (b20).
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E05.05-K03** (number corrected). GPT-5.4 path discovery is 27/56 (48.2%) in the MUTATE tables, not 25/56; 25/56 belongs to claude-haiku-4.5 (Table 1) and Claude Sonnet 4.6 with Self-Refine. Corrected claim: LLMs themselves fixate: ChatGPT unique-term share 67.4% vs 78.2% for human award designs (N=10 users, chairs); GPT lists of machines anchor on the last item; Claude/GPT show action fixation in MUTATE (Claude Sonnet 4.6 30/56 paths, 53.6%, GPT-5.4 27/56, humans 79.9%).
+- **E05.05-K11** (reworded: the sources support less). Expert-rejects/novice-copies rests on one 10-person study (only P8, six years experience, rejected all suggestions; novices adopted more); Shin supports the gap (+12.54% novel frames, experts only) but not copying; Wadinambiarachchi concerns prompt anchoring, not expertise. Corrected claim: In one 10-person chair-design study (Chen), the one experienced designer rejected ChatGPT suggestions while novices tended to adopt them and paste prompts into Midjourney; Shin et al. (N=280) found LLM use widened the expert-novice gap (experts made 12.54% more novel frames, p=.01); Wadinambiarachchi found prompts inherited the brief and example anchor.

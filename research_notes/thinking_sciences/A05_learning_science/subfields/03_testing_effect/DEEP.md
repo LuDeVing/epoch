@@ -357,3 +357,14 @@ All arms get equal total tokens. Items are held out. Include a leak check: no ov
 57. [V, abstract] Migration-agent audit 2026. https://arxiv.org/abs/2611.16143
 58. [V] Cao, Schooler and Zafarani 2025. https://arxiv.org/abs/2509.17138
 59. [M] Yusof 2025 (via Leong et al.); marketing RAG tutor https://convention2.allacademic.com/one/aera/aera26/online_program_direct_link/view_paper/2282791/ ; NPS report https://faculty.nps.edu/ncrowe/CSCI25_testing_generated_questions_final.pdf ; AI exam field study https://aitopics.org/doc/arxivorg:876F20D4
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A05.03-K15** (reworded: the sources support less). Grimaldi & Karpicke 2012: .73 vs .56 for related pairs and no effect for unrelated pairs (Exp 1) are right, but 'not after a delay' misstates Exp 3, where the delay was between the pretest and its study trial (delayed-pretest .55 vs no-pretest .56), not a retention delay; Pan and Sana 2021 shows pretesting helps in applied passage settings but does not test unrelated pairs. Corrected claim: Retrieval attempts before study (pretesting) help for semantically related word pairs when study follows immediately (.73 vs .56 recall), but not for unrelated pairs and not when the study trial is delayed relative to the pretest (delayed pretest .55 vs .56 no pretest); this is a boundary condition on word-pair pretesting, not a statement about long retention delays.
+- **A05.03-K22** (now contested: a source does not say this). An et al. 2025 verified (0.89 vs 0.73, n=31/27, about 2/3 of raw MCQs unsuitable by authors' experience), but Leong et al. (700+ students, 30 LLM items) found LLM items easier (-1.01 difficulty) and less discriminating with overall weaker psychometrics, not matching instructor items; An and Wang 2026 shows LLM difficulty labels do not predict empirical difficulty.
+- **A05.03-K01** (now single-source: only one opened source, code check).
+- **A05.03-K03** (now single-source: only one opened source, code check).
+- **A05.03-K06** (now single-source: only one opened source, code check).
+- **A05.03-K07** (now single-source: only one opened source, code check).

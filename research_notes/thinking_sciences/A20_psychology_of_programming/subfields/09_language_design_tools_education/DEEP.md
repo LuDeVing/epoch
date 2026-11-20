@@ -265,3 +265,9 @@ All arms get equal tokens, setup and verification calls counted (G7).
 - [M] Sajaniemi roles literature, Aalto repository. https://aaltodoc.aalto.fi/handle/123456789/3534 (b24)
 
 Links to subfields researched in parallel (not covered here): Novices and education; Expert-novice differences; Debiasing; Verbal confidence; Heuristics and biases; Research methods.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A20.09-K15** (reworded: the sources support less). Sarsa et al. report 75.0% sensible and 81.8% novel, but 30.9% is 51 of 165 exercises that had both a sample solution and tests whose solution passed the tests (not 30.9% of all generated test sets); the second source (Denny review, same group) mislabels 30.9% as statement coverage and cannot be counted as independent. Corrected claim: In a Codex study of 240 generated CS1 exercises, 75.0% were rated sensible and 81.8% novel, but only 30.9% (51 of 165) of the exercises that had both a sample solution and automated tests had a sample solution that passed those tests.

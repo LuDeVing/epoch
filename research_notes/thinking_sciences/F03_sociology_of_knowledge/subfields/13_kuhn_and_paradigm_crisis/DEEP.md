@@ -342,3 +342,10 @@ All arms at equal total tokens (setup, trigger calls and reframing counted, G7).
 - [V] Computational Kuhn benchmark (2026). https://arxiv.org/html/2605.22300 (c20)
 - [V] Park and Choi (2026) When do agent loops mistake stagnation for progress. https://arxiv.org/abs/2607.25152 (d07, d08)
 - [M] Gawali (2026) Restart, Don't Persist (title only). https://doi.org/10.13140/RG.2.2.21690.76483 (d16)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **F03.13-K23** (reworded: the sources support less). Haq numbers match (6 problems per condition, tiny); but only the best models scored 48-52% on mARC-QA, many were under 20%, so 'models scored 48-52%' is too broad. Corrected claim: Rigidity appears in LLMs as in people: in a six-problem-per-condition test (Haq et al. 2025), GPT-4o few-shot exact match went 0.33 to 0.66 with complex examples first; on Einstellung-style medical items (mARC-QA, 100 items) the best models scored 48-52% vs physicians 66%, and several models scored under 20%.
+- **F03.13-K05** (now single-source: only one opened source, code check).

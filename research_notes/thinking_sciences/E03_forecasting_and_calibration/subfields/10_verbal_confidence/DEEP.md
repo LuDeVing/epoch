@@ -419,3 +419,12 @@ All arms at equal total tokens (counting any extra passes and setup). Report ECE
 46. [M] Erev, Wallsten, Budescu 1994, Simultaneous over- and underconfidence, search summary only. https://synapsesocial.com/papers/W2100105359
 47. [M] Lichtenstein, Fischhoff, Phillips 1982, Calibration of probabilities (DTIC ADA101986); PDF blocked, not read.
 48. [M] Wallsten et al. 1986 DTIC ADA196944; PDF blocked, not read.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 7 established claims: 5 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E03.10-K08** (reworded: the sources support less). 'A prompt scaffold cannot reproduce this' is unsupported and in tension with the claim's own REHEARSE result (training-free prompt cuts average ECE 58%); Kapoor only shows prompting alone is not enough. Also ECE 0.03 goes with RLCR accuracy 62.1% (61.7% pairs with ECE 0.09, RLCR without analysis), vs RLVR 63.0%/ECE 0.37. Corrected claim: Training can fix verbal confidence: RLCR (Brier-term reward) cuts HotpotQA ECE from 0.37 to 0.03 in-domain at near-equal accuracy (62.1% vs 63.0%; the no-analysis variant gets 61.7% and ECE 0.09); fine-tuning on about 1000 graded examples (Kapoor) and calibration-aware PPO (Leng) also help; plain binary-reward RL hurts calibration. Prompting alone with plain prompts calibrates poorly (Kapoor), though a training-free scored-feedback prompt (REHEARSE) cuts average ECE by 58% without leading on AUROC; RL reward schemes can be hacked (Tan et al.).
+- **E03.10-K12** (number corrected). 'SD 11-17 points' appears in neither Wallsten et al. (1986) nor Kent's table (whose margins are +-5 to +-12 points); Wallsten shows individual differences but stable within person; 'must be fixed per agent' is an inference, and Kent source was only the Wikipedia summary. Corrected claim: Human verbal probability phrases are vague and vary across people (Kent's 1964 scale gives each term a point value with give-or-take margins of about 5-12 points; Wallsten et al. 1986 found individual membership functions for the same term differ across people, with most agreement near 0, 0.5 and 1, while staying stable within a person), which motivates fixing the word-to-number map per agent.
+- **E03.10-K02** (now single-source: only one opened source, code check).
+- **E03.10-K03** (now single-source: only one opened source, code check).

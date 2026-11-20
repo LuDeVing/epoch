@@ -236,3 +236,10 @@ Links to parallel subfields (not covered here): Retrieval and ensembles for LLM 
 - [V] Evaluating LLMs on real-world forecasting against expert forecasters (2025). https://arxiv.org/html/2507.04562v3 (d05)
 - [M] Rowe and Wright (1999) Delphi as a forecasting tool. https://econpapers.repec.org/RePEc:eee:intfor:v:15:y:1999:i:4:p:353-375 (b01, d06)
 - [M] arXiv searches for LLM plus morphological analysis (negative). https://arxiv.org/search/?query=morphological+analysis+LLM&searchtype=all (a27, d11)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 6 established claims: 4 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E17.02-K09** (reworded: the sources support less). SCAP numbers (19 BHCs, about 600B losses, 185B need, 10 of 19 short) verified, but NY Fed SR 460 says announcement and methodology were nonevents while the clarification event was highly informative and results were also informative, so the market did not learn only at the results release. Corrected claim: The 2009 US bank stress test (SCAP) used a baseline and a more adverse scenario on 19 BHCs: about $600B two-year losses, $185B capital needed, 10 of 19 short. In the NY Fed event study the announcement and methodology events produced no significant abnormal returns, while the clarification event and the results release both did for banks with capital gaps; the market had largely guessed which banks had gaps beforehand.
+- **E17.02-K11** (reworded: the sources support less). Ritchey PDF confirms 4x4x4x3x3x4 = 2,304, the 500,000+ original field and pairwise cross-consistency; Wikipedia agrees on CCA but is derivative of Ritchey. The sentence that pairwise judgments suit batch LLM labelling is not stated in any source. Corrected claim: General morphological analysis shrinks a large option space by pairwise cross-consistency checks: example 4x4x4x3x3x4 = 2,304 configurations; the original 10-parameter field exceeded 500,000. (Inference, not from the sources: the pairwise judgments could be labelled in batch by an LLM.)

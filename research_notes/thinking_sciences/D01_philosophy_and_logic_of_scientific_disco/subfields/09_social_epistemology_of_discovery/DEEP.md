@@ -391,3 +391,8 @@ LLM and AI
 - [V] Li, Naito and Shirado (2026) Systematic Failures in Collective Reasoning under Distributed Information (HiddenBench). https://arxiv.org/abs/2505.11556 (d10)
 - [V] Zheng et al. (2024) When 'A Helpful Assistant' Is Not Really Helpful. https://arxiv.org/abs/2311.10054 (d14)
 - [M] Status line d16: Alexander et al., Thompson, Zollman 2007, Rosenstock et al. 2017 and replications of Hofstra and Yang could not be opened in the gap pass. Not evidence.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 3 established claims: 3 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

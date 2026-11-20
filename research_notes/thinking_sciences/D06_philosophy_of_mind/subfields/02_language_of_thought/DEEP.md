@@ -296,3 +296,10 @@ All tests: both arms at equal total tokens (setup included, per G7). Report the 
 - [M] Marcus (1998, 2001) Rethinking eliminative connectionism; The Algebraic Mind. https://doi.org/10.1006/cogp.1998.0694 [a24]
 - [M] Piantadosi, Tenenbaum, Goodman (2012, 2016) Bayesian LoT models. https://doi.org/10.1016/j.cognition.2011.11.001 [a25]
 - [M] Quilty-Dunn, Porot, Mandelbaum (2023) The best game in town, BBS. https://doi.org/10.1017/S0140525X22002849 [a26]
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D06.02-K02** (reworded: the sources support less). Csordas et al. report PCFG productivity 50 to 85%, COGS 35 to 81%, IID validation hiding the gap, but SCAN length reaches 100% only at the length cutoff 26 (short cutoffs 22-25 stay well below, and the paper says length generalisation is not fully solved). Corrected claim: Much of the early Transformer failure was setup, not architecture: relative positions, embedding scaling and early stopping on a generalisation split lifted PCFG productivity 50 to 85%, COGS 35 to 81% and SCAN length to 100% at cutoff 26 (shorter cutoffs remain far lower); IID validation hides the gap.
+- **D06.02-K03** (reworded: the sources support less). Hupkes (PCFG SET) supports productivity being harder than systematicity (0.30/0.31/0.50 vs 0.53/0.56/0.72), but on SCAN the add-jump systematicity split (best 1.2%) is harder than the length split (best 20.8%), so the general ranking does not hold across benchmarks; 13.8% is the overall-best network from the random-split search, rising to 23.6% with an EOS oracle. Corrected claim: On PCFG SET, length extrapolation (productivity: Transformer 0.50, LSTM 0.30) is harder than systematicity (Transformer 0.72, LSTM 0.53), though on SCAN the add-jump split (best 1.2%) is harder than the length split (best 20.8%); part of the length failure is the model not learning when to stop (EOS oracle lifted the overall-best SCAN network from 13.8% to 23.6%).

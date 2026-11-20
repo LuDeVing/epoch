@@ -291,3 +291,11 @@ All arms at equal total tokens (count setup cost, G7). Report the plain model as
 - [V] Wang et al. 2025 [d08, d09]. https://arxiv.org/pdf/2505.21371
 - [V] Seror 2025 [d10]. https://arxiv.org/pdf/2412.04476
 - [M] Xie, Huang, Busemeyer 2025 [d19]. https://escholarship.org/uc/item/4fv3t754
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 14 established claims: 13 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B02.01-K08** (reworded: the sources support less). Louie et al. 2014 confirms divisive-normalization context-dependent coding in monkey LIP neurons, but the claim is written as a general statement about value coding; Louie 2011 could not be opened (PMC blocked), both papers are the same lab (Louie, Glimcher), and the evidence is parietal/frontal monkey neurons, not value coding in general. Corrected claim: In monkey parietal (LIP) neurons, firing for one option is scaled by the summed value of the alternatives, as described by divisive normalization, so neural value coding there is relative rather than absolute; evidence comes from one lab's monkey recordings.
+- **B02.01-K06** (now single-source: only one opened source, code check).
+- **B02.01-K07** (now single-source: only one opened source, code check).

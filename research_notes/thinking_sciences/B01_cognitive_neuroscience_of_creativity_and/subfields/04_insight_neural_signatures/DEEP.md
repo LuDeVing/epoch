@@ -260,3 +260,9 @@ Also a free measurement: count self-reported mid-trace shifts in our agent's tra
 - [M] EvoThink 2607.19962 (c24); From Aha Moments to Controllable Thinking 2508.04460 (c25); Geometric Interleaved Reasoning 2603.01070 (c26). https://arxiv.org/abs/2607.19962
 - [M] Hofstadter and Mitchell, Copycat and Metacat (c23).
 - [M] Sheth critique (post-solution gamma stronger): seen only in a search snippet; not cited for numbers.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B01.04-K01** (reworded: the sources support less). Verified: Jung-Beeman 2004 Exp 2 (N=19, 56% vs 42%), 2024 HBM EEG (Eureka 55.6% of correct and 22.7% of incorrect trials), and the 2026 J Intell study (N=377, Aha highest for correct first move); anagram 56.1% (N=26) could not be read in full text. 'Three independent designs' is too strong because the CRA and anagram studies come from the same Jung-Beeman/Bowden/Kounios collaboration. Corrected claim: About 56% of correct solves are labelled insight in three designs (CRA EEG N=19: 56%; anagrams N=26: 56.1%, same Jung-Beeman/Bowden/Kounios collaboration; 2024 French CAT EEG N=21: 55.6%), and Eureka is also reported on 22.7% of incorrect trials (2024 study); a 2026 study (N=377) found Aha ratings highest for solutions with a correct first move, not for restructured ones.

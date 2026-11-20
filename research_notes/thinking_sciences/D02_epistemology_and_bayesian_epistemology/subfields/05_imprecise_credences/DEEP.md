@@ -274,3 +274,14 @@ All arms at equal total tokens; setup and extra calls are charged to the arm tha
 - [M] Chow and Sarin (2001) https://econpapers.repec.org/RePEc:kap:jrisku:v:22:y:2001:i:2:p:129-39 (d03)
 - [M] Dolan and Jones (search summary only)
 - [M] Search notes (a28, c21, d16): zero hits for direct LLM Ellsberg or dilation tests; absence is weak evidence. https://export.arxiv.org/api/query
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 2 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D02.05-K02** (reworded: the sources support less). Kuzmics et al. say 18 of 27 (66.67%) of SUBJECTS made an Ellsberg choice incompatible with all monotone (classical) ambiguity models, not a share of rules; other figures (slightly more than half across 39 experiments via Oechssler-Roomets, 55% of 708 in Jabarian-Lazarus) match. Corrected claim: Ellsberg-type preference for known-odds bets is common in humans (slightly more than half of subjects across 39 experiments, second-hand via Oechssler and Roomets; 55% of 708 subjects bet on a dominated risky urn). The Kuzmics 18 of 27 (66.67%) figure is the share of subjects who made a choice inconsistent with all classical (monotone) ambiguity models, not a plain preference rate.
+- **D02.05-K07** (number corrected). Xiong et al. report GPT-4 average AUROC 62.7% for vanilla verbalized confidence, but the GSM8K AUROC of 54.8% is for GPT-3.5 with CoT verbalized confidence (Table 3), not GPT-4. Corrected claim: Verbalized LLM confidence is overconfident and a weak predictor of errors: GPT-4 average AUROC 62.7% for vanilla verbalized confidence (Xiong et al.), and GPT-3.5 CoT verbalized confidence reaches only 54.8% AUROC on GSM8K.
+- **D02.05-K15** (number corrected). Liu et al. report GPT-4 true/false ambiguity accuracy of 63.0% vs 50% chance (other models 49.6-57.7%), so 57% is wrong for GPT-4; 32.0% correct disambiguations vs 89.7% crowdworker agreement and 1,645 items match; the other listed sources (Kirchhof, Tamkin, Hou) do not report these numbers. Corrected claim: Models struggle to detect and enumerate ambiguity: GPT-4 disambiguations are judged correct 32.0% of the time versus 89.7% crowdworker agreement with the dataset (AmbiEnt, 1,645 items); GPT-4 true/false accuracy on ambiguity is 63.0% vs 50% chance, other models 49.6-57.7%.
+- **D02.05-K04** (now single-source: only one opened source, code check).
+- **D02.05-K05** (now single-source: only one opened source, code check).
+- **D02.05-K18** (now single-source: only one opened source, code check).

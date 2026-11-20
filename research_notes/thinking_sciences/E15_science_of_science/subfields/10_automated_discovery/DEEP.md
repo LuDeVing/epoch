@@ -322,3 +322,10 @@ All arms get equal total tokens, with setup cost counted (G7). Use existing benc
 | Burger et al. (2020) A mobile robotic chemist | [M] | https://doi.org/10.1038/s41586-020-2442-2 |
 
 *Links to parallel subfields (not covered here): Retrieval and ensembles for LLM forecasts, RL on verifiable rewards, Probabilistic programming, Autoformalisation, Search theory, Social epistemology of discovery, Kuhn and paradigm crisis, Research methods, Team science, Strong Programme and SSK, Minimum message length.*
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 6 established claims: 4 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E15.10-K05** (now single-source: the sources are not independent). All supporting evidence is one paper (Shojaee et al., LLM-SR, listed twice); Cranmer's PySR paper is a software description that does not support the claim; the numbers (2.5K vs over 2M iterations, E. coli OOD NMSE 0.0037 vs lowest baseline 1.01) match, but the paper itself is inconsistent (main text says 22M).
+- **E15.10-K06** (now single-source: the sources are not independent). All sources are the same lab's papers (LLM-SRBench listed five times plus LLM-SR by the same authors); numbers 31.5% and 28.1% match, but memorisation is only 'suggested' by the authors, not shown independently.

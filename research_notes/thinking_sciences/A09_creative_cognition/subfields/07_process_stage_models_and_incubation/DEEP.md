@@ -311,3 +311,10 @@ All arms use equal total tokens (include any offline and filler tokens). Run on 
 - [M] Olton and Johnson 1976; Zhong 2008; Ashby 2011; Pachur and Forrer 2013; Yang 2012; Barrett 1993; Walker 2002; Cai 2009; Sio 2012, via Ritter and Dijksterhuis (b05, b06)
 - [M] Chandolia et al. (2026) aha moments. https://pmc.ncbi.nlm.nih.gov/articles/PMC13514830/ (b16)
 - [M] Vul and Pashler (2007), title only. https://europepmc.org/ (b17)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 9 established claims: 8 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A09.07-K01** (reworded: the sources support less). Wallas text (Art of Thought 1926, Helmholtz and Poincare as worked cases, Intimation, four stages) confirmed, but 'no effect size supports the stage order as a causal sequence' is an absence claim no opened source tests (the EEG paper only lists stage models). Corrected claim: Wallas's four stages (preparation, incubation, illumination, verification) were derived from introspective anecdotes (Helmholtz, Poincare), not experiments; the sources checked report no experimental test of the stage order as a causal sequence.
+- **A09.07-K13** (now single-source: only one opened source, code check).

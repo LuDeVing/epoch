@@ -346,3 +346,9 @@ Control for the null baselines: report self-consistency at equal calls in every 
 - [V] arXiv search listing (2026-11-17). https://arxiv.org/search/?query=%22predictive+coding%22+%22language+model%22&searchtype=all
 
 **Not reachable:** the journal pages of Heilbron 2022 (PNAS, HTTP 403) and Caucheteux 2023 (Nature, login) were not used; the PMC and arXiv versions were. The evidence file c01 stated "70 min of stories"; this is wrong (27 stories, 7-56 min, 4.6 h unique stimulus).
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B03.01-K20** (reworded: the sources support less). Huang 2024 confirms GSM8K 75.9->74.7 and debate 83.0 vs SC 88.2 at 9 responses. But the 0.97x-1.05x figures are two example settings (GPT-4, APPS) from Olausson, and that self-repair uses unit-test execution feedback, so it is an outside signal, not model-alone; the paper's grid also has cells outside 0.97-1.05 and compares to plain sampling, not voting. Corrected claim: Self-correction by the model alone, with no outside signal, does not beat plain voting at equal calls: GPT-3.5 GSM8K 75.9 -> 74.7 after two self-correct rounds, and multi-agent debate (83.0) is below self-consistency (88.2) at 9 responses. Even with unit-test feedback, code self-repair at an equal sample budget gave only about 1.05x (10 initial samples + 1 repair each) and 0.97x (2 initial + 10 repairs) of plain sampling for GPT-4 on APPS.

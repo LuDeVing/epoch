@@ -275,3 +275,11 @@ Rule for all: both arms at equal tokens (G7). Setup cost counted. Report per-ite
 - [V] Individual-sports visual-search meta-analysis (2026, abstract via Europe PMC) (2026). https://europepmc.org/article/MED/42222294
 - [V] Rugby union decision mechanisms by time available (2021, abstract via Europe PMC) (2021). https://europepmc.org/article/MED/34054638
 - [V] Solopova et al. (2026) LLMs as strategic actors in geopolitical simulations (arXiv 2603.02128) (2026). https://arxiv.org/html/2603.02128v1
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 2 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E04.08-K01** (now single-source: the sources are not independent). All numbers confirmed (Bossard 2022 quoting Macquet 2020: 60-81/13-28/3-24; handball 46/20/34; soccer 60/16/23; rugby N=16 time effect from independent Ashford 2021), but the 60-81% range, the handball and the soccer figures all come from the Bossard/Kermarrec group (Bossard 2022, Le Menn 2019, Kermarrec and Bossard 2014), so the range has one real source.
+- **E04.08-K02** (now single-source: the sources are not independent). Numbers are right (goalkeeper 46% below the 60% floor; wide ranges; retrospective speech), but both sources are from the same Bossard/Kermarrec group and neither says coding schemes, roles and sports are the cause of the spread; that explanation is the researcher's inference.
+- **E04.08-K09** (number corrected). In SportQA Table 2 the human row (96.63/96.02/94.90/91.84) lines up under the four Level-3 columns (easy/hard single-hop, easy/hard multi-hop), not Levels 1-2; no human score is given for Levels 1-2, and human hard multi-hop is 91.84, not a single-hop figure. Only SportQA was read; the Sports Intelligence abstract was not opened. Corrected claim: On SportQA, GPT-4 (5-shot CoT) scores 85.63 on Level-1 and 78.82 on Level-2 (no human score reported for those levels); on Level-3 humans score 96.63 (easy single-hop), 96.02 (hard single-hop), 94.90 (easy multi-hop) and 91.84 (hard multi-hop) against GPT-4's 73.58, 64.08, 34.40 and 23.01.

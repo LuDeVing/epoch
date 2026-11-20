@@ -393,3 +393,9 @@ All tests: both arms at equal total tokens, with setup and replay tokens counted
 - [V] arXiv exact-phrase search for TMR (gap note c20). https://export.arxiv.org/api/query?search_query=all:%22targeted+memory+reactivation%22
 - [M] Wang and Sun (2025) PI-LLM, described second-hand through Xie 2026. https://arxiv.org/pdf/2603.14517
 - [M] Hu et al. (2020) DOI. https://doi.org/10.1037/bul0000223
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 11 established claims: 10 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B04.04-K14** (reworded: the sources support less). All individual nulls check out (Wick and Rasch N=21+13, SleepStim Exp 1 N=61, face-name N=24, theta-tACS N=37, once vs five cues, odor 2026 N=32), but 'replicates poorly' is an unquantified summary of a hand-picked list: SleepStim Exp 2 (N=24) did find a benefit with limited sound intensity, Klaassen 2024 and the JSR 2026 studies found encoding-strength-dependent benefits, and Hu 2020 pools to a reliable g=0.29. Corrected claim: Several recent TMR studies report no overall cued benefit: SWS vs N2 cueing (N=34), SleepStim home TMR Exp 1 (N=61, though low-intensity cues helped and Exp 2, N=24, found a benefit), face-name (N=24, overall null but tracking N3 duration), theta-tACS plus TMR (N=37), cueing once vs five times (N=31), word-meaning priming, and odour-cued TMR 2026 (N=32), which suggests effects are fragile, but this is a selected list, not a replication rate (Hu 2020 pools to g=0.29).

@@ -381,3 +381,8 @@ All tests use both arms at equal total tokens (reasoning plus all agent calls pl
 31. [V] Fan et al. (2026) Towards a science of collective AI. https://arxiv.org/pdf/2602.05289 (a21; front matter and appendix headings only).
 32. [V] Huang, Zhao, Yi, Xie (2025) On the dynamics of multi-agent LLM communities driven by value diversity. https://arxiv.org/abs/2512.10665 and https://arxiv.org/pdf/2512.10665 (a22, b26, c19).
 33. [M] Scofield (2026) Multi-agent constraint factorization. https://arxiv.org/abs/2601.15077 (b27; abstract only; thematic link only).
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 5 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

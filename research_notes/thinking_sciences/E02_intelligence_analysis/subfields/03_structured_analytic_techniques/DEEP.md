@@ -365,3 +365,11 @@ Links to subfields run in parallel in this batch (not covered here): Assumption 
 - [V] Sileo and Moens (2023), Probing neural language models for words of estimative probability. https://arxiv.org/abs/2211.03358 (d13; setup only, result numbers not extracted)
 - [V] Belem et al. (2024), Perceptions of linguistic uncertainty by language models and humans. https://arxiv.org/abs/2407.15814 (d14; exact drop figures not extracted)
 - [M] Search logs for this subfield (c22, d16): no direct LLM study of ACH, key assumptions check or premortem found.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 10 established claims: 10 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E02.03-K07** (now single-source: only one opened source, code check).
+- **E02.03-K12** (now single-source: only one opened source, code check).
+- **E02.03-K23** (now single-source: only one opened source, code check).

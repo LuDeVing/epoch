@@ -301,3 +301,13 @@ All tests: both arms at equal total tokens (setup, retrieval and checks counted,
 - [V] The Prompting Inversion (2025). https://arxiv.org/html/2510.22251v1 (d08)
 - [V] Scrambled Bench (2023). https://arxiv.org/html/2311.18805v1 (d15)
 - [V] OrderProbe (2026). https://arxiv.org/html/2601.08626v2 (d16)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 7 established claims: 4 confirmed as written, 3 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E04.07-K03** (reworded: the sources support less). Gobet & Clarkson (listed twice as a18 and b07) is the only source for chunk count and reports fewer than three, close to two, chunks in most conditions; others only support the 2 s boundary and chunk size. Corrected claim: In one study of chess recall (Gobet & Clarkson 2004), players replaced fewer than three chunks in most conditions (close to two), with Master chunks on a computer display up to 15 pieces; within-chunk placement gaps are under about 2 s (Chase & Simon 1973), and the authors suggest Cowan's four may be an overestimate.
+- **E04.07-K08** (reworded: the sources support less). Meta-analysis numbers (Gf r=.24, youth .32 vs adult .11) are correct, but no source says expertise is 'mostly domain knowledge'; b12/b13 are the same paper and Bilalic et al. only says practice mattered most in a small young-player sample. Corrected claim: A meta-analysis of chess studies (Burgoyne et al. 2016) finds fluid reasoning correlates modestly with chess skill (Gf r=.24; youth .32 vs adult .11), so general intelligence explains only a small share of skill; practice appears to matter more in young players (Bilalic et al. 2007, N=57).
+- **E04.07-K16** (reworded: the sources support less). Numbers match Borchers et al. (GPT-4.1, chemistry tutoring, 630 utterances; WizardLM-2-7B bias up to .548), but this is one study of think-aloud simulation, and Liu 2023 and Song 2026 do not report calibration or similarity figures. Corrected claim: In one study of LLMs continuing student think-alouds (Borchers et al. 2026, GPT-4.1 on 630 chemistry-tutoring utterances), cosine similarity to real learners was .16-.19, predicted success was overconfident (bias +.33 to +.47; WizardLM-2-7B +.45 to +.55) and AUC was near chance (.53 simple, .57 extended); other work (Liu 2023, Song 2026) shows LLMs also struggle to play a stable novice.
+- **E04.07-K02** (now single-source: only one opened source, code check).
+- **E04.07-K05** (now single-source: only one opened source, code check).

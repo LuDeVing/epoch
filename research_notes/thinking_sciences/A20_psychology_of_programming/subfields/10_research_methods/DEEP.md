@@ -302,3 +302,10 @@ All arms get the same token budget, setup included (G7).
 - [V] Mathews and Nagappan 2024. https://arxiv.org/abs/2402.13521 (d15; abstract only)
 - [M] Coding-agent trajectory papers. https://www.alphaxiv.org/abs/2603.24631.md (d16)
 - [M] Absence search, think-aloud vs explain on LLMs. https://arxiv.org/pdf/2509.16028 (d18)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A20.10-K01** (reworded: the sources support less). Wikipedia says the evidence is arguably inadequate to decide how reliable introspection is and that Wilson conceded the 1977 claims went too far, and Fox and Charness found think-aloud raised older adults' Raven scores by about 11 IQ points, so 'unreliable' and 'does not change performance' are both stated more strongly than the sources; r=-.03 and 94 studies match Fox et al. 2011 abstract (seen via search result and Double and Birney). Corrected claim: Verbal reports of the causes of choices and processes are often confabulated (Nisbett and Wilson), though how reliable introspection is in ordinary conditions remains unsettled. In a 94-study meta-analysis (Fox et al. 2011), plain concurrent think-aloud did not change performance on average (r about -0.03; one study found an exception for older adults on Raven's matrices), while explanation-style reports did.
+- **A20.10-K08** (now single-source: only one opened source, code check).

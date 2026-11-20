@@ -383,3 +383,10 @@ All arms at equal total tokens (setup, routing and any verify tokens counted, G7
 - [V] Zhang et al. (2025) SynapseRoute https://arxiv.org/abs/2507.02822
 - [V] Zhang et al. (2025) Adaptive Dual Reasoner https://arxiv.org/abs/2510.10207 (abstract and intro only)
 - [V] Han et al. (2025) TALE https://arxiv.org/abs/2412.18547
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A03.09-K01** (reworded: the sources support less). Sprague numbers match (symbolic +14.2, math +12.3, logical +6.9; 56.8 vs 56.1; up to 95% of MMLU gain on equals-sign questions; the claim's ordering of 'math, symbolic' against +14.2, +12.3 is swapped), but the closing sentence that the fast/slow label adds nothing beyond task type is an inference no opened source tests (Sprague studies CoT, and Liu et al. show CoT can hurt on some tasks). Corrected claim: CoT-style written reasoning helps LLMs mainly on symbolic, math and logic tasks (mean gains +14.2, +12.3, +6.9 points respectively) and gives little elsewhere (56.8 with CoT vs 56.1 without); up to 95% of the MMLU gain is on questions with an equals sign. This suggests that task type, more than a fast/slow label, predicts when CoT helps (inference, not tested).
+- **A03.09-K09** (number corrected). GPT-3 gave the intuitive wrong answer on all three CRT items, but only CRT1 (bat and ball) has the answer $0.10 (CRT2 and CRT3 gave other intuitive answers); the 18.3-point drop and 20.9% figures match Ma et al. Corrected claim: LLM answers on classic bias items are fragile to perturbation: GPT-3 gave the intuitive wrong answer on all three CRT items ($0.10 on the bat-and-ball item) and still said $0.10 on an altered item where the bat costs $1.00 more than the bat; reordering Wason cards changed the answer; in Ma et al., one changed number in CRT-style maths problems cost about 18.3 points (86.8 to 68.5 average over five LLMs) and algebraic letters left 20.9% average accuracy.

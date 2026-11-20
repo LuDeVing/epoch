@@ -354,3 +354,9 @@ All arms at equal total tokens, with notes, setup and tool-call tokens counted (
 - [V, first page only] Perrier (2025) https://arxiv.org/pdf/2510.16193 (d17)
 - [M] Baek and Pradel (2026) https://arxiv.org/pdf/2602.10046 (d18); [M] Wang et al. (2024) budget-aware evaluation https://arxiv.org/abs/2406.06461 (d19); [M] Mnemon, Memanto, MemUse rival-author tables https://arxiv.org/pdf/2609.36059 (d20)
 - [M] Hutchins (1995) https://mitpress.mit.edu/9780262581462/cognition-in-the-wild/ (a27); [M] Wegner (1987) https://doi.org/10.1007/978-1-4612-4634-3_9 (a28); [M] Adams and Aizawa (2001) and Rupert (2004) https://doi.org/10.1111/j.1747-9991.2008.00126.x (a29)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D06.09-K23** (reworded: the sources support less). Numbers verified, but Terranova et al. report memory methods are competitive or superior to full context on LoCoMo (GPT-4o-mini A-Mem average F1 rank 1.80 vs full context 3.40; Qwen too), so 'do not beat full context on factual recall' holds only for the Mem0 system in Pollertlam et al. and for Llama; the 90% token saving is from Terranova's A-Mem, not Mem0. Corrected claim: On LoCoMo, a Mem0-style fact memory scored 57.68 vs 92.85 for full long context with GPT-5-mini (Pollertlam et al.), but in a separate study (Terranova et al.) memory methods using over 90% fewer tokens were competitive with or better than full context for some models (GPT-4o-mini A-Mem average-F1 rank 1.80 vs 3.40 for full context) and much better on adversarial questions (77.64 vs 52.94); Pollertlam et al. find memory cheaper after about 10 turns at 100k context.

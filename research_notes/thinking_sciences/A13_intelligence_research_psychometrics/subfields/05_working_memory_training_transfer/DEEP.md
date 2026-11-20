@@ -275,3 +275,11 @@ All evidence ids are in evidence_a-d.jsonl in this folder.
 - Jaeggi 2010 concurrent validity. https://doi.org/10.1080/09658211003702171 (c25)
 - Sala et al. 2019 older-adult meta-analysis (search text only, d21).
 - Negative searches a22, d19, d20.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A13.05-K06** (reworded: the sources support less). Pahor 2022 replication sample used an active control (general-knowledge training), not a passive control, and Pahor is Jaeggi's own group; 'well-powered' fits Redick (power >.99) but not Chooi and Thompson (cells n=4-21, n~58). Corrected claim: Several replications found no transfer of dual n-back training to Gf: Redick 2013 (75 completers, power >.99 for medium effects, with active and no-contact controls), Thompson 2013 (about 58, passive and active controls), Chooi and Thompson 2012 (93, small cells) and Sprenger 2013 (253 across two experiments). In the Pahor 2022 data the retrospective sample (no-contact control) gave B=0.23, p=.022 on Matrix Reasoning while the replication sample (active general-knowledge control) gave B=0.07, p=.50.
+- **A13.05-K19** (now single-source: the sources are not independent). Sala and Gobet 2020, Gobet and Sala 2022 and the earlier Sala and Gobet 2017 are the same two authors, so 'larger pooled evidence agrees' is one lab; Blacker 2017 is a single N=73 study, not a multi-site RCT; numbers (m=41, k=393, N=2,375, g=0.001, 0.468) are correct.
+- **A13.05-K11** (now single-source: only one opened source, code check).

@@ -301,3 +301,8 @@ All arms use equal total tokens, set by the plain arm. Score by code. Use post-c
 - [M] Dream-COP (2026) listing only. https://arxiv.org/search/?query=insight+problem+solving+LLM&searchtype=abstract
 
 **Links to other subfields in this run (not covered here).** Insight neural signatures; Constraint satisfaction; Process stage models and incubation (A09); Dual-process and three-process accounts; Targeted memory reactivation; Retrieval as consolidation; Cognitive control and creativity.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 3 established claims: 3 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

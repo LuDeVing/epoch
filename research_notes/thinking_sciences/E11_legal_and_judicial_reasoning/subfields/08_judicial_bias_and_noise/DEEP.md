@@ -276,3 +276,12 @@ All tests: both arms at equal total tokens; items in random order; at least 3 se
 - [M] National Law Review (2025), Same question, different answers. https://natlawreview.com/article/same-question-different-answers
 - [M] Apart Research hackathon (2025), noise audit of repeated LLM legal judgments. https://mindyng.github.io/cv/
 - [M] Englich and Mussweiler (2001), cited in https://arxiv.org/pdf/2603.10016
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 7 established claims: 5 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E11.08-K03** (reworded: the sources support less). Order non-randomness and unrepresented-last are Weinshall-Margel and Shapard's finding from their own data; the 'judges end sessions after unfavourable short cases' part is Glockner's simulation-based inference, not an observed finding, and the original authors dispute the rival explanations. Corrected claim: Weinshall-Margel and Shapard (2011) report that case order in parole hearings is not random: unrepresented prisoners (about a third of cases) usually go last in a session and win less (15% vs 35%). Glockner (2016) argues, from simulation, that because favorable rulings take longer (7.37 vs 5.21 min) judges may end sessions after short unfavorable cases, which can mimic a break effect.
+- **E11.08-K10** (now contested: a source does not say this). Neither listed source (Berthet 2021 review, Gao 2026) contains the 29-study meta-analysis or d=0.58/0.91; they support only the dice-throw sentencing anchoring (Englich 2006) and archival anchoring rates.
+- **E11.08-K08** (now single-source: only one opened source, code check).
+- **E11.08-K19** (now single-source: only one opened source, code check).

@@ -360,3 +360,9 @@ Every test: two arms at equal total tokens (setup, monitors and extra calls coun
 - [V] EDV, Execute-Distill-Verify. https://arxiv.org/html/2606.24428 (d08)
 - [V] Anchor. https://arxiv.org/html/2611.10382 (d09)
 - [V] Ouyang et al. (2025) ReasoningBank. https://arxiv.org/pdf/2509.25140 (d12)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E13.08-K08** (now contested: a source does not say this). The 'Claude Opus 4.6 +0.6 pp' figure appears in none of the opened sources (Huang 2024, 2601.00828, 2602.02416, MatSciBench); the rest of the claim matches.

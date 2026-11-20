@@ -337,3 +337,12 @@ All arms at equal total tokens (setup, memory and retrieval cost counted). Sever
 - [V] Song et al. (2026) CPX-MATE. https://pmc.ncbi.nlm.nih.gov/articles/PMC13740229/
 - [V] Ma et al. (2023) HypoCompass. https://arxiv.org/abs/2310.05292
 - [V] Zhang et al. (2025) Pelican-VL, DPPO. https://arxiv.org/abs/2511.16602
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 6 established claims: 6 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E16.10-K04** (now single-source: only one opened source, code check).
+- **E16.10-K05** (now single-source: only one opened source, code check).
+- **E16.10-K08** (now single-source: only one opened source, code check).
+- **E16.10-K09** (now single-source: only one opened source, code check).

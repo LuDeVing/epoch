@@ -454,3 +454,14 @@ Controls for all: same total token budget counted from the first token (model-wr
 - [V] Nafar, Venable, Kordjamshidi (2024) Reasoning over uncertain text by generative large language models (BLInD). https://arxiv.org/abs/2402.09614 (d10, d11). c28 is a secondary listing ([M]).
 - [V] Pournemat et al. (2025) Reasoning under uncertainty: probabilistic reasoning of LLMs. https://arxiv.org/abs/2509.10739 (d21)
 - [M] AI4BayesCode (2026), search listing only. https://arxiv.org/html/2605.18476 (c27)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 2 established claims: 1 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C03.07-K08** (now single-source: the sources are not independent). All figures check out against Loula et al. 2025 (Tables 2, 4, 5), but every listed source for them is that one paper (or Lew et al. 2023 from the same Mansinghka lab, which has none of these numbers), so the claim rests on a single study.
+- **C03.07-K01** (now single-source: only one opened source, code check).
+- **C03.07-K04** (now single-source: only one opened source, code check).
+- **C03.07-K05** (now single-source: only one opened source, code check).
+- **C03.07-K10** (now single-source: only one opened source, code check).
+- **C03.07-K15** (now single-source: only one opened source, code check).

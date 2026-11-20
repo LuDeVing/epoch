@@ -348,3 +348,10 @@ T1 and T7 can share items; run once and read both metrics.
 - [V] Binder et al. 2025, Looking Inward. https://arxiv.org/abs/2410.13787 (d13)
 - [V] Fan et al. 2025, Missing Premise. https://arxiv.org/abs/2504.06514 (d14)
 - [M] Bougie and Watanabe 2025, language-driven exploration. https://proceedings.mlr.press/v260/bougie25a.html (d15)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C07.04-K14** (reworded: the sources support less). Oudeyer and Kaplan 2007 and Schmidhuber 2010 do support that knowledge-based intrinsic motivation needs a predictive model of the environment, but none of the sources (including Binder et al. 2025 on introspection) address prompt-only LLM agents, so the 'can use it only through an explicit predictor' part is the researcher's inference, not a sourced finding. Corrected claim: Knowledge-based intrinsic motivation needs a predictor or model of the environment (Oudeyer and Kaplan 2007; Schmidhuber 2010); inference, not tested in the sources: a prompt-only agent could approximate it through an explicit predictor (a stated expectation compared with the outcome).
+- **C07.04-K09** (now single-source: only one opened source, code check).

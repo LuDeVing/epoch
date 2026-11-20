@@ -299,3 +299,10 @@ All arms get the same total token budget (G7), counting setup. Use at least 3 se
 - [V] PreCoMem (2026) Predictive Cognitive Memory for Self-Evolving Long-Term Dialogue Agents (2026). https://arxiv.org/abs/2610.29467  (d13)
 - [V] Song and Xin (2026) D-MEM: dopamine-gated agentic memory via reward prediction error routing (2026). https://arxiv.org/abs/2603.14597  (c18, d12)
 - [V] Zou group (2026) Sparse Reward Subsystem in Large Language Models, value neurons (2026). https://arxiv.org/abs/2602.00986  (d09, d10)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B02.02-K01** (now single-source: the sources are not independent). Daw 2011 confirms N=17 and median model-free weight 61%, but the other source (Doll, Simon, Daw 2012) is a review from the same lab with no new data, and it presents the model-based interpretation as partly unresolved (some effects may be model-free generalization); the three Daw entries are one paper.
+- **B02.02-K25** (now single-source: only one opened source, code check).

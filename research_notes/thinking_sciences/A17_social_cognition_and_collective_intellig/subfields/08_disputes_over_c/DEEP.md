@@ -281,3 +281,10 @@ All arms run at equal total tokens (setup cost counted, per G7). Report mean and
 - [M] AEA RCT registry 2896: https://www.socialscienceregistry.org/trials/2896 (d18)
 
 Source-label notes: a09, b07 and c02 are one source. The Riedl "emergent coordination" paper is dated 2025 in some lines and 2026 (ICLR) in others; it is one paper. Where a source was read only through Rowe's tables (Woolley 2010 figures, Barlow and Dennis, Engel), numbers are second-hand.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 4 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A17.08-K03** (now single-source: only one opened source, code check).
+- **A17.08-K16** (now single-source: only one opened source, code check).

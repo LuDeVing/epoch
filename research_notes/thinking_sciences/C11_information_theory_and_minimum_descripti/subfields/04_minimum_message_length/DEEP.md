@@ -349,3 +349,10 @@ All arms use equal total tokens (setup cost counted, G7). Report per-item flips 
 - [V] Spangher et al. (2026) Articulation upper bounds for language models. https://arxiv.org/abs/2610.19721 (d12; near-name hit, not MML)
 - [V] arXiv listing searches (d13, d14, d17, d18): https://arxiv.org/search/?query=%22minimum+message+length%22+language+model&searchtype=all ; https://arxiv.org/search/?query=minimum+description+length+large+language+model&searchtype=all ; https://arxiv.org/search/?query=prequential+coding+language+model&searchtype=all
 - [V] Bartlett, Desmond, Ferreira (2023) Priors for symbolic regression. https://arxiv.org/abs/2304.06333 (d16; partial read)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 11 established claims: 10 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C11.04-K19** (reworded: the sources support less). Zero 'message length' hits in Pan et al. and Huang et al. and the 3-result arXiv search are verified, but 'the only 2025-26 AI paper using MML is a logic-program learner (d01)' has no listed evidence (d01 is not among the claim's sources; the arXiv search shows only 2012/2013/1997 papers) and is contradicted by Wen and Dowe (Entropy 2025, MML species-distribution model selection) which other claims here cite; the Allison page cited supports nothing about replication, and Elmoznino/Voita/Grau-Moya greps were not re-run. Corrected claim: No independent large replication or failed replication of MML itself was located in a limited search (arXiv, Crossref and web search were partly rate-limited); none of the LLM papers checked names MML (0 hits for 'message length' in Pan et al. 2025 and Huang et al. 2026, and an arXiv title search for 'minimum message length' language model returns only three non-LLM papers from 1997-2013). MML-in-LLM work is unestablished, while recent MML applications (e.g. Granger causality, ARMA-LSTM, species distribution models) exist outside LLMs.
+- **C11.04-K09** (now single-source: only one opened source, code check).

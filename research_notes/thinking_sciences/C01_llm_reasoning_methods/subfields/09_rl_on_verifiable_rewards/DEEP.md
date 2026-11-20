@@ -310,3 +310,8 @@ All arms get equal total tokens, counting setup, retries and judge calls (G7). 3
 - [V] Chen et al. (2025) Pass@k Training. https://arxiv.org/abs/2508.10751 (d20)
 
 Caveats from the critique: tables in d01, d09, d10, d14 and d20 came out garbled in text extraction, so only unambiguous numbers are cited. "Independent sources" in claims.jsonl count papers, not labs. Most gains are on Qwen2.5. The search APIs were rate-limited during the gap pass, so 2026 papers are underrepresented.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 8 established claims: 8 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

@@ -375,3 +375,11 @@ LLM and AI studies
 - [V] Chen et al. (2026) SAGE. https://arxiv.org/abs/2609.34342
 
 Provenance caution: several arXiv ids above (26xx.xxxxx) are as recorded by the research agents; confirm before citing outside this folder.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A18.06-K08** (unverifiable). PMC pages blocked by captcha; only the Horschler 2021 abstract (colour change yes, size/shape no) was reachable; the 4.34 vs 3.04 and 3.65 vs 2.36 numbers could not be checked, and PMC3970702 appears to be Marticorena et al. 2011 (Dev Sci), not Martin and Santos 2014 as labelled.
+- **A18.06-K12** (reworded: the sources support less). Hagendorff reports GPT-4 second-order deception of 11.67% for false recommendation but 62.08% for false label (and 70% with step-by-step prompting), so 'second-order only 11.67%' picks the lowest of the reported results; SimpleToM and Saxena numbers check out. Corrected claim: LLMs state awareness but do not apply it: SimpleToM mental-state question over 95% for GPT-4o, Llama-3.1-405B, Claude-3.5-Sonnet; behaviour prediction at least 30 points lower; judgment 10-25%. Hagendorff: GPT-4 first-order deception 97-99% but second-order only 11.67% (false recommendation) and 62.08% (false label). SimpleToM v2 (ICLR 2026) shows the gap in GPT-5 (state 98.5, behaviour 64.4, judgment 40.0), o1 (98.6/58.8/32.5), o3-mini (85.4/66.8/41.3); R1 (97.3/73.8/65.8) and o1-preview (95.6/84.1/59.5) are best. The reminder lifts behaviour to 82.8-96.9 for three non-reasoning models; an independent lab sees the same on 8B models (28.9 to 63.2).
+- **A18.06-K03** (now single-source: only one opened source, code check).

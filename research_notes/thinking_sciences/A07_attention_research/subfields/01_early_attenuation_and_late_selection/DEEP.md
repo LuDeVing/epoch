@@ -325,3 +325,8 @@ All tests: both arms at equal total tokens, with the rewrite pass counted. Repor
 - [V] Nguyen et al. (2026) CHiME-9. https://arxiv.org/abs/2608.08510
 - [V] Seeligmuller, Wolfe, Roer (2026), abstract only. https://doi.org/10.3758/s13414-026-03360-2
 - [V] Wang and Chen (2026), abstract only. https://doi.org/10.1111/nyas.70346
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 5 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

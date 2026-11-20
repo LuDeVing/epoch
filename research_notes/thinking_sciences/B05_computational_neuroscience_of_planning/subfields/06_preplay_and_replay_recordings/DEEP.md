@@ -270,3 +270,9 @@ Common rules. Both arms get equal total tokens including setup or idle-time comp
 - [V] Arnal et al. 2026. https://arxiv.org/pdf/2604.08706 (d19)
 - [V] Kim and Choi 2026 (abstract only). https://arxiv.org/pdf/2611.01952 (d20)
 - [M] Search sweeps via arXiv API and Semantic Scholar (b25, c24, c25): no direct LLM replay test found.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **B05.06-K09** (reworded: the sources support less). Denovellis 2021 confirms 96% (22,170 of 23,071) coherent, 14% (3,295 of 23,071) with any incoherent segment, 10 rats. But the paper says events often progress slower than previously reported (~20x compressed) and closer to real-world (wake) speed, not 'slower than real time'; and it attributes the lower prevalence in older work to differing decoding assumptions (linear fits), not a decoder 'artefact'; Davidson 2009 documents fast (~8 m/s virtual) replay on long tracks. Corrected claim: Most sharp-wave ripple events carry spatially coherent content (Denovellis 2021: 96% of 23,071 classified SWRs coherent, 14% had any incoherent segment, 10 rats), and many progress at roughly real-world movement speed rather than the roughly 20x compressed speed reported in earlier work; how much replay is detected depends on the decoding assumptions, while fast compressed replay is still documented on long tracks (Davidson 2009, about 8 m/s virtual speed).

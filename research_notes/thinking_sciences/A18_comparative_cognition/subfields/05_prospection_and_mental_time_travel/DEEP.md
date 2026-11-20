@@ -353,3 +353,11 @@ Run at least 3 seeds per arm. The literature's effects rest on 90-item cells (Mi
 - [M] Park et al. (2023) Generative Agents. https://arxiv.org/abs/2304.03442 (c18; abstract only)
 - [M] Su (2026) Learning situation-conditioned thinking policies. https://arxiv.org/abs/2610.09590 (d21; abstract only)
 - [M] Search records: arXiv listing queries on caching, future needs, Bischof-Kohler (c24, d19)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 0 established claims: 0 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A18.05-K10** (now single-source: only one opened source, code check).
+- **A18.05-K11** (now single-source: only one opened source, code check).
+- **A18.05-K16** (now single-source: only one opened source, code check).

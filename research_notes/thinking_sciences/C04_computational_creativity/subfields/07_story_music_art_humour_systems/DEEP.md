@@ -363,3 +363,9 @@ All tests: both arms at equal total tokens (setup cost counted). Items are open-
 - [V] Ha et al. (2024) Organic or Diffused. https://arxiv.org/abs/2402.03214 (d17)
 - [V] Figueiredo et al. (2025) Echoes of Humanity (Suno). https://arxiv.org/abs/2509.25601 (d18)
 - [V, abstract and method only] Sarmento, Loth and Barthet (2024) Between the AI and Me. https://arxiv.org/abs/2407.21615 (d19)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 7 established claims: 6 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **C04.07-K06** (reworded: the sources support less). Numbers check out (Zhang 34%/35.4% crowd vs 1.6% expert; Hessel 62% vs 94%; Gorenz 2.63 vs 2.20, 69.5%, 2.37 vs 2.49 p=.14), but Horvitz tested LLM headlines edited to add humour against Onion headlines (not 'edited-unfunny' ones), and the 3.4/10 humour mean in Gomez-Rodriguez is the average over all models, where Claude, Bing and GPT-4 scored on par with human writers, so it does not show LLMs trailing skilled humans. Corrected claim: On humour, LLMs trail skilled humans in several tests: caption crowd preference for Claude-3-Opus over human top-10 is 34-35% (crowd) and 1.6% (a former New Yorker editor); best multimodal model 62% vs humans 94% on caption matching; LLM-edited humorous headlines and LLM puns were rated less funny than Onion headlines and human puns. In a creative-writing benchmark humour was the lowest-scoring item (mean 3.4/10 over all models, humans also low), though the best models (Claude, Bing, GPT-4) matched human writers there. Baseline matters: against lay writers ChatGPT 3.5 jokes were funnier (2.63 vs 2.20 of 6; 69.5% preferred); against The Onion headlines no significant difference (2.37 vs 2.49, p=.14).

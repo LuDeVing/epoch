@@ -300,3 +300,9 @@ Marks: [V] opened this run (full text, HTML or abstract page as recorded in the 
 | Island and QD LLM search listing (d18); HTPO (d19) | [M] | arXiv search listings (https://arxiv.org/search/?query=island+model+LLM+evolutionary) |
 | arXiv title search for ambidexterity (a29); search coverage (d20) | [V] listing | arXiv search pages |
 | Semantic Scholar citation metadata (a30) | [M] | https://api.semanticscholar.org |
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E14.03-K14** (reworded: the sources support less). The finding is ShinkaEvolve alone (c15 and c16 same paper): fitness-weighted parent sampling beats hill climbing and random (always-initial-parent) search on circle packing and other tasks; the paper credits fitness-based selection, not diversity, and a separate study (Holistic Diversity Management) finds diversity components change score only within noise (0.698 vs 0.714). Corrected claim: In ShinkaEvolve's ablation, weighted (fitness- and novelty-aware) parent sampling kept improving while pure hill climbing plateaued early and random search (always mutating the initial program) converged worst; this is a single-system result, and other work finds explicit diversity management adds little beyond noise.

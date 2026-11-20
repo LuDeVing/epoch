@@ -367,3 +367,11 @@ Rules from SCHEMA that apply: G3 (score on held-out items), G7 (kept only if it 
 - [V] Bisk et al. 2020, PIQA. https://arxiv.org/abs/1911.11641 (d05)
 - [V] Zhang et al. 2022, ViComTe. https://arxiv.org/abs/2205.01850 (d06)
 - [V] Li et al. 2023, VEC benchmark. https://arxiv.org/abs/2305.14057 (d07)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A16.01-K21** (number corrected). PIQA gap is 18 points (human 95 vs best model 77; 94.9 vs 77.1), not 20; also the VEC abstract says CLIP/BLIP reach human-level on some embodied concepts (e.g. temperature) and distillation matches 134x scaling, which does not fit 'modestly', and it gives no direct mass-concept comparison of CLIP/BLIP with OPT. Corrected claim: Grounding helps text models at fixed scale for embodied and visual-attribute concepts, unevenly: OPT-175B is near chance on mass but 85% on material, while CLIP/BLIP reach human-level on some embodied concepts (e.g. temperature) and distilling VLM knowledge into an LM matches the gain from 134x more parameters; multimodal models beat text-only models on ViComTe and model size did not help there; the PIQA human-model gap was about 18 points in 2019 (95 vs 77).
+- **A16.01-K07** (now single-source: only one opened source, code check).
+- **A16.01-K18** (now single-source: only one opened source, code check).

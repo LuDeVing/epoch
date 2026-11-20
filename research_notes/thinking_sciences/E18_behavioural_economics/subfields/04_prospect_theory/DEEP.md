@@ -341,3 +341,9 @@ All arms at equal total tokens. Report per backbone, per run, with at least 5 se
 - [V] Lyu et al. (2025) Self-adaptive cognitive debiasing (SACD). https://arxiv.org/abs/2504.04141 (d06, d07)
 - [V] Lim, Kim and Whang (2026) DeFrame. https://arxiv.org/abs/2602.04306 (d08)
 - [M] Tversky and Kahneman (1992) full text; Kahneman, Knetsch and Thaler (1990) mug study (a31, tertiary); Neumann and Bockenholt (2014), Markowitz (1952), Williams (1966), Allais (1953), Koszegi and Rabin (2007), Tanaka, Camerer and Nguyen (2010): cited in other papers only.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 10 established claims: 10 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E18.04-K02** (now single-source: only one opened source, code check).

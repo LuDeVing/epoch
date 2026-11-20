@@ -272,3 +272,12 @@ All tests: both arms at equal token budgets. The scaffold arm's setup cost count
 - [M] Search notes on riskiest-assumption practice and absence of LLM studies (a28, c28, d17, d18); R.A.I.S.E. https://arxiv.org/abs/2504.12090
 
 Links to parallel subfields (not covered here): Debiasing; Argument mapping training; Structured analytic techniques; Forward and backward reasoning; Automated discovery; Imprecise credences; Search theory; Verbal confidence; Heuristics and biases; Technical and physical red teams.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 3 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E17.09-K04** (reworded: the sources support less). FalsifyBench's 41% is only for instruction-tuned models; its reasoning models reach 75% (GPT-5.2-Chat) and 68%, and WILT tested 2024 models (best 28%), so 'frontier LLMs stay weak, a consistent gap across two benchmarks' is too strong. Corrected claim: On WILT (2024 models) the best model reached only 28% (14/50), and on FalsifyBench (2026) the best instruction-tuned model reached 41% while reasoning models did better (GPT-5.2-Chat 75%, GPT-OSS-120B 68%); both benchmarks show hypothesis-testing weakness, strongest in non-reasoning models.
+- **E17.09-K19** (reworded: the sources support less). Numbers verified (Si et al. 5.382 to 3.406 vs 4.596 to 3.968; Csaszar 0.14 sd), but the Csaszar result is rater scores of 10 plans with no tested outcome showing the scores were wrong, and Si et al. is a single small study (43 executed ideas, NLP only), so 'poor guide' is too general. Corrected claim: In one small study (Si et al., 43 executed NLP ideas) reviewer scores of LLM research ideas fell 1.98 points of 10 after execution vs 0.63 for human ideas, closing the pre-execution gap; separately, LLM-written business plans were rated 0.14 s.d. above entrepreneurs' originals by raters who had no outcome data (Csaszar et al., 10 plans), which shows LLM plans score well on pre-outcome ratings but does not itself show those ratings mispredict outcomes.
+- **E17.09-K07** (now single-source: only one opened source, code check).
+- **E17.09-K15** (now single-source: only one opened source, code check).

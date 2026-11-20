@@ -343,3 +343,10 @@ LLM and agents
 - [M] 2026 complementary learning system for continual episodic memory in LLMs. https://doi.org/10.64898/2026.08.24.746712 [d09]
 - [M] SmartPhone keyword mnemonic 2023 (listing only). https://arxiv.org/abs/2305.10436 [d18]
 - Search logs, no source: [b24, c21, d11-d17, d19]. The Chinese Advances in Psychological Science 2024 article was not found [d15].
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 6 established claims: 6 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A06.07-K04** (now single-source: only one opened source, code check).
+- **A06.07-K06** (now single-source: only one opened source, code check).

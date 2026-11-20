@@ -370,3 +370,11 @@ LLM and AI literature
 - [V] Snell et al. (2024) https://arxiv.org/abs/2408.03314 (d08)
 - [V] Muennighoff et al. (2025) s1 https://arxiv.org/abs/2501.19393 (d09, key sections)
 - [V] Huan et al. (2025) https://arxiv.org/abs/2507.00432 (d11, key sections; benchmark numbers from a figure)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 8 established claims: 6 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A10.05-K03** (number corrected). Macnamara 2016 abstract (18% overall, 1% elite) and Hambrick 2020 (elite 1%) verified, but '20% after corrigendum' belongs to the sports domain of the 2014 meta-analysis (corrigendum to Macnamara, Hambrick, Oswald 2014), not to the 2016 sports meta-analysis whose overall figure is 18%; r=.11, 6 effects, N=228 could not be checked (full text not reachable). Corrected claim: At the elite level hours barely separate performers: the 2016 sports meta-analysis gives 1% of variance for elite (national level and above) athletes versus 18% overall (elite r about .11, 6 effect sizes, N=228, not significant, as reported by the researcher but not re-verified); separately, the sports domain of the 2014 multi-domain meta-analysis went from 18% as published to 20% after the 2018 corrigendum.
+- **A10.05-K21** (reworded: the sources support less). Only Olausson et al. 2023 supports this; Huang 2023 does not test equal-budget repair vs resampling, and Olausson finds gains on HumanEval for Code Llama and GPT-3.5 and on APPS for GPT-4, with mixed results overall. Corrected claim: In one study (Olausson et al. 2023, Code Llama, GPT-3.5, GPT-4 on HumanEval and APPS), self-repair at matched sample budget gave modest, uneven gains: on APPS Code Llama and GPT-3.5 mostly matched or lagged their no-repair baselines while GPT-4 benefited; gains at small budgets were very marginal or absent; more initial samples helped consistently, while more repairs per sample gave marginal gains at higher budgets and sometimes lower performance at lower budgets.
+- **A10.05-K11** (now single-source: only one opened source, code check).

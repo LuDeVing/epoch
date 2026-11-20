@@ -381,3 +381,11 @@ All tests: both arms at equal tokens (G7), setup cost counted. Use at least 40 i
 - [V] Li et al. (2026) Behavioural consistency validation for LLM agents. https://arxiv.org/abs/2602.07023 (d15)
 - [V] Marks and Vollberg (2026) The psychophysics of affect in large language models. https://arxiv.org/abs/2610.40985 (d16)
 - [M] Hintze, Bisht, Schossau, Hertwig (2025) Nonlinear transformation of probabilities in LLMs. https://doi.org/10.21203/rs.3.rs-5874467/v1 (d17; abstract only)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 12 established claims: 11 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A03.03-K16** (number corrected). Tarabeih reports lambda 1.26 [1.06,1.46] from 28 estimates (19 models) with PI 0.20-2.31; the 11 studies/32 models/102 estimates are the whole meta-analysis across all three parameters, not the lambda pool. Corrected claim: LLM loss aversion is weaker than human on average: pooled lambda 1.26 [1.06, 1.46] (28 estimates, 19 models; prediction interval 0.20-2.31), within a meta-analysis of 102 fitted estimates from 11 studies and 32 models across all prospect-theory parameters; matches humans in symmetric designs (1.15 vs 1.07) but far below in losses-smaller-than-gains designs (1.46 vs 2.3).
+- **A03.03-K06** (now single-source: only one opened source, code check).
+- **A03.03-K12** (now single-source: only one opened source, code check).

@@ -315,3 +315,10 @@ Marks: [V] opened (page or full text read), [M] snippet, abstract or metadata on
 - [V] Qiang et al. (2026), building ontologies. https://arxiv.org/abs/2603.14374
 - [V] arXiv search record. https://arxiv.org/search/?query=%22axiomatic+design%22&searchtype=all
 - [M] Crossref search record. https://api.crossref.org/works?query.bibliographic=axiomatic+design+large+language+model
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 1 established claims: 1 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E07.06-K07** (now single-source: only one opened source, code check).
+- **E07.06-K11** (now single-source: only one opened source, code check).

@@ -302,3 +302,9 @@ All tests: both arms at equal total tokens, same item sets, 3 seeds, setup cost 
 - [V] Gottweis et al. 2025, AI co-scientist. https://arxiv.org/abs/2502.18864
 - [V] Schmidgall et al. 2025, Agent Laboratory. https://arxiv.org/abs/2501.04227
 - [V] Swanson et al. 2025, Virtual Lab. https://www.nature.com/articles/s41586-025-09442-9
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 11 established claims: 10 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E15.04-K01** (now single-source: the sources are not independent). All CD-index figures come from one paper (Wu, Wang, Evans: arXiv and Nature versions, plus its SI); Milojevic 2015 measures cognitive extent, not disruption, so it does not independently confirm these numbers. The numbers themselves match the paper.

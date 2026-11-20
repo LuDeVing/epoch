@@ -353,3 +353,7 @@ All arms run at equal total tokens (include setup, critique and checker calls). 
 | Toward LLM-supported automated assessment of critical thinking subskills, arXiv 2510.12915 | https://arxiv.org/abs/2510.12915 | [V] abstract only |
 | Own audit of SCHEMA.md v0.2 against Delphi | C:/Users/User/Desktop/AGI/research_notes/single_agent/SCHEMA.md | [V] |
 
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 6 established claims: 6 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+

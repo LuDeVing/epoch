@@ -304,3 +304,10 @@ All arms at equal total tokens (setup counted, G7). Report both classes (true an
 - [V] Nickel et al. (2026), Understanding artificial theory of mind: https://arxiv.org/abs/2602.22072 (d17)
 - [V] Nguyen, Phan, Gonzalez (2026), Dynamic ToM as a temporal task: https://arxiv.org/abs/2603.14646 (d18)
 - [V] Peng et al. (2026), Communication and verification in LLM agents: https://arxiv.org/abs/2510.25595 (d19; numbers not read)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **D03.05-K05** (number corrected). Halpern-Moses state that before the announcement E^(k-1) m holds and E^k m fails (the announcement lifts the state from E^(k-1) m to E^k m, indeed to common knowledge), so it is E^k m, not E^(k-1) m, that fails. Corrected claim: Muddy children: with k muddy children, they act (answer yes) at round k; before the father's announcement E^(k-1) m holds but E^k m fails, and the public announcement makes m common knowledge, which is why it adds information even when k>1 children already see a muddy forehead.
+- **D03.05-K01** (now single-source: only one opened source, code check).

@@ -324,3 +324,9 @@ All arms get the same total token budget (output plus input), counted, with setu
 - [V] Muennighoff et al. 2025, s1 (abstract and intro). https://arxiv.org/abs/2501.19393 (d10)
 - [V] Dhuliawala et al. 2023, Chain-of-Verification. https://arxiv.org/abs/2309.11495 (d11; table text garbled)
 - [M] Gap search log. https://arxiv.org/ (d15; absence of search, not absence of evidence)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 3 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E13.06-K16** (reworded: the sources support less). Snell et al. say easy questions favor sequential revisions while hard ones favor an ideal mix of sequential and parallel (or beam search against a PRM), and the 4x saving is an upper bound ('up to 4x', conclusion says 2-4x) on MATH with PaLM 2-S. Corrected claim: Best use of extra test-time compute depends on difficulty: easy prompts gain from sequential revision, hard ones from a mix of sequential and parallel compute or from search; difficulty-matched allocation gives up to about 4x (2-4x) compute saving versus best-of-N on MATH with PaLM 2-S. At low token budgets skipping the think phase beats thinking at matched tokens (AMC23 51.3 vs 28.9 at 700 tokens) and parallel samples plus a verifier add more.

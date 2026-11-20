@@ -324,3 +324,9 @@ All arms at equal tokens (G7). Report pass rate with a confidence interval and t
 - [V] MacNeil et al. 2024. https://arxiv.org/abs/2311.16017 (d17)
 - [V] Lee et al. 2024. https://arxiv.org/abs/2404.19336 (d19)
 - [V] Van Mullem et al. 2026. https://arxiv.org/abs/2603.28295 (d20)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 5 established claims: 4 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E09.08-K15** (reworded: the sources support less). Savelka confirmed (text-davinci-003 59.5% with code vs 77.9% without, p<0.0001), but StudentEval's pass@1 0.0519 is a control for bare function signatures with no docstring, showing problems cannot be solved without the student's description, not a rate for wrongly specified student prompts. Corrected claim: Models degrade when code is in the question: text-davinci-003 scored 59.5% on code-containing MCQs vs 77.9% without (Savelka). StudentEval's 1,749 prompts from 80 novices show output depends heavily on prompt wording: a bare function signature with no docstring gives mean pass@1 of only about 0.05, so the student's description carries the task.

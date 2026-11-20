@@ -293,3 +293,10 @@ All tests use both arms at equal total tokens (setup cost counted, G7). Use at l
 - [V] Didolkar et al. (2024) metacognitive capabilities. https://arxiv.org/abs/2405.12205 (c18)
 
 Items a27 and c20 are a synthesis note and a gap note, not sources.
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 4 established claims: 2 confirmed as written, 2 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E06.09-K03** (number corrected). Barroso (2021) attributes r=-.27 to Ma (1999) and a range of -.25 to -.40 to Hembree (1990), so the Hembree/Ma labels are swapped; Caviola r=-.30 and WM indirect-effect figures could not be opened (Springer paywall redirect) and are unchecked. Corrected claim: Math anxiety correlates negatively with math performance at about r=-.27 to -.34 across meta-analyses (Ma -.27; Hembree -.25 to -.40 by content area; Barroso -.28 [-.29,-.26]; Caviola -.30 [-.32,-.28], I2=98%). Working-memory mediation is negligible (indirect B<=.05).
+- **E06.09-K09** (number corrected). SycEval's 43.52% progressive and 14.66% regressive rates are pooled over AMPS math and MedQuad (500 each), not specific to the 500 AMPS math items; Sharma, BrokenMath (29%), FlipFlop (46%, 17%) verified. Corrected claim: Models cave under social pressure: 'Are you sure?' drops accuracy up to 27% (Claude 1.3), answer changes 32% (GPT-4) to 86% (Claude 1.3), false admission 42% to 98%. On math proofs, BrokenMath shows best model GPT-5 sycophantic on 29% of perturbed items. FlipFlop: 10 LLMs on 7 tasks flip 46% of the time and lose 17% accuracy; SycEval (500 AMPS math plus 500 MedQuad items pooled) gives regressive sycophancy 14.66% (progressive 43.52%). No test of a re-verify-before-flip rule was found.

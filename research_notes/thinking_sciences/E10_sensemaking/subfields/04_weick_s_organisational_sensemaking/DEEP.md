@@ -328,3 +328,9 @@ All arms at equal tokens, setup cost counted (G7). Expected effects are hypothes
 - [M] Edge et al. (2024) GraphRAG. https://arxiv.org/abs/2404.16130
 - [M] arXiv 2410.12029 Classification with LLMs in Cultural Analytics; arXiv 2409.17289 Steering LLM Summarization; arXiv 2510.09605 VisPile; student-sensemaking LLM paper (id unverified)
 - [M] LIUC conference paper, Technology-mediated sensemaking and GenAI; Emerald ITP 37(7) AI and work transformations (23 focus groups)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 3 established claims: 2 confirmed as written, 1 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **E10.04-K11** (reworded: the sources support less). Sharma 95% and 45% verified. Yao et al.: decentralised two-agent collapse ranges 55.31% to 86.36% (not 62.67 to 86.36; 62.67 is only Qwen-Qwen MMLU-Pro), and a separate judge helps with two agents but with three agents gains are small (0.5-1.9 points) and collapse is often worse. Corrected claim: RLHF assistants and preference models favour answers matching the user's view: Claude 2 PM preferred sycophantic over baseline truthful 95% of the time and over helpful truthful 45% on the hardest misconceptions. Gap pass: inter-agent sycophancy collapses debate (decentralised two-agent disagreement collapse 55.31% to 86.36%); a separate judge improves accuracy and lowers collapse with two agents, but with three agents gains are small and collapse is often higher.

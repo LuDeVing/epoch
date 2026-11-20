@@ -284,3 +284,9 @@ All arms at equal total tokens (setup counted, G7). Fresh items written after th
 - [M] CRT as measure of intuition/insight 2019: https://doi.org/10.1037/xge0000592
 - [M] Oat-Zero blog 2025: https://oatllm.notion.site/
 - [M] Wiley and Danek 2024 insight review (cited in the NazoNazo paper; no URL)
+
+## Source audit (2026-11-20)
+
+Fresh auditors re-opened the sources of 8 established claims: 8 confirmed as written, 0 changed. Where a row in sections 3 or 7 cites a claim below, the wording here wins. Current wording and status are in `claims.jsonl`.
+
+- **A12.07-K02** (now single-source: only one opened source, code check).
